@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Outer Blue Gradient -->
+    <linearGradient id="blueRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a3982" />
+      <stop offset="50%" stop-color="#0d47a1" />
+      <stop offset="100%" stop-color="#062860" />
+    </linearGradient>
+
+    <!-- Golden Cross Pedestal Gradient -->
+    <linearGradient id="goldPedestalGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b8860b" />
+      <stop offset="50%" stop-color="#d4af37" />
+      <stop offset="100%" stop-color="#996515" />
+    </linearGradient>
+
+    <!-- Star Glow / Gold Gradient -->
+    <linearGradient id="goldStarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff176" />
+      <stop offset="100%" stop-color="#fbc02d" />
+    </linearGradient>
+
+    <!-- Circular Text Paths -->
+    <!-- Top Arc Path: left to right over top -->
+    <path id="topArcPath" d="M 68,250 A 182,182 0 1,1 432,250" fill="none" />
+    <!-- Bottom Arc Path: left to right under bottom -->
+    <path id="bottomArcPath" d="M 120,360 A 182,182 0 0,0 380,360" fill="none" />
+  </defs>
+
+  <!-- Shadow Filter / Outer Backdrop -->
+  <circle cx="250" cy="250" r="246" fill="#000000" opacity="0.08" />
+
+  <!-- Outer Ring (Deep Royal Blue) -->
+  <circle cx="250" cy="250" r="240" fill="url(#blueRingGrad)" stroke="#ffffff" stroke-width="3" />
+
+  <!-- Inner Center Shield (Divided Half Red / Half White) -->
+  <g id="center-shield">
+    <clipPath id="innerCircleClip">
+      <circle cx="250" cy="250" r="140" />
+    </clipPath>
+
+    <g clip-path="url(#innerCircleClip)">
+      <!-- Left Half: Vivid Royal Red -->
+      <rect x="110" y="110" width="140" height="280" fill="#e50914" />
+      <!-- Right Half: Pure White -->
+      <rect x="250" y="110" width="140" height="280" fill="#ffffff" />
+
+      <!-- Left Half: The White Cross on Gold Base -->
+      <!-- Golden Pedestal Base -->
+      <polygon points="175,324 235,324 245,308 165,308" fill="url(#goldPedestalGrad)" stroke="#7a5200" stroke-width="1.5" />
+      
+      <!-- Cross Vertical Beam -->
+      <rect x="195" y="180" width="20" height="130" fill="#ffffff" rx="2" stroke="#e2e8f0" stroke-width="1" />
+      <!-- Cross Horizontal Beam -->
+      <rect x="170" y="210" width="70" height="20" fill="#ffffff" rx="2" stroke="#e2e8f0" stroke-width="1" />
+
+      <!-- Right Half: Holy Spirit Peace Dove (Vector Outlined in Royal Blue) -->
+      <g transform="translate(254, 185) scale(0.85)">
+        <!-- Dove Body & Wings in Blue & Soft Fill -->
+        <path d="M 15,62 C 10,58 6,50 14,44 C 22,38 32,40 38,36 C 44,30 46,16 62,8 C 74,2 88,14 85,28 C 83,38 75,44 68,48 C 80,48 96,52 98,62 C 100,70 85,78 74,80 C 65,82 52,78 45,74 C 40,82 45,95 44,102 C 40,103 36,98 34,92 C 30,97 26,101 22,100 C 22,94 26,88 28,82 C 22,86 16,88 12,85 C 13,78 18,74 24,70 C 18,70 14,66 15,62 Z" 
+              fill="#ffffff" stroke="#0d47a1" stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round" />
+        
+        <!-- Dove Eye -->
+        <circle cx="20" cy="50" r="2.5" fill="#0d47a1" />
+        
+        <!-- Olive Leaf / Beak -->
+        <path d="M 10,50 Q 2,52 5,47 Z" fill="#0d47a1" />
+
+        <!-- Wing Feather Details -->
+        <path d="M 52,24 C 58,35 62,45 60,56" fill="none" stroke="#0d47a1" stroke-width="3" stroke-linecap="round" />
+        <path d="M 64,18 C 72,28 74,38 70,48" fill="none" stroke="#0d47a1" stroke-width="3" stroke-linecap="round" />
+        <path d="M 45,46 C 54,52 58,60 55,68" fill="none" stroke="#0d47a1" stroke-width="3" stroke-linecap="round" />
+        
+        <!-- Tail Feathers Detail -->
+        <path d="M 36,80 C 37,88 38,94 40,98" fill="none" stroke="#0d47a1" stroke-width="3" stroke-linecap="round" />
+        <path d="M 30,78 C 30,85 28,90 26,95" fill="none" stroke="#0d47a1" stroke-width="3" stroke-linecap="round" />
+      </g>
+    </g>
+
+    <!-- Inner Circle Gold/White Border -->
+    <circle cx="250" cy="250" r="140" fill="none" stroke="#ffffff" stroke-width="4" />
+  </g>
+
+  <!-- Circular Arch Typography: ZION FELLOWSHIP CHURCH -->
+  <text fill="#ffffff" font-family="'Arial Black', 'Montserrat', 'Segoe UI', sans-serif" font-weight="900" font-size="28" letter-spacing="4">
+    <textPath href="#topArcPath" startOffset="50%" text-anchor="middle">
+      ZION FELLOWSHIP CHURCH
+    </textPath>
+  </text>
+
+  <!-- Left Star (Golden) -->
+  <!-- Star at ~ (130, 335) -->
+  <polygon points="126,325 130,336 141,336 132,343 135,354 126,347 117,354 120,343 111,336 122,336" fill="url(#goldStarGrad)" stroke="#ffffff" stroke-width="1" />
+
+  <!-- Bottom Arch Typography: Z.F.C -->
+  <text fill="#ffffff" font-family="'Arial Black', 'Montserrat', 'Segoe UI', sans-serif" font-weight="900" font-size="36" letter-spacing="5">
+    <textPath href="#bottomArcPath" startOffset="50%" text-anchor="middle">
+      Z.F.C
+    </textPath>
+  </text>
+
+  <!-- Right Star (Golden) -->
+  <!-- Star at ~ (374, 335) -->
+  <polygon points="374,325 378,336 389,336 380,343 383,354 374,347 365,354 368,343 359,336 370,336" fill="url(#goldStarGrad)" stroke="#ffffff" stroke-width="1" />
+</svg>

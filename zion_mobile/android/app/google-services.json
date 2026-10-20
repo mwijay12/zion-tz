@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "295105770990",
+    "project_id": "zion-mbagala-church",
+    "storage_bucket": "zion-mbagala-church.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:295105770990:android:bd6b4fbcf701932490caff",
+        "android_client_info": {
+          "package_name": "com.zion.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl_mOkECC4N4rEqS_dXaSUzoML6NFmlwM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

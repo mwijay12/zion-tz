@@ -1,0 +1,528 @@
+[
+  {
+    "number": 1,
+    "swahili_name": "Mwanzo",
+    "english_name": "Genesis",
+    "testament": "Old",
+    "chapters": 50,
+    "kjv_chapters": 50
+  },
+  {
+    "number": 2,
+    "swahili_name": "Kutoka",
+    "english_name": "Exodus",
+    "testament": "Old",
+    "chapters": 40,
+    "kjv_chapters": 40
+  },
+  {
+    "number": 3,
+    "swahili_name": "Mambo ya Walawi",
+    "english_name": "Leviticus",
+    "testament": "Old",
+    "chapters": 27,
+    "kjv_chapters": 27
+  },
+  {
+    "number": 4,
+    "swahili_name": "Hesabu",
+    "english_name": "Numbers",
+    "testament": "Old",
+    "chapters": 36,
+    "kjv_chapters": 36
+  },
+  {
+    "number": 5,
+    "swahili_name": "Kumbukumbu la Torati",
+    "english_name": "Deuteronomy",
+    "testament": "Old",
+    "chapters": 34,
+    "kjv_chapters": 34
+  },
+  {
+    "number": 6,
+    "swahili_name": "Yoshua",
+    "english_name": "Joshua",
+    "testament": "Old",
+    "chapters": 24,
+    "kjv_chapters": 24
+  },
+  {
+    "number": 7,
+    "swahili_name": "Waamuzi",
+    "english_name": "Judges",
+    "testament": "Old",
+    "chapters": 21,
+    "kjv_chapters": 21
+  },
+  {
+    "number": 8,
+    "swahili_name": "Ruthu",
+    "english_name": "Ruth",
+    "testament": "Old",
+    "chapters": 4,
+    "kjv_chapters": 4
+  },
+  {
+    "number": 9,
+    "swahili_name": "1 Samueli",
+    "english_name": "1 Samuel",
+    "testament": "Old",
+    "chapters": 31,
+    "kjv_chapters": 31
+  },
+  {
+    "number": 10,
+    "swahili_name": "2 Samueli",
+    "english_name": "2 Samuel",
+    "testament": "Old",
+    "chapters": 24,
+    "kjv_chapters": 24
+  },
+  {
+    "number": 11,
+    "swahili_name": "1 Wafalme",
+    "english_name": "1 Kings",
+    "testament": "Old",
+    "chapters": 22,
+    "kjv_chapters": 22
+  },
+  {
+    "number": 12,
+    "swahili_name": "2 Wafalme",
+    "english_name": "2 Kings",
+    "testament": "Old",
+    "chapters": 25,
+    "kjv_chapters": 25
+  },
+  {
+    "number": 13,
+    "swahili_name": "1 Mambo ya Nyakati",
+    "english_name": "1 Chronicles",
+    "testament": "Old",
+    "chapters": 29,
+    "kjv_chapters": 29
+  },
+  {
+    "number": 14,
+    "swahili_name": "2 Mambo ya Nyakati",
+    "english_name": "2 Chronicles",
+    "testament": "Old",
+    "chapters": 36,
+    "kjv_chapters": 36
+  },
+  {
+    "number": 15,
+    "swahili_name": "Ezra",
+    "english_name": "Ezra",
+    "testament": "Old",
+    "chapters": 10,
+    "kjv_chapters": 10
+  },
+  {
+    "number": 16,
+    "swahili_name": "Nehemia",
+    "english_name": "Nehemiah",
+    "testament": "Old",
+    "chapters": 13,
+    "kjv_chapters": 13
+  },
+  {
+    "number": 17,
+    "swahili_name": "Esta",
+    "english_name": "Esther",
+    "testament": "Old",
+    "chapters": 10,
+    "kjv_chapters": 10
+  },
+  {
+    "number": 18,
+    "swahili_name": "Ayubu",
+    "english_name": "Job",
+    "testament": "Old",
+    "chapters": 42,
+    "kjv_chapters": 42
+  },
+  {
+    "number": 19,
+    "swahili_name": "Zaburi",
+    "english_name": "Psalms",
+    "testament": "Old",
+    "chapters": 150,
+    "kjv_chapters": 150
+  },
+  {
+    "number": 20,
+    "swahili_name": "Mithali",
+    "english_name": "Proverbs",
+    "testament": "Old",
+    "chapters": 31,
+    "kjv_chapters": 31
+  },
+  {
+    "number": 21,
+    "swahili_name": "Mhubiri",
+    "english_name": "Ecclesiastes",
+    "testament": "Old",
+    "chapters": 12,
+    "kjv_chapters": 12
+  },
+  {
+    "number": 22,
+    "swahili_name": "Wimbo Ulio Bora",
+    "english_name": "Song of Solomon",
+    "testament": "Old",
+    "chapters": 8,
+    "kjv_chapters": 8
+  },
+  {
+    "number": 23,
+    "swahili_name": "Isaya",
+    "english_name": "Isaiah",
+    "testament": "Old",
+    "chapters": 66,
+    "kjv_chapters": 66
+  },
+  {
+    "number": 24,
+    "swahili_name": "Yeremia",
+    "english_name": "Jeremiah",
+    "testament": "Old",
+    "chapters": 52,
+    "kjv_chapters": 52
+  },
+  {
+    "number": 25,
+    "swahili_name": "Maombolezo",
+    "english_name": "Lamentations",
+    "testament": "Old",
+    "chapters": 5,
+    "kjv_chapters": 5
+  },
+  {
+    "number": 26,
+    "swahili_name": "Ezekieli",
+    "english_name": "Ezekiel",
+    "testament": "Old",
+    "chapters": 48,
+    "kjv_chapters": 48
+  },
+  {
+    "number": 27,
+    "swahili_name": "Danieli",
+    "english_name": "Daniel",
+    "testament": "Old",
+    "chapters": 12,
+    "kjv_chapters": 12
+  },
+  {
+    "number": 28,
+    "swahili_name": "Hosea",
+    "english_name": "Hosea",
+    "testament": "Old",
+    "chapters": 14,
+    "kjv_chapters": 14
+  },
+  {
+    "number": 29,
+    "swahili_name": "Yoeli",
+    "english_name": "Joel",
+    "testament": "Old",
+    "chapters": 3,
+    "kjv_chapters": 3
+  },
+  {
+    "number": 30,
+    "swahili_name": "Amosi",
+    "english_name": "Amos",
+    "testament": "Old",
+    "chapters": 9,
+    "kjv_chapters": 9
+  },
+  {
+    "number": 31,
+    "swahili_name": "Obadia",
+    "english_name": "Obadiah",
+    "testament": "Old",
+    "kjv_chapters": 1
+  },
+  {
+    "number": 32,
+    "swahili_name": "Yona",
+    "english_name": "Jonah",
+    "testament": "Old",
+    "chapters": 4,
+    "kjv_chapters": 4
+  },
+  {
+    "number": 33,
+    "swahili_name": "Mika",
+    "english_name": "Micah",
+    "testament": "Old",
+    "chapters": 7,
+    "kjv_chapters": 7
+  },
+  {
+    "number": 34,
+    "swahili_name": "Nahumu",
+    "english_name": "Nahum",
+    "testament": "Old",
+    "chapters": 3,
+    "kjv_chapters": 3
+  },
+  {
+    "number": 35,
+    "swahili_name": "Habakuki",
+    "english_name": "Habakkuk",
+    "testament": "Old",
+    "chapters": 3,
+    "kjv_chapters": 3
+  },
+  {
+    "number": 36,
+    "swahili_name": "Sefania",
+    "english_name": "Zephaniah",
+    "testament": "Old",
+    "chapters": 3,
+    "kjv_chapters": 3
+  },
+  {
+    "number": 37,
+    "swahili_name": "Hagai",
+    "english_name": "Haggai",
+    "testament": "Old",
+    "chapters": 2,
+    "kjv_chapters": 2
+  },
+  {
+    "number": 38,
+    "swahili_name": "Zekaria",
+    "english_name": "Zechariah",
+    "testament": "Old",
+    "chapters": 14,
+    "kjv_chapters": 14
+  },
+  {
+    "number": 39,
+    "swahili_name": "Malaki",
+    "english_name": "Malachi",
+    "testament": "Old",
+    "chapters": 4,
+    "kjv_chapters": 4
+  },
+  {
+    "number": 40,
+    "swahili_name": "Mathayo",
+    "english_name": "Matthew",
+    "testament": "New",
+    "chapters": 28,
+    "kjv_chapters": 28
+  },
+  {
+    "number": 41,
+    "swahili_name": "Marko",
+    "english_name": "Mark",
+    "testament": "New",
+    "chapters": 16,
+    "kjv_chapters": 16
+  },
+  {
+    "number": 42,
+    "swahili_name": "Luka",
+    "english_name": "Luke",
+    "testament": "New",
+    "chapters": 24,
+    "kjv_chapters": 24
+  },
+  {
+    "number": 43,
+    "swahili_name": "Yohana",
+    "english_name": "John",
+    "testament": "New",
+    "chapters": 21,
+    "kjv_chapters": 21
+  },
+  {
+    "number": 44,
+    "swahili_name": "Matendo ya Mitume",
+    "english_name": "Acts",
+    "testament": "New",
+    "chapters": 28,
+    "kjv_chapters": 28
+  },
+  {
+    "number": 45,
+    "swahili_name": "Warumi",
+    "english_name": "Romans",
+    "testament": "New",
+    "chapters": 16,
+    "kjv_chapters": 16
+  },
+  {
+    "number": 46,
+    "swahili_name": "1 Wakorintho",
+    "english_name": "1 Corinthians",
+    "testament": "New",
+    "chapters": 16,
+    "kjv_chapters": 16
+  },
+  {
+    "number": 47,
+    "swahili_name": "2 Wakorintho",
+    "english_name": "2 Corinthians",
+    "testament": "New",
+    "chapters": 13,
+    "kjv_chapters": 13
+  },
+  {
+    "number": 48,
+    "swahili_name": "Wagalatia",
+    "english_name": "Galatians",
+    "testament": "New",
+    "chapters": 6,
+    "kjv_chapters": 6
+  },
+  {
+    "number": 49,
+    "swahili_name": "Waefeso",
+    "english_name": "Ephesians",
+    "testament": "New",
+    "chapters": 6,
+    "kjv_chapters": 6
+  },
+  {
+    "number": 50,
+    "swahili_name": "Wafilipi",
+    "english_name": "Philippians",
+    "testament": "New",
+    "chapters": 4,
+    "kjv_chapters": 4
+  },
+  {
+    "number": 51,
+    "swahili_name": "Wakolosai",
+    "english_name": "Colossians",
+    "testament": "New",
+    "chapters": 4,
+    "kjv_chapters": 4
+  },
+  {
+    "number": 52,
+    "swahili_name": "1 Wathesalonike",
+    "english_name": "1 Thessalonians",
+    "testament": "New",
+    "chapters": 5,
+    "kjv_chapters": 5
+  },
+  {
+    "number": 53,
+    "swahili_name": "2 Wathesalonike",
+    "english_name": "2 Thessalonians",
+    "testament": "New",
+    "chapters": 3,
+    "kjv_chapters": 3
+  },
+  {
+    "number": 54,
+    "swahili_name": "1 Timotheo",
+    "english_name": "1 Timothy",
+    "testament": "New",
+    "chapters": 6,
+    "kjv_chapters": 6
+  },
+  {
+    "number": 55,
+    "swahili_name": "2 Timotheo",
+    "english_name": "2 Timothy",
+    "testament": "New",
+    "chapters": 4,
+    "kjv_chapters": 4
+  },
+  {
+    "number": 56,
+    "swahili_name": "Tito",
+    "english_name": "Titus",
+    "testament": "New",
+    "chapters": 3,
+    "kjv_chapters": 3
+  },
+  {
+    "number": 57,
+    "swahili_name": "Filemoni",
+    "english_name": "Philemon",
+    "testament": "New",
+    "kjv_chapters": 1
+  },
+  {
+    "number": 58,
+    "swahili_name": "Waebrania",
+    "english_name": "Hebrews",
+    "testament": "New",
+    "chapters": 13,
+    "kjv_chapters": 13
+  },
+  {
+    "number": 59,
+    "swahili_name": "Yakobo",
+    "english_name": "James",
+    "testament": "New",
+    "chapters": 5,
+    "kjv_chapters": 5
+  },
+  {
+    "number": 60,
+    "swahili_name": "1 Petro",
+    "english_name": "1 Peter",
+    "testament": "New",
+    "chapters": 5,
+    "kjv_chapters": 5
+  },
+  {
+    "number": 61,
+    "swahili_name": "2 Petro",
+    "english_name": "2 Peter",
+    "testament": "New",
+    "chapters": 3,
+    "kjv_chapters": 3
+  },
+  {
+    "number": 62,
+    "swahili_name": "1 Yohana",
+    "english_name": "1 John",
+    "testament": "New",
+    "chapters": 5,
+    "kjv_chapters": 5
+  },
+  {
+    "number": 63,
+    "swahili_name": "2 Yohana",
+    "english_name": "2 John",
+    "testament": "New",
+    "chapters": 1,
+    "kjv_chapters": 1
+  },
+  {
+    "number": 64,
+    "swahili_name": "3 Yohana",
+    "english_name": "3 John",
+    "testament": "New",
+    "chapters": 1,
+    "kjv_chapters": 1
+  },
+  {
+    "number": 65,
+    "swahili_name": "Yuda",
+    "english_name": "Jude",
+    "testament": "New",
+    "chapters": 1,
+    "kjv_chapters": 1
+  },
+  {
+    "number": 66,
+    "swahili_name": "Ufunuo wa Yohana",
+    "english_name": "Revelation",
+    "testament": "New",
+    "chapters": 22,
+    "kjv_chapters": 22
+  }
+]

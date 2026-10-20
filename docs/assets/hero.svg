@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 430" role="img" aria-labelledby="heroTitle heroDesc">
+  <title id="heroTitle">Zion Jerusalem Church digital ecosystem</title>
+  <desc id="heroDesc">A navy and gold banner with a line-art sanctuary, reading: one church, two experiences, a member app and a leadership portal.</desc>
+
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050e1d"/>
+      <stop offset="0.45" stop-color="#07192f"/>
+      <stop offset="1" stop-color="#0a2244"/>
+    </linearGradient>
+    <radialGradient id="horizon" cx="72%" cy="72%" r="58%">
+      <stop offset="0" stop-color="#c59b27" stop-opacity="0.48"/>
+      <stop offset="0.38" stop-color="#d4af37" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#07192f" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#fef3c7" stop-opacity="0.9"/>
+      <stop offset="0.35" stop-color="#d4af37" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#d4af37" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="goldText" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f8e7b0"/>
+      <stop offset="0.5" stop-color="#d4af37"/>
+      <stop offset="1" stop-color="#f4d77a"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fef3c7" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#c59b27" stop-opacity="0.18"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#c59b27" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#f4d77a" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#c59b27" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+    <filter id="tinyGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+    <pattern id="stars" width="170" height="110" patternUnits="userSpaceOnUse">
+      <circle cx="18" cy="24" r="1.2" fill="#fef3c7" opacity="0.45"/>
+      <circle cx="78" cy="72" r="0.9" fill="#dbeafe" opacity="0.35"/>
+      <circle cx="142" cy="31" r="1.4" fill="#f4d77a" opacity="0.4"/>
+      <circle cx="112" cy="96" r="0.7" fill="#fef3c7" opacity="0.3"/>
+      <circle cx="38" cy="88" r="0.8" fill="#bfdbfe" opacity="0.25"/>
+    </pattern>
+    <style>
+      .twinkle { animation: twinkle 6.5s ease-in-out infinite; }
+      .twinkle.two { animation-delay: -2.4s; animation-duration: 8s; }
+      .twinkle.three { animation-delay: -4.2s; animation-duration: 7.4s; }
+      .breathe { animation: breathe 8s ease-in-out infinite; transform-origin: 931px 176px; }
+      .window { animation: windowPulse 5.5s ease-in-out infinite; }
+      .window.two { animation-delay: -2.2s; }
+      .dust { animation: drift 15s ease-in-out infinite; }
+      .dust.two { animation-delay: -5s; animation-duration: 18s; }
+      .dust.three { animation-delay: -9s; animation-duration: 13s; }
+      .beam { animation: beam 9s ease-in-out infinite; }
+      @keyframes twinkle {
+        0%, 100% { opacity: 0.22; }
+        50% { opacity: 0.9; }
+      }
+      @keyframes breathe {
+        0%, 100% { opacity: 0.5; transform: scale(0.94); }
+        50% { opacity: 0.95; transform: scale(1.05); }
+      }
+      @keyframes windowPulse {
+        0%, 100% { opacity: 0.48; }
+        50% { opacity: 0.95; }
+      }
+      @keyframes drift {
+        0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.18; }
+        50% { transform: translate3d(10px, -16px, 0); opacity: 0.7; }
+      }
+      @keyframes beam {
+        0%, 100% { opacity: 0.2; }
+        50% { opacity: 0.6; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .twinkle, .breathe, .window, .dust, .beam { animation: none; }
+      }
+    </style>
+  </defs>
+
+  <rect width="1200" height="430" fill="url(#sky)"/>
+  <rect width="1200" height="430" fill="url(#stars)"/>
+  <ellipse cx="900" cy="350" rx="430" ry="230" fill="url(#horizon)"/>
+
+  <circle class="twinkle" cx="610" cy="84" r="2" fill="#fef3c7"/>
+  <circle class="twinkle two" cx="705" cy="56" r="1.4" fill="#dbeafe"/>
+  <circle class="twinkle three" cx="1110" cy="70" r="1.8" fill="#f4d77a"/>
+  <circle class="twinkle two" cx="1044" cy="112" r="1.1" fill="#fef3c7"/>
+  <circle class="twinkle" cx="760" cy="122" r="1" fill="#dbeafe"/>
+
+  <path d="M0 352 C 170 330, 280 348, 430 340 C 580 332, 700 352, 850 345 C 980 339, 1080 348, 1200 338 L 1200 430 L 0 430 Z" fill="#050d18"/>
+  <path d="M0 352 C 170 330, 280 348, 430 340 C 580 332, 700 352, 850 345 C 980 339, 1080 348, 1200 338" fill="none" stroke="url(#edge)" stroke-width="1.2" opacity="0.6"/>
+
+  <g opacity="0.9">
+    <circle class="breathe" cx="931" cy="176" r="88" fill="url(#halo)" filter="url(#softGlow)"/>
+    <path class="beam" d="M931 62 L 891 232 L 971 232 Z" fill="#fef3c7" opacity="0.18" filter="url(#softGlow)"/>
+  </g>
+
+  <g fill="none" stroke="#d4af37" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M781 343 L 781 246 Q 781 226 800 216 L 858 185" opacity="0.65"/>
+    <path d="M1082 343 L 1082 246 Q 1082 226 1063 216 L 1005 185" opacity="0.65"/>
+    <path d="M781 343 L 1082 343" stroke-width="1.5" opacity="0.8"/>
+    <path d="M768 355 L 1095 355" opacity="0.35"/>
+    <path d="M800 343 L 800 212 L 931 146 L 1062 212 L 1062 343" stroke-width="1.5" opacity="0.9"/>
+    <path d="M858 343 L 858 198 Q 858 180 874 172 L 915 152" opacity="0.55"/>
+    <path d="M1005 343 L 1005 198 Q 1005 180 989 172 L 948 152" opacity="0.55"/>
+    <path d="M879 343 L 879 225 Q 879 196 907 183 L 931 172 L 955 183 Q 983 196 983 225 L 983 343" stroke-width="1.6"/>
+    <path d="M886 343 L 886 228 Q 886 204 908 193 L 931 183 L 954 193 Q 976 204 976 228 L 976 343" opacity="0.45"/>
+    <path d="M818 343 L 818 248 Q 818 232 832 225 L 848 217 L 864 225 Q 878 232 878 248 L 878 343" opacity="0.65"/>
+    <path d="M985 343 L 985 248 Q 985 232 999 225 L 1015 217 L 1031 225 Q 1045 232 1045 248 L 1045 343" opacity="0.65"/>
+    <path d="M915 343 L 915 291 Q 915 273 931 265 Q 947 273 947 291 L 947 343" opacity="0.9"/>
+    <path d="M931 146 L 931 96" stroke-width="2"/>
+    <path d="M913 114 L 949 114" stroke-width="2"/>
+    <circle cx="931" cy="146" r="4" fill="#f4d77a" stroke="none"/>
+    <path d="M768 355 L 1095 355" opacity="0.25"/>
+  </g>
+
+  <g fill="url(#glass)" opacity="0.75">
+    <path class="window" d="M827 256 Q 827 239 841 232 L 848 229 L 855 232 Q 869 239 869 256 L 869 288 L 827 288 Z"/>
+    <path class="window two" d="M994 256 Q 994 239 1008 232 L 1015 229 L 1022 232 Q 1036 239 1036 256 L 1036 288 L 994 288 Z"/>
+    <path class="window two" d="M893 238 Q 893 219 908 211 L 915 207 L 922 211 Q 937 219 937 238 L 937 276 L 893 276 Z" opacity="0.5"/>
+    <path class="window" d="M925 238 Q 925 219 940 211 L 947 207 L 954 211 Q 969 219 969 238 L 969 276 L 925 276 Z" opacity="0.5"/>
+    <path class="window two" d="M912 306 Q 912 291 926 284 L 931 281 L 936 284 Q 950 291 950 306 L 950 343 L 912 343 Z" opacity="0.55"/>
+  </g>
+
+  <g fill="#fef3c7">
+    <circle class="dust" cx="827" cy="169" r="1.6" opacity="0.5"/>
+    <circle class="dust two" cx="1019" cy="147" r="1.2" opacity="0.4"/>
+    <circle class="dust three" cx="885" cy="118" r="1" opacity="0.5"/>
+    <circle class="dust two" cx="1062" cy="203" r="1.4" opacity="0.4"/>
+  </g>
+
+  <g font-family="Georgia, 'Times New Roman', serif" fill="#f8fafc">
+    <text x="72" y="86" font-family="'Segoe UI', Arial, sans-serif" font-size="12.5" font-weight="700" letter-spacing="3.2" fill="#d4af37">A DIGITAL SANCTUARY</text>
+    <text x="70" y="171" font-size="58" font-weight="700" letter-spacing="-1.4">Zion Jerusalem</text>
+    <text x="70" y="232" font-size="58" font-weight="700" letter-spacing="-1.4" fill="url(#goldText)">Church</text>
+    <text x="73" y="272" font-family="'Segoe UI', Arial, sans-serif" font-size="17" fill="#cbd5e1">One church. Two experiences. A living digital sanctuary</text>
+    <text x="73" y="296" font-family="'Segoe UI', Arial, sans-serif" font-size="17" fill="#cbd5e1">for Mbagala, Dar es Salaam, and beyond.</text>
+  </g>
+
+  <g font-family="'Segoe UI', Arial, sans-serif" font-size="10.5" font-weight="700" letter-spacing="1.3">
+    <rect x="73" y="320" width="174" height="27" rx="13.5" fill="#0d52cd" fill-opacity="0.22" stroke="#60a5fa" stroke-opacity="0.45"/>
+    <text x="160" y="337" text-anchor="middle" fill="#dbeafe">FLUTTER MEMBER APP</text>
+    <rect x="257" y="320" width="202" height="27" rx="13.5" fill="#c59b27" fill-opacity="0.12" stroke="#d4af37" stroke-opacity="0.45"/>
+    <text x="358" y="337" text-anchor="middle" fill="#f4d77a">REACT LEADERSHIP PORTAL</text>
+    <rect x="469" y="320" width="122" height="27" rx="13.5" fill="#f8fafc" fill-opacity="0.06" stroke="#94a3b8" stroke-opacity="0.3"/>
+    <text x="530" y="337" text-anchor="middle" fill="#cbd5e1">FIREBASE</text>
+  </g>
+
+  <text x="73" y="389" font-family="'Segoe UI', Arial, sans-serif" font-size="10.5" font-weight="600" letter-spacing="2.2" fill="#94a3b8">MBAGALA · DAR ES SALAAM · TANZANIA</text>
+  <line x1="73" y1="404" x2="426" y2="404" stroke="url(#edge)" stroke-width="1"/>
+</svg>

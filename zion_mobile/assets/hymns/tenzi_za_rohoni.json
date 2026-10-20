@@ -1,0 +1,1086 @@
+[
+  {
+    "number": 1,
+    "title": "Mwokozi Umeokoa",
+    "category": "Sifa na Shukrani",
+    "key": "Key of G",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Mwokozi umeokoa, roho yangu kwa neema;\nSasa nafurahi sana, kwa damu ya Golgotha."
+      },
+      {
+        "verse_number": 2,
+        "text": "Uliniongoza vizuri, njia yangu ya uzima;\nNitakushukuru daima, kwa wema wako mkuu."
+      },
+      {
+        "verse_number": 3,
+        "text": "Moyo wangu wote wako, utumie Bwana wangu;\nNifikishe mbinguni juu, nikae nawe milele."
+      }
+    ],
+    "chorus": "Umenikomboa Bwana, sifa zote nakupea;\nUmenifanya kiumbe kipya, asante Yesu Mwokozi."
+  },
+  {
+    "number": 2,
+    "title": "Mtakatifu, Mtakatifu, Mtakatifu",
+    "category": "Sifa Kuu na Utukufu",
+    "key": "Key of E",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Mtakatifu, Mtakatifu, Mtakatifu!\nBwana Mungu Mwenyezi, asubuhi na mapema\nSifa zetu zitaenda Kwako.\nMtakatifu, Mtakatifu, mwenye rehema na uwezo,\nMungu wa Utatu, Utukufu Mkuu!"
+      },
+      {
+        "verse_number": 2,
+        "text": "Mtakatifu, Mtakatifu, Mtakatifu!\nWakusujudia watakatifu wote mbinguni,\nWakiweka taji zao za dhahabu baharini.\nWakerubi na maserafi wanakuabudu daima,\nWewe uliyekuwako, na uliye, na utakayekuwako."
+      },
+      {
+        "verse_number": 3,
+        "text": "Mtakatifu, Mtakatifu, Mtakatifu!\nIjapokuwa giza lakuficha mbele ya wanadamu,\nHakuna mwingine mtakatifu kama Wewe,\nMkamilifu kwa uwezo, upendo na usafi."
+      },
+      {
+        "verse_number": 4,
+        "text": "Mtakatifu, Mtakatifu, Mtakatifu!\nBwana Mungu Mwenyezi! Viumbe vyako vyote\nMbinguni na duniani vyatukuza jina lako.\nMtakatifu, Mtakatifu, mwenye rehema na nguvu,\nMungu katika Utatu, Mbarikiwa milele!"
+      }
+    ],
+    "chorus": "Mtakatifu, Mtakatifu, Mtakatifu Bwana Mungu,\nMbingu na dunia zimejaa utukufu wako mkuu!"
+  },
+  {
+    "number": 3,
+    "title": "Bwana Yesu Asema (Yesu Alipa Yote)",
+    "category": "Ukombozi na Wokovu",
+    "key": "Key of Eb",
+    "time_signature": "3/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Bwana Yesu asema, nguvu zako kidogo;\nKesha ukiomba sana, nami nitakupa nguvu."
+      },
+      {
+        "verse_number": 2,
+        "text": "Bwana sasa ninaona, nguvu yako pekee,\nYaweza kusafisha, moyo wa mwenye dhambi."
+      },
+      {
+        "verse_number": 3,
+        "text": "Sina kitu chema kamwe, cha kuleta mbeleze,\nNitaosha vazi langu, kwa damu ya Golgotha."
+      },
+      {
+        "verse_number": 4,
+        "text": "Mbele ya kiti cha enzi, nitasimama safi;\nNitasema kwa furaha: Yesu alinifia!"
+      }
+    ],
+    "chorus": "Yesu alipa yote, deni yangu yote;\nDhambi ilinitia waa, akalifanya theluji."
+  },
+  {
+    "number": 7,
+    "title": "Hata Nami Bwana (Ninarudi Nyumbani)",
+    "category": "Toba na Kurejea",
+    "key": "Key of Ab",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Nilipotea mbali na uso wa Bwana;\nSasa ninarudi, ninarudi nyumbani."
+      },
+      {
+        "verse_number": 2,
+        "text": "Nimepoteza miaka katika dhambi;\nSasa natubu, ninarudi nyumbani."
+      },
+      {
+        "verse_number": 3,
+        "text": "Nimechoka sana kwa mambo ya dunia;\nSasa ninatamani pumziko la Bwana."
+      },
+      {
+        "verse_number": 4,
+        "text": "Roho yangu ina kiu ya neema yako;\nYesu nioshe, ninarudi nyumbani."
+      }
+    ],
+    "chorus": "Ninarudi nyumbani, sitaondoka tena;\nFungua mikono yako, pokea mwanako Bwana."
+  },
+  {
+    "number": 8,
+    "title": "Chakutumaini Sina",
+    "category": "Imani na Tumaini",
+    "key": "Key of F",
+    "time_signature": "3/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Chakutumaini sina, ila damu yake Bwana;\nSina wema wa kutosha, dhambi zangu kuziosha."
+      },
+      {
+        "verse_number": 2,
+        "text": "Njia yangu iwe ndefu, yeye hunipa wokovu;\n Mawimbi yakinipiga, nguvu zake zinanilinda."
+      },
+      {
+        "verse_number": 3,
+        "text": "Damu yake na agano, ni ngao yangu vitani;\nYote chini yakiyeyuka, yeye ndiye ngome yangu."
+      },
+      {
+        "verse_number": 4,
+        "text": "Naye akija na tarumbeta, kwake nitasimama salama;\nNikiwa nimevikwa haki yake, bila doa mbele zake."
+      }
+    ],
+    "chorus": "Kwenye mwamba nimesimama, ngome nyingine ni mchanga;\nNgome nyingine ni mchanga."
+  },
+  {
+    "number": 12,
+    "title": "Mwokozi Alipokufa Msalabani",
+    "category": "Msalaba na Sadaka ya Kristo",
+    "key": "Key of F",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Mwokozi alipokufa msalabani pale,\nAlitununua kwa thamani kubwa sana."
+      },
+      {
+        "verse_number": 2,
+        "text": "Uchungu na maumivu alivumilia kwa ajili yetu,\nAkafuta hatia na laana ya dhambi."
+      },
+      {
+        "verse_number": 3,
+        "text": "Tazama jeraha zake, mikono na miguu;\nDamu ilitiririka kwa ajili ya uzima wetu."
+      }
+    ],
+    "chorus": "Msalabani, msalabani nuru niliiona,\nNa mizigo ya moyo ikaondolewa kabisa!"
+  },
+  {
+    "number": 18,
+    "title": "Msalabani Pa Mwokozi",
+    "category": "Msalaba na Damu ya Yesu",
+    "key": "Key of Ab",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Msalabani pa Mwokozi, niliomba utakaso;\nHapo moyo wangu ulitakaswa, sifa kwa jina lake!"
+      },
+      {
+        "verse_number": 2,
+        "text": "Nimeokolewa kwa ajabu, Yesu anakaa moyoni mwangu;\nHapo msalabani alinipokea, sifa kwa jina lake!"
+      },
+      {
+        "verse_number": 3,
+        "text": "Chemchemi ya thamani yaokoa, roho yangu imetakaswa;\nYesu ananipa uzima tele, sifa kwa jina lake!"
+      },
+      {
+        "verse_number": 4,
+        "text": "Njoo kwenye chemchemi hii nzuri, weka nafsi yako kwa Mwokozi;\nTubutubia dhambi zako leo, sifa kwa jina lake!"
+      }
+    ],
+    "chorus": "Sifa kwa jina lake! Sifa kwa jina lake!\nHapo moyo wangu ulitakaswa, sifa kwa jina lake!"
+  },
+  {
+    "number": 23,
+    "title": "Yesu Kwetu ni Rafiki",
+    "category": "Maombi na Urafiki na Yesu",
+    "key": "Key of F",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Yesu kwetu ni Rafiki, hwambiwa haja pia;\nTukiomba kwa maombi, hutujibu kwa huruma.\nLakini mara nyingi twakosa amani moyoni,\nKwani hatumwambii Yesu, haja zetu kwa maombi."
+      },
+      {
+        "verse_number": 2,
+        "text": "Je, una majaribu mengi? Je, una masikitiko?\nUsiogope kamwe kamwe, mpelekee Yesu kwa maombi.\nJe, una rafiki mwaminifu, anayeshiriki shida zetu?\nYesu anajua unyonge wetu, mpelekee kwa maombi."
+      },
+      {
+        "verse_number": 3,
+        "text": "Je, umechoka na kulemewa, na mizigo mizito duniani?\nMwokozi ni kimbilio letu, mpelekee kwa maombi.\nJe, marafiki wamekutenga? Mpelekee Yesu kwa maombi;\nMikononi mwake utapata pumziko na amani."
+      }
+    ],
+    "chorus": "Yesu kwetu ni Rafiki, hupokea haja zote;\nTukimwomba kwa imani, hutubariki daima."
+  },
+  {
+    "number": 24,
+    "title": "Mwamba Wenye Imara",
+    "category": "Faraja na Kimbilio",
+    "key": "Key of Bb",
+    "time_signature": "3/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Mwamba wenye imara, kwako nitajificha;\nMaji na damu hiyo, iliyotoka ubavuni mwako,\nIwe dawa ya dhambi, inioshe kabisa na unyonge."
+      },
+      {
+        "verse_number": 2,
+        "text": "Kazi zote za mikono yangu, haziwezi kutimiza sheria;\nUchungu wangu hautoshi, machozi yangu yakitiririka,\nHayawezi kuniondolea hatia, wewe pekee waokoa."
+      },
+      {
+        "verse_number": 3,
+        "text": "Sina kitu mkononi mwangu, naja msalabani pako tu;\nNiliye uchi nivike nguo, nisiye na msaada nisaidie;\nNaja mchafu chemchemini, nioshe Mwokozi nisife."
+      },
+      {
+        "verse_number": 4,
+        "text": "Nikiwa hai katika ulimwengu huu, macho yangu yakifumba kwa mauti;\nNikipaa juu mbinguni, na kukuona kwenye kiti cha enzi,\nMwamba wenye imara, kwako nitajificha."
+      }
+    ],
+    "chorus": "Mwamba wenye imara, kwako nitajificha;\nUwe kimbilio langu, salama na amani."
+  },
+  {
+    "number": 27,
+    "title": "U Kina Gani Upendo wa Baba",
+    "category": "Upendo wa Mungu",
+    "key": "Key of D",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "U kina gani upendo wa Baba kwetu sisi,\nKumtoa mwanawe pekee awe kafara yetu."
+      },
+      {
+        "verse_number": 2,
+        "text": "Tazama yule msalabani, akibeba dhambi zangu;\nNaliona aibu yangu lakini ushindi ni wake."
+      },
+      {
+        "verse_number": 3,
+        "text": "Sitajivunia elimu au nguvu za dunia;\nNitajivunia kifo na kufufuka kwa Yesu Kristo."
+      }
+    ],
+    "chorus": "Upendo mkuu, upendo wa ajabu,\nUlipita ufahamu wote wa wanadamu!"
+  },
+  {
+    "number": 31,
+    "title": "Salama Rohoni Mwangu",
+    "category": "Amani na Imani",
+    "key": "Key of C",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Nionapo amani kama shwari, au nionapo shida kama mawimbi;\nHali yoyote itakayonipata, umenifundisha kusema:\nSalama rohoni mwangu."
+      },
+      {
+        "verse_number": 2,
+        "text": "Ingawa Shetani ananitesa, na majaribu yakinijia;\nNajua Kristo ameona unyonge wangu, na amemwaga damu yake kwa ajili yangu."
+      },
+      {
+        "verse_number": 3,
+        "text": "Dhambi zangu zote, si sehemu tu bali zote,\nZiligongomewa msalabani, wala sizibebi tena;\nSifu Bwana, sifu Bwana, Ee nafsi yangu!"
+      },
+      {
+        "verse_number": 4,
+        "text": "Na Bwana fanya siku hiyo iwe karibu, mawingu yakikunjwa kama gombo;\nTarumbeta ikilia, na Bwana akishuka chini,\nHata hivyo ni salama rohoni mwangu."
+      }
+    ],
+    "chorus": "Salama rohoni, ni salama rohoni mwangu;\nNi salama, ni salama rohoni."
+  },
+  {
+    "number": 35,
+    "title": "Yesu Nakupenda (U Wangu Sasa)",
+    "category": "Upendo na Ibada",
+    "key": "Key of F",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Yesu nakupenda, u wangu sasa;\nDhambi na anasa naziacha zote.\nMwokozi wangu mpendwa, ninafurahi;\nKama nilikupenda, sasa zaidi."
+      },
+      {
+        "verse_number": 2,
+        "text": "Nakupenda kwa kuwa ulinitangulia;\nUlinunua wokovu wangu Golgotha.\nUlivikwa miiba kichwani pako;\nKama nilikupenda, sasa zaidi."
+      },
+      {
+        "verse_number": 3,
+        "text": "Katika uzima na katika kifo,\nNitakusifu daima kwa moyo wangu wote.\nHata pumzi ya mwisho itakapokoma;\nKama nilikupenda, sasa zaidi."
+      },
+      {
+        "verse_number": 4,
+        "text": "Mbinguni katika makao ya furaha,\nNitakuabudu milele na milele.\nWakati nikiimba na watakatifu:\nKama nilikupenda, sasa zaidi."
+      }
+    ],
+    "chorus": "Yesu nakupenda, u Mwokozi wangu;\nKama nilikupenda, sasa zaidi."
+  },
+  {
+    "number": 41,
+    "title": "Nataka Nimjue Yesu",
+    "category": "Ukuaji wa Kiroho",
+    "key": "Key of G",
+    "time_signature": "6/8",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Nataka nimjue Yesu, na pendo lake zaidi;\nWokovu wake kamili, na amani ya mbinguni."
+      },
+      {
+        "verse_number": 2,
+        "text": "Nataka nimsikie akisema nami moyoni;\nAnifundishe njia yake ya haki na ukweli."
+      },
+      {
+        "verse_number": 3,
+        "text": "Nataka kusoma Neno lake kwa Roho Mtakatifu;\nAnifungulie macho nione utukufu wake."
+      },
+      {
+        "verse_number": 4,
+        "text": "Nataka kuwa kama yeye kwa tabia na upendo;\nNiwafikie waliopotea kwa neno la uzima."
+      }
+    ],
+    "chorus": "Zaidi, zaidi kumjua Yesu!\nZaidi ya wokovu wake mkuu, na pendo lake zuri!"
+  },
+  {
+    "number": 46,
+    "title": "Yesu Anipenda",
+    "category": "Upendo wa Yesu",
+    "key": "Key of Eb",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Yesu anipenda, anena Biblia;\nWadogo ni wake, wanyonge wapewe nguvu."
+      },
+      {
+        "verse_number": 2,
+        "text": "Yesu anipenda, alikufa msalabani;\nAlifungua mlango wa mbinguni, ili nioshwe dhambi."
+      },
+      {
+        "verse_number": 3,
+        "text": "Yesu anipenda, yuko nami kila siku;\nAnanilinda gizani na mwangani, sitaogopa kamwe."
+      }
+    ],
+    "chorus": "Ndiyo Yesu anipenda! Ndiyo Yesu anipenda!\nNdiyo Yesu anipenda, anena Biblia."
+  },
+  {
+    "number": 50,
+    "title": "Simama Imara, Askari wa Bwana",
+    "category": "Vita vya Kiroho",
+    "key": "Key of Bb",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Simama imara, askari wa Bwana;\nInua bendera ya msalaba wake.\nKutoka ushindi hata ushindi zaidi,\nJeshi la Bwana litashinda maadui wote."
+      },
+      {
+        "verse_number": 2,
+        "text": "Simama imara, sikia baragumu;\nSonga mbele vitani, leo ni siku ya ushindi.\nSimama kwa ujasiri, usirudi nyuma;\nNguvu zetu zatoka kwa Kristo Mwokozi."
+      },
+      {
+        "verse_number": 3,
+        "text": "Simama imara, kwa nguvu za Roho;\nSilaha za mwilini hazifai kitu.\nVaa silaha zote za haki ya Mungu;\nOmba bila kukoma, kesha ukitumaini."
+      },
+      {
+        "verse_number": 4,
+        "text": "Simama imara, vita vitakwisha punde;\nKilio cha mapambano kitageuka kuwa sifa.\nYeye ashindaye atapewa taji;\nAtaketi na Mfalme mbinguni milele."
+      }
+    ],
+    "chorus": "Simama imara, mtumaini Bwana;\nUshindi ni wetu kwa jina lake Yesu!"
+  },
+  {
+    "number": 54,
+    "title": "Usinipite Mwokozi",
+    "category": "Maombi na Toba",
+    "key": "Key of G",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Usinipite Mwokozi, unaposikia sauti yangu;\nUnapowabariki wengine, usinipite mimi."
+      },
+      {
+        "verse_number": 2,
+        "text": "Kwenye kiti chako cha rehema, wacha nione pumziko;\nPapo hapo kwa toba yangu, nisaidie kuamini."
+      },
+      {
+        "verse_number": 3,
+        "text": "Nikitumaini wema wako tu, natafuta uso wako;\nPonya moyo wangu uliovunjika, niokoe kwa neema yako."
+      },
+      {
+        "verse_number": 4,
+        "text": "Wewe ndiwe chemchemi ya faraja yangu, zaidi ya uzima kwangu;\nHakuna mwingine mbinguni wala duniani ninayemtamani ila Wewe."
+      }
+    ],
+    "chorus": "Mwokozi, Mwokozi, sikia maombi yangu;\nUnapowabariki wengine, usinipite mimi!"
+  },
+  {
+    "number": 55,
+    "title": "Ni Heri Kujua Yesu Ni Wangu (Hadithi ya Ajabu)",
+    "category": "Uhakika wa Wokovu",
+    "key": "Key of D",
+    "time_signature": "9/8",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Ni heri kujua Yesu ni wangu! Nuru ya mbingu imeniangaza;\nNimerithi wokovu, nikanunuliwa, kwa damu yake nimezaliwa upya."
+      },
+      {
+        "verse_number": 2,
+        "text": "Kujisalimisha, raha kamili! Maono ya mbingu yanang'aa machoni;\nMalaika washuka wakileta sifa, za rehema na upendo wa Mungu."
+      },
+      {
+        "verse_number": 3,
+        "text": "Kujisalimisha, kila kitu kimya! Ndani ya Yesu nimepumzika;\nNikimtazama na kumtukuza, nikijazwa na wema wake mkuu."
+      }
+    ],
+    "chorus": "Hii ndiyo hadithi yangu, huu ndio wimbo wangu;\nKumsifu Mwokozi wangu mchana kutwa!"
+  },
+  {
+    "number": 60,
+    "title": "Kaa Nami",
+    "category": "Maombi ya Jioni na Msaada",
+    "key": "Key of Eb",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Kaa nami, usiku unaingia, giza linatanda, Bwana kaa nami;\nWasaidizi wengine wakiniacha, kimbilio la wanyonge, Ee kaa nami."
+      },
+      {
+        "verse_number": 2,
+        "text": "Siku za maisha yangu zinapita mbio, utukufu wa dunia unadidimia;\nMabadiliko na uharibifu kila mahali, wewe usiyebadilika, kaa nami."
+      },
+      {
+        "verse_number": 3,
+        "text": "Nahitaji uwepo wako kila saa, neema yako pekee yaweza kushinda hila;\nNi nani awezaye kuwa kiongozi wangu? Katika mwanga na giza, kaa nami."
+      }
+    ],
+    "chorus": "Kaa nami Bwana, mwanga wangu usiku;\nNisiondoke kamwe, mikononi mwako salama."
+  },
+  {
+    "number": 63,
+    "title": "Yesu Mwokozi Anaita Leo (Wapole na Watu)",
+    "category": "Mwaliko wa Wokovu",
+    "key": "Key of Ab",
+    "time_signature": "6/8",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Yesu anaita kwa upole mwingi, anakuita wewe na mimi;\nTazama amesimama mlangoni akingoja, anakungoja wewe na mimi."
+      },
+      {
+        "verse_number": 2,
+        "text": "Kwa nini kukawia Yesu akiomba? Anakuomba wewe na mimi;\nKwa nini kupuuza rehema zake kuu, zilizotolewa kwako na kwangu?"
+      },
+      {
+        "verse_number": 3,
+        "text": "Wakati unapita kwa kasi kubwa, vivuli vya jioni vinateremka;\nKifo kiko karibu na hukumu inakuja, amka leo urudi kwa Bwana."
+      },
+      {
+        "verse_number": 4,
+        "text": "Upendo wa ajabu ametuahidi, ameahidi wewe na mimi;\nIngawa dhambi zetu ni nyekundu sana, ametusamehe kabisa."
+      }
+    ],
+    "chorus": "Njoo nyumbani, njoo nyumbani;\nWewe uliyechoka, rudi nyumbani!\nKwa upole na upendo Yesu anaita: Mwenye dhambi, rudi nyumbani!"
+  },
+  {
+    "number": 69,
+    "title": "Neema ya Ajabu",
+    "category": "Neema na Wokovu",
+    "key": "Key of G",
+    "time_signature": "3/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Neema ya ajabu, jinsi ilivyo tamu;\nIliokoa mnyonge kama mimi!\nNilipotea lakini sasa nimepatikana;\nNilikuwa kipofu lakini sasa naona."
+      },
+      {
+        "verse_number": 2,
+        "text": "Neema ilinifundisha moyo wangu kuogopa,\nNa neema iliondoa hofu zangu zote;\nJinsi neema hiyo ilivyokuwa ya thamani,\nSaa ile ya kwanza nilipoamini!"
+      },
+      {
+        "verse_number": 3,
+        "text": "Kupitia hatari nyingi, taabu na mitego,\nTayari nimepita salama;\nNeema imeniwezesha kufika hapa salama,\nNa neema hiyo hiyo itaniongoza nyumbani."
+      }
+    ],
+    "chorus": "Neema ya Mungu, yatosha daima;\nIlinikomboa, nikawa huru."
+  },
+  {
+    "number": 70,
+    "title": "Tazama Mwokozi Amlangoni",
+    "category": "Mwaliko na Toba",
+    "key": "Key of G",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Tazama Mwokozi amlangoni, anabisha kwa upole;\nFungua mlango wa moyo wako, aingie akae nawe."
+      },
+      {
+        "verse_number": 2,
+        "text": "Umeshazunguka huku na kule, ukatafuta furaha ya bure;\nYesu pekee ndiye jibu lako, anayo amani ya kweli."
+      },
+      {
+        "verse_number": 3,
+        "text": "Leo ukisikia sauti yake, usifanye moyo wako kuwa mgumu;\nIngia katika zizi la uzima, ufanyike mtoto wa Mungu."
+      }
+    ],
+    "chorus": "Fungua mlango sasa, mkaribishe Mwokozi;\nAtaleta amani tele, na baraka za mbinguni."
+  },
+  {
+    "number": 78,
+    "title": "Niongoze Bwana Mungu",
+    "category": "Mwongozo wa Mungu",
+    "key": "Key of G",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Niongoze Bwana Mungu, msafiri nchini humu;\nMimi ni mnyonge, wewe u mwenye nguvu;\nNishike kwa mkono wako wenye uwezo.\nMkikate wa mbinguni, nilishe daima,\nMkikate wa mbinguni, nilishe daima."
+      },
+      {
+        "verse_number": 2,
+        "text": "Fungua chemchemi ya kioo, maji ya uzima yatiririke;\nNguzo ya moto na wingu, iniongoze safarini mwangu.\nMwokozi mwenye nguvu, uwe ngao yangu,\nMwokozi mwenye nguvu, uwe ngao yangu."
+      },
+      {
+        "verse_number": 3,
+        "text": "Nitakapofika ukingo wa Yordani, tuliza hofu zangu za mauti;\nKifo cha kifo na uangamizi wa kaburi, nifiche katika nchi ya ahadi.\nNyimbo za sifa nitakuimbia daima,\nNyimbo za sifa nitakuimbia daima."
+      }
+    ],
+    "chorus": "Niongoze Ee Bwana, kwenye njia nyembamba;\nHata nifike salama, Sayuni mbinguni."
+  },
+  {
+    "number": 82,
+    "title": "Kuna Chemchemi ya Damu",
+    "category": "Damu ya Yesu",
+    "key": "Key of C",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Kuna chemchemi ya damu, itokayo kwa Emanueli;\nWenye dhambi wakijitosa humo, huondolewa madoa yote."
+      },
+      {
+        "verse_number": 2,
+        "text": "Mwizi msalabani alifurahi, kuiona chemchemi hiyo;\nHata nami mchafu kama yeye, nimesafishwa kabisa."
+      },
+      {
+        "verse_number": 3,
+        "text": "Mwanakondoo uliyechinjwa, damu yako haitapoteza nguvu;\nHadi kanisa lote la Mungu, liokolewe bila kupungua."
+      },
+      {
+        "verse_number": 4,
+        "text": "Tangu nilipoona kwa imani, jeraha zako zikibubujika;\nUpendo wa ukombozi umekuwa wimbo wangu, hadi nitakapokufa."
+      }
+    ],
+    "chorus": "Ninaamini, ninaamini, Yesu alikufa kwa ajili yangu;\nMsalabani alimwaga damu yake, kunitakasa kabisa."
+  },
+  {
+    "number": 88,
+    "title": "Nimeamua Kumfuata Yesu",
+    "category": "Kujitoa na Ushuhuda",
+    "key": "Key of C",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Nimeamua kumfuata Yesu,\nNimeamua kumfuata Yesu,\nNimeamua kumfuata Yesu,\nSitarudi nyuma, sitarudi nyuma!"
+      },
+      {
+        "verse_number": 2,
+        "text": "Ijapokuwa hakuna atakayenifuata,\nIjapokuwa hakuna atakayenifuata,\nIjapokuwa hakuna atakayenifuata,\nBado nitamfuata, sitarudi nyuma!"
+      },
+      {
+        "verse_number": 3,
+        "text": "Ulimwengu uwe nyuma, msalaba mbele yangu,\nUlimwengu uwe nyuma, msalaba mbele yangu,\nUlimwengu uwe nyuma, msalaba mbele yangu,\nSitarudi nyuma, sitarudi nyuma!"
+      }
+    ],
+    "chorus": "Msalaba mbele, ulimwengu nyuma;\nSitarudi nyuma kamwe, nitamfuata Yesu daima!"
+  },
+  {
+    "number": 91,
+    "title": "Ninaye Rafiki Naye (Rafiki wa Kweli)",
+    "category": "Ushirika na Yesu",
+    "key": "Key of F",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Ninaye rafiki naye, aliyenipenda kwanza;\nAlinivuta kwa kamba za upendo wake usio na mwisho."
+      },
+      {
+        "verse_number": 2,
+        "text": "Alinitoa gizani na kunileta kwenye nuru yake ya ajabu;\nSasa ninatembea naye kila siku kwa uaminifu."
+      },
+      {
+        "verse_number": 3,
+        "text": "Hata nikipita bondeni mwa uvuli wa mauti, sitaogopa;\nKwa maana fimbo yake na gongo lake vyanifariji daima."
+      }
+    ],
+    "chorus": "Yesu ni rafiki wa kweli, hanitupi wala haniachi;\nKatika shida na raha, yuko karibu nami daima."
+  },
+  {
+    "number": 95,
+    "title": "Neno Lako Taa Yangu",
+    "category": "Neno la Mungu",
+    "key": "Key of D",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Neno lako ni taa ya miguu yangu, na mwanga wa njia yangu;\nNalificha moyoni mwangu, nisikutende dhambi Ee Bwana."
+      },
+      {
+        "verse_number": 2,
+        "text": "Sheria yako ni njema na kamilifu, huburudisha nafsi yangu;\nUshuhuda wako ni wa kweli, humpa mjinga hekima."
+      },
+      {
+        "verse_number": 3,
+        "text": "Amri zako ni za haki, huufurahisha moyo;\nNeno lako ni safi kuliko dhahabu, tamu kuliko asali."
+      }
+    ],
+    "chorus": "Neno lako Bwana, linaishi milele;\nNuru gizani, mwongozo wa uzima."
+  },
+  {
+    "number": 100,
+    "title": "Nitaimba Sifa Zake Mkombozi",
+    "category": "Sifa na Utukufu",
+    "key": "Key of Ab",
+    "time_signature": "9/8",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Nitaimba sifa zake Mkombozi, na upendo wake kwangu;\nAlikufa msalabani kwa ajili yangu, akalipa deni langu yote."
+      },
+      {
+        "verse_number": 2,
+        "text": "Nitasimulia hadithi ya neema yake, jinsi alivyoniponya;\nAlinivuta kutoka matopeni, akanisimamisha juu ya mwamba."
+      },
+      {
+        "verse_number": 3,
+        "text": "Nitamsifu kwa sauti kuu ya shangwe, mbele ya watu wote;\nHadi siku nitakapomwona uso kwa uso katika utukufu."
+      }
+    ],
+    "chorus": "Nitaimba sifa zake Mkombozi, aliyenikomboa kwa damu;\nAlinifanya kuwa huru kweli, sifa na heshima zimwendee!"
+  },
+  {
+    "number": 110,
+    "title": "Nimesikia Sauti Yako Bwana",
+    "category": "Wito na Utakaso",
+    "key": "Key of Eb",
+    "time_signature": "3/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Nimesikia sauti yako Bwana, ikiniita nije kwako;\nIli nioshwe katika damu, iliyomwagika pale Kalvari."
+      },
+      {
+        "verse_number": 2,
+        "text": "Ijapo naja nikiwa dhaifu, Wewe wanipa nguvu mpya;\nUnanitakasa kutoka dhambi zote, hadi niwe mweupe kama theluji."
+      },
+      {
+        "verse_number": 3,
+        "text": "Yesu huniita kwa upendo kamili, kwa imani na matumaini;\nAmani na neema tele, ninapata kwake Mwokozi."
+      }
+    ],
+    "chorus": "Naja Bwana, naja sasa kwako;\nNioshe, nitakase sasa, katika damu ya Kalvari!"
+  },
+  {
+    "number": 114,
+    "title": "Nipe Biblia, Nuru ya Uzima",
+    "category": "Neno la Mungu",
+    "key": "Key of Ab",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Nipe Biblia, nyota ya furaha,\nInayowaangazia wasafiri hapa;\nHakuna dhoruba inayoweza kuficha nuru yake,\nYesu alikuja kuokoa wenye dhambi."
+      },
+      {
+        "verse_number": 2,
+        "text": "Nipe Biblia, moyo wangu unapolia,\nInanifariji katika huzuni zote;\nInanifundisha ahadi za thamani za Mungu,\nKufika mji wa uzima wa milele."
+      },
+      {
+        "verse_number": 3,
+        "text": "Nipe Biblia, mwanga kwenye njia yangu,\nInaniongoza katika bonde la uvuli;\nInanionyesha wokovu mkuu wa Yesu,\nNa ushindi juu ya dhambi na mauti."
+      }
+    ],
+    "chorus": "Nipe Biblia, Neno takatifu la Mungu,\nNuru ya miguu yangu, taa ya njia yangu daima!"
+  },
+  {
+    "number": 118,
+    "title": "Karibu Zaidi na Wewe Mungu Wangu",
+    "category": "Maombi na Ukaribu",
+    "key": "Key of G",
+    "time_signature": "6/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Karibu zaidi na Wewe, Ee Mungu wangu;\nIjapokuwa ni msalaba unanuinua juu.\nWimbo wangu utakuwa daima: Karibu zaidi na Wewe,\nKaribu zaidi na Wewe, Ee Mungu wangu!"
+      },
+      {
+        "verse_number": 2,
+        "text": "Ijapokuwa kama msafiri gizani, jua likatua;\nNikilala juu ya mawe kama Yakobo;\nKatika ndoto nitakuwa: Karibu zaidi na Wewe,\nKaribu zaidi na Wewe, Ee Mungu wangu!"
+      },
+      {
+        "verse_number": 3,
+        "text": "Huko njia iwe wazi kuelekea mbinguni;\nYote unayonipa yawe ngazi ya kupanda;\nMalaika wakinikaribisha: Karibu zaidi na Wewe,\nKaribu zaidi na Wewe, Ee Mungu wangu!"
+      },
+      {
+        "verse_number": 4,
+        "text": "Kisha nikiamka asubuhi nitakusifu;\nKutoka mateso yangu nitajenga Betheli;\nNa kwa huzuni zangu nitasogea: Karibu zaidi na Wewe,\nKaribu zaidi na Wewe, Ee Mungu wangu!"
+      }
+    ],
+    "chorus": "Karibu zaidi na Wewe, Ee Mungu wangu;\nKaribu zaidi na Wewe, karibu zaidi!"
+  },
+  {
+    "number": 119,
+    "title": "Bwana U Sehemu Yangu",
+    "category": "Kujitolea na Kutembea na Yesu",
+    "key": "Key of G",
+    "time_signature": "3/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Bwana u sehemu yangu, rafiki yangu wewe;\nKatika safari yangu, nitembee nawe;\nKaribu nawe, karibu nawe,\nKatika safari yangu, nitembee nawe."
+      },
+      {
+        "verse_number": 2,
+        "text": "Sitaki mambo ya dunia, wala anasa zake;\nNiridhishe kwa upendo wako, nitembee nawe;\nKaribu nawe, karibu nawe,\nNiridhishe kwa upendo wako, nitembee nawe."
+      },
+      {
+        "verse_number": 3,
+        "text": "Katika bonde la uvuli wa mauti, giza likinifunika;\nMwanga wako unielekeze, nitembee nawe;\nKaribu nawe, karibu nawe,\nMwanga wako unielekeze, nitembee nawe."
+      },
+      {
+        "verse_number": 4,
+        "text": "Mwisho wa safari yangu, mlango wa mbinguni ufunguke;\nNikae nawe milele, nitembee nawe;\nKaribu nawe, karibu nawe,\nNikae nawe milele, nitembee nawe."
+      }
+    ],
+    "chorus": "Karibu nawe, karibu nawe;\nKatika safari yangu, nitembee nawe."
+  },
+  {
+    "number": 120,
+    "title": "Nuru ya Moyoni (Kuna Nuru Moyoni)",
+    "category": "Furaha ya Wokovu",
+    "key": "Key of Ab",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Kuna nuru moyoni mwangu leo, inayong'aa kuliko jua;\nKwa maana Yesu amenifurahisha, na kunipa amani yake."
+      },
+      {
+        "verse_number": 2,
+        "text": "Kuna muziki moyoni mwangu leo, wimbo wa sifa kwa Mfalme;\nYesu anasikiliza sifa zangu, ananijaza na shangwe."
+      },
+      {
+        "verse_number": 3,
+        "text": "Kuna chemchemi ya uzima leo, inayobubujika daima;\nNeema na rehema zake Bwana, zinanifuata siku zote."
+      }
+    ],
+    "chorus": "Nuru ya ajabu, nuru ya mbinguni,\nInapong'aa ndani ya roho yangu;\nYesu anaponiangazia uso wake, kuna furaha tele moyoni!"
+  },
+  {
+    "number": 124,
+    "title": "Twamsifu Mungu",
+    "category": "Sifa na Utukufu",
+    "key": "Key of F",
+    "time_signature": "3/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Twamsifu Mungu kwa mwanawe Yesu,\nAliyekufa kwa ajili yetu na sasa yu hai mbinguni."
+      },
+      {
+        "verse_number": 2,
+        "text": "Twamsifu Mungu kwa Roho wa Nuru,\nAmetufungua macho yetu na kutuonyesha Mwokozi."
+      },
+      {
+        "verse_number": 3,
+        "text": "Utukufu na heshima ziwe kwa Mwanakondoo,\nAmebeba dhambi zetu zote na kutuosha kabisa."
+      }
+    ],
+    "chorus": "Haleluya! Utukufu, Haleluya! Amina!\nHaleluya! Utukufu, tuhuishe tena!"
+  },
+  {
+    "number": 129,
+    "title": "Tengeneza Njia ya Bwana",
+    "category": "Uamsho na Utayari",
+    "key": "Key of F",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Tengeneza njia ya Bwana moyoni mwako,\nOndoa mawe ya dhambi na mashaka yote;\nMfalme wa wafalme anakuja kutawala,\nFungua milango ya hekalu lako leo."
+      },
+      {
+        "verse_number": 2,
+        "text": "Milima ya kiburi ishushwe chini,\nMabonde ya unyonge yainuliwe juu;\nKila lililopotoka linyooshwe mbele zake,\nUtukufu wa Bwana utafunuliwa sote."
+      },
+      {
+        "verse_number": 3,
+        "text": "Sauti inalia nyikani ikisema:\nTubuni kwa kuwa ufalme wa Mbinguni umekaribia!\nYesu Kristo yuko mlangoni akibisha,\nUwe tayari kumpokea Mwokozi wako."
+      }
+    ],
+    "chorus": "Tengeneza njia! Tengeneza njia ya Bwana!\nBwana Yesu anakuja, mpokee kwa shangwe moyoni mwako!"
+  },
+  {
+    "number": 132,
+    "title": "Roho Mtakatifu Kiongozi",
+    "category": "Roho Mtakatifu",
+    "key": "Key of Bb",
+    "time_signature": "3/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Roho Mtakatifu Kiongozi mkuu,\nTushike mkono katika safari ya jangwani;\nWasafiri wanyonge wanapopotea,\nSauti yako ya upole inasema: Fuata mimi."
+      },
+      {
+        "verse_number": 2,
+        "text": "Wewe u rafiki mwaminifu wa daima,\nTuko salama ukikaa nasi;\nUsiache mioyo yetu izimie kwa hofu,\nNong'ona kwa amani: Fuata mimi."
+      },
+      {
+        "verse_number": 3,
+        "text": "Kazi ya hapa duniani ikimalizika,\nNa tukiwa tayari kuvuka ng'ambo ya mto;\nUwe nasi katika saa hiyo ya mwisho,\nUtupe amani kusema: Fuata mimi."
+      }
+    ],
+    "chorus": "Tushike mkono Ee Roho wa Mungu;\nTuongoze salama, nyumbani mbinguni."
+  },
+  {
+    "number": 135,
+    "title": "Neno Moja Nimelitaka kwa Bwana",
+    "category": "Ibada na Hekalu",
+    "key": "Key of Eb",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Neno moja nimelitaka kwa Bwana, nalo ndilo nitalitafuta;\nNikae nyumbani mwa Bwana siku zote za maisha yangu."
+      },
+      {
+        "verse_number": 2,
+        "text": "Niutazame uzuri wa Bwana, na kutafakari hekaluni mwake;\nKwani siku ya taabu atanificha katika hema yake."
+      },
+      {
+        "verse_number": 3,
+        "text": "Ataniinua juu ya mwamba, na kichwa changu kitainuka juu;\nNitatoa dhabihu za shangwe, nitamwimbia Bwana sifa."
+      }
+    ],
+    "chorus": "Nyumbani mwa Bwana kuna usalama, kuna baraka na furaha tele;\nNeno moja nimelitaka: kukaa mbele za uso wake daima."
+  },
+  {
+    "number": 138,
+    "title": "Yesu Akwita",
+    "category": "Wito wa Toba na Wokovu",
+    "key": "Key of Ab",
+    "time_signature": "6/8",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Yesu akwita akusihi leo, mbona wakawia kwenda?\nAnangoja msalabani pa rehema, njoo kwake sasa upone."
+      },
+      {
+        "verse_number": 2,
+        "text": "Mbona unasita wakati unapita, Yesu akungoja kwa hamu;\nKesho haijulikani itakuwaje, njoo kwake bila hofu."
+      },
+      {
+        "verse_number": 3,
+        "text": "Yesu ameahidi upendo wa ajabu, hataacha mwenye kutubu;\nDhambi zako zote zitaoshwa leo, njoo upokee uzima."
+      }
+    ],
+    "chorus": "Njoo nyumbani, njoo nyumbani;\nWewe uliyechoka na kulemewa, njoo kwa Yesu sasa."
+  },
+  {
+    "number": 140,
+    "title": "Twende Mbele, Askari wa Msalaba",
+    "category": "Vita vya Kiroho na Ushindi",
+    "key": "Key of F",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Twende mbele askari wa msalaba,\nTukimfuata Yesu Kiongozi wetu mkuu;\nBendera ya ushindi inapepea juu,\nUfalme wa giza unatikisika leo!"
+      },
+      {
+        "verse_number": 2,
+        "text": "Jeshi la Mungu linasonga mbele,\nHatuko peke yetu katika mapambano haya;\nWatakatifu wa kale walitembea hapa,\nMwili mmoja wa Kristo, wenye imani moja."
+      },
+      {
+        "verse_number": 3,
+        "text": "Taji za wafalme zitaanguka chini,\nLakini kanisa la Yesu litasimama imara;\nMilango ya kuzimu haitalishinda kamwe,\nAhadi ya Kristo inadumu milele yote!"
+      }
+    ],
+    "chorus": "Twende mbele askari wa Kristo!\nTukishinda kwa damu ya Mwana-Kondoo!"
+  },
+  {
+    "number": 141,
+    "title": "Msalaba Uliochakaa (Juu ya Kilima)",
+    "category": "Msalaba wa Kristo",
+    "key": "Key of Bb",
+    "time_signature": "6/8",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Juu ya kilima kule mbali, ulisimama msalaba wa aibu;\nAmbapo Mwokozi wangu mpenzi, alikufa kwa ajili ya dunia."
+      },
+      {
+        "verse_number": 2,
+        "text": "Msalaba ule uliodharauliwa na wanadamu, una mvuto wa ajabu kwangu;\nKwa maana hapo Mwanakondoo wa Mungu alitoa uhai wake."
+      },
+      {
+        "verse_number": 3,
+        "text": "Damu iliyomwagika msalabani, ina nguvu ya kutakasa;\nIlinifanya kiumbe kipya, ikanipa haki mbele za Mungu."
+      },
+      {
+        "verse_number": 4,
+        "text": "Nitaushikilia msalaba ule wa zamani, nitabeba aibu yake kwa furaha;\nHadi mwisho wa safari yangu, nitakapobadilishiwa taji ya dhahabu."
+      }
+    ],
+    "chorus": "Nitaupenda msalaba ule wa kale, hadi mwisho wa safari yangu;\nNitang'ang'ania msalaba wa Yesu, kisha nitapewa taji mbinguni."
+  },
+  {
+    "number": 144,
+    "title": "Damu ya Yesu Yaosha",
+    "category": "Damu ya Yesu na Utakaso",
+    "key": "Key of G",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Je, umemwendea Yesu kwa utakaso? Je, umeoshwa katika damu?\nJe, unamwamini yeye peke yake? Je, umeoshwa katika damu?"
+      },
+      {
+        "verse_number": 2,
+        "text": "Je, unatembea kila siku na Mwokozi? Je, umeoshwa katika damu?\nJe, unapumzika mikononi mwake? Je, umeoshwa katika damu?"
+      },
+      {
+        "verse_number": 3,
+        "text": "Mavazi yako yatakuwa meupe kama theluji, ukiingia kwenye chemchemi;\nOndoa madoa ya dhambi zako zote, na uoshwe katika damu."
+      }
+    ],
+    "chorus": "Je, umeoshwa katika damu ya Mwanakondoo?\nJe, vazi lako halina doa, jeupe kuliko theluji?\nJe, umeoshwa katika damu ya Mwanakondoo?"
+  },
+  {
+    "number": 149,
+    "title": "Mwambie Yesu Matatizo Yote",
+    "category": "Maombi na Faraja",
+    "key": "Key of C",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Mwambie Yesu matatizo yako, hawezi kukuacha kamwe;\nAliahidi kuwa nawe siku zote, mwambie kila hitaji lako."
+      },
+      {
+        "verse_number": 2,
+        "text": "Machozi yako anayaona, kilio chako anakisikia;\nMikononi mwake kuna amani, na utulivu wa moyo."
+      },
+      {
+        "verse_number": 3,
+        "text": "Hata mawimbi yakipanda juu, na dhoruba ikivuma kwa nguvu;\nYesu atasema: Tulia! Na shwari kuu itatokea."
+      }
+    ],
+    "chorus": "Mwambie Yesu, mwambie Yesu pekee;\nYeye ni rafiki wa waaminifu, atakusikia na kukusaidia."
+  },
+  {
+    "number": 150,
+    "title": "Shangilieni Bwana kwa Furaha",
+    "category": "Sifa na Shukrani",
+    "key": "Key of G",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Shangilieni Bwana, dunia yote paza sauti!\nMtumikieni kwa shangwe, ingieni nyumbani mwake kwa nyimbo;\nJueni ya kuwa Bwana ndiye Mungu wetu,\nYeye ndiye aliyetuumba, na sisi tu watu wake."
+      },
+      {
+        "verse_number": 2,
+        "text": "Ingieni malangoni mwake kwa kutoa shukrani,\nKwenye nyua zake kwa sifa kuu na adhama;\nMshukuruni na kulitukuza jina lake takatifu,\nKwani Bwana ni mwema, rehema zake zadumu milele!"
+      },
+      {
+        "verse_number": 3,
+        "text": "Uaminifu wake u vizazi hata vizazi vyote,\nUpendo wake hautakoma kamwe duniani;\nSayuni inashangilia ushindi wa Mungu wetu,\nHaleluya kwa Mfalme wa wafalme milele!"
+      }
+    ],
+    "chorus": "Shangilieni Bwana! Mshukuruni Bwana!\nKwa maana ni mwema, rehema zake zadumu milele na milele!"
+  },
+  {
+    "number": 158,
+    "title": "Siku Kuu ya Furaha",
+    "category": "Ushuhuda na Furaha ya Wokovu",
+    "key": "Key of G",
+    "time_signature": "3/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Siku kuu ya furaha, nilipomchagua Yesu kuwa Mwokozi wangu!\nMoyo wangu ufurahi na kutangaza, wema na upendo wake kila mahali."
+      },
+      {
+        "verse_number": 2,
+        "text": "Kazi ya neema imekamilika, mimi ni wake na yeye ni wangu;\nAlinivuta kwa upendo wake mkuu, nikamfuata kwa hiari na furaha."
+      },
+      {
+        "verse_number": 3,
+        "text": "Pumzika sasa moyo wangu uliotangatanga, umepata kimbilio salama;\nUsiondoke tena kwa Bwana wako, umepata hazina ya milele."
+      }
+    ],
+    "chorus": "Siku kuu! Siku kuu! Yesu aliponiosha dhambi zangu!\nAlinifundisha kuomba na kufurahi, siku kuu ya wokovu wangu!"
+  },
+  {
+    "number": 160,
+    "title": "Tuonane Mtoni (Mto wa Uzima)",
+    "category": "Uzima wa Milele",
+    "key": "Key of Eb",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Je, tutakusanyika mtoni, penye maji safi ya uzima?\nYanayotiririka kutoka kiti cha enzi cha Mungu na Mwanakondoo."
+      },
+      {
+        "verse_number": 2,
+        "text": "Kando ya mto huo wa kioo, tutatembea na Mwokozi wetu;\nTukiimba nyimbo za ushindi, pamoja na malaika wa mbinguni."
+      },
+      {
+        "verse_number": 3,
+        "text": "Kabla hatujafika mtoni hapo, tutaweka mizigo yetu yote chini;\nNeema itatuvika mavazi meupe, na taji za utukufu mkuu."
+      },
+      {
+        "verse_number": 4,
+        "text": "Muda si mrefu tutafika, safari ya duniani itakamilika;\nMioyo yetu itajaa furaha, mbele ya uso wa Mfalme wetu."
+      }
+    ],
+    "chorus": "Ndiyo, tutakusanyika mtoni,\nMto mzuri, mto wa uzima wa milele;\nTutaimba pamoja na watakatifu, kando ya kiti cha enzi cha Mungu!"
+  },
+  {
+    "number": 161,
+    "title": "Haleluya kwa Yesu",
+    "category": "Sifa Kuu na Shukrani",
+    "key": "Key of F",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Haleluya kwa Mkombozi wetu, sifa na enzi zake daima;\nAmeshinda mauti na kaburi, amefufuka yu hai milele."
+      },
+      {
+        "verse_number": 2,
+        "text": "Viumbe vyote vishangilie, mbingu na nchi zimsifu Bwana;\nUfalme wake hauna mwisho, utukufu wake watamalaki."
+      },
+      {
+        "verse_number": 3,
+        "text": "Njooni wote wenye pumzi, pigeni magoti mbele zake;\nMshangilieni Mfalme wa wafalme, Bwana wa mabwana milele yote."
+      }
+    ],
+    "chorus": "Haleluya! Haleluya! Yesu ametukuka mbinguni na duniani;\nHaleluya! Haleluya! Ametukuka milele na milele, Amina!"
+  },
+  {
+    "number": 168,
+    "title": "Shime Askari, Songeni Mbele",
+    "category": "Jeshi la Bwana",
+    "key": "Key of F",
+    "time_signature": "4/4",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Shime askari, songeni mbele vitani,\nKama jeshi linaloongozwa na Kristo Mfalme.\nMsalaba wa Yesu unatangulia mbele,\nTazama bendera ya ufalme inapepea."
+      },
+      {
+        "verse_number": 2,
+        "text": "Kwa ishara ya ushindi maadui wanakimbia;\nSongeni mbele askari wa Sayuni, pigeni kelele za shangwe.\nMilango ya kuzimu haiwezi kushinda,\nKanisa la Mungu linasimama imara."
+      },
+      {
+        "verse_number": 3,
+        "text": "Kama jeshi moja kubwa tunasonga mbele;\nSisi si wagawanyiko, bali mwili mmoja wa Kristo.\nMmoja katika imani, mmoja katika upendo;\nMmoja katika tumaini na wito wa kiroho."
+      },
+      {
+        "verse_number": 4,
+        "text": "Ufalme wa dunia utapita na kutoweka;\nLakini Kanisa la Yesu litadumu milele na milele.\nMilango ya jehanamu haiwezi kutingisha,\nAhadi ya Yesu inabaki thabiti."
+      }
+    ],
+    "chorus": "Shime askari, songeni mbele vitani;\nMsalaba wa Yesu unatangulia mbele!"
+  }
+]

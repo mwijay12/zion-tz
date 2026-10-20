@@ -1,0 +1,196 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model & Security Schema
+// Zion Jerusalem Church (Hekalu la Sayuni - Mbagala)
+//
+// 1. announcements:
+//    - id: string
+//    - title: string (1-200 chars)
+//    - body / content: string (1-5000 chars)
+//    - type: string ('normal', 'urgent', 'bereavement', 'high')
+//    - category: string (optional)
+//    - branch: string (e.g. 'Mbagala Kwa Matope (HQ)', 'Zote', etc.)
+//    - targetAudience: string ('all', 'leaders', 'elders', 'choir')
+//    - authorRole: string
+//    - authorEmail: string
+//    - createdAt: timestamp / string
+//
+// 2. sermons:
+//    - title, preacher, mediaUrl, scripture, type, duration, createdAt
+//
+// 3. choir_songs:
+//    - title, choirName, audioUrl, lyrics, keySignature, tempo, createdAt
+//
+// 4. visitors_registry:
+//    - fullName, phone, residence, assignedJumuiya, welfareNeeds, createdAt
+//    - STRICT CONFIDENTIALITY: Never public readable.
+//
+// 5. prayer_requests:
+//    - senderName, requestText, isPrivate, isAnswered, pastoralNotes, createdAt
+//    - STRICT CONFIDENTIALITY: Pastoral desk & author only.
+//
+// 6. jumuiya_reports:
+//    - jumuiyaName, leaderName, attendanceCount, offeringAmount, notes, submittedAt
+//    - STRICT CONFIDENTIALITY: Internal leadership only.
+//
+// 7. profiles:
+//    - fullName, phone, email, jumuiya, role, memberId, isVerifiedMember
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Helper Functions ---
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function getUserRole() {
+      return isSignedIn() && request.auth.token.role != null
+        ? request.auth.token.role
+        : 'guest';
+    }
+
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.role in ['admin', 'super_admin'];
+    }
+
+    function isPastor() {
+      return isAdmin() || getUserRole() == 'pastor';
+    }
+
+    function isSecretary() {
+      return isAdmin() || isPastor() || getUserRole() == 'secretary';
+    }
+
+    function isDeacon() {
+      return isSecretary() || getUserRole() == 'deacon';
+    }
+
+    function isLeader() {
+      return isDeacon() || getUserRole() in ['choir_leader', 'children_teacher', 'treasurer', 'jumuiya_leader'];
+    }
+
+    // --- Data Validation Functions ---
+
+    function isValidAnnouncement(data) {
+      return (data.title is string && data.title.size() >= 3 && data.title.size() <= 200) &&
+             ((data.body is string && data.body.size() >= 5 && data.body.size() <= 5000) ||
+              (data.content is string && data.content.size() >= 5 && data.content.size() <= 5000)) &&
+             (data.type in ['normal', 'urgent', 'bereavement', 'high']);
+    }
+
+    function isValidSermon(data) {
+      return (data.title is string && data.title.size() > 0 && data.title.size() <= 200) &&
+             (data.preacher is string && data.preacher.size() > 0) &&
+             (data.mediaUrl is string || data.media_url is string);
+    }
+
+    function isValidChoirSong(data) {
+      return (data.title is string && data.title.size() > 0 && data.title.size() <= 200) &&
+             (data.audioUrl is string || data.audio_url is string);
+    }
+
+    function isValidVisitor(data) {
+      return (data.fullName is string || data.full_name is string) &&
+             (data.phone is string && data.phone.size() >= 7);
+    }
+
+    function isValidPrayerRequest(data) {
+      return (data.requestText is string || data.content is string || data.message is string) &&
+             (data.requestText.size() <= 3000 || data.content.size() <= 3000 || data.message.size() <= 3000);
+    }
+
+    function isValidJumuiyaReport(data) {
+      return (data.jumuiyaName is string || data.jumuiya is string);
+    }
+
+    // --- Collection Security Rules ---
+
+    // 1. Announcements (Public Read, Authorized Leaders Write)
+    match /announcements/{announcementId} {
+      allow read: if true;
+      allow create: if isSecretary() && isValidAnnouncement(request.resource.data);
+      allow update, delete: if isSecretary() || isAdmin();
+    }
+
+    // 2. Sermons & Pastoral Media (Public Read, Pastors/Admin Write)
+    match /sermons/{sermonId} {
+      allow read: if true;
+      allow create, update: if (isPastor() || isAdmin()) && isValidSermon(request.resource.data);
+      allow delete: if isAdmin() || isPastor();
+    }
+
+    // 3. Church Choir Songs & Audio (Public Read, Choir Leaders/Admin Write)
+    match /choir_songs/{songId} {
+      allow read: if true;
+      allow create, update: if (isAdmin() || getUserRole() == 'choir_leader') && isValidChoirSong(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // 4. Visitors & Guest Reception (CONFIDENTIAL: Deacons, Secretary, Pastors Only)
+    match /visitors_registry/{visitorId} {
+      // Public cannot browse visitors. Only deacons, secretary, pastors, admin.
+      allow read: if isDeacon();
+      // Visitors or deacons can create guest registry cards
+      allow create: if isValidVisitor(request.resource.data);
+      allow update, delete: if isDeacon();
+    }
+
+    // 5. Sunday School / Watoto Content (Public Read, Teachers/Admin Write)
+    match /sunday_school_content/{contentId} {
+      allow read: if true;
+      allow create, update: if isAdmin() || getUserRole() == 'children_teacher';
+      allow delete: if isAdmin();
+    }
+
+    // 6. Prayer Requests (CONFIDENTIAL: Pastoral Desk & Author Only)
+    match /prayer_requests/{requestId} {
+      // Anyone in need of prayer can submit their request
+      allow create: if isValidPrayerRequest(request.resource.data);
+      // Read allowed only for the author OR pastors/admins
+      allow read: if (
+        (isSignedIn() && isPastor()) ||
+        (isSignedIn() && resource.data.userId == request.auth.uid) ||
+        (resource.data.isPrivate == false)
+      );
+      allow update: if (
+        (isSignedIn() && isPastor()) ||
+        (isSignedIn() && resource.data.userId == request.auth.uid)
+      );
+      allow delete: if isAdmin() || isPastor();
+    }
+
+    // 7. Jumuiya Reports (CONFIDENTIAL: Jumuiya Leaders, Pastors, Secretary, Admin Only)
+    match /jumuiya_reports/{reportId} {
+      allow read: if isSecretary() || getUserRole() == 'jumuiya_leader';
+      allow create, update: if (isSecretary() || getUserRole() == 'jumuiya_leader') && isValidJumuiyaReport(request.resource.data);
+      allow delete: if isAdmin() || isPastor();
+    }
+
+    // 8. Church Leadership & System Settings (Public Read, Admin Write)
+    match /church_settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin() || isPastor();
+    }
+
+    // 9. Member & Staff Profiles (Self-access or Admin)
+    match /profiles/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isSecretary());
+      allow create: if isAdmin() ||
+        (isSignedIn() && request.auth.uid == userId &&
+         !request.resource.data.keys().hasAny(['role', 'isVerifiedMember']));
+      allow update: if isAdmin() ||
+        (isSignedIn() && request.auth.uid == userId &&
+         !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'isVerifiedMember']));
+      allow delete: if isAdmin();
+    }
+
+    // Default deny for all other paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

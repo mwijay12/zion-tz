@@ -105,7 +105,7 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                             width: 44,
                             height: 4,
                             decoration: BoxDecoration(
-                              color: AppColors.textMuted.withValues(alpha: 0.3),
+                              color: AppColors.textMuted.withOpacity(0.3),
                               borderRadius: BorderRadius.circular(2),
                             ),
                           ),
@@ -142,7 +142,7 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                         ),
                         const SizedBox(height: 12),
                         DropdownButtonFormField<String>(
-                          initialValue: selectedCat,
+                          value: selectedCat,
                           decoration: const InputDecoration(labelText: 'Kundi la Ujuzi'),
                           items: _categories.where((c) => c != 'Yote').map((c) {
                             return DropdownMenuItem(value: c, child: Text(c));
@@ -277,7 +277,7 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: AppColors.gold.withValues(alpha: 0.15),
+                          color: AppColors.gold.withOpacity(0.15),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(Icons.handshake_rounded, color: AppColors.gold, size: 20),
@@ -430,7 +430,7 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                                 children: [
                                   CircleAvatar(
                                     radius: 24,
-                                    backgroundColor: AppColors.primary.withValues(alpha: 0.12),
+                                    backgroundColor: AppColors.primary.withOpacity(0.12),
                                     child: Text(p.avatarEmoji, style: const TextStyle(fontSize: 22)),
                                   ),
                                   const SizedBox(width: 12),
@@ -504,7 +504,7 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                                       icon: const Icon(Icons.chat_rounded, size: 16),
                                       label: const Text('WhatsApp'),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF25D366).withValues(alpha: 0.15),
+                                        backgroundColor: const Color(0xFF25D366).withOpacity(0.15),
                                         foregroundColor: const Color(0xFF0F5132),
                                         padding: const EdgeInsets.symmetric(vertical: 10),
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

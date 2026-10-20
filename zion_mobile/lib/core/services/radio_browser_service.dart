@@ -610,7 +610,9 @@ class RadioBrowserService {
     const goodWords = [
       'gospel', 'christian', 'worship', 'praise', 'church', 'jesus', 'christ',
       'bible', 'sayuni', 'uhai', 'maria', 'hallelujah', 'amen', 'pastor', 'bishop',
-      'choir', 'kwaya', 'tenzi', 'roho', 'faith', 'hope', 'inspirational', 'swahili'
+      'choir', 'kwaya', 'tenzi', 'roho', 'faith', 'hope', 'inspirational', 'swahili',
+      'injili', 'imani', 'neema', 'hekalu', 'sayuni jerusalem', 'uzima', 'tumaini',
+      'baraka', 'ibada', 'sala', 'neno', 'safina', 'wapo', 'upendo'
     ];
     for (final good in goodWords) {
       if (t.contains(good) || n.contains(good)) {

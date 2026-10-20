@@ -190,7 +190,7 @@ class _ConnectCardScreenState extends State<ConnectCardScreen> {
                       Text('Aina ya Ugeni', style: AppTypography.caption(color: AppColors.textSecondary)),
                       const SizedBox(height: 4),
                       DropdownButtonFormField<String>(
-                        initialValue: _visitorType,
+                        value: _visitorType,
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
@@ -219,7 +219,7 @@ class _ConnectCardScreenState extends State<ConnectCardScreen> {
                             label: Text(interest),
                             selected: isSelected,
                             onSelected: (_) => _toggleInterest(interest),
-                            selectedColor: AppColors.primary.withValues(alpha: 0.15),
+                            selectedColor: AppColors.primary.withOpacity(0.15),
                             checkmarkColor: AppColors.primary,
                             labelStyle: TextStyle(
                               fontSize: 12,

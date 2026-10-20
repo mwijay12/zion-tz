@@ -140,9 +140,9 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.08),
+              color: AppColors.primary.withOpacity(0.08),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+              border: Border.all(color: AppColors.primary.withOpacity(0.2)),
             ),
             child: Column(
               children: [
@@ -214,7 +214,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                 Text('Mchungaji Unayetaka Kuonana Naye', style: AppTypography.caption(color: AppColors.textSecondary)),
                 const SizedBox(height: 4),
                 DropdownButtonFormField<String>(
-                  initialValue: _selectedPastor,
+                  value: _selectedPastor,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
@@ -231,7 +231,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                 Text('Lengo Kuu la Miadi', style: AppTypography.caption(color: AppColors.textSecondary)),
                 const SizedBox(height: 4),
                 DropdownButtonFormField<String>(
-                  initialValue: _selectedCategory,
+                  value: _selectedCategory,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
@@ -336,9 +336,9 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
               padding: const EdgeInsets.only(bottom: 12),
               child: AppCard(
                 borderColor: isApproved
-                    ? const Color(0xFF16A34A).withValues(alpha: 0.3)
+                    ? const Color(0xFF16A34A).withOpacity(0.3)
                     : isPending
-                        ? Colors.orangeAccent.withValues(alpha: 0.3)
+                        ? Colors.orangeAccent.withOpacity(0.3)
                         : AppColors.border,
                 padding: const EdgeInsets.all(14),
                 child: Column(
@@ -357,10 +357,10 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
                             color: isApproved
-                                ? const Color(0xFF16A34A).withValues(alpha: 0.15)
+                                ? const Color(0xFF16A34A).withOpacity(0.15)
                                 : isPending
-                                    ? Colors.orangeAccent.withValues(alpha: 0.15)
-                                    : AppColors.border.withValues(alpha: 0.5),
+                                    ? Colors.orangeAccent.withOpacity(0.15)
+                                    : AppColors.border.withOpacity(0.5),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(

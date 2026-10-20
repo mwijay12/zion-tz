@@ -501,15 +501,15 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
       child: Container(
         height: MediaQuery.of(context).size.height * 0.88,
         decoration: BoxDecoration(
-          color: const Color(0xFF181C23).withValues(alpha: 0.96),
+          color: const Color(0xFF181C23).withOpacity(0.96),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
           border: Border.all(
-            color: const Color(0xFF0D52CD).withValues(alpha: 0.25),
+            color: const Color(0xFF0D52CD).withOpacity(0.25),
             width: 1.2,
           ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF0D52CD).withValues(alpha: 0.3),
+              color: const Color(0xFF0D52CD).withOpacity(0.3),
               blurRadius: 36,
               offset: const Offset(0, -8),
             ),
@@ -523,7 +523,7 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
               width: 44,
               height: 5,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.3),
+                color: Colors.white.withOpacity(0.3),
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
@@ -611,11 +611,11 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                         : null,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+                      borderSide: BorderSide(color: Colors.white.withOpacity(0.15)),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
-                      borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
+                      borderSide: BorderSide(color: Colors.white.withOpacity(0.15)),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
@@ -655,12 +655,12 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                                   colors: [Color(0xFF1E6BFF), Color(0xFF0D52CD)],
                                 )
                               : null,
-                          color: isSelected ? null : Colors.white.withValues(alpha: 0.08),
+                          color: isSelected ? null : Colors.white.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
                             color: isSelected
                                 ? const Color(0xFF0D52CD)
-                                : Colors.white.withValues(alpha: 0.12),
+                                : Colors.white.withOpacity(0.12),
                           ),
                         ),
                         child: Text(
@@ -692,7 +692,7 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white.withValues(alpha: 0.7),
+                        color: Colors.white.withOpacity(0.7),
                         letterSpacing: 0.6,
                       ),
                     ),
@@ -751,7 +751,7 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                   Text(
                     'Matokeo (${results.length})',
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.6),
+                      color: Colors.white.withOpacity(0.6),
                       fontSize: 11.5,
                       fontWeight: FontWeight.w600,
                     ),
@@ -779,7 +779,7 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                           Icon(
                             Icons.search_off_rounded,
                             size: 56,
-                            color: Colors.white.withValues(alpha: 0.25),
+                            color: Colors.white.withOpacity(0.25),
                           ),
                           const SizedBox(height: 10),
                           Text(
@@ -787,7 +787,7 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                                 ? 'Andika neno kutafuta popote'
                                 : 'Hakuna matokeo ya "$_query"',
                             style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.6),
+                              color: Colors.white.withOpacity(0.6),
                               fontSize: 14,
                             ),
                           ),
@@ -807,7 +807,7 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                             label: const Text('Tafuta Ushauri wa Kiroho & Sala'),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: Colors.white,
-                              side: BorderSide(color: AppColors.gold.withValues(alpha: 0.5)),
+                              side: BorderSide(color: AppColors.gold.withOpacity(0.5)),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             ),
                           ),
@@ -830,10 +830,10 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                             child: Container(
                               padding: const EdgeInsets.all(14),
                               decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.07),
+                                color: Colors.white.withOpacity(0.07),
                                 borderRadius: BorderRadius.circular(18),
                                 border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.1),
+                                  color: Colors.white.withOpacity(0.1),
                                 ),
                               ),
                               child: Row(
@@ -842,7 +842,7 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                                   Container(
                                     padding: const EdgeInsets.all(10),
                                     decoration: BoxDecoration(
-                                      color: item.color.withValues(alpha: 0.2),
+                                      color: item.color.withOpacity(0.2),
                                       shape: BoxShape.circle,
                                     ),
                                     child: isMember && item.memberProfile != null
@@ -859,7 +859,7 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                                             Container(
                                               padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                                               decoration: BoxDecoration(
-                                                color: item.color.withValues(alpha: 0.18),
+                                                color: item.color.withOpacity(0.18),
                                                 borderRadius: BorderRadius.circular(6),
                                               ),
                                               child: Text(
@@ -877,7 +877,7 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                                               Text(
                                                 item.phone!,
                                                 style: TextStyle(
-                                                  color: Colors.white.withValues(alpha: 0.5),
+                                                  color: Colors.white.withOpacity(0.5),
                                                   fontSize: 11,
                                                 ),
                                               ),
@@ -899,7 +899,7 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                            color: Colors.white.withValues(alpha: 0.65),
+                                            color: Colors.white.withOpacity(0.65),
                                             fontSize: 12,
                                             height: 1.3,
                                           ),

@@ -373,10 +373,10 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: AppColors.gold.withValues(alpha: 0.5)),
+                  border: Border.all(color: AppColors.gold.withOpacity(0.5)),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFF0A2540).withValues(alpha: 0.35),
+                      color: const Color(0xFF0A2540).withOpacity(0.35),
                       blurRadius: 16,
                       offset: const Offset(0, 6),
                     ),
@@ -387,7 +387,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: AppColors.gold.withValues(alpha: 0.2),
+                        color: AppColors.gold.withOpacity(0.2),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(Icons.admin_panel_settings_rounded, color: AppColors.gold, size: 26),
@@ -428,7 +428,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                       decoration: BoxDecoration(
                         color: AppColors.surfaceLow,
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppColors.gold.withValues(alpha: 0.3)),
+                        border: Border.all(color: AppColors.gold.withOpacity(0.3)),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -444,7 +444,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                   border: Border.all(color: AppColors.gold, width: 2.5),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.gold.withValues(alpha: 0.3),
+                                      color: AppColors.gold.withOpacity(0.3),
                                       blurRadius: 10,
                                     ),
                                   ],
@@ -475,7 +475,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                       decoration: BoxDecoration(
                                         color: _customService.leadershipPhoto != null
-                                            ? AppColors.success.withValues(alpha: 0.15)
+                                            ? AppColors.success.withOpacity(0.15)
                                             : AppColors.surfaceContainer,
                                         borderRadius: BorderRadius.circular(6),
                                       ),
@@ -623,7 +623,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF10B981).withValues(alpha: 0.15),
+                            color: const Color(0xFF10B981).withOpacity(0.15),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(Icons.shield_rounded, color: Color(0xFF10B981), size: 22),
@@ -686,7 +686,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF0F52BA).withValues(alpha: 0.12),
+                            color: const Color(0xFF0F52BA).withOpacity(0.12),
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: const Icon(Icons.manage_accounts_rounded, color: Color(0xFF0F52BA), size: 22),
@@ -756,7 +756,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                         decoration: BoxDecoration(
-                                          color: AppColors.primary.withValues(alpha: 0.1),
+                                          color: AppColors.primary.withOpacity(0.1),
                                           borderRadius: BorderRadius.circular(6),
                                         ),
                                         child: Text('Root', style: TextStyle(fontSize: 10, color: AppColors.primary, fontWeight: FontWeight.bold)),
@@ -845,7 +845,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
               _buildSectionTitle('2. PICHA ZA IDARA & JUMUIYA ZA KANISA'),
               Text(
                 'Badilisha picha za makundi ya kanisa. Unaweza kupakia picha kutoka simuni au kuweka link ya mtandao.',
-                style: TextStyle(fontSize: 12, color: AppColors.textSecondary.withValues(alpha: 0.9)),
+                style: TextStyle(fontSize: 12, color: AppColors.textSecondary.withOpacity(0.9)),
               ),
               const SizedBox(height: 12),
 
@@ -897,9 +897,9 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0A2540).withValues(alpha: 0.06),
+                        color: const Color(0xFF0A2540).withOpacity(0.06),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFF0F52BA).withValues(alpha: 0.25)),
+                        border: Border.all(color: const Color(0xFF0F52BA).withOpacity(0.25)),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -942,9 +942,9 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFDC2626).withValues(alpha: 0.1),
+                            color: const Color(0xFFDC2626).withOpacity(0.1),
                             borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: const Color(0xFFDC2626).withValues(alpha: 0.3)),
+                            border: Border.all(color: const Color(0xFFDC2626).withOpacity(0.3)),
                           ),
                           child: Row(
                             children: [
@@ -984,7 +984,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                 Container(
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
-                                    color: Colors.black.withValues(alpha: 0.6),
+                                    color: Colors.black.withOpacity(0.6),
                                     shape: BoxShape.circle,
                                   ),
                                   child: const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 28),
@@ -1027,7 +1027,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                       children: [
                         Expanded(
                           child: DropdownButtonFormField<String>(
-                            initialValue: _sermonType,
+                            value: _sermonType,
                             decoration: InputDecoration(
                               labelText: 'Aina ya Media',
                               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -1045,7 +1045,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: DropdownButtonFormField<String>(
-                            initialValue: _sermonCategory,
+                            value: _sermonCategory,
                             decoration: InputDecoration(
                               labelText: 'Kundi (Category)',
                               border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -1180,7 +1180,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: hasCustom ? AppColors.gold.withValues(alpha: 0.5) : AppColors.border),
+        border: Border.all(color: hasCustom ? AppColors.gold.withOpacity(0.5) : AppColors.border),
       ),
       child: Row(
         children: [
@@ -1222,7 +1222,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0A2540).withValues(alpha: 0.08),
+                          color: const Color(0xFF0A2540).withOpacity(0.08),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Row(
@@ -1240,7 +1240,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0F52BA).withValues(alpha: 0.08),
+                          color: const Color(0xFF0F52BA).withOpacity(0.08),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Row(
@@ -1258,7 +1258,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.gold.withValues(alpha: 0.15),
+                          color: AppColors.gold.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Row(
@@ -1280,7 +1280,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                           decoration: BoxDecoration(
-                            color: AppColors.error.withValues(alpha: 0.1),
+                            color: AppColors.error.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: const Icon(Icons.close_rounded, size: 12, color: AppColors.error),

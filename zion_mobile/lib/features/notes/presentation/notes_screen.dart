@@ -115,7 +115,7 @@ class _NotesScreenState extends State<NotesScreen> {
                             width: 44,
                             height: 4,
                             decoration: BoxDecoration(
-                              color: AppColors.textMuted.withValues(alpha: 0.3),
+                              color: AppColors.textMuted.withOpacity(0.3),
                               borderRadius: BorderRadius.circular(2),
                             ),
                           ),
@@ -479,7 +479,7 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                       width: 44,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: AppColors.textMutedOf(context).withValues(alpha: 0.3),
+                        color: AppColors.textMutedOf(context).withOpacity(0.3),
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),

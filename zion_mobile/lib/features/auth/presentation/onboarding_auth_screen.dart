@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import '../../../core/constants/church_profile.dart';
 import '../../../core/services/app_language_service.dart';
 import '../../../core/services/church_auth_service.dart';
@@ -20,6 +21,8 @@ class OnboardingAuthScreen extends StatefulWidget {
 class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
   final ChurchAuthService _authService = ChurchAuthService();
   final AppLanguageService _langService = AppLanguageService();
+
+  final bool _isDemo = kDebugMode || const bool.fromEnvironment('DEMO_MODE', defaultValue: false);
 
   int _selectedMode = 0; // 0 = Member, 1 = Guest, 2 = Admin
 
@@ -191,7 +194,7 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
             Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: const Color(0xFF4285F4).withValues(alpha: 0.15),
+                color: const Color(0xFF4285F4).withOpacity(0.15),
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.account_circle_rounded, color: Color(0xFF4285F4), size: 24),
@@ -294,7 +297,7 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
+                      color: AppColors.primary.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -344,54 +347,98 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
               const SizedBox(height: 12),
 
               // Church Logo
-              Container(
-                width: 76,
-                height: 76,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.gold, width: 2.2),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.2),
-                      blurRadius: 18,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: Image.asset(
-                  'assets/images/zion_logo.png',
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => const Icon(
-                    Icons.church_rounded,
-                    color: AppColors.gold,
-                    size: 40,
+              // Zion Mascot & Welcome Section
+              const SizedBox(height: 12),
+              TweenAnimationBuilder<double>(
+                tween: Tween<double>(begin: 0.0, end: 1.0),
+                duration: const Duration(milliseconds: 1000),
+                curve: Curves.elasticOut,
+                builder: (context, value, child) {
+                  return Transform.scale(scale: value, child: child);
+                },
+                child: Center(
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      // Animated Glow Background
+                      Container(
+                        width: 190,
+                        height: 190,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.gold.withOpacity(0.2),
+                              blurRadius: 40,
+                              spreadRadius: 8,
+                            ),
+                          ],
+                        ),
+                      ),
+                      // The Mascot (Simba wa Yuda)
+                      Container(
+                        width: 170,
+                        height: 170,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.gold, width: 3.5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 15,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Image.network(
+                          'https://sc02.alicdn.com/kf/A4bfa57aaae7e48a0ab6ac33942d9da1et.png',
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, progress) {
+                            if (progress == null) return child;
+                            return const Center(child: CircularProgressIndicator(color: AppColors.gold, strokeWidth: 2));
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 18),
 
-              Text(
-                ChurchProfile.name,
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -0.3,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                _langService.t(
-                  en: 'Cathedral of Victory • Mbagala Kwa Matope',
-                  sw: 'Hekalu Kuu la Ushindi • Mbagala Kwa Matope',
-                ),
-                style: const TextStyle(
-                  color: AppColors.gold,
-                  fontSize: 12.5,
-                  fontWeight: FontWeight.w700,
+              // Animated Welcome Title
+              TweenAnimationBuilder<double>(
+                tween: Tween<double>(begin: 0.0, end: 1.0),
+                duration: const Duration(milliseconds: 1400),
+                builder: (context, value, child) {
+                  return Opacity(opacity: value, child: child);
+                },
+                child: Column(
+                  children: [
+                    Text(
+                      _langService.t(en: 'Welcome to Zion', sw: 'Karibu Hekalu la Sayuni'),
+                      style: TextStyle(
+                        color: textColor,
+                        fontSize: 26,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -0.5,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      _langService.t(
+                        en: 'Cathedral of Victory • Mbagala Kwa Matope',
+                        sw: 'Hekalu Kuu la Ushindi • Mbagala Kwa Matope',
+                      ),
+                      style: const TextStyle(
+                        color: AppColors.gold,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 20),
@@ -432,12 +479,12 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                   color: surfaceColor,
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(
-                    color: isDark ? const Color(0xFF26354A) : AppColors.gold.withValues(alpha: 0.4),
+                    color: isDark ? const Color(0xFF26354A) : AppColors.gold.withOpacity(0.4),
                     width: 1.2,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.06),
+                      color: Colors.black.withOpacity(isDark ? 0.3 : 0.06),
                       blurRadius: 20,
                       offset: const Offset(0, 6),
                     ),
@@ -613,7 +660,11 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 4),
+
+              // Easy Access for Leaders during testing
+              if (_isDemo) _buildDemoSection(isDark),
+              const SizedBox(height: 12),
 
               // Privacy Policy
               Padding(
@@ -669,7 +720,7 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.35),
+                      color: AppColors.primary.withOpacity(0.35),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -745,7 +796,7 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
           ),
           hintText: hint,
           hintStyle: TextStyle(
-            color: AppColors.textMutedOf(context).withValues(alpha: 0.6),
+            color: AppColors.textMutedOf(context).withOpacity(0.6),
             fontSize: 12,
           ),
           prefixIcon: Icon(icon, color: AppColors.primary, size: 20),
@@ -754,6 +805,91 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDemoSection(bool isDark) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(height: 1, width: 30, color: AppColors.gold.withOpacity(0.3)),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Text(
+                _langService.t(en: 'QUICK DEMO ACCESS', sw: 'INGIA HARAKA (MAJARIBIO)'),
+                style: const TextStyle(
+                  color: AppColors.gold,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.0,
+                ),
+              ),
+            ),
+            Container(height: 1, width: 30, color: AppColors.gold.withOpacity(0.3)),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          alignment: WrapAlignment.center,
+          children: [
+            _buildLeaderButton('Askofu', 'pastor', Icons.account_balance_rounded, AppColors.primary),
+            _buildLeaderButton('Katibu', 'secretary', Icons.description_rounded, Colors.blue),
+            _buildLeaderButton('Hazina', 'treasurer', Icons.account_balance_wallet_rounded, Colors.teal),
+            _buildLeaderButton(_langService.t(en: 'Member', sw: 'Muumini'), 'member', Icons.person_rounded, AppColors.gold),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLeaderButton(String label, String role, IconData icon, Color color) {
+    return InkWell(
+      onTap: _isSubmitting ? null : () async {
+        setState(() => _isSubmitting = true);
+        AppHaptics.heavyImpact();
+        if (role == 'member') {
+          await _authService.loginAsMember(
+            name: 'Muumini wa Sayuni',
+            phone: '+255 754 000 001',
+            memberId: 'ZION-DEMO1',
+            jumuiya: 'Mbagala Kijichi',
+          );
+        } else {
+          await _authService.loginAsLeader(role);
+        }
+        if (mounted) {
+          setState(() => _isSubmitting = false);
+          _finishAuth();
+        }
+      },
+      borderRadius: BorderRadius.circular(15),
+      child: Container(
+        width: 75,
+        padding: const EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(15),
+          border: Border.all(color: color.withOpacity(0.5), width: 1.5),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, size: 22, color: color),
+            const SizedBox(height: 5),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w800,
+                color: color,
+              ),
+            ),
+          ],
         ),
       ),
     );

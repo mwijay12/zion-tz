@@ -92,8 +92,8 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                   color: isDark ? Colors.white : primaryColor,
                 ),
               ),
-              backgroundColor: primaryColor.withValues(alpha: isDark ? 0.25 : 0.12),
-              side: BorderSide(color: primaryColor.withValues(alpha: 0.4)),
+              backgroundColor: primaryColor.withOpacity(isDark ? 0.25 : 0.12),
+              side: BorderSide(color: primaryColor.withOpacity(0.4)),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               onPressed: () {
                 AppHaptics.selectionClick();
@@ -130,16 +130,16 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
           colors: [
             const Color(0xFF07192F),
             const Color(0xFF0A2540),
-            primaryColor.withValues(alpha: 0.8),
+            primaryColor.withOpacity(0.8),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.gold.withValues(alpha: 0.5), width: 1.2),
+        border: Border.all(color: AppColors.gold.withOpacity(0.5), width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.15),
+            color: Colors.black.withOpacity(0.15),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -153,7 +153,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.gold.withValues(alpha: 0.2),
+                  color: AppColors.gold.withOpacity(0.2),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(Icons.verified_user_rounded, color: AppColors.goldLight, size: 22),
@@ -194,7 +194,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                 ? 'Kanisa la Zion Jerusalem (Mbagala, Dar es Salaam) limejitolea kulinda faragha ya waumini na watumiaji wote kulingana na miongozo ya kisheria ya Tanzania na masoko ya programu ya Google Play na Apple App Store.'
                 : 'Zion Jerusalem Church (Mbagala, Dar es Salaam) is fully committed to protecting the privacy of our members and visitors in compliance with Tanzanian Law and App Store guidelines.',
             style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.88),
+              color: Colors.white.withOpacity(0.88),
               fontSize: 12,
               height: 1.45,
             ),
@@ -367,7 +367,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       padding: const EdgeInsets.only(bottom: 12),
       child: AppCard(
         borderColor: isHighlight
-            ? AppColors.gold.withValues(alpha: 0.6)
+            ? AppColors.gold.withOpacity(0.6)
             : (isDark ? const Color(0xFF26354A) : AppColors.borderLight),
         backgroundColor: isHighlight
             ? (isDark ? const Color(0xFF142238) : const Color(0xFFFBF8EE))
@@ -381,7 +381,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: (isHighlight ? AppColors.gold : primaryColor).withValues(alpha: 0.15),
+                    color: (isHighlight ? AppColors.gold : primaryColor).withOpacity(0.15),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
@@ -420,7 +420,7 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
 
   Widget _buildDpoContactCard(bool isDark, Color primaryColor) {
     return AppCard(
-      borderColor: primaryColor.withValues(alpha: 0.4),
+      borderColor: primaryColor.withOpacity(0.4),
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

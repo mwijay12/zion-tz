@@ -193,7 +193,7 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
 
   Widget _buildBranchCard(ChurchBranch branch) {
     return AppCard(
-      borderColor: branch.isHeadquarters ? AppColors.gold.withValues(alpha: 0.5) : AppColors.border,
+      borderColor: branch.isHeadquarters ? AppColors.gold.withOpacity(0.5) : AppColors.border,
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,8 +206,8 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: branch.isHeadquarters
-                      ? AppColors.gold.withValues(alpha: 0.15)
-                      : AppColors.primary.withValues(alpha: 0.1),
+                      ? AppColors.gold.withOpacity(0.15)
+                      : AppColors.primary.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -226,7 +226,7 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                         margin: const EdgeInsets.only(bottom: 4),
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: AppColors.gold.withValues(alpha: 0.2),
+                          color: AppColors.gold.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(

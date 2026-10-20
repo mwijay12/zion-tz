@@ -2,9 +2,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'core/services/app_language_service.dart';
+import 'core/services/church_audio_service.dart';
 import 'core/services/church_auth_service.dart';
 import 'core/services/church_notification_service.dart';
-import 'core/services/church_sync_service.dart';
+ import 'core/services/church_sync_service.dart';
+import 'core/services/database_service.dart';
 import 'core/theme/church_theme_service.dart';
 import 'features/auth/presentation/onboarding_auth_screen.dart';
 import 'features/navigation/presentation/main_scaffold.dart';
@@ -42,11 +44,25 @@ void main() async {
     debugPrint('Theme service init error: $e');
   }
 
+  // Initialize Local SQLite Database
+  try {
+    await DatabaseService().database;
+  } catch (e) {
+    debugPrint('Database init error: $e');
+  }
+
   // Initialize Church Auth & Member Verification
   try {
     await ChurchAuthService().init();
   } catch (e) {
     debugPrint('Auth service init error: $e');
+  }
+
+  // Initialize Background Audio Service
+  try {
+    await ChurchAudioService.init();
+  } catch (e) {
+    debugPrint('Audio service init error: $e');
   }
 
   // Initialize Lock Screen Notification Service & Reminders
@@ -81,9 +97,26 @@ class ZionChurchApp extends StatelessWidget {
         return MaterialApp(
           title: 'Zion Jerusalem Church',
           debugShowCheckedModeBanner: false,
-          theme: themeService.lightTheme,
-          darkTheme: themeService.darkTheme,
+          theme: themeService.lightTheme.copyWith(
+            pageTransitionsTheme: const PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: ZoomPageTransitionsBuilder(),
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              },
+            ),
+          ),
+          darkTheme: themeService.darkTheme.copyWith(
+            pageTransitionsTheme: const PageTransitionsTheme(
+              builders: {
+                TargetPlatform.android: ZoomPageTransitionsBuilder(),
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              },
+            ),
+          ),
           themeMode: themeService.themeMode,
+          scrollBehavior: const MaterialScrollBehavior().copyWith(
+            physics: const BouncingScrollPhysics(),
+          ),
           home: isOnboarded ? const MainScaffold() : const OnboardingAuthScreen(),
         );
       },

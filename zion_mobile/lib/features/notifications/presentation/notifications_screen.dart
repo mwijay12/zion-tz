@@ -101,7 +101,7 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                         width: 44,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: AppColors.textMuted.withValues(alpha: 0.3),
+                          color: AppColors.textMuted.withOpacity(0.3),
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -114,7 +114,7 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
                             color: ann.isHighPriority
-                                ? const Color(0xFFDC2626).withValues(alpha: 0.15)
+                                ? const Color(0xFFDC2626).withOpacity(0.15)
                                 : AppColors.surfaceContainer,
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -144,7 +144,7 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                     Container(
                       padding: const EdgeInsets.all(14),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceContainer.withValues(alpha: 0.6),
+                        color: AppColors.surfaceContainer.withOpacity(0.6),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
@@ -309,12 +309,12 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
                       color: isConnected
-                          ? const Color(0xFF16A34A).withValues(alpha: 0.12)
+                          ? const Color(0xFF16A34A).withOpacity(0.12)
                           : AppColors.surfaceContainer,
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(
                         color: isConnected
-                            ? const Color(0xFF16A34A).withValues(alpha: 0.35)
+                            ? const Color(0xFF16A34A).withOpacity(0.35)
                             : AppColors.border,
                         width: 1,
                       ),
@@ -354,7 +354,7 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 16),
             itemCount: _branches.length,
-            separatorBuilder: (_, _) => const SizedBox(width: 6),
+            separatorBuilder: (context, index) => const SizedBox(width: 6),
             itemBuilder: (ctx, i) {
               final b = _branches[i];
               final isSel = _selectedBranch == b;
@@ -398,7 +398,7 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.campaign_outlined, size: 48, color: AppColors.textMuted.withValues(alpha: 0.4)),
+                      Icon(Icons.campaign_outlined, size: 48, color: AppColors.textMuted.withOpacity(0.4)),
                       const SizedBox(height: 8),
                       Text(
                         'Hakuna matangazo ya ${_selectedBranch == "Zote" ? "sasa" : _selectedBranch}',
@@ -411,7 +411,7 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                   padding: EdgeInsets.fromLTRB(16, 6, 16, bottomInset),
                   physics: const BouncingScrollPhysics(),
                   itemCount: announcements.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 12),
+                  separatorBuilder: (context, index) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final ann = announcements[index];
 
@@ -423,12 +423,12 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
 
                     if (ann.isBereavement) {
                       borderColor = const Color(0xFF475569);
-                      badgeBgColor = const Color(0xFF475569).withValues(alpha: 0.15);
+                      badgeBgColor = const Color(0xFF475569).withOpacity(0.15);
                       badgeTextColor = const Color(0xFF334155);
                       badgeLabel = '🕊️ MSIBA / MAOMBOLEZO';
                     } else if (ann.isUrgent) {
                       borderColor = const Color(0xFFEA580C);
-                      badgeBgColor = const Color(0xFFEA580C).withValues(alpha: 0.15);
+                      badgeBgColor = const Color(0xFFEA580C).withOpacity(0.15);
                       badgeTextColor = const Color(0xFFEA580C);
                       badgeLabel = '⚡ DHARURA';
                     } else {
@@ -608,7 +608,7 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
       padding: EdgeInsets.fromLTRB(16, 12, 16, bottomInset),
       physics: const BouncingScrollPhysics(),
       itemCount: schedules.length,
-      separatorBuilder: (_, _) => const SizedBox(height: 12),
+      separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         final item = schedules[index];
 

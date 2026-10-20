@@ -121,7 +121,7 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                             width: 44,
                             height: 4,
                             decoration: BoxDecoration(
-                              color: AppColors.textMuted.withValues(alpha: 0.3),
+                              color: AppColors.textMuted.withOpacity(0.3),
                               borderRadius: BorderRadius.circular(2),
                             ),
                           ),
@@ -159,7 +159,7 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                         ),
                         const SizedBox(height: 12),
                         DropdownButtonFormField<String>(
-                          initialValue: selectedCategory,
+                          value: selectedCategory,
                           decoration: const InputDecoration(labelText: 'Kategoria ya Maombi'),
                           items: const [
                             DropdownMenuItem(value: 'Uponyaji', child: Text('Uponyaji & Afya')),
@@ -188,8 +188,8 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                           title: const Text('Ombi la Siri (Wachungaji Pekee)'),
                           subtitle: const Text('Litaonekana kwa Askofu na Wazee bila kuwekwa hadharani'),
                           value: isConfidential,
-                          activeThumbColor: AppColors.primary,
-                          onChanged: (val) {
+                           thumbColor: WidgetStatePropertyAll(AppColors.primary),
+                           onChanged: (val) {
                             setModalState(() => isConfidential = val);
                           },
                         ),
@@ -255,7 +255,7 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
         decoration: BoxDecoration(
           color: AppColors.surfaceContainer,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border.withValues(alpha: 0.6)),
+          border: Border.all(color: AppColors.border.withOpacity(0.6)),
         ),
         child: Row(
           children: List.generate(tabs.length, (idx) {
@@ -276,7 +276,7 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                     boxShadow: isSelected
                         ? [
                             BoxShadow(
-                              color: AppColors.primary.withValues(alpha: 0.3),
+                              color: AppColors.primary.withOpacity(0.3),
                               blurRadius: 6,
                               offset: const Offset(0, 2),
                             ),
@@ -383,7 +383,7 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
           padding: EdgeInsets.fromLTRB(16, 6, 16, bottomInset),
           physics: const BouncingScrollPhysics(),
           itemCount: groups.length,
-          separatorBuilder: (_, _) => const SizedBox(height: 14),
+          separatorBuilder: (context, index) => const SizedBox(height: 14),
           itemBuilder: (context, index) {
             final group = groups[index];
             String? customPhoto;
@@ -425,9 +425,9 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                         gradient: LinearGradient(
                           colors: [
-                            Colors.black.withValues(alpha: 0.65),
+                            Colors.black.withOpacity(0.65),
                             Colors.transparent,
-                            Colors.black.withValues(alpha: 0.75),
+                            Colors.black.withOpacity(0.75),
                           ],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
@@ -441,11 +441,11 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.9),
+                        color: AppColors.primary.withOpacity(0.9),
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.3),
+                            color: Colors.black.withOpacity(0.3),
                             blurRadius: 6,
                           ),
                         ],
@@ -466,9 +466,9 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.65),
+                        color: Colors.black.withOpacity(0.65),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+                        border: Border.all(color: Colors.white.withOpacity(0.25)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -622,7 +622,7 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
       padding: EdgeInsets.fromLTRB(16, 6, 16, bottomInset),
       physics: const BouncingScrollPhysics(),
       itemCount: cells.length,
-      separatorBuilder: (_, _) => const SizedBox(height: 12),
+      separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         final cell = cells[index];
 
@@ -740,7 +740,7 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.12),
+                    color: AppColors.primary.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(Icons.favorite_rounded, color: AppColors.primary, size: 22),
@@ -786,7 +786,7 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                   padding: EdgeInsets.fromLTRB(16, 4, 16, bottomInset),
                   physics: const BouncingScrollPhysics(),
                   itemCount: _prayers.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 10),
+                  separatorBuilder: (context, index) => const SizedBox(height: 10),
                   itemBuilder: (context, index) {
                     final prayer = _prayers[index];
 

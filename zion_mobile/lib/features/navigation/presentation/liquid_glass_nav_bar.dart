@@ -62,26 +62,26 @@ class LiquidGlassNavBar extends StatelessWidget {
                     // Sleek Dark Pill Surface matching #1E232A with subtle Electric Blue trim
                     gradient: LinearGradient(
                       colors: [
-                        const Color(0xFF181C23).withValues(alpha: 0.96),
-                        const Color(0xFF1E232A).withValues(alpha: 0.92),
+                        const Color(0xFF181C23).withOpacity(0.96),
+                        const Color(0xFF1E232A).withOpacity(0.92),
                       ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(38),
                     border: Border.all(
-                      color: AppColors.primary.withValues(alpha: 0.22),
+                      color: AppColors.primary.withOpacity(0.22),
                       width: 1.2,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.35),
+                        color: Colors.black.withOpacity(0.35),
                         blurRadius: 24,
                         offset: const Offset(0, 8),
                         spreadRadius: -2,
                       ),
                       BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.18),
+                        color: AppColors.primary.withOpacity(0.18),
                         blurRadius: 16,
                         offset: const Offset(0, 3),
                       ),
@@ -127,25 +127,25 @@ class LiquidGlassNavBar extends StatelessWidget {
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
                         colors: [
-                          const Color(0xFF181C23).withValues(alpha: 0.96),
-                          const Color(0xFF1E232A).withValues(alpha: 0.92),
+                          const Color(0xFF181C23).withOpacity(0.96),
+                          const Color(0xFF1E232A).withOpacity(0.92),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       border: Border.all(
-                        color: AppColors.gold.withValues(alpha: 0.45),
+                        color: AppColors.gold.withOpacity(0.45),
                         width: 1.2,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.35),
+                          color: Colors.black.withOpacity(0.35),
                           blurRadius: 24,
                           offset: const Offset(0, 8),
                           spreadRadius: -2,
                         ),
                         BoxShadow(
-                          color: AppColors.gold.withValues(alpha: 0.22),
+                          color: AppColors.gold.withOpacity(0.22),
                           blurRadius: 14,
                           offset: const Offset(0, 2),
                         ),
@@ -157,9 +157,9 @@ class LiquidGlassNavBar extends StatelessWidget {
                         height: 40,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: AppColors.gold.withValues(alpha: 0.15),
+                          color: AppColors.gold.withOpacity(0.15),
                           border: Border.all(
-                            color: AppColors.gold.withValues(alpha: 0.4),
+                            color: AppColors.gold.withOpacity(0.4),
                             width: 1,
                           ),
                         ),
@@ -205,17 +205,17 @@ class LiquidGlassNavBar extends StatelessWidget {
             // Active: Primary Electric Blue (#0D52CD) Highlight
             color: isSelected
                 ? AppColors.primary
-                : Colors.white.withValues(alpha: 0.06),
+                : Colors.white.withOpacity(0.06),
             border: Border.all(
               color: isSelected
-                  ? Colors.white.withValues(alpha: 0.35)
-                  : Colors.white.withValues(alpha: 0.08),
+                  ? Colors.white.withOpacity(0.35)
+                  : Colors.white.withOpacity(0.08),
               width: isSelected ? 1.4 : 1.0,
             ),
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.35),
+                      color: AppColors.primary.withOpacity(0.35),
                       blurRadius: 16,
                       spreadRadius: 1.5,
                       offset: const Offset(0, 3),

@@ -46,17 +46,17 @@ class PersistentMiniPlayer extends StatelessWidget {
                     ),
                     borderRadius: BorderRadius.circular(22),
                     border: Border.all(
-                      color: AppColors.primary.withValues(alpha: 0.35),
+                      color: AppColors.primary.withOpacity(0.35),
                       width: 1.2,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.35),
+                        color: Colors.black.withOpacity(0.35),
                         blurRadius: 18,
                         offset: const Offset(0, 4),
                       ),
                       BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.2),
+                        color: AppColors.primary.withOpacity(0.2),
                         blurRadius: 14,
                         offset: const Offset(0, 2),
                       ),
@@ -70,8 +70,8 @@ class PersistentMiniPlayer extends StatelessWidget {
                         height: 40,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: AppColors.primary.withValues(alpha: 0.18),
-                          border: Border.all(color: AppColors.primary.withValues(alpha: 0.4), width: 1.2),
+                          color: AppColors.primary.withOpacity(0.18),
+                          border: Border.all(color: AppColors.primary.withOpacity(0.4), width: 1.2),
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: (track.imageUrl != null && track.imageUrl!.isNotEmpty && track.imageUrl!.startsWith('http'))
@@ -138,7 +138,7 @@ class PersistentMiniPlayer extends StatelessWidget {
                             Text(
                               track.subtitle,
                               style: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.8),
+                                color: Colors.white.withOpacity(0.8),
                                 fontSize: 11,
                               ),
                               maxLines: 1,
@@ -210,7 +210,7 @@ class PersistentMiniPlayer extends StatelessWidget {
                       IconButton(
                         icon: Icon(
                           Icons.close_rounded,
-                          color: Colors.white.withValues(alpha: 0.7),
+                          color: Colors.white.withOpacity(0.7),
                           size: 20,
                         ),
                         padding: EdgeInsets.zero,
@@ -265,10 +265,10 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                 end: Alignment.bottomCenter,
               ),
               borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-              border: Border.all(color: AppColors.primary.withValues(alpha: 0.35), width: 1.2),
+              border: Border.all(color: AppColors.primary.withOpacity(0.35), width: 1.2),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryDark.withValues(alpha: 0.5),
+                  color: AppColors.primaryDark.withOpacity(0.5),
                   blurRadius: 30,
                   offset: const Offset(0, -6),
                 ),
@@ -283,7 +283,7 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                   width: 44,
                   height: 5,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.3),
+                    color: Colors.white.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
@@ -301,7 +301,7 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                     border: Border.all(color: AppColors.primaryLight, width: 3),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.4),
+                        color: AppColors.primary.withOpacity(0.4),
                         blurRadius: 24,
                         spreadRadius: 2,
                       ),
@@ -334,9 +334,9 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColors.gold.withValues(alpha: 0.15),
+                    color: AppColors.gold.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.gold.withValues(alpha: 0.4)),
+                    border: Border.all(color: AppColors.gold.withOpacity(0.4)),
                   ),
                   child: Text(
                     track.isLiveRadio ? 'LIVE GOSPEL RADIO • SAYUNI' : 'MAHUBIRI & NYIMBO',
@@ -369,7 +369,7 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                   track.subtitle,
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.white.withValues(alpha: 0.7),
+                    color: Colors.white.withOpacity(0.7),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -380,7 +380,7 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                   SliderTheme(
                     data: SliderTheme.of(context).copyWith(
                       activeTrackColor: AppColors.gold,
-                      inactiveTrackColor: Colors.white.withValues(alpha: 0.15),
+                      inactiveTrackColor: Colors.white.withOpacity(0.15),
                       thumbColor: AppColors.gold,
                       thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
                       trackHeight: 3,
@@ -400,11 +400,11 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                       children: [
                         Text(
                           _formatDuration(audio.position),
-                          style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 11),
+                          style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 11),
                         ),
                         Text(
                           _formatDuration(audio.duration),
-                          style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 11),
+                          style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 11),
                         ),
                       ],
                     ),
@@ -473,7 +473,7 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.gold.withValues(alpha: 0.4),
+                            color: AppColors.gold.withOpacity(0.4),
                             blurRadius: 18,
                             spreadRadius: 2,
                           ),

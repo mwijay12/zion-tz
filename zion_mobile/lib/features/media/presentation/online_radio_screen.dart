@@ -202,7 +202,7 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
     if (isPlaying) {
       _audioService.togglePlayPause();
     } else {
-      _audioService.playRadioStation(station);
+      _audioService.playRadioBrowserStation(station);
       _radioService.registerStationClick(station.stationuuid);
     }
   }
@@ -232,10 +232,10 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                     end: Alignment.bottomCenter,
                   ),
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
-                  border: Border.all(color: AppColors.gold.withValues(alpha: 0.4), width: 1.2),
+                  border: Border.all(color: AppColors.gold.withOpacity(0.4), width: 1.2),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.4),
+                      color: AppColors.primary.withOpacity(0.4),
                       blurRadius: 28,
                       offset: const Offset(0, -6),
                     ),
@@ -249,7 +249,7 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                       width: 44,
                       height: 5,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.3),
+                        color: Colors.white.withOpacity(0.3),
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
@@ -265,7 +265,7 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                         border: Border.all(color: AppColors.gold, width: 2.2),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.gold.withValues(alpha: 0.35),
+                            color: AppColors.gold.withOpacity(0.35),
                             blurRadius: 18,
                             spreadRadius: 2,
                           ),
@@ -317,7 +317,7 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                           station.displaySubtitle,
                           style: TextStyle(
                             fontSize: 12,
-                            color: Colors.white.withValues(alpha: 0.8),
+                            color: Colors.white.withOpacity(0.8),
                           ),
                         ),
                       ],
@@ -358,7 +358,7 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 11,
-                            color: Colors.white.withValues(alpha: 0.65),
+                            color: Colors.white.withOpacity(0.65),
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -402,7 +402,7 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                             borderRadius: BorderRadius.circular(16),
                           ),
                           elevation: 6,
-                          shadowColor: AppColors.gold.withValues(alpha: 0.4),
+                          shadowColor: AppColors.gold.withOpacity(0.4),
                         ),
                       ),
                     ),
@@ -431,7 +431,7 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                           child: OutlinedButton(
                             onPressed: () => Navigator.pop(ctx),
                             style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: Colors.white.withValues(alpha: 0.3)),
+                              side: BorderSide(color: Colors.white.withOpacity(0.3)),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                             ),
                             child: const Text('Funga Maelezo', style: TextStyle(color: Colors.white)),
@@ -453,9 +453,9 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
+        color: color.withOpacity(0.15),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.4)),
+        border: Border.all(color: color.withOpacity(0.4)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -553,7 +553,7 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.red.withValues(alpha: 0.3),
+                              color: Colors.red.withOpacity(0.3),
                               blurRadius: 10,
                               offset: const Offset(0, 3),
                             ),
@@ -587,9 +587,9 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: AppColors.gold.withValues(alpha: 0.15),
+                          color: AppColors.gold.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: AppColors.gold.withValues(alpha: 0.3)),
+                          border: Border.all(color: AppColors.gold.withOpacity(0.3)),
                         ),
                         child: Text(
                           '${activeStations.length} Radio',
@@ -619,10 +619,10 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                           end: Alignment.bottomRight,
                         ),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: AppColors.gold.withValues(alpha: 0.5), width: 1.2),
+                        border: Border.all(color: AppColors.gold.withOpacity(0.5), width: 1.2),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primary.withValues(alpha: 0.25),
+                            color: AppColors.primary.withOpacity(0.25),
                             blurRadius: 16,
                             offset: const Offset(0, 4),
                           ),
@@ -637,9 +637,9 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                                 width: 44,
                                 height: 44,
                                 decoration: BoxDecoration(
-                                  color: AppColors.gold.withValues(alpha: 0.18),
+                                  color: AppColors.gold.withOpacity(0.18),
                                   borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: AppColors.gold.withValues(alpha: 0.4)),
+                                  border: Border.all(color: AppColors.gold.withOpacity(0.4)),
                                 ),
                                 child: const Center(
                                   child: Icon(Icons.public_rounded, color: AppColors.goldLight, size: 24),
@@ -678,7 +678,7 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                                     Text(
                                       'Sikiliza nyimbo za sifa, kuabudu na neno la uzima saa 24/7:',
                                       style: TextStyle(
-                                        color: Colors.white.withValues(alpha: 0.85),
+                                        color: Colors.white.withOpacity(0.85),
                                         fontSize: 11,
                                       ),
                                     ),
@@ -738,10 +738,10 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                           end: Alignment.bottomRight,
                         ),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: AppColors.gold.withValues(alpha: 0.45), width: 1.2),
+                        border: Border.all(color: AppColors.gold.withOpacity(0.45), width: 1.2),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primary.withValues(alpha: 0.25),
+                            color: AppColors.primary.withOpacity(0.25),
                             blurRadius: 16,
                             offset: const Offset(0, 4),
                           ),
@@ -753,9 +753,9 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                             width: 48,
                             height: 48,
                             decoration: BoxDecoration(
-                              color: AppColors.gold.withValues(alpha: 0.15),
+                              color: AppColors.gold.withOpacity(0.15),
                               borderRadius: BorderRadius.circular(14),
-                              border: Border.all(color: AppColors.gold.withValues(alpha: 0.35)),
+                              border: Border.all(color: AppColors.gold.withOpacity(0.35)),
                             ),
                             child: const Center(
                               child: Text('🇳🇬', style: TextStyle(fontSize: 26)),
@@ -794,7 +794,7 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                                 Text(
                                   'Nyimbo bora za kumsifu Mungu, Afrobeats za Injili 24/7',
                                   style: TextStyle(
-                                    color: Colors.white.withValues(alpha: 0.75),
+                                    color: Colors.white.withOpacity(0.75),
                                     fontSize: 11,
                                   ),
                                 ),
@@ -950,7 +950,7 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                     child: Center(
                       child: Column(
                         children: [
-                          Icon(Icons.radio_outlined, size: 48, color: AppColors.textMuted.withValues(alpha: 0.5)),
+                          Icon(Icons.radio_outlined, size: 48, color: AppColors.textMuted.withOpacity(0.5)),
                           const SizedBox(height: 12),
                           Text(
                             _selectedTab == 'search'
@@ -1013,9 +1013,9 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                                                   margin: const EdgeInsets.only(right: 6),
                                                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                                   decoration: BoxDecoration(
-                                                    color: AppColors.primary.withValues(alpha: 0.18),
+                                                    color: AppColors.primary.withOpacity(0.18),
                                                     borderRadius: BorderRadius.circular(4),
-                                                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.35)),
+                                                    border: Border.all(color: AppColors.primary.withOpacity(0.35)),
                                                   ),
                                                   child: const Text(
                                                     'AFRO GOSPEL',
@@ -1031,7 +1031,7 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                                                   margin: const EdgeInsets.only(right: 6),
                                                   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                                                   decoration: BoxDecoration(
-                                                    color: Colors.blueAccent.withValues(alpha: 0.2),
+                                                    color: Colors.blueAccent.withOpacity(0.2),
                                                     borderRadius: BorderRadius.circular(4),
                                                   ),
                                                   child: const Text(
@@ -1101,7 +1101,7 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
                                           boxShadow: isPlayingThis
                                               ? [
                                                   BoxShadow(
-                                                    color: AppColors.gold.withValues(alpha: 0.4),
+                                                    color: AppColors.gold.withOpacity(0.4),
                                                     blurRadius: 10,
                                                     spreadRadius: 1,
                                                   ),
@@ -1141,7 +1141,7 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
         width: 48,
         height: 48,
         decoration: BoxDecoration(
-          color: isCurrent ? AppColors.gold.withValues(alpha: 0.15) : AppColors.surfaceLow,
+          color: isCurrent ? AppColors.gold.withOpacity(0.15) : AppColors.surfaceLow,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: isCurrent ? AppColors.gold : AppColors.border,

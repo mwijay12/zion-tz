@@ -122,10 +122,10 @@ class QuickMoreOptionsSheet extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
           decoration: BoxDecoration(
-            color: AppColors.surface.withValues(alpha: isDark ? 0.96 : 0.98),
+            color: AppColors.surface.withOpacity(isDark ? 0.96 : 0.98),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
             border: Border.all(
-              color: AppColors.primary.withValues(alpha: 0.2),
+              color: AppColors.primary.withOpacity(0.2),
               width: 1.2,
             ),
           ),
@@ -143,7 +143,7 @@ class QuickMoreOptionsSheet extends StatelessWidget {
                       width: 44,
                       height: 4,
                       decoration: BoxDecoration(
-                        color: AppColors.textMuted.withValues(alpha: 0.3),
+                        color: AppColors.textMuted.withOpacity(0.3),
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -159,7 +159,7 @@ class QuickMoreOptionsSheet extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                              color: AppColors.gold.withValues(alpha: 0.15),
+                              color: AppColors.gold.withOpacity(0.15),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: const Icon(
@@ -222,7 +222,7 @@ class QuickMoreOptionsSheet extends StatelessWidget {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(16),
                                 border: Border.all(
-                                  color: color.withValues(alpha: 0.22),
+                                  color: color.withOpacity(0.22),
                                   width: 1,
                                 ),
                               ),
@@ -235,7 +235,7 @@ class QuickMoreOptionsSheet extends StatelessWidget {
                                       Container(
                                         padding: const EdgeInsets.all(6),
                                         decoration: BoxDecoration(
-                                          color: color.withValues(alpha: 0.14),
+                                          color: color.withOpacity(0.14),
                                           borderRadius: BorderRadius.circular(8),
                                         ),
                                         child: Icon(
@@ -248,7 +248,7 @@ class QuickMoreOptionsSheet extends StatelessWidget {
                                       Icon(
                                         Icons.arrow_forward_ios_rounded,
                                         size: 11,
-                                        color: AppColors.textMuted.withValues(alpha: 0.6),
+                                        color: AppColors.textMuted.withOpacity(0.6),
                                       ),
                                     ],
                                   ),
@@ -306,7 +306,7 @@ class QuickMoreOptionsSheet extends StatelessWidget {
                             style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold),
                           ),
                           style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: AppColors.gold.withValues(alpha: 0.6)),
+                            side: BorderSide(color: AppColors.gold.withOpacity(0.6)),
                             backgroundColor: AppColors.surfaceContainer,
                             foregroundColor: AppColors.textPrimary,
                             padding: const EdgeInsets.symmetric(vertical: 10),

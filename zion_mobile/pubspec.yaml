@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.13.2
+  sdk: ^3.5.0
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -32,30 +32,33 @@ dependencies:
     sdk: flutter
 
   # Design & Icons
-  cupertino_icons: ^1.0.8
-  google_fonts: ^6.2.1
-
-  # Local Persistence & Utilities
-  shared_preferences: ^2.3.2
-  intl: ^0.19.0
-  url_launcher: ^6.3.0
-  share_plus: ^10.0.2
-  flutter_tts: ^4.2.5
-  audioplayers: ^6.8.1
-  pdf: ^3.13.0
-  printing: ^5.15.0
-  path_provider: ^2.1.6
-  flutter_local_notifications: ^22.3.0
-  http: ^1.6.0
-  image_picker: ^1.2.3
-  firebase_core: ^4.15.0
-  cloud_firestore: ^6.10.0
+  cupertino_icons: any
+  google_fonts: any
+  shared_preferences: any
+  intl: any
+  url_launcher: any
+  share_plus: any
+  flutter_tts: any
+  audioplayers: any
+  pdf: any
+  printing: any
+  path_provider: any
+  flutter_local_notifications: any
+  http: any
+  image_picker: any
+  firebase_core: any
+  firebase_auth: any
+  cloud_firestore: any
+  sqflite: any
+  path: any
+  audio_service: any
+  just_audio: any
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^6.0.0
+  flutter_lints: any
 
 flutter:
   uses-material-design: true

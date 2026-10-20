@@ -233,7 +233,7 @@ Ubarikiwe na Mungu wa Sayuni!
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                border: Border.all(color: AppColors.primary.withOpacity(0.3)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -243,7 +243,7 @@ Ubarikiwe na Mungu wa Sayuni!
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.25),
+                          color: AppColors.primary.withOpacity(0.25),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(Icons.spa_rounded, color: Colors.white, size: 20),
@@ -273,7 +273,7 @@ Ubarikiwe na Mungu wa Sayuni!
                     decoration: BoxDecoration(
                       color: const Color(0xFF071933),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+                      border: Border.all(color: Colors.white.withOpacity(0.25)),
                     ),
                     child: Row(
                       children: [
@@ -288,7 +288,7 @@ Ubarikiwe na Mungu wa Sayuni!
                               fillColor: const Color(0xFF071933),
                               hintText: 'Andika haja yako (mf. Ada za watoto, Kazi, Ugonjwa)...',
                               hintStyle: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.6),
+                                color: Colors.white.withOpacity(0.6),
                                 fontSize: 12,
                               ),
                               contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -344,7 +344,7 @@ Ubarikiwe na Mungu wa Sayuni!
                         boxShadow: isSelected
                             ? [
                                 BoxShadow(
-                                  color: catColor.withValues(alpha: 0.35),
+                                  color: catColor.withOpacity(0.35),
                                   blurRadius: 8,
                                   offset: const Offset(0, 3),
                                 ),
@@ -425,10 +425,10 @@ Ubarikiwe na Mungu wa Sayuni!
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.35), width: 1.2),
+        border: Border.all(color: AppColors.primary.withOpacity(0.35), width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryDark.withValues(alpha: 0.35),
+            color: AppColors.primaryDark.withOpacity(0.35),
             blurRadius: 24,
             offset: const Offset(0, 8),
           ),
@@ -445,9 +445,9 @@ Ubarikiwe na Mungu wa Sayuni!
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.gold.withValues(alpha: 0.2),
+                  color: AppColors.gold.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.gold.withValues(alpha: 0.4)),
+                  border: Border.all(color: AppColors.gold.withOpacity(0.4)),
                 ),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
@@ -500,9 +500,9 @@ Ubarikiwe na Mungu wa Sayuni!
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.08),
+              color: Colors.white.withOpacity(0.08),
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+              border: Border.all(color: Colors.white.withOpacity(0.15)),
             ),
             child: Text(
               '"${guidance.scriptureText}"',
@@ -571,9 +571,9 @@ Ubarikiwe na Mungu wa Sayuni!
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(
-              color: AppColors.primaryDark.withValues(alpha: 0.6),
+              color: AppColors.primaryDark.withOpacity(0.6),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.gold.withValues(alpha: 0.3)),
+              border: Border.all(color: AppColors.gold.withOpacity(0.3)),
             ),
             child: Row(
               children: [
@@ -625,7 +625,7 @@ Ubarikiwe na Mungu wa Sayuni!
                   label: const Text('Shiriki'),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
-                    side: BorderSide(color: Colors.white.withValues(alpha: 0.3)),
+                    side: BorderSide(color: Colors.white.withOpacity(0.3)),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),

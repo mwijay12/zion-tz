@@ -339,7 +339,7 @@ Kutoka kizazi hata kizazi!''',
                         width: 44,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: AppColors.textMuted.withValues(alpha: 0.3),
+                          color: AppColors.textMuted.withOpacity(0.3),
                           borderRadius: BorderRadius.circular(2),
                         ),
                       ),
@@ -435,7 +435,7 @@ Kutoka kizazi hata kizazi!''',
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceContainer.withValues(alpha: 0.5),
+                        color: AppColors.surfaceContainer.withOpacity(0.5),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -592,7 +592,7 @@ Kutoka kizazi hata kizazi!''',
                               width: 54,
                               height: 54,
                               decoration: BoxDecoration(
-                                color: Colors.black.withValues(alpha: 0.35),
+                                color: Colors.black.withOpacity(0.35),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
@@ -630,7 +630,7 @@ Kutoka kizazi hata kizazi!''',
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                   decoration: BoxDecoration(
-                                    color: AppColors.primary.withValues(alpha: 0.12),
+                                    color: AppColors.primary.withOpacity(0.12),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Text(

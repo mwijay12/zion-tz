@@ -234,7 +234,7 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
                   ),
                   const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
-                    initialValue: urgency,
+                    value: urgency,
                     decoration: InputDecoration(
                       labelText: 'Kiwango cha Uharaka',
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
@@ -376,7 +376,7 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF0A2540).withValues(alpha: 0.3),
+                  color: const Color(0xFF0A2540).withOpacity(0.3),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
@@ -450,7 +450,7 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
+                        color: AppColors.primary.withOpacity(0.1),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(Icons.groups_rounded, color: AppColors.primary, size: 24),
@@ -550,7 +550,7 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
           if (idx == 0) {
             return AppCard(
               backgroundColor: const Color(0xFF0A2540),
-              borderColor: AppColors.gold.withValues(alpha: 0.5),
+              borderColor: AppColors.gold.withOpacity(0.5),
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -560,7 +560,7 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: AppColors.gold.withValues(alpha: 0.2),
+                          color: AppColors.gold.withOpacity(0.2),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(Icons.phone_in_talk_rounded, color: AppColors.gold, size: 22),
@@ -637,9 +637,9 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
 
           return AppCard(
             borderColor: isCritical
-                ? Colors.redAccent.withValues(alpha: 0.6)
+                ? Colors.redAccent.withOpacity(0.6)
                 : isHigh
-                    ? Colors.orangeAccent.withValues(alpha: 0.4)
+                    ? Colors.orangeAccent.withOpacity(0.4)
                     : AppColors.border,
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -655,10 +655,10 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
                             color: isCritical
-                                ? Colors.redAccent.withValues(alpha: 0.15)
+                                ? Colors.redAccent.withOpacity(0.15)
                                 : isHigh
-                                    ? Colors.orangeAccent.withValues(alpha: 0.15)
-                                    : AppColors.primary.withValues(alpha: 0.1),
+                                    ? Colors.orangeAccent.withOpacity(0.15)
+                                    : AppColors.primary.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
@@ -683,7 +683,7 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF16A34A).withValues(alpha: 0.15),
+                              color: const Color(0xFF16A34A).withOpacity(0.15),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: const Row(
@@ -768,8 +768,8 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         foregroundColor: hasJoined ? const Color(0xFF16A34A) : AppColors.primary,
                         backgroundColor: hasJoined
-                            ? const Color(0xFF16A34A).withValues(alpha: 0.1)
-                            : AppColors.primary.withValues(alpha: 0.08),
+                            ? const Color(0xFF16A34A).withOpacity(0.1)
+                            : AppColors.primary.withOpacity(0.08),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                     ),
@@ -805,9 +805,9 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.12),
+            color: Colors.white.withOpacity(0.12),
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+            border: Border.all(color: Colors.white.withOpacity(0.2)),
           ),
           child: Text(
             value.padLeft(2, '0'),
@@ -860,7 +860,7 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.08),
+              color: AppColors.primary.withOpacity(0.08),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(icon, size: 16, color: AppColors.primary),

@@ -139,7 +139,7 @@ class ChurchThemeService extends ChangeNotifier {
     final colorScheme = ColorScheme.light(
       primary: primary,
       onPrimary: Colors.white,
-      primaryContainer: primary.withValues(alpha: 0.12),
+      primaryContainer: primary.withOpacity(0.12),
       onPrimaryContainer: primary,
       secondary: AppColors.gold,
       onSecondary: Colors.white,
@@ -167,7 +167,7 @@ class ChurchThemeService extends ChangeNotifier {
         ),
         titleTextStyle: AppTypography.titleMedium(color: AppColors.textPrimary),
       ),
-      cardTheme: CardThemeData(
+      cardTheme: CardTheme(
         color: AppColors.surface,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -246,7 +246,7 @@ class ChurchThemeService extends ChangeNotifier {
     final colorScheme = ColorScheme.dark(
       primary: primary,
       onPrimary: Colors.white,
-      primaryContainer: primary.withValues(alpha: 0.25),
+      primaryContainer: primary.withOpacity(0.25),
       onPrimaryContainer: Colors.white,
       secondary: AppColors.goldLight,
       onSecondary: Colors.black,
@@ -279,7 +279,7 @@ class ChurchThemeService extends ChangeNotifier {
           color: Colors.white,
         ),
       ),
-      cardTheme: CardThemeData(
+      cardTheme: CardTheme(
         color: darkSurface,
         elevation: 0,
         shape: RoundedRectangleBorder(

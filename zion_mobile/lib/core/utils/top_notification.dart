@@ -177,7 +177,7 @@ class _TopAlertWidgetState extends State<_TopAlertWidget> with SingleTickerProvi
                 border: Border.all(color: widget.borderColor, width: 1.4),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.35),
+                    color: Colors.black.withOpacity(0.35),
                     blurRadius: 18,
                     offset: const Offset(0, 8),
                   ),
@@ -189,7 +189,7 @@ class _TopAlertWidgetState extends State<_TopAlertWidget> with SingleTickerProvi
                     width: 38,
                     height: 38,
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.15),
+                      color: Colors.white.withOpacity(0.15),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(widget.icon, color: Colors.white, size: 22),
@@ -215,7 +215,7 @@ class _TopAlertWidgetState extends State<_TopAlertWidget> with SingleTickerProvi
                           Text(
                             widget.message!,
                             style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.9),
+                              color: Colors.white.withOpacity(0.9),
                               fontSize: 11.5,
                             ),
                             maxLines: 2,
@@ -231,7 +231,7 @@ class _TopAlertWidgetState extends State<_TopAlertWidget> with SingleTickerProvi
                     child: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.1),
+                        color: Colors.white.withOpacity(0.1),
                         shape: BoxShape.circle,
                       ),
                       child: const Icon(Icons.close_rounded, size: 16, color: Colors.white70),

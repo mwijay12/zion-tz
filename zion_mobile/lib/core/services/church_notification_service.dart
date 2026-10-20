@@ -56,7 +56,7 @@ class ChurchNotificationService {
       );
 
       await _notificationsPlugin.initialize(
-        settings: initSettings,
+        initSettings,
         onDidReceiveNotificationResponse: (details) {
           debugPrint('Notification clicked: ${details.payload}, actionId: ${details.actionId}');
           if (details.actionId == 'action_play_pause') {
@@ -143,10 +143,10 @@ class ChurchNotificationService {
       const notificationDetails = NotificationDetails(android: androidDetails);
 
       await _notificationsPlugin.show(
-        id: id,
-        title: title,
-        body: body,
-        notificationDetails: notificationDetails,
+        id,
+        title,
+        body,
+        notificationDetails,
         payload: payload,
       );
     } catch (e) {
@@ -235,10 +235,10 @@ class ChurchNotificationService {
       final notificationDetails = NotificationDetails(android: androidDetails);
 
       await _notificationsPlugin.show(
-        id: mediaNotificationId,
-        title: title,
-        body: '${isPlaying ? "Inacheza sasa" : "Imesimamishwa"} • $subtitle',
-        notificationDetails: notificationDetails,
+        mediaNotificationId,
+        title,
+        '${isPlaying ? "Inacheza sasa" : "Imesimamishwa"} • $subtitle',
+        notificationDetails,
         payload: 'media_player',
       );
     } catch (e) {
@@ -248,7 +248,7 @@ class ChurchNotificationService {
 
   Future<void> hideMediaNotification() async {
     try {
-      await _notificationsPlugin.cancel(id: mediaNotificationId);
+      await _notificationsPlugin.cancel(mediaNotificationId);
     } catch (_) {}
   }
 }

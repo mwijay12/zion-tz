@@ -90,9 +90,9 @@ Ubarikiwe na Mungu wa Sayuni!
                   width: 38,
                   height: 38,
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.15),
+                    color: Colors.white.withOpacity(0.15),
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+                    border: Border.all(color: Colors.white.withOpacity(0.3)),
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: Image.asset(
@@ -198,19 +198,19 @@ Ubarikiwe na Mungu wa Sayuni!
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.gold.withValues(alpha: 0.35),
-                          Colors.white.withValues(alpha: 0.15),
+                          AppColors.gold.withOpacity(0.35),
+                          Colors.white.withOpacity(0.15),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       border: Border.all(
-                        color: AppColors.goldLight.withValues(alpha: 0.75),
+                        color: AppColors.goldLight.withOpacity(0.75),
                         width: 1.5,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.gold.withValues(alpha: 0.25),
+                          color: AppColors.gold.withOpacity(0.25),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -309,13 +309,13 @@ Ubarikiwe na Mungu wa Sayuni!
         ),
         border: Border(
           bottom: BorderSide(
-            color: AppColors.gold.withValues(alpha: 0.45),
+            color: AppColors.gold.withOpacity(0.45),
             width: 1.3,
           ),
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF07192F).withValues(alpha: 0.3),
+            color: const Color(0xFF07192F).withOpacity(0.3),
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -330,9 +330,9 @@ Ubarikiwe na Mungu wa Sayuni!
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.gold.withValues(alpha: 0.18),
+                  color: AppColors.gold.withOpacity(0.18),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.gold.withValues(alpha: 0.45)),
+                  border: Border.all(color: AppColors.gold.withOpacity(0.45)),
                 ),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
@@ -354,9 +354,9 @@ Ubarikiwe na Mungu wa Sayuni!
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3.5),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.1),
+                  color: Colors.white.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+                  border: Border.all(color: Colors.white.withOpacity(0.18)),
                 ),
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
@@ -391,7 +391,7 @@ Ubarikiwe na Mungu wa Sayuni!
             'Ibada, Neno la Uzima, na Ushirika wa Sayuni',
             style: TextStyle(
               fontSize: 13,
-              color: Colors.white.withValues(alpha: 0.85),
+              color: Colors.white.withOpacity(0.85),
             ),
           ),
           const SizedBox(height: 12),
@@ -417,7 +417,7 @@ Ubarikiwe na Mungu wa Sayuni!
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.18),
+                    color: Colors.black.withOpacity(0.18),
                     blurRadius: 14,
                     offset: const Offset(0, 4),
                   ),
@@ -444,7 +444,7 @@ Ubarikiwe na Mungu wa Sayuni!
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
+                      color: AppColors.primary.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Row(
@@ -481,7 +481,7 @@ Ubarikiwe na Mungu wa Sayuni!
         final primaryColor = ChurchThemeService().primaryColor;
 
         return AppCard(
-          borderColor: AppColors.gold.withValues(alpha: 0.5),
+          borderColor: AppColors.gold.withOpacity(0.5),
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -494,7 +494,7 @@ Ubarikiwe na Mungu wa Sayuni!
                       border: Border.all(color: AppColors.gold, width: 2),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.gold.withValues(alpha: 0.25),
+                          color: AppColors.gold.withOpacity(0.25),
                           blurRadius: 8,
                           offset: const Offset(0, 2),
                         ),
@@ -517,7 +517,7 @@ Ubarikiwe na Mungu wa Sayuni!
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
-                            color: AppColors.gold.withValues(alpha: 0.15),
+                            color: AppColors.gold.withOpacity(0.15),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: const Text(
@@ -621,7 +621,7 @@ Ubarikiwe na Mungu wa Sayuni!
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.12),
+              color: AppColors.primary.withOpacity(0.12),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.schedule_rounded, color: AppColors.primary, size: 24),
@@ -787,7 +787,7 @@ Ubarikiwe na Mungu wa Sayuni!
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: accentColor.withValues(alpha: 0.12),
+              color: accentColor.withOpacity(0.12),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Icon(icon, color: accentColor, size: 22),
@@ -841,9 +841,9 @@ Ubarikiwe na Mungu wa Sayuni!
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF10B981).withValues(alpha: 0.15),
+                      color: const Color(0xFF10B981).withOpacity(0.15),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: const Color(0xFF10B981).withValues(alpha: 0.3)),
+                      border: Border.all(color: const Color(0xFF10B981).withOpacity(0.3)),
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
@@ -939,9 +939,9 @@ Ubarikiwe na Mungu wa Sayuni!
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryContainer.withValues(alpha: 0.35),
+                  color: AppColors.primaryContainer.withOpacity(0.35),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+                  border: Border.all(color: AppColors.primary.withOpacity(0.3)),
                 ),
                 child: Row(
                   children: [

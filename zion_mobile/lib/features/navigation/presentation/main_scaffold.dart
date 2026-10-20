@@ -82,7 +82,7 @@ class _MainScaffoldState extends State<MainScaffold> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.12),
+                color: AppColors.primary.withOpacity(0.12),
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.church_rounded, color: AppColors.primary, size: 22),
@@ -160,7 +160,7 @@ class _MainScaffoldState extends State<MainScaffold> {
                   border: Border.all(color: AppColors.gold, width: 1.5),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.45),
+                      color: AppColors.primary.withOpacity(0.45),
                       blurRadius: 20,
                       offset: const Offset(0, 8),
                       spreadRadius: 2,
@@ -175,9 +175,9 @@ class _MainScaffoldState extends State<MainScaffold> {
                       width: 42,
                       height: 42,
                       decoration: BoxDecoration(
-                        color: AppColors.gold.withValues(alpha: 0.2),
+                        color: AppColors.gold.withOpacity(0.2),
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.gold.withValues(alpha: 0.5)),
+                        border: Border.all(color: AppColors.gold.withOpacity(0.5)),
                       ),
                       child: const Center(
                         child: Icon(
@@ -239,7 +239,7 @@ class _MainScaffoldState extends State<MainScaffold> {
                           Text(
                             notice.summary.isNotEmpty ? notice.summary : notice.fullDetails,
                             style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.85),
+                              color: Colors.white.withOpacity(0.85),
                               fontSize: 11,
                             ),
                             maxLines: 1,
@@ -285,7 +285,7 @@ class _MainScaffoldState extends State<MainScaffold> {
                       child: Container(
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.1),
+                          color: Colors.white.withOpacity(0.1),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(Icons.close_rounded, size: 16, color: Colors.white70),

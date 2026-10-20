@@ -71,15 +71,15 @@ class _BookHubScreenState extends State<BookHubScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: AppColors.surface.withValues(alpha: 0.88),
+                      color: AppColors.surface.withOpacity(0.88),
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
-                        color: AppColors.primary.withValues(alpha: 0.16),
+                        color: AppColors.primary.withOpacity(0.16),
                         width: 1.1,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.08),
+                          color: AppColors.primary.withOpacity(0.08),
                           blurRadius: 16,
                           offset: const Offset(0, 4),
                         ),
@@ -108,7 +108,7 @@ class _BookHubScreenState extends State<BookHubScreen> {
                                 boxShadow: isSelected
                                     ? [
                                         BoxShadow(
-                                          color: AppColors.primary.withValues(alpha: 0.35),
+                                          color: AppColors.primary.withOpacity(0.35),
                                           blurRadius: 8,
                                           offset: const Offset(0, 2),
                                         ),

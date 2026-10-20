@@ -185,9 +185,9 @@ class _BibleScreenState extends State<BibleScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.08),
+                  color: AppColors.primary.withOpacity(0.08),
                   borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                  border: Border.all(color: AppColors.primary.withOpacity(0.2)),
                 ),
                 child: Text(
                   '📖 $ref\n"${verse.verseText}"',
@@ -823,7 +823,7 @@ class _BibleScreenState extends State<BibleScreen> {
                   Expanded(
                     child: ListView.separated(
                       itemCount: filtered.length,
-                      separatorBuilder: (_, _) => const Divider(height: 1),
+                      separatorBuilder: (context, index) => const Divider(height: 1),
                       itemBuilder: (context, idx) {
                         final hymn = filtered[idx];
                         final isSel = _selectedTenzi?.number == hymn.number;
@@ -1045,13 +1045,13 @@ class _BibleScreenState extends State<BibleScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: _isCurrentChapterDownloaded
-                              ? const Color(0xFF16A34A).withValues(alpha: 0.12)
-                              : AppColors.primary.withValues(alpha: 0.08),
+                              ? const Color(0xFF16A34A).withOpacity(0.12)
+                              : AppColors.primary.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                             color: _isCurrentChapterDownloaded
-                                ? const Color(0xFF16A34A).withValues(alpha: 0.3)
-                                : AppColors.primary.withValues(alpha: 0.2),
+                                ? const Color(0xFF16A34A).withOpacity(0.3)
+                                : AppColors.primary.withOpacity(0.2),
                           ),
                         ),
                         child: Row(
@@ -1113,22 +1113,22 @@ class _BibleScreenState extends State<BibleScreen> {
                     final isDark = ChurchThemeService().isDarkMode;
                     Color? verseBg;
                     if (isSpeaking) {
-                      verseBg = AppColors.primaryContainer.withValues(alpha: isDark ? 0.4 : 0.2);
+                      verseBg = AppColors.primaryContainer.withOpacity(isDark ? 0.4 : 0.2);
                     } else if (isSelected) {
-                      verseBg = AppColors.primary.withValues(alpha: isDark ? 0.25 : 0.12);
+                      verseBg = AppColors.primary.withOpacity(isDark ? 0.25 : 0.12);
                     } else if (hlIndex != null) {
                       switch (hlIndex) {
                         case 0:
-                          verseBg = isDark ? const Color(0xFF78350F).withValues(alpha: 0.45) : const Color(0xFFFEF3C7);
+                          verseBg = isDark ? const Color(0xFF78350F).withOpacity(0.45) : const Color(0xFFFEF3C7);
                           break;
                         case 1:
-                          verseBg = isDark ? const Color(0xFF064E3B).withValues(alpha: 0.45) : const Color(0xFFD1FAE5);
+                          verseBg = isDark ? const Color(0xFF064E3B).withOpacity(0.45) : const Color(0xFFD1FAE5);
                           break;
                         case 2:
-                          verseBg = isDark ? const Color(0xFF1E3A8A).withValues(alpha: 0.45) : const Color(0xFFDBEAFE);
+                          verseBg = isDark ? const Color(0xFF1E3A8A).withOpacity(0.45) : const Color(0xFFDBEAFE);
                           break;
                         case 3:
-                          verseBg = isDark ? const Color(0xFF881337).withValues(alpha: 0.45) : const Color(0xFFFFE4E6);
+                          verseBg = isDark ? const Color(0xFF881337).withOpacity(0.45) : const Color(0xFFFFE4E6);
                           break;
                       }
                     }
@@ -1160,7 +1160,7 @@ class _BibleScreenState extends State<BibleScreen> {
                                 : isSelected
                                     ? AppColors.primary
                                     : (hlIndex != null
-                                        ? AppColors.gold.withValues(alpha: 0.3)
+                                        ? AppColors.gold.withOpacity(0.3)
                                         : Colors.transparent),
                             width: isSpeaking ? 2 : (isSelected ? 1.5 : (hlIndex != null ? 1 : 0)),
                           ),
@@ -1273,13 +1273,13 @@ class _BibleScreenState extends State<BibleScreen> {
         elevation: 12,
         borderRadius: BorderRadius.circular(20),
         color: AppColors.surface,
-        shadowColor: Colors.black.withValues(alpha: 0.35),
+        shadowColor: Colors.black.withOpacity(0.35),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: AppColors.primary.withValues(alpha: 0.3),
+              color: AppColors.primary.withOpacity(0.3),
               width: 1.5,
             ),
           ),
@@ -1293,7 +1293,7 @@ class _BibleScreenState extends State<BibleScreen> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.12),
+                      color: AppColors.primary.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -1431,7 +1431,7 @@ class _BibleScreenState extends State<BibleScreen> {
           ),
           boxShadow: [
             BoxShadow(
-              color: color.withValues(alpha: 0.4),
+              color: color.withOpacity(0.4),
               blurRadius: 4,
               offset: const Offset(0, 1),
             ),
@@ -1601,7 +1601,7 @@ class _BibleScreenState extends State<BibleScreen> {
                   padding: const EdgeInsets.all(16),
                   margin: const EdgeInsets.only(top: 8, bottom: 24),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.06),
+                    color: AppColors.primary.withOpacity(0.06),
                     borderRadius: BorderRadius.circular(12),
                     border: const Border(
                       left: BorderSide(color: AppColors.primary, width: 4),
@@ -1653,7 +1653,7 @@ class _BibleScreenState extends State<BibleScreen> {
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.3),
+              color: Colors.black.withOpacity(0.3),
               blurRadius: 16,
               offset: const Offset(0, 6),
             ),

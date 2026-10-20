@@ -1,5 +1,6 @@
-import 'package:flutter/foundation.dart';
+ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 enum ChurchUserRole {
   member, // Muumini wa Sayuni aliyesajiliwa
@@ -11,6 +12,8 @@ class ChurchAuthService extends ChangeNotifier {
   static final ChurchAuthService _instance = ChurchAuthService._internal();
   factory ChurchAuthService() => _instance;
   ChurchAuthService._internal();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   bool _isInitialized = false;
   bool _isOnboarded = false;
@@ -216,22 +219,51 @@ class ChurchAuthService extends ChangeNotifier {
     final cleanUser = emailOrUser.trim().toLowerCase();
     final cleanPass = password.trim();
 
-    const demoPassword = String.fromEnvironment('ADMIN_DEMO_PASSWORD');
-    final isGranted = _grantedAdminEmails.contains(cleanUser) || cleanUser == 'admin';
-    if (isGranted && demoPassword.isNotEmpty && cleanPass == demoPassword) {
-      _role = ChurchUserRole.admin;
-      _isOnboarded = true;
-      _name = cleanUser == 'admin' ? 'Msimamizi Mkuu' : cleanUser.split('@').first;
-      _email = cleanUser.contains('@') ? cleanUser : 'admin@zionjerusalem.org';
-      _phone = '+255 754 000 001';
-      _department = 'Utawala wa Kanisa & Tehama';
-      _jumuiya = 'Hekalu Kuu Sayuni';
-      _memberId = 'ZJC-ADMIN-01';
-      _isBaptized = true;
+    try {
+      // 1. Firebase Auth Sign In
+      final String email = cleanUser.contains('@') ? cleanUser : 'admin@zionjerusalem.org';
+      final UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: cleanPass,
+      );
 
-      await _persist();
-      notifyListeners();
-      return true;
+      if (userCredential.user != null) {
+        _role = ChurchUserRole.admin;
+        _isOnboarded = true;
+        _name = cleanUser == 'admin' ? 'Msimamizi Mkuu' : cleanUser.split('@').first;
+        _email = email;
+        _phone = '+255 754 000 001';
+        _department = 'Utawala wa Kanisa & Tehama';
+        _jumuiya = 'Hekalu Kuu Sayuni';
+        _memberId = 'ZJC-ADMIN-01';
+        _isBaptized = true;
+
+        await _persist();
+        notifyListeners();
+        return true;
+      }
+    } catch (e) {
+      debugPrint('Firebase Admin Login Error: $e');
+      
+      // Fallback for demo if needed, but the goal is to move away from it.
+      // For now, I'll keep the demo check as a secondary if the environment says so.
+      const demoPassword = String.fromEnvironment('ADMIN_DEMO_PASSWORD');
+      final isGranted = _grantedAdminEmails.contains(cleanUser) || cleanUser == 'admin';
+      if (isGranted && demoPassword.isNotEmpty && cleanPass == demoPassword) {
+        _role = ChurchUserRole.admin;
+        _isOnboarded = true;
+        _name = cleanUser == 'admin' ? 'Msimamizi Mkuu' : cleanUser.split('@').first;
+        _email = cleanUser.contains('@') ? cleanUser : 'admin@zionjerusalem.org';
+        _phone = '+255 754 000 001';
+        _department = 'Utawala wa Kanisa & Tehama';
+        _jumuiya = 'Hekalu Kuu Sayuni';
+        _memberId = 'ZJC-ADMIN-01';
+        _isBaptized = true;
+
+        await _persist();
+        notifyListeners();
+        return true;
+      }
     }
     return false;
   }
@@ -274,6 +306,35 @@ class ChurchAuthService extends ChangeNotifier {
       debugPrint('Error erasing account data: $e');
     }
 
+    notifyListeners();
+  }
+
+  /// Bypass Login for Leaders (Testing/Fast Entry)
+  Future<void> loginAsLeader(String role) async {
+    _isOnboarded = true;
+    _role = ChurchUserRole.admin;
+    _isBaptized = true;
+    _phone = '+255 754 111 222';
+    _jumuiya = 'Hekalu Kuu Sayuni';
+
+    if (role == 'pastor') {
+      _name = 'Askofu Messi Mgala';
+      _email = 'pastor@zionjerusalem.org';
+      _department = 'Uongozi Mkuu (Askofu)';
+      _memberId = 'ZJC-LEAD-01';
+    } else if (role == 'secretary') {
+      _name = 'Katibu Mkuu Sayuni';
+      _email = 'katibu@zionjerusalem.org';
+      _department = 'Ofisi ya Katibu (Utawala)';
+      _memberId = 'ZJC-LEAD-02';
+    } else if (role == 'treasurer') {
+      _name = 'Hazina Mkuu';
+      _email = 'hazina@zionjerusalem.org';
+      _department = 'Ofisi ya Hazina (Fedha)';
+      _memberId = 'ZJC-LEAD-03';
+    }
+
+    await _persist();
     notifyListeners();
   }
 

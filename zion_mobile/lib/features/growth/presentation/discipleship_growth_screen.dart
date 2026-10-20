@@ -183,7 +183,7 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF0A2540).withValues(alpha: 0.25),
+                  color: const Color(0xFF0A2540).withOpacity(0.25),
                   blurRadius: 16,
                   offset: const Offset(0, 6),
                 ),
@@ -201,7 +201,7 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
                       child: CircularProgressIndicator(
                         value: progress,
                         strokeWidth: 8,
-                        backgroundColor: Colors.white.withValues(alpha: 0.15),
+                        backgroundColor: Colors.white.withOpacity(0.15),
                         valueColor: const AlwaysStoppedAnimation<Color>(AppColors.goldLight),
                       ),
                     ),
@@ -318,7 +318,7 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
                           boxShadow: [
                             if (isCompleted)
                               BoxShadow(
-                                color: const Color(0xFF16A34A).withValues(alpha: 0.3),
+                                color: const Color(0xFF16A34A).withOpacity(0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),
@@ -335,7 +335,7 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
                       Container(
                         width: 2,
                         height: 70,
-                        color: isCompleted ? const Color(0xFF16A34A).withValues(alpha: 0.5) : AppColors.border,
+                        color: isCompleted ? const Color(0xFF16A34A).withOpacity(0.5) : AppColors.border,
                       ),
                   ],
                 ),
@@ -347,7 +347,7 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
                     padding: const EdgeInsets.only(bottom: 14),
                     child: AppCard(
                       borderColor: isCompleted
-                          ? const Color(0xFF16A34A).withValues(alpha: 0.3)
+                          ? const Color(0xFF16A34A).withOpacity(0.3)
                           : AppColors.border,
                       padding: const EdgeInsets.all(14),
                       child: Column(
@@ -366,8 +366,8 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
                               ),
                               Switch(
                                 value: isCompleted,
-                                activeThumbColor: const Color(0xFF16A34A),
-                                activeTrackColor: const Color(0xFF16A34A).withValues(alpha: 0.5),
+                                thumbColor: WidgetStatePropertyAll( const Color(0xFF16A34A)),
+                                activeTrackColor: const Color(0xFF16A34A).withOpacity(0.5),
                                 onChanged: (_) => _toggleMilestone(idx),
                               ),
                             ],

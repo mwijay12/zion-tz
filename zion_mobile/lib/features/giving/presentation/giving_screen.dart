@@ -107,7 +107,7 @@ class _GivingScreenState extends State<GivingScreen> {
                     ),
                     const SizedBox(height: 14),
                     DropdownButtonFormField<String>(
-                      initialValue: selectedCategory,
+                      value: selectedCategory,
                       decoration: const InputDecoration(labelText: 'Aina ya Utoaji'),
                       items: const [
                         DropdownMenuItem(value: 'Sadaka ya Jumapili', child: Text('Sadaka ya Jumapili')),
@@ -131,7 +131,7 @@ class _GivingScreenState extends State<GivingScreen> {
                     ),
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
-                      initialValue: selectedChannel,
+                      value: selectedChannel,
                       decoration: const InputDecoration(labelText: 'Njia Uliyotumia'),
                       items: const [
                         DropdownMenuItem(value: 'M-Pesa (5524101)', child: Text('Vodacom M-Pesa (5524101)')),
@@ -333,7 +333,7 @@ class _GivingScreenState extends State<GivingScreen> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: channel.brandColor.withValues(alpha: 0.12),
+                    color: channel.brandColor.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(channel.icon, color: channel.brandColor, size: 22),
@@ -449,7 +449,7 @@ class _GivingScreenState extends State<GivingScreen> {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.gold.withValues(alpha: 0.15),
+              color: AppColors.gold.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.security_rounded, color: AppColors.gold, size: 20),

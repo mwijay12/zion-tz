@@ -2,7 +2,7 @@ rules_version = '2';
 
 // ===============================================================
 // Assumed Data Model & Security Schema
-// Zion Jerusalem Church (Hekalu la Sayuni - Mbagala)
+// Sayuni Jerusalem Church (Hekalu la Sayuni - Mbagala)
 //
 // 1. announcements:
 //    - id: string

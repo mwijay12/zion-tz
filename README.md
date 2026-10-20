@@ -1,8 +1,8 @@
 <div align="center">
-  <img src="./docs/assets/hero.svg" alt="Zion Jerusalem Church: one church, two experiences, a living digital sanctuary" width="100%" />
+  <img src="./docs/assets/hero.svg" alt="Sayuni Jerusalem Church: one church, two experiences, a living digital sanctuary" width="100%" />
 </div>
 
-<h1 align="center">Zion Jerusalem Church</h1>
+<h1 align="center">Sayuni Jerusalem Church</h1>
 
 <p align="center"><strong>A member app and leadership portal for one church family.</strong></p>
 
@@ -56,10 +56,10 @@
 
 ## What this is
 
-Zion Jerusalem Church is a church family in Mbagala, Dar es Salaam. This repository carries two connected products built around the everyday life of that church:
+Sayuni Jerusalem Church is a church family in Mbagala, Dar es Salaam. This repository carries two connected products built around the everyday life of that church:
 
-- **`zion_mobile`** is a Flutter app for members: Bible, hymns, sermons, radio, notes, events, prayer, and spiritual growth.
-- **`zion-portal`** is a React and Vite web portal for pastors and leaders: communication, media, care follow-up, reports, and certificates.
+- **`sayuni`** is a Flutter app for members: Bible, hymns, sermons, radio, notes, events, prayer, and spiritual growth.
+- **`sayuni-portal`** is a React and Vite web portal for pastors and leaders: communication, media, care follow-up, reports, and certificates.
 
 The project is intentionally local in its language and structure. It is Swahili-first, recognises Jumuiya small groups, and is designed for the realities of a congregation that may be on a slow or intermittent connection.
 
@@ -91,7 +91,7 @@ The strongest parts of the project today are the product thinking, the breadth o
 | **Audience** | Congregation and Jumuiya members | Pastors, department heads, Jumuiya leaders, editors |
 | **Platform** | Flutter, Android-first | React SPA, desktop-first and responsive |
 | **Purpose** | Worship, Word, connection, growth | Publishing, care, media, reporting, oversight |
-| **Entry point** | `zion_mobile/lib/main.dart` | `zion-portal/src/main.tsx` |
+| **Entry point** | `sayuni/lib/main.dart` | `sayuni-portal/src/main.tsx` |
 | **Current build** | `dart analyze lib` passes; `flutter test` 7/7 | `npm run build` passes; `npm run lint` passes with warnings |
 | **Backend** | Firestore + bundled assets | Firestore + Cloudinary + optional Gemini TTS |
 | **Known blocker** | Offline downloads and background audio | Authentication and safe writes |
@@ -247,14 +247,14 @@ The target is a server-authoritative system: the client may read and propose cha
 ### Clone
 
 ```bash
-git clone https://github.com/mwijay12/zion-tz.git
-cd zion-tz
+git clone https://github.com/mwijay12/sayuni.git
+cd sayuni
 ```
 
 ### Run the leadership portal
 
 ```bash
-cd zion-portal
+cd sayuni-portal
 npm install
 cp .env.example .env.local
 npm run dev
@@ -269,6 +269,7 @@ The portal login is a UI prototype: choose a role to enter. It does not verify a
 Build and lint:
 
 ```bash
+cd sayuni-portal
 npm run build
 npm run lint
 ```
@@ -276,7 +277,7 @@ npm run lint
 ### Run the member app
 
 ```bash
-cd zion_mobile
+cd sayuni
 flutter pub get
 dart analyze lib
 flutter test
@@ -314,13 +315,13 @@ The repository includes Firebase configuration for the existing project. Before 
 
 | Variable or file | Where | Sensitive? | Notes |
 |---|---|---|---|
-| `VITE_CLOUDINARY_CLOUD_NAME` | `zion-portal/.env.local` | No | Public cloud name |
-| `VITE_CLOUDINARY_UPLOAD_PRESET` | `zion-portal/.env.local` | No | Unsigned preset; must be tightly scoped |
-| `VITE_GEMINI_TTS_KEYS` | `zion-portal/.env.local` | Yes | Local prototype only; never expose a key in production |
+| `VITE_CLOUDINARY_CLOUD_NAME` | `sayuni-portal/.env.local` | No | Public cloud name |
+| `VITE_CLOUDINARY_UPLOAD_PRESET` | `sayuni-portal/.env.local` | No | Unsigned preset; must be tightly scoped |
+| `VITE_GEMINI_TTS_KEYS` | `sayuni-portal/.env.local` | Yes | Local prototype only; never expose a key in production |
 | `GEMINI_API_KEY` | `flutter run --dart-define` | Yes | Optional local feature; use a server proxy in production |
 | `ADMIN_DEMO_PASSWORD` | `flutter run --dart-define` | No | Enables the local church-admin demo; recoverable, demo-only, never a real password |
-| `google-services.json` | `zion_mobile/android/app/` | No | Firebase Android configuration |
-| `firebase_options.dart` | `zion_mobile/lib/` | No | Public Firebase client configuration |
+| `google-services.json` | `sayuni/android/app/` | No | Firebase Android configuration |
+| `firebase_options.dart` | `sayuni/lib/` | No | Public Firebase client configuration |
 | `firestore.rules` | Repository root | No | Access control; must be reviewed and tested |
 | `.env.example` | `zion-portal/` | No | Documents required variables without secrets |
 
@@ -336,13 +337,13 @@ Rules for contributors:
 ## Project layout
 
 ```text
-zion-tz/
+sayuni/
 |-- README.md                  This document
 |-- PLAN.md                    Prioritized engineering and product plan
 |-- docs/
 |   `-- assets/
 |       `-- hero.svg           Animated README banner
-|-- zion_mobile/               Flutter member app
+|-- sayuni/               Flutter member app
 |   |-- lib/
 |   |   |-- core/              Services, theme, shared models
 |   |   `-- features/          Bible, hymns, media, radio, notes, growth, navigation
@@ -350,7 +351,7 @@ zion-tz/
 |   |-- android/               Android project and Firebase config
 |   |-- test/                  Flutter tests
 |   `-- pubspec.yaml
-|-- zion-portal/               React leadership portal
+|-- sayuni-portal/               React leadership portal
 |   |-- src/
 |   |   |-- components/        Portal views and print templates
 |   |   |-- services/          Firebase, sync, media, TTS, backup
@@ -399,8 +400,8 @@ Last verified on 20 October 2026.
 |---|---|---|
 | Portal production build | `cd zion-portal && npm run build` | Passes; ~973 kB main JS (~273 kB gzip) |
 | Portal lint | `cd zion-portal && npm run lint` | Passes with 18 warnings |
-| Mobile static analysis | `cd zion_mobile && dart analyze lib` | No issues |
-| Mobile tests | `cd zion_mobile && flutter test` | 7/7 passing |
+| Mobile static analysis | `cd sayuni && dart analyze lib` | No issues |
+| Mobile tests | `cd sayuni && flutter test` | 7/7 passing |
 | Firestore rules tests | Not yet present | Planned in Phase 1 |
 | Portal tests | Not yet present | Planned in Phase 1 and 5 |
 
@@ -485,7 +486,7 @@ If you are reviewing a pull request, ask three questions: can the wrong person a
 
 ## Church and contact
 
-**Zion Jerusalem Church**  
+**Sayuni Jerusalem Church**  
 Mbagala, Dar es Salaam, Tanzania
 
 For repository access, deployment credentials, or church data questions, contact the repository owner or the church's designated technology lead. Do not post member information in a public issue.

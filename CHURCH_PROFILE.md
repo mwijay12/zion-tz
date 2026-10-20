@@ -1,12 +1,12 @@
 # Wasifu Kamili wa Kanisa & Mfumo wa Kidijitali
 
-## Zion Jerusalem Church — Kwa Matope, Mbagala, Dar es Salaam, Tanzania
+## Sayuni Jerusalem Church — Kwa Matope, Mbagala, Dar es Salaam, Tanzania
 
 ---
 
 ## 1. Utambulisho wa Kanisa (Church Identity & Overview)
 
-* **Jina Rasmi**: Zion Jerusalem Church
+* **Jina Rasmi**: Sayuni Jerusalem Church
 * **Eneo & Mahali Lilipo**: Kwa Matope, Mbagala, Dar es Salaam, Tanzania
 * **Dira**: Kujenga kanisa lenye upendo, maombi, neno thabiti la Mungu, na nidhamu ya kiroho na kiutawala kwa kutumia zana za kisasa za kidijitali kuwafikia waumini wote.
 * **Mazingira ya Waumini**: Mchanganyiko wa waumini wenye simu janja (smartphones) na wale wasio na simu kubwa, unaohitaji mfumo unaounganisha teknolojia ya simu (mobile app) na machapisho nadhifu ya karatasi (printable bulletin/PDF summaries) kwa uwazi wa asilimia mia moja.

@@ -83,7 +83,7 @@ replay_pid*.log
 elisha-master/
 flutter_church_app_ui-master/
 
-# Duplicated source design data; the shipped copies live in zion_mobile/assets
+# Duplicated source design data; the shipped copies live in sayuni/assets
 /assets/bible/
 /assets/hymns/
 /assets/stitch_designs/

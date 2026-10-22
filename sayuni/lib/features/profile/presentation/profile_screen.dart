@@ -427,7 +427,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionHeader('MANDHARI & RANGI ZA MBINGUNI (HEAVENLY THEMES)'),
+            _buildSectionHeader('MANDHARI — MWANGA AU GIZA'),
             AppCard(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -453,7 +453,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Hali ya Mwanga (Theme Mode)',
+                              'Hali ya Mwanga',
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
                                 fontSize: 13.5,
@@ -461,11 +461,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                             Text(
-                              themeService.themeMode == ThemeMode.dark
-                                  ? 'Giza (Dark Mode Imewashwa)'
-                                  : (themeService.themeMode == ThemeMode.light
-                                      ? 'Mwanga (Light Mode)'
-                                      : 'Kulingana na Mfumo wa Simu'),
+                              isDark
+                                  ? 'Giza (Dark Mode)'
+                                  : 'Mwanga (Nyeupe) — maandishi yasomeka wazi',
                               style: AppTypography.caption(
                                 color: isDark ? const Color(0xFF94A3B8) : AppColors.textSecondaryLight,
                               ),
@@ -476,180 +474,114 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                   const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF111827) : AppColors.surfaceLowLight,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: isDark ? const Color(0xFF26354A) : AppColors.borderLight,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _buildModeSegment(
+                            label: 'Mwanga',
+                            icon: Icons.light_mode_rounded,
+                            selected: !isDark,
+                            isDark: isDark,
+                            primaryColor: primaryColor,
+                            onTap: () {
+                              AppHaptics.selectionClick();
+                              themeService.setThemeMode(ThemeMode.light);
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: _buildModeSegment(
+                            label: 'Giza',
+                            icon: Icons.dark_mode_rounded,
+                            selected: isDark,
+                            isDark: isDark,
+                            primaryColor: primaryColor,
+                            onTap: () {
+                              AppHaptics.selectionClick();
+                              themeService.setThemeMode(ThemeMode.dark);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: ChoiceChip(
-                          label: const Center(child: Text('Mwanga')),
-                          selected: themeService.themeMode == ThemeMode.light,
-                          selectedColor: primaryColor,
-                          backgroundColor: isDark ? const Color(0xFF1E293B) : AppColors.surfaceLowLight,
-                          side: BorderSide(
-                            color: themeService.themeMode == ThemeMode.light
-                                ? primaryColor
-                                : (isDark ? const Color(0xFF334155) : AppColors.borderLight),
-                          ),
-                          labelStyle: TextStyle(
-                            color: themeService.themeMode == ThemeMode.light
-                                ? Colors.white
-                                : (isDark ? Colors.white70 : AppColors.textPrimaryLight),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                          onSelected: (_) {
-                            AppHaptics.selectionClick();
-                            themeService.setThemeMode(ThemeMode.light);
-                          },
-                        ),
+                      Icon(
+                        Icons.visibility_rounded,
+                        size: 15,
+                        color: isDark ? const Color(0xFF94A3B8) : AppColors.textMutedLight,
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 7),
                       Expanded(
-                        child: ChoiceChip(
-                          label: const Center(child: Text('Giza (Dark)')),
-                          selected: themeService.themeMode == ThemeMode.dark,
-                          selectedColor: primaryColor,
-                          backgroundColor: isDark ? const Color(0xFF1E293B) : AppColors.surfaceLowLight,
-                          side: BorderSide(
-                            color: themeService.themeMode == ThemeMode.dark
-                                ? primaryColor
-                                : (isDark ? const Color(0xFF334155) : AppColors.borderLight),
+                        child: Text(
+                          'Mandhari moja tu: buluu na dhahabu. Maandishi, matafutaji, nyimbo na nyaraka husomeka wazi katika mwanga na katika giza.',
+                          style: AppTypography.caption(
+                            color: isDark ? const Color(0xFF94A3B8) : AppColors.textMutedLight,
                           ),
-                          labelStyle: TextStyle(
-                            color: themeService.themeMode == ThemeMode.dark
-                                ? Colors.white
-                                : (isDark ? Colors.white70 : AppColors.textPrimaryLight),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                          onSelected: (_) {
-                            AppHaptics.selectionClick();
-                            themeService.setThemeMode(ThemeMode.dark);
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: ChoiceChip(
-                          label: const Center(child: Text('Mfumo')),
-                          selected: themeService.themeMode == ThemeMode.system,
-                          selectedColor: primaryColor,
-                          backgroundColor: isDark ? const Color(0xFF1E293B) : AppColors.surfaceLowLight,
-                          side: BorderSide(
-                            color: themeService.themeMode == ThemeMode.system
-                                ? primaryColor
-                                : (isDark ? const Color(0xFF334155) : AppColors.borderLight),
-                          ),
-                          labelStyle: TextStyle(
-                            color: themeService.themeMode == ThemeMode.system
-                                ? Colors.white
-                                : (isDark ? Colors.white70 : AppColors.textPrimaryLight),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                          onSelected: (_) {
-                            AppHaptics.selectionClick();
-                            themeService.setThemeMode(ThemeMode.system);
-                          },
                         ),
                       ),
                     ],
-                  ),
-                  const SizedBox(height: 16),
-                  Divider(height: 1, color: isDark ? const Color(0xFF26354A) : AppColors.borderLight),
-                  const SizedBox(height: 14),
-
-                  // Heavenly Colors Switcher
-                  Text(
-                    'Rangi za Kifalme (${themeService.paletteName}):',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 13,
-                      color: isDark ? Colors.white : AppColors.textPrimaryLight,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: HeavenlyThemePalette.values.map((palette) {
-                      final isSelected = themeService.palette == palette;
-                      Color swatchColor;
-                      String title;
-                      switch (palette) {
-                        case HeavenlyThemePalette.sapphireBlue:
-                          swatchColor = const Color(0xFF0D52CD);
-                          title = 'Buluu & Nyeupe';
-                          break;
-                        case HeavenlyThemePalette.celestialGold:
-                          swatchColor = const Color(0xFFC59B27);
-                          title = 'Dhahabu (Gold)';
-                          break;
-                        case HeavenlyThemePalette.emeraldGrace:
-                          swatchColor = const Color(0xFF0F5132);
-                          title = 'Emerald';
-                          break;
-                        case HeavenlyThemePalette.roseSharon:
-                          swatchColor = const Color(0xFF9D174D);
-                          title = 'Rose Sharon';
-                          break;
-                      }
-
-                      return GestureDetector(
-                        onTap: () {
-                          AppHaptics.selectionClick();
-                          themeService.setPalette(palette);
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? swatchColor.withOpacity(isDark ? 0.28 : 0.15)
-                                : (isDark ? const Color(0xFF1E293B) : AppColors.surfaceLowLight),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: isSelected
-                                  ? swatchColor
-                                  : (isDark ? const Color(0xFF334155) : AppColors.borderLight),
-                              width: isSelected ? 2 : 1,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                width: 16,
-                                height: 16,
-                                decoration: BoxDecoration(
-                                  color: swatchColor,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: isSelected
-                                    ? const Icon(Icons.check_rounded, color: Colors.white, size: 11)
-                                    : null,
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                title,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                                  color: isSelected
-                                      ? swatchColor
-                                      : (isDark ? Colors.white : AppColors.textPrimaryLight),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
                   ),
                 ],
               ),
             ),
           ],
         );
-      },
+       },
+     );
+   }
+
+  Widget _buildModeSegment({
+    required String label,
+    required IconData icon,
+    required bool selected,
+    required bool isDark,
+    required Color primaryColor,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 8),
+        decoration: BoxDecoration(
+          color: selected ? primaryColor : Colors.transparent,
+          borderRadius: BorderRadius.circular(11),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color: selected ? Colors.white : (isDark ? Colors.white70 : AppColors.textSecondaryLight),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w700,
+                color: selected ? Colors.white : (isDark ? Colors.white70 : AppColors.textPrimaryLight),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

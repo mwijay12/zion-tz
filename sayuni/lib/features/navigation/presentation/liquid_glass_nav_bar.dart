@@ -40,6 +40,10 @@ class LiquidGlassNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final pillColors = isDark
+        ? const [Color(0xF5181C23), Color(0xEB1E232A)]
+        : const [Color(0xF2FFFFFF), Color(0xE6EFF6FF)];
     return Padding(
       padding: const EdgeInsets.only(
         left: 12,
@@ -61,10 +65,7 @@ class LiquidGlassNavBar extends StatelessWidget {
                   decoration: BoxDecoration(
                     // Sleek Dark Pill Surface matching #1E232A with subtle Electric Blue trim
                     gradient: LinearGradient(
-                      colors: [
-                        const Color(0xFF181C23).withOpacity(0.96),
-                        const Color(0xFF1E232A).withOpacity(0.92),
-                      ],
+                      colors: pillColors,
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -75,7 +76,7 @@ class LiquidGlassNavBar extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.35),
+                        color: Colors.black.withOpacity(isDark ? 0.35 : 0.10),
                         blurRadius: 24,
                         offset: const Offset(0, 8),
                         spreadRadius: -2,
@@ -98,6 +99,7 @@ class LiquidGlassNavBar extends StatelessWidget {
                         label: item['label'] as String,
                         tooltip: item['tooltip'] as String,
                         isSelected: isSelected,
+                        isDark: isDark,
                       );
                     }),
                   ),
@@ -126,10 +128,7 @@ class LiquidGlassNavBar extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: LinearGradient(
-                        colors: [
-                          const Color(0xFF181C23).withOpacity(0.96),
-                          const Color(0xFF1E232A).withOpacity(0.92),
-                        ],
+                        colors: pillColors,
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -139,7 +138,7 @@ class LiquidGlassNavBar extends StatelessWidget {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.35),
+                          color: Colors.black.withOpacity(isDark ? 0.35 : 0.10),
                           blurRadius: 24,
                           offset: const Offset(0, 8),
                           spreadRadius: -2,
@@ -163,9 +162,9 @@ class LiquidGlassNavBar extends StatelessWidget {
                             width: 1,
                           ),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.grid_view_rounded,
-                          color: AppColors.goldLight,
+                          color: isDark ? AppColors.goldLight : AppColors.goldDark,
                           size: 20,
                         ),
                       ),
@@ -186,6 +185,7 @@ class LiquidGlassNavBar extends StatelessWidget {
     required String label,
     required String tooltip,
     required bool isSelected,
+    required bool isDark,
   }) {
     return Tooltip(
       message: tooltip,
@@ -205,11 +205,13 @@ class LiquidGlassNavBar extends StatelessWidget {
             // Active: Primary Electric Blue (#0D52CD) Highlight
             color: isSelected
                 ? AppColors.primary
-                : Colors.white.withOpacity(0.06),
+                : (isDark
+                    ? Colors.white.withOpacity(0.06)
+                    : AppColors.primary.withOpacity(0.07)),
             border: Border.all(
               color: isSelected
                   ? Colors.white.withOpacity(0.35)
-                  : Colors.white.withOpacity(0.08),
+                  : (isDark ? Colors.white.withOpacity(0.08) : AppColors.borderLight),
               width: isSelected ? 1.4 : 1.0,
             ),
             boxShadow: isSelected
@@ -231,7 +233,7 @@ class LiquidGlassNavBar extends StatelessWidget {
                 size: isSelected ? 21 : 19,
                 color: isSelected
                     ? const Color(0xFFFFFFFF)
-                    : const Color(0xFF94A3B8),
+                    : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF5A6B85)),
               ),
               if (isSelected) ...[
                 const SizedBox(height: 2),

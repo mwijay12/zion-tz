@@ -6,6 +6,9 @@ import 'package:printing/printing.dart';
 import 'package:path_provider/path_provider.dart';
 
 class PDFService {
+  /// Brand gold (#C59B27) for certificates.
+  static const PdfColor brandGold = PdfColor.fromInt(0xFFC59B27);
+
   static final PDFService _instance = PDFService._internal();
   factory PDFService() => _instance;
   PDFService._internal();
@@ -27,7 +30,7 @@ class PDFService {
         build: (pw.Context context) {
           return pw.Container(
             decoration: pw.BoxDecoration(
-              border: pw.Border.all(color: PdfColors.gold, width: 5),
+              border: pw.Border.all(color: PDFService.brandGold, width: 5),
             ),
             padding: const pw.EdgeInsets.all(20),
             child: pw.Column(
@@ -39,7 +42,7 @@ class PDFService {
                 pw.Text('MBAGALA KWA MATOPE, DAR ES SALAAM', 
                     style: pw.TextStyle(fontSize: 16, color: PdfColors.grey700)),
                 pw.SizedBox(height: 30),
-                pw.Divider(color: PdfColors.gold, thickness: 2),
+                pw.Divider(color: PDFService.brandGold, thickness: 2),
                 pw.SizedBox(height: 20),
                 pw.Text('CHETI CHA UBATIZO', 
                     style: pw.TextStyle(fontSize: 32, fontWeight: pw.FontWeight.bold)),
@@ -58,14 +61,14 @@ class PDFService {
                     pw.Column(
                       children: [
                         pw.Text(baptismDate, style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                        pw.Divider(width: 150),
+                        pw.Container(width: 150, height: 1, color: PdfColors.black),
                         pw.Text('Tarehe ya Ubatizo'),
                       ]
                     ),
                     pw.Column(
                       children: [
                         pw.Text(ministerName, style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                        pw.Divider(width: 150),
+                        pw.Container(width: 150, height: 1, color: PdfColors.black),
                         pw.Text('Mchungaji Msimamizi'),
                       ]
                     ),

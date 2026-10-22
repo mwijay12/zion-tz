@@ -53,10 +53,17 @@ class AppCard extends StatelessWidget {
         border: Border.all(color: border, width: 1),
         boxShadow: [
           BoxShadow(
-            color: isDark ? Colors.black.withOpacity(0.4) : AppColors.primaryDark.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: isDark ? Colors.black.withOpacity(0.45) : AppColors.primaryDark.withOpacity(0.06),
+            blurRadius: 18,
+            offset: const Offset(0, 6),
+            spreadRadius: -2,
           ),
+          if (!isDark)
+            BoxShadow(
+              color: AppColors.gold.withOpacity(0.08),
+              blurRadius: 12,
+              offset: const Offset(0, 2),
+            ),
         ],
       ),
       child: DefaultTextStyle.merge(

@@ -65,6 +65,7 @@ class ChurchAudioService extends ChangeNotifier {
         androidNotificationChannelId: 'com.zion.church.audio',
         androidNotificationChannelName: 'Zion Audio Playback',
         androidNotificationOngoing: true,
+        androidNotificationIcon: 'drawable/ic_notification',
         androidStopForegroundOnPause: true,
       ),
     );

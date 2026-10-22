@@ -6,8 +6,9 @@ import '../../../core/services/church_auth_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../core/utils/top_notification.dart';
-import '../../navigation/presentation/main_scaffold.dart';
-import '../../profile/presentation/privacy_policy_screen.dart';
+import '../../../core/widgets/glass_card.dart';
+import '../../../core/widgets/app_card.dart';
+import '../../../core/theme/app_typography.dart';
 
 class OnboardingAuthScreen extends StatefulWidget {
   final VoidCallback? onCompleted;
@@ -346,8 +347,7 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
               ),
               const SizedBox(height: 12),
 
-              // Church Logo
-              // Zion Mascot & Welcome Section
+              // Church Logo - Increased Size for Prominence
               const SizedBox(height: 12),
               TweenAnimationBuilder<double>(
                 tween: Tween<double>(begin: 0.0, end: 1.0),
@@ -360,52 +360,64 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      // Animated Glow Background
+                      // Animated Glow Background (Midnight Sanctuary Theme)
                       Container(
-                        width: 190,
-                        height: 190,
+                        width: 240,
+                        height: 240,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.gold.withOpacity(0.2),
-                              blurRadius: 40,
-                              spreadRadius: 8,
+                              color: AppColors.gold.withOpacity(0.25),
+                              blurRadius: 50,
+                              spreadRadius: 10,
                             ),
                           ],
                         ),
                       ),
-                      // The Mascot (Simba wa Yuda)
+                      // The Church Logo
                       Container(
-                        width: 170,
-                        height: 170,
+                        width: 220,
+                        height: 220,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.gold, width: 3.5),
+                          border: Border.all(color: AppColors.gold, width: 4.5),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 15,
-                              offset: const Offset(0, 8),
+                              color: Colors.black.withOpacity(0.15),
+                              blurRadius: 20,
+                              offset: const Offset(0, 10),
                             ),
                           ],
                         ),
                         clipBehavior: Clip.antiAlias,
-                        child: Image.network(
-                          'https://sc02.alicdn.com/kf/A4bfa57aaae7e48a0ab6ac33942d9da1et.png',
-                          fit: BoxFit.cover,
-                          loadingBuilder: (context, child, progress) {
-                            if (progress == null) return child;
-                            return const Center(child: CircularProgressIndicator(color: AppColors.gold, strokeWidth: 2));
-                          },
+                        child: Image.asset(
+                          'assets/images/zion_logo.png',
+                          fit: BoxFit.contain,
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 24),
+
+              // Featuring Modern Spiritual Tools (3D Icons Preview)
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _build3DIconBadge('assets/images/3d_bible.png', _langService.t(en: 'Bible', sw: 'Biblia')),
+                    _build3DIconBadge('assets/images/3d_praying_hands.png', _langService.t(en: 'Prayer', sw: 'Maombi')),
+                    _build3DIconBadge('assets/images/3d_offering.png', _langService.t(en: 'Offering', sw: 'Sadaka')),
+                    _build3DIconBadge('assets/images/3d_roadmap.png', _langService.t(en: 'Journey', sw: 'Safari')),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
 
               // Animated Welcome Title
               TweenAnimationBuilder<double>(
@@ -472,24 +484,11 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
               ),
               const SizedBox(height: 18),
 
-              // Form Container
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: surfaceColor,
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(
-                    color: isDark ? const Color(0xFF26354A) : AppColors.gold.withOpacity(0.4),
-                    width: 1.2,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(isDark ? 0.3 : 0.06),
-                      blurRadius: 20,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
+              // Form Container (Glassmorphism / Midnight Sanctuary)
+              GlassCard(
+                padding: const EdgeInsets.all(24),
+                tintColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+                borderRadius: 28,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -845,6 +844,32 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
           ],
         ),
       ],
+    );
+  }
+
+  Widget _build3DIconBadge(String assetPath, String label) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Column(
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppColors.primaryDark.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: AppColors.gold.withOpacity(0.3), width: 1),
+            ),
+            child: Image.asset(assetPath, fit: BoxFit.contain),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.gold),
+          ),
+        ],
+      ),
     );
   }
 

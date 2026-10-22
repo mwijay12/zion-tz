@@ -87,22 +87,24 @@ Ubarikiwe na Mungu wa Sayuni!
               title: Row(
               children: [
                 Container(
-                  width: 38,
-                  height: 38,
+                  width: 52,
+                  height: 52,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
+                    color: Colors.white,
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white.withOpacity(0.3)),
+                    border: Border.all(color: AppColors.gold, width: 2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: Image.asset(
                     'assets/images/zion_logo.png',
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => const Icon(
-                      Icons.church_rounded,
-                      color: Colors.white,
-                      size: 20,
-                    ),
+                    fit: BoxFit.contain,
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -664,14 +666,14 @@ Ubarikiwe na Mungu wa Sayuni!
         _buildActionTile(
           title: 'Biblia Takatifu',
           subtitle: 'Agano la Kale & Jipya',
-          icon: Icons.menu_book_rounded,
+          imageAsset: 'assets/images/3d_bible.png',
           accentColor: AppColors.primary,
           onTap: () => widget.onNavigateToTab(3), // Book tab (Biblia, Tenzi, Notes)
         ),
         _buildActionTile(
           title: 'Sadaka & Zaka',
           subtitle: 'M-Pesa, Tigo & Benki',
-          icon: Icons.volunteer_activism_rounded,
+          imageAsset: 'assets/images/3d_offering.png',
           accentColor: AppColors.gold,
           onTap: () {
             AppHaptics.lightImpact();
@@ -684,7 +686,7 @@ Ubarikiwe na Mungu wa Sayuni!
         _buildActionTile(
           title: 'Daftari la Mahubiri',
           subtitle: 'Kumbukumbu za Ibada',
-          icon: Icons.edit_note_rounded,
+          imageAsset: 'assets/images/3d_notes.png',
           accentColor: const Color(0xFF0284C7),
           onTap: () {
             AppHaptics.lightImpact();
@@ -697,7 +699,7 @@ Ubarikiwe na Mungu wa Sayuni!
         _buildActionTile(
           title: 'Vikundi vya Nyumbani',
           subtitle: 'Maombi & Jumuiya',
-          icon: Icons.groups_rounded,
+          imageAsset: 'assets/images/3d_groups.png',
           accentColor: const Color(0xFF16A34A),
           onTap: () => widget.onNavigateToTab(1), // Community tab (Jumuiya, War Room, Branches)
         ),
@@ -717,7 +719,7 @@ Ubarikiwe na Mungu wa Sayuni!
         _buildActionTile(
           title: 'Matawi ya Kanisa',
           subtitle: 'Mikoa 8 & Misheni',
-          icon: Icons.account_balance_rounded,
+          imageAsset: 'assets/images/3d_branches.png',
           accentColor: AppColors.gold,
           onTap: () {
             AppHaptics.lightImpact();
@@ -730,7 +732,7 @@ Ubarikiwe na Mungu wa Sayuni!
         _buildActionTile(
           title: 'Chumba cha Maombi',
           subtitle: 'War Room & Mfungo',
-          icon: Icons.shield_rounded,
+          imageAsset: 'assets/images/3d_praying_hands.png',
           accentColor: const Color(0xFFDC2626),
           onTap: () {
             AppHaptics.lightImpact();
@@ -742,8 +744,8 @@ Ubarikiwe na Mungu wa Sayuni!
         ),
         _buildActionTile(
           title: 'Safari ya Kiroho',
-          subtitle: 'Mti wa Uanafunzi',
-          icon: Icons.trending_up_rounded,
+          subtitle: 'Roadmap ya Uanafunzi',
+          imageAsset: 'assets/images/3d_roadmap.png',
           accentColor: const Color(0xFF059669),
           onTap: () {
             AppHaptics.lightImpact();
@@ -756,7 +758,7 @@ Ubarikiwe na Mungu wa Sayuni!
         _buildActionTile(
           title: 'Miadi ya Kichungaji',
           subtitle: 'Ushauri & Maombi',
-          icon: Icons.calendar_month_rounded,
+          imageAsset: 'assets/images/3d_calendar.png',
           accentColor: AppColors.primary,
           onTap: () {
             AppHaptics.lightImpact();
@@ -773,7 +775,8 @@ Ubarikiwe na Mungu wa Sayuni!
   Widget _buildActionTile({
     required String title,
     required String subtitle,
-    required IconData icon,
+    IconData? icon,
+    String? imageAsset,
     required Color accentColor,
     required VoidCallback onTap,
   }) {
@@ -787,10 +790,12 @@ Ubarikiwe na Mungu wa Sayuni!
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: accentColor.withOpacity(0.12),
+              color: imageAsset != null ? Colors.transparent : accentColor.withOpacity(0.12),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(icon, color: accentColor, size: 22),
+            child: imageAsset != null
+                ? Image.asset(imageAsset, width: 32, height: 32, fit: BoxFit.contain)
+                : Icon(icon, color: accentColor, size: 22),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,

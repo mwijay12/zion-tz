@@ -9,6 +9,8 @@ import '../../../core/utils/top_notification.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../navigation/presentation/main_scaffold.dart';
+import '../../profile/presentation/privacy_policy_screen.dart';
 
 class OnboardingAuthScreen extends StatefulWidget {
   final VoidCallback? onCompleted;

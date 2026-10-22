@@ -362,41 +362,41 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      // Animated Glow Background (Midnight Sanctuary Theme)
+                      // Animated Glow Background (Midnight Sanctuary Theme - Subtle & Modern)
                       Container(
-                        width: 240,
-                        height: 240,
+                        width: 300,
+                        height: 300,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.gold.withOpacity(0.25),
-                              blurRadius: 50,
-                              spreadRadius: 10,
+                              color: AppColors.primary.withOpacity(0.2),
+                              blurRadius: 60,
+                              spreadRadius: 15,
                             ),
                           ],
                         ),
                       ),
-                      // The Church Logo
+                      // The Church Logo - Zoomed and Fitting
                       Container(
-                        width: 220,
-                        height: 220,
+                        width: 280,
+                        height: 280,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.gold, width: 4.5),
+                          border: Border.all(color: AppColors.gold.withOpacity(0.6), width: 5),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.15),
-                              blurRadius: 20,
-                              offset: const Offset(0, 10),
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 25,
+                              offset: const Offset(0, 12),
                             ),
                           ],
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: Image.asset(
                           'assets/images/zion_logo.png',
-                          fit: BoxFit.contain,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ],
@@ -851,24 +851,24 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
 
   Widget _build3DIconBadge(String assetPath, String label) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Column(
         children: [
           Container(
-            width: 60,
-            height: 60,
-            padding: const EdgeInsets.all(8),
+            width: 85,
+            height: 85,
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColors.primaryDark.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.gold.withOpacity(0.3), width: 1),
+              color: AppColors.primaryDark.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: AppColors.gold.withOpacity(0.2), width: 1.2),
             ),
             child: Image.asset(assetPath, fit: BoxFit.contain),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 8),
           Text(
             label,
-            style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.gold),
+            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.gold),
           ),
         ],
       ),

@@ -794,7 +794,7 @@ Ubarikiwe na Mungu wa Sayuni!
               borderRadius: BorderRadius.circular(10),
             ),
             child: imageAsset != null
-                ? Image.asset(imageAsset, width: 32, height: 32, fit: BoxFit.contain)
+                ? Image.asset(imageAsset, width: 54, height: 54, fit: BoxFit.contain)
                 : Icon(icon, color: accentColor, size: 22),
           ),
           Column(

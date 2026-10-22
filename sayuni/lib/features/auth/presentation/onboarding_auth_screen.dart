@@ -377,26 +377,29 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                           ],
                         ),
                       ),
-                      // The Church Logo - Zoomed and Fitting
+                      // The Church Logo - Zoomed and Fitting Perfectly (No yellow edges)
                       Container(
-                        width: 280,
-                        height: 280,
+                        width: 290,
+                        height: 290,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.gold.withOpacity(0.6), width: 5),
+                          border: Border.all(color: AppColors.gold.withOpacity(0.7), width: 5.5),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 25,
-                              offset: const Offset(0, 12),
+                              color: Colors.black.withOpacity(0.25),
+                              blurRadius: 30,
+                              offset: const Offset(0, 15),
                             ),
                           ],
                         ),
                         clipBehavior: Clip.antiAlias,
-                        child: Image.asset(
-                          'assets/images/zion_logo.png',
-                          fit: BoxFit.cover,
+                        child: Transform.scale(
+                          scale: 1.15, // Zooming in to remove unwanted yellow borders from the original asset
+                          child: Image.asset(
+                            'assets/images/zion_logo.png',
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ],
@@ -855,20 +858,27 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
       child: Column(
         children: [
           Container(
-            width: 85,
-            height: 85,
-            padding: const EdgeInsets.all(10),
+            width: 100, // Increased from 85
+            height: 100, // Increased from 85
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: AppColors.primaryDark.withOpacity(0.08),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: AppColors.gold.withOpacity(0.2), width: 1.2),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(color: AppColors.gold.withOpacity(0.3), width: 1.5),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: Image.asset(assetPath, fit: BoxFit.contain),
           ),
           const SizedBox(height: 8),
           Text(
             label,
-            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.gold),
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.gold),
           ),
         ],
       ),

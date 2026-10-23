@@ -25,7 +25,8 @@ class JumuiyaScreen extends StatefulWidget {
   State<JumuiyaScreen> createState() => _JumuiyaScreenState();
 }
 
-class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProviderStateMixin {
+class _JumuiyaScreenState extends State<JumuiyaScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final JumuiyaService _service = JumuiyaService();
   List<PrayerRequestItem> _prayers = [];
@@ -132,7 +133,8 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                           children: [
                             Text(
                               'Wasilisha Ombi la Maombi',
-                              style: AppTypography.headlineMedium(color: AppColors.textPrimary),
+                              style: AppTypography.headlineMedium(
+                                  color: AppColors.textPrimary),
                             ),
                             IconButton(
                               icon: const Icon(Icons.close_rounded),
@@ -160,16 +162,28 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                         const SizedBox(height: 12),
                         DropdownButtonFormField<String>(
                           value: selectedCategory,
-                          decoration: const InputDecoration(labelText: 'Kategoria ya Maombi'),
+                          decoration: const InputDecoration(
+                              labelText: 'Kategoria ya Maombi'),
                           items: const [
-                            DropdownMenuItem(value: 'Uponyaji', child: Text('Uponyaji & Afya')),
-                            DropdownMenuItem(value: 'Familia', child: Text('Familia & Ndoa')),
-                            DropdownMenuItem(value: 'Biashara', child: Text('Kazi, Ajira & Uchumi')),
-                            DropdownMenuItem(value: 'Ukombozi', child: Text('Ukombozi & Vita vya Kiroho')),
-                            DropdownMenuItem(value: 'Shukrani', child: Text('Shukrani kwa Mungu')),
+                            DropdownMenuItem(
+                                value: 'Uponyaji',
+                                child: Text('Uponyaji & Afya')),
+                            DropdownMenuItem(
+                                value: 'Familia',
+                                child: Text('Familia & Ndoa')),
+                            DropdownMenuItem(
+                                value: 'Biashara',
+                                child: Text('Kazi, Ajira & Uchumi')),
+                            DropdownMenuItem(
+                                value: 'Ukombozi',
+                                child: Text('Ukombozi & Vita vya Kiroho')),
+                            DropdownMenuItem(
+                                value: 'Shukrani',
+                                child: Text('Shukrani kwa Mungu')),
                           ],
                           onChanged: (val) {
-                            if (val != null) setModalState(() => selectedCategory = val);
+                            if (val != null)
+                              setModalState(() => selectedCategory = val);
                           },
                         ),
                         const SizedBox(height: 12),
@@ -178,7 +192,8 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                           maxLines: 4,
                           decoration: const InputDecoration(
                             labelText: 'Maelezo ya Maombi *',
-                            hintText: 'Eleza hitaji lako kwa wachungaji na wazee wa maombi...',
+                            hintText:
+                                'Eleza hitaji lako kwa wachungaji na wazee wa maombi...',
                             alignLabelWithHint: true,
                           ),
                         ),
@@ -186,10 +201,11 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                         SwitchListTile(
                           contentPadding: EdgeInsets.zero,
                           title: const Text('Ombi la Siri (Wachungaji Pekee)'),
-                          subtitle: const Text('Litaonekana kwa Askofu na Wazee bila kuwekwa hadharani'),
+                          subtitle: const Text(
+                              'Litaonekana kwa Askofu na Wazee bila kuwekwa hadharani'),
                           value: isConfidential,
-                           thumbColor: WidgetStatePropertyAll(AppColors.primary),
-                           onChanged: (val) {
+                          thumbColor: WidgetStatePropertyAll(AppColors.primary),
+                          onChanged: (val) {
                             setModalState(() => isConfidential = val);
                           },
                         ),
@@ -219,7 +235,8 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                               if (mounted) {
                                 scaffoldMessenger.showSnackBar(
                                   const SnackBar(
-                                    content: Text('Ombi lako la maombi limewasilishwa kwa wachungaji!'),
+                                    content: Text(
+                                        'Ombi lako la maombi limewasilishwa kwa wachungaji!'),
                                     backgroundColor: AppColors.primary,
                                     behavior: SnackBarBehavior.floating,
                                   ),
@@ -243,7 +260,10 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
 
   Widget _buildTabSelector() {
     final tabs = [
-      {'title': 'Vikundi vya Huduma', 'icon': Icons.supervised_user_circle_rounded},
+      {
+        'title': 'Vikundi vya Huduma',
+        'icon': Icons.supervised_user_circle_rounded
+      },
       {'title': 'Jumuiya za Nyumbani', 'icon': Icons.home_work_rounded},
       {'title': 'Maombi Maalum', 'icon': Icons.favorite_rounded},
     ];
@@ -289,7 +309,8 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                       Icon(
                         item['icon'] as IconData,
                         size: 15,
-                        color: isSelected ? Colors.white : AppColors.textSecondary,
+                        color:
+                            isSelected ? Colors.white : AppColors.textSecondary,
                       ),
                       const SizedBox(width: 5),
                       Flexible(
@@ -298,8 +319,11 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 11,
-                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                            color: isSelected ? Colors.white : AppColors.textSecondary,
+                            fontWeight:
+                                isSelected ? FontWeight.w700 : FontWeight.w500,
+                            color: isSelected
+                                ? Colors.white
+                                : AppColors.textSecondary,
                           ),
                         ),
                       ),
@@ -404,216 +428,235 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                   Stack(
                     children: [
                       ClipRRect(
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                        borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(16)),
                         child: Image(
-                          image: getChurchImageProvider(customPhoto, group.imagePath),
+                          image: getChurchImageProvider(
+                              customPhoto, group.imagePath),
                           height: 155,
                           width: double.infinity,
                           fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => Container(
+                          errorBuilder: (context, error, stackTrace) =>
+                              Container(
                             height: 140,
                             color: AppColors.surfaceContainer,
                             child: const Center(
-                              child: Icon(Icons.groups_rounded, size: 48, color: AppColors.primary),
+                              child: Icon(Icons.groups_rounded,
+                                  size: 48, color: AppColors.primary),
                             ),
                           ),
                         ),
                       ),
-                  Positioned.fill(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.black.withOpacity(0.65),
-                            Colors.transparent,
-                            Colors.black.withOpacity(0.75),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 12,
-                    left: 12,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            blurRadius: 6,
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(16)),
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.black.withOpacity(0.65),
+                                Colors.transparent,
+                                Colors.black.withOpacity(0.75),
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
                           ),
-                        ],
-                      ),
-                      child: Text(
-                        group.category,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                  ),
-                  Positioned(
-                    top: 12,
-                    right: 12,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.65),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.white.withOpacity(0.25)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.people_alt_rounded, size: 13, color: AppColors.gold),
-                          const SizedBox(width: 4),
-                          Text(
-                            'Wanachama ${group.membersCount}',
+                      Positioned(
+                        top: 12,
+                        left: 12,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.3),
+                                blurRadius: 6,
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            group.category,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 11,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 12,
-                    left: 14,
-                    right: 14,
-                    child: Text(
-                      group.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black,
-                            blurRadius: 8,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              // Group Details & Leader Information
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      group.description,
-                      style: AppTypography.bodyMedium(color: AppColors.textSecondary),
-                    ),
-                    const SizedBox(height: 12),
-
-                    // Meeting Schedule
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceContainer,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(Icons.event_available_rounded, size: 16, color: AppColors.primary),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              group.meetingSchedule,
-                              style: AppTypography.bodySmall(color: AppColors.textPrimary).copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    // Activities Badges
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 6,
-                      children: group.activities.map((act) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      Positioned(
+                        top: 12,
+                        right: 12,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: AppColors.surfaceLow,
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(color: AppColors.border),
+                            color: Colors.black.withOpacity(0.65),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                                color: Colors.white.withOpacity(0.25)),
                           ),
-                          child: Text(
-                            act,
-                            style: AppTypography.caption(color: AppColors.textMuted),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 14),
-                    const Divider(height: 1),
-                    const SizedBox(height: 12),
-
-                    // Leader & Phone Call Button
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
+                              const Icon(Icons.people_alt_rounded,
+                                  size: 13, color: AppColors.gold),
+                              const SizedBox(width: 4),
                               Text(
-                                group.leaderTitle,
-                                style: AppTypography.caption(color: AppColors.textMuted),
-                              ),
-                              Text(
-                                group.leader,
-                                style: AppTypography.labelLarge(color: AppColors.textPrimary),
+                                'Wanachama ${group.membersCount}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        ElevatedButton.icon(
-                          onPressed: () => _callLeader(group.phone),
-                          icon: const Icon(Icons.call_rounded, size: 16),
-                          label: const Text('Piga Simu'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.surfaceContainer,
-                            foregroundColor: AppColors.primary,
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
+                      ),
+                      Positioned(
+                        bottom: 12,
+                        left: 14,
+                        right: 14,
+                        child: Text(
+                          group.name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black,
+                                blurRadius: 8,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
                           ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // Group Details & Leader Information
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          group.description,
+                          style: AppTypography.bodyMedium(
+                              color: AppColors.textSecondary),
+                        ),
+                        const SizedBox(height: 12),
+
+                        // Meeting Schedule
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceContainer,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.event_available_rounded,
+                                  size: 16, color: AppColors.primary),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  group.meetingSchedule,
+                                  style: AppTypography.bodySmall(
+                                          color: AppColors.textPrimary)
+                                      .copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+
+                        // Activities Badges
+                        Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: group.activities.map((act) {
+                            return Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: AppColors.surfaceLow,
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(color: AppColors.border),
+                              ),
+                              child: Text(
+                                act,
+                                style: AppTypography.caption(
+                                    color: AppColors.textMuted),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 14),
+                        const Divider(height: 1),
+                        const SizedBox(height: 12),
+
+                        // Leader & Phone Call Button
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    group.leaderTitle,
+                                    style: AppTypography.caption(
+                                        color: AppColors.textMuted),
+                                  ),
+                                  Text(
+                                    group.leader,
+                                    style: AppTypography.labelLarge(
+                                        color: AppColors.textPrimary),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ElevatedButton.icon(
+                              onPressed: () => _callLeader(group.phone),
+                              icon: const Icon(Icons.call_rounded, size: 16),
+                              label: const Text('Piga Simu'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.surfaceContainer,
+                                foregroundColor: AppColors.primary,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 8),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
-  },
-);
-}
+  }
 
   Widget _buildCellsList(double bottomInset) {
     final cells = JumuiyaService.homeCells;
@@ -637,11 +680,13 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                   Expanded(
                     child: Text(
                       cell.name,
-                      style: AppTypography.titleMedium(color: AppColors.textPrimary),
+                      style: AppTypography.titleMedium(
+                          color: AppColors.textPrimary),
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: AppColors.surfaceContainer,
                       borderRadius: BorderRadius.circular(8),
@@ -656,28 +701,33 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
               const SizedBox(height: 6),
               Row(
                 children: [
-                  const Icon(Icons.place_rounded, size: 15, color: AppColors.primary),
+                  const Icon(Icons.place_rounded,
+                      size: 15, color: AppColors.primary),
                   const SizedBox(width: 4),
                   Text(
                     cell.area,
-                    style: AppTypography.bodySmall(color: AppColors.textSecondary),
+                    style:
+                        AppTypography.bodySmall(color: AppColors.textSecondary),
                   ),
                 ],
               ),
               const SizedBox(height: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppColors.surfaceLow,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.schedule_rounded, size: 14, color: AppColors.textMuted),
+                    Icon(Icons.schedule_rounded,
+                        size: 14, color: AppColors.textMuted),
                     const SizedBox(width: 6),
                     Text(
                       '${cell.meetingDay} • ${cell.meetingTime}',
-                      style: AppTypography.bodyMedium(color: AppColors.textPrimary),
+                      style: AppTypography.bodyMedium(
+                          color: AppColors.textPrimary),
                     ),
                   ],
                 ),
@@ -693,11 +743,13 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                     children: [
                       Text(
                         'Kiongozi wa Jumuiya',
-                        style: AppTypography.caption(color: AppColors.textMuted),
+                        style:
+                            AppTypography.caption(color: AppColors.textMuted),
                       ),
                       Text(
                         cell.leader,
-                        style: AppTypography.labelLarge(color: AppColors.textPrimary),
+                        style: AppTypography.labelLarge(
+                            color: AppColors.textPrimary),
                       ),
                     ],
                   ),
@@ -708,7 +760,8 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.surfaceContainer,
                       foregroundColor: AppColors.primary,
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 8),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -743,7 +796,8 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                     color: AppColors.primary.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(Icons.favorite_rounded, color: AppColors.primary, size: 22),
+                  child: const Icon(Icons.favorite_rounded,
+                      color: AppColors.primary, size: 22),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -752,11 +806,13 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                     children: [
                       Text(
                         'Una Hitaji la Maombi?',
-                        style: AppTypography.labelLarge(color: AppColors.textPrimary),
+                        style: AppTypography.labelLarge(
+                            color: AppColors.textPrimary),
                       ),
                       Text(
                         'Wachungaji & maombezi wapo tayari kuomba nawe.',
-                        style: AppTypography.caption(color: AppColors.textMuted),
+                        style:
+                            AppTypography.caption(color: AppColors.textMuted),
                       ),
                     ],
                   ),
@@ -764,7 +820,8 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                 ElevatedButton(
                   onPressed: _showSubmitPrayerDialog,
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   ),
                   child: const Text('Wasilisha'),
                 ),
@@ -778,7 +835,8 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
               ? EmptyStateView(
                   icon: Icons.favorite_rounded,
                   title: 'Hakuna Maombi Yaliyotumwa',
-                  description: 'Bofya kitufe cha juu kutuma hitaji lako la maombi kwa wachungaji.',
+                  description:
+                      'Bofya kitufe cha juu kutuma hitaji lako la maombi kwa wachungaji.',
                   actionLabel: 'Wasilisha Hitaji',
                   onAction: _showSubmitPrayerDialog,
                 )
@@ -786,7 +844,8 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                   padding: EdgeInsets.fromLTRB(16, 4, 16, bottomInset),
                   physics: const BouncingScrollPhysics(),
                   itemCount: _prayers.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 10),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 10),
                   itemBuilder: (context, index) {
                     final prayer = _prayers[index];
 
@@ -799,43 +858,51 @@ class _JumuiyaScreenState extends State<JumuiyaScreen> with SingleTickerProvider
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(
                                   color: AppColors.goldContainer,
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: Text(
                                   prayer.category,
-                                  style: AppTypography.caption(color: AppColors.onGoldContainer),
+                                  style: AppTypography.caption(
+                                      color: AppColors.onGoldContainer),
                                 ),
                               ),
                               Text(
                                 AppFormatters.formatSwahiliDate(prayer.date),
-                                style: AppTypography.caption(color: AppColors.textMuted),
+                                style: AppTypography.caption(
+                                    color: AppColors.textMuted),
                               ),
                             ],
                           ),
                           const SizedBox(height: 10),
                           Text(
                             prayer.details,
-                            style: AppTypography.bodyLarge(color: AppColors.textPrimary),
+                            style: AppTypography.bodyLarge(
+                                color: AppColors.textPrimary),
                           ),
                           const SizedBox(height: 8),
                           Row(
                             children: [
-                              Icon(Icons.person_rounded, size: 14, color: AppColors.textMuted),
+                              Icon(Icons.person_rounded,
+                                  size: 14, color: AppColors.textMuted),
                               const SizedBox(width: 4),
                               Text(
                                 'Kutoka: ${prayer.senderName}',
-                                style: AppTypography.caption(color: AppColors.textMuted),
+                                style: AppTypography.caption(
+                                    color: AppColors.textMuted),
                               ),
                               if (prayer.isConfidential) ...[
                                 const SizedBox(width: 10),
-                                const Icon(Icons.lock_rounded, size: 12, color: AppColors.primary),
+                                const Icon(Icons.lock_rounded,
+                                    size: 12, color: AppColors.primary),
                                 const SizedBox(width: 2),
                                 Text(
                                   'Siri',
-                                  style: AppTypography.caption(color: AppColors.primary),
+                                  style: AppTypography.caption(
+                                      color: AppColors.primary),
                                 ),
                               ],
                             ],

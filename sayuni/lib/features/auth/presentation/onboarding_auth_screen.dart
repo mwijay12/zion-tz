@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import '../../../core/constants/church_profile.dart';
 import '../../../core/services/app_language_service.dart';
 import '../../../core/services/church_auth_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../core/utils/top_notification.dart';
 import '../../../core/widgets/glass_card.dart';
-import '../../../core/widgets/app_card.dart';
-import '../../../core/theme/app_typography.dart';
 import '../../navigation/presentation/main_scaffold.dart';
 import '../../profile/presentation/privacy_policy_screen.dart';
 
@@ -25,14 +22,17 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
   final ChurchAuthService _authService = ChurchAuthService();
   final AppLanguageService _langService = AppLanguageService();
 
-  final bool _isDemo = kDebugMode || const bool.fromEnvironment('DEMO_MODE', defaultValue: false);
+  final bool _isDemo = kDebugMode ||
+      const bool.fromEnvironment('DEMO_MODE', defaultValue: false);
 
   int _selectedMode = 0; // 0 = Member, 1 = Guest, 2 = Admin
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _adminEmailController = TextEditingController(text: 'admin@zionjerusalem.org');
-  final TextEditingController _adminPasswordController = TextEditingController();
+  final TextEditingController _adminEmailController =
+      TextEditingController(text: 'admin@zionjerusalem.org');
+  final TextEditingController _adminPasswordController =
+      TextEditingController();
 
   bool _isSubmitting = false;
   bool _obscurePassword = true;
@@ -85,7 +85,8 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
       if (email.isEmpty || password.isEmpty) {
         AppTopAlert.show(
           context,
-          title: _langService.t(en: 'Missing Credentials', sw: 'Vitambulisho Vinakosekana'),
+          title: _langService.t(
+              en: 'Missing Credentials', sw: 'Vitambulisho Vinakosekana'),
           message: _langService.t(
             en: 'Please enter Administrator Email and Password.',
             sw: 'Tafadhali weka barua pepe na nenosiri la Msimamizi.',
@@ -109,7 +110,8 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
       if (success) {
         AppTopAlert.show(
           context,
-          title: _langService.t(en: 'Admin Login Successful', sw: 'Umeingia kama Msimamizi'),
+          title: _langService.t(
+              en: 'Admin Login Successful', sw: 'Umeingia kama Msimamizi'),
           message: _langService.t(
             en: 'Welcome, Church Administrator!',
             sw: 'Karibu Msimamizi Mkuu wa Sayuni!',
@@ -120,7 +122,8 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
       } else {
         AppTopAlert.show(
           context,
-          title: _langService.t(en: 'Invalid Password', sw: 'Nenosiri Si Sahihi'),
+          title:
+              _langService.t(en: 'Invalid Password', sw: 'Nenosiri Si Sahihi'),
           message: _langService.t(
             en: 'Check the administrator credentials and try again.',
             sw: 'Angalia vitambulisho vya msimamizi na ujaribu tena.',
@@ -156,7 +159,8 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
       await _authService.loginAsMember(
         name: name,
         phone: phone.isNotEmpty ? phone : '+255 754 000 000',
-        memberId: 'ZION-${name.hashCode.abs().toString().padLeft(6, '0').substring(0, 5)}',
+        memberId:
+            'ZION-${name.hashCode.abs().toString().padLeft(6, '0').substring(0, 5)}',
         jumuiya: 'Mbagala Kijichi',
       );
     } else {
@@ -172,8 +176,12 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
       AppTopAlert.show(
         context,
         title: _langService.t(
-          en: _selectedMode == 0 ? 'Welcome, Church Member!' : 'Welcome, Honored Guest!',
-          sw: _selectedMode == 0 ? 'Karibu Sayuni, Muumini!' : 'Karibu Sayuni, Mgeni!',
+          en: _selectedMode == 0
+              ? 'Welcome, Church Member!'
+              : 'Welcome, Honored Guest!',
+          sw: _selectedMode == 0
+              ? 'Karibu Sayuni, Muumini!'
+              : 'Karibu Sayuni, Mgeni!',
         ),
         message: '$name (${phone.isNotEmpty ? phone : "Sayuni Cathedral"})',
         type: TopAlertType.success,
@@ -200,12 +208,15 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                 color: const Color(0xFF4285F4).withOpacity(0.15),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.account_circle_rounded, color: Color(0xFF4285F4), size: 24),
+              child: const Icon(Icons.account_circle_rounded,
+                  color: Color(0xFF4285F4), size: 24),
             ),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
-                _langService.t(en: 'Choose Google Account', sw: 'Chagua Akaunti ya Google'),
+                _langService.t(
+                    en: 'Choose Google Account',
+                    sw: 'Chagua Akaunti ya Google'),
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -221,10 +232,15 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
             ListTile(
               leading: const CircleAvatar(
                 backgroundColor: Color(0xFF4285F4),
-                child: Text('M', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                child: Text('M',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold)),
               ),
-              title: const Text('Muumini wa Sayuni', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5)),
-              subtitle: const Text('muumini@zionjerusalem.org', style: TextStyle(fontSize: 12)),
+              title: const Text('Muumini wa Sayuni',
+                  style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5)),
+              subtitle: const Text('muumini@zionjerusalem.org',
+                  style: TextStyle(fontSize: 12)),
               onTap: () => Navigator.pop(ctx, 'muumini@zionjerusalem.org'),
             ),
           ],
@@ -242,7 +258,9 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
       final namePart = chosenAccount.split('@').first.replaceAll('.', ' ');
       await _authService.signInWithGoogle(
         googleEmail: chosenAccount,
-        displayName: _nameController.text.trim().isNotEmpty ? _nameController.text.trim() : namePart,
+        displayName: _nameController.text.trim().isNotEmpty
+            ? _nameController.text.trim()
+            : namePart,
       );
 
       if (!mounted) return;
@@ -250,7 +268,8 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
 
       AppTopAlert.show(
         context,
-        title: _langService.t(en: 'Signed in with Google', sw: 'Umeingia na Google'),
+        title: _langService.t(
+            en: 'Signed in with Google', sw: 'Umeingia na Google'),
         message: chosenAccount,
         type: TopAlertType.success,
       );
@@ -289,7 +308,7 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -298,7 +317,8 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
@@ -322,16 +342,20 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                     },
                     borderRadius: BorderRadius.circular(14),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         color: surfaceColor,
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppColors.primaryLight.withOpacity(0.7), width: 1.2),
+                        border: Border.all(
+                            color: AppColors.primaryLight.withOpacity(0.7),
+                            width: 1.2),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.language_rounded, size: 16, color: AppColors.primary),
+                          const Icon(Icons.language_rounded,
+                              size: 16, color: AppColors.primary),
                           const SizedBox(width: 6),
                           Text(
                             _langService.isEnglish ? 'English' : 'Kiswahili',
@@ -347,10 +371,9 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
 
-              // Church Logo - balanced size, clean blue-toned ring
-              const SizedBox(height: 12),
+              // Church Logo - compact: credentials must be visible without scrolling
               TweenAnimationBuilder<double>(
                 tween: Tween<double>(begin: 0.0, end: 1.0),
                 duration: const Duration(milliseconds: 1000),
@@ -364,15 +387,15 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                     children: [
                       // Soft blue halo only (no heavy gold ring around the logo)
                       Container(
-                        width: 216,
-                        height: 216,
+                        width: 124,
+                        height: 124,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
                               color: AppColors.primary.withOpacity(0.16),
-                              blurRadius: 38,
-                              spreadRadius: 6,
+                              blurRadius: 24,
+                              spreadRadius: 3,
                             ),
                           ],
                         ),
@@ -380,12 +403,14 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                       // The Church Logo - cropped so the gold letter-ring of the
                       // raw asset is hidden and only the blue medallion reads.
                       Container(
-                        width: 168,
-                        height: 168,
+                        width: 104,
+                        height: 104,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.primary.withOpacity(0.22), width: 2.2),
+                          border: Border.all(
+                              color: AppColors.primary.withOpacity(0.22),
+                              width: 1.8),
                           boxShadow: [
                             BoxShadow(
                               color: AppColors.primaryDark.withOpacity(0.18),
@@ -407,23 +432,7 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
-
-              // Featuring Modern Spiritual Tools (3D Icons Preview)
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _build3DIconBadge('assets/images/3d_bible.png', _langService.t(en: 'Bible', sw: 'Biblia')),
-                    _build3DIconBadge('assets/images/3d_praying_hands.png', _langService.t(en: 'Prayer', sw: 'Maombi')),
-                    _build3DIconBadge('assets/images/3d_offering.png', _langService.t(en: 'Offering', sw: 'Sadaka')),
-                    _build3DIconBadge('assets/images/3d_roadmap.png', _langService.t(en: 'Journey', sw: 'Safari')),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
 
               // Animated Welcome Title
               TweenAnimationBuilder<double>(
@@ -435,10 +444,11 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                 child: Column(
                   children: [
                     Text(
-                      _langService.t(en: 'Welcome to Zion', sw: 'Karibu Hekalu la Sayuni'),
+                      _langService.t(
+                          en: 'Welcome to Zion', sw: 'Karibu Hekalu la Sayuni'),
                       style: TextStyle(
                         color: textColor,
-                        fontSize: 26,
+                        fontSize: 23,
                         fontWeight: FontWeight.w900,
                         letterSpacing: -0.5,
                       ),
@@ -460,13 +470,15 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 14),
 
               // Mode Tabs: Member | Guest | Admin
               Container(
                 padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
+                  color: isDark
+                      ? const Color(0xFF1E293B)
+                      : const Color(0xFFE2E8F0),
                   borderRadius: BorderRadius.circular(18),
                 ),
                 child: Row(
@@ -489,11 +501,12 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 18),
+              const SizedBox(height: 14),
 
               // Form Container (Glassmorphism / Midnight Sanctuary)
               GlassCard(
-                padding: const EdgeInsets.all(24),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                 tintColor: isDark ? const Color(0xFF1E293B) : Colors.white,
                 borderRadius: 28,
                 child: Column(
@@ -505,18 +518,28 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                         Icon(
                           _selectedMode == 2
                               ? Icons.admin_panel_settings_rounded
-                              : (_selectedMode == 0 ? Icons.shield_rounded : Icons.explore_rounded),
-                          color: _selectedMode == 2 ? AppColors.primary : AppColors.gold,
+                              : (_selectedMode == 0
+                                  ? Icons.shield_rounded
+                                  : Icons.explore_rounded),
+                          color: _selectedMode == 2
+                              ? AppColors.primary
+                              : AppColors.gold,
                           size: 20,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             _selectedMode == 2
-                                ? _langService.t(en: 'Church Admin Portal', sw: 'Mamlaka ya Usimamizi')
+                                ? _langService.t(
+                                    en: 'Church Admin Portal',
+                                    sw: 'Mamlaka ya Usimamizi')
                                 : (_selectedMode == 0
-                                    ? _langService.t(en: 'Registered Member Details', sw: 'Taarifa za Muumini Aliyesajiliwa')
-                                    : _langService.t(en: 'Welcome, Honored Guest', sw: 'Karibu Hekaluni, Mgeni')),
+                                    ? _langService.t(
+                                        en: 'Registered Member Details',
+                                        sw: 'Taarifa za Muumini Aliyesajiliwa')
+                                    : _langService.t(
+                                        en: 'Welcome, Honored Guest',
+                                        sw: 'Karibu Hekaluni, Mgeni')),
                             style: TextStyle(
                               color: textColor,
                               fontSize: 14,
@@ -531,47 +554,55 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                     if (_selectedMode == 2) ...[
                       _buildAuthField(
                         controller: _adminEmailController,
-                        label: _langService.t(en: 'Admin Email', sw: 'Barua Pepe ya Msimamizi'),
+                        label: _langService.t(
+                            en: 'Admin Email', sw: 'Barua Pepe ya Msimamizi'),
                         hint: 'admin@zionjerusalem.org',
                         icon: Icons.alternate_email_rounded,
                         keyboardType: TextInputType.emailAddress,
                       ),
                       const SizedBox(height: 12),
-
                       _buildAuthField(
                         controller: _adminPasswordController,
-                        label: _langService.t(en: 'Admin Password', sw: 'Nenosiri la Msimamizi'),
+                        label: _langService.t(
+                            en: 'Admin Password', sw: 'Nenosiri la Msimamizi'),
                         hint: '••••••••',
                         icon: Icons.lock_outline_rounded,
                         obscureText: _obscurePassword,
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                            _obscurePassword
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
                             color: AppColors.primary,
                             size: 20,
                           ),
-                          onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                          onPressed: () => setState(
+                              () => _obscurePassword = !_obscurePassword),
                         ),
                       ),
                     ] else ...[
                       // Member & Guest Inputs: STRICTLY Full Name + Phone Number
                       _buildAuthField(
                         controller: _nameController,
-                        label: _langService.t(en: 'Full Name', sw: 'Jina Lako Kamili'),
-                        hint: _langService.t(en: 'e.g. John Peter', sw: 'Mf. Yohana Petro'),
+                        label: _langService.t(
+                            en: 'Full Name', sw: 'Jina Lako Kamili'),
+                        hint: _langService.t(
+                            en: 'e.g. John Peter', sw: 'Mf. Yohana Petro'),
                         icon: Icons.person_outline_rounded,
                       ),
                       const SizedBox(height: 12),
 
                       _buildAuthField(
                         controller: _phoneController,
-                        label: _langService.t(en: 'Phone Number / WhatsApp', sw: 'Namba ya Simu / WhatsApp'),
+                        label: _langService.t(
+                            en: 'Phone Number / WhatsApp',
+                            sw: 'Namba ya Simu / WhatsApp'),
                         hint: '+255 7XX XXX XXX',
                         icon: Icons.phone_outlined,
                         keyboardType: TextInputType.phone,
                       ),
                     ],
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
 
                     // Primary Action Button
                     SizedBox(
@@ -580,49 +611,73 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                       child: ElevatedButton(
                         onPressed: _isSubmitting ? null : _handleSubmit,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _selectedMode == 2 ? AppColors.primary : AppColors.gold,
-                          foregroundColor: _selectedMode == 2 ? Colors.white : const Color(0xFF0F172A),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          backgroundColor: _selectedMode == 2
+                              ? AppColors.primary
+                              : AppColors.gold,
+                          foregroundColor: _selectedMode == 2
+                              ? Colors.white
+                              : const Color(0xFF0F172A),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14)),
                           elevation: 2,
                         ),
                         child: _isSubmitting
                             ? const SizedBox(
                                 width: 20,
                                 height: 20,
-                                child: CircularProgressIndicator(strokeWidth: 2.2, color: Colors.white),
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2.2, color: Colors.white),
                               )
                             : Text(
                                 _selectedMode == 2
-                                    ? _langService.t(en: 'Sign in as Administrator', sw: 'Ingia kama Msimamizi')
+                                    ? _langService.t(
+                                        en: 'Sign in as Administrator',
+                                        sw: 'Ingia kama Msimamizi')
                                     : (_selectedMode == 0
-                                        ? _langService.t(en: 'Continue as Member', sw: 'Ingia kama Muumini')
-                                        : _langService.t(en: 'Explore as Guest', sw: 'Gundua kama Mgeni')),
-                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
+                                        ? _langService.t(
+                                            en: 'Continue as Member',
+                                            sw: 'Ingia kama Muumini')
+                                        : _langService.t(
+                                            en: 'Explore as Guest',
+                                            sw: 'Gundua kama Mgeni')),
+                                style: const TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w800),
                               ),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 10),
 
                     // Divider OR
                     Row(
                       children: [
-                        Expanded(child: Divider(color: isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1))),
+                        Expanded(
+                            child: Divider(
+                                color: isDark
+                                    ? const Color(0xFF334155)
+                                    : const Color(0xFFCBD5E1))),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Text(
                             _langService.t(en: 'OR', sw: 'AU'),
-                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: textMuted),
+                            style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: textMuted),
                           ),
                         ),
-                        Expanded(child: Divider(color: isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1))),
+                        Expanded(
+                            child: Divider(
+                                color: isDark
+                                    ? const Color(0xFF334155)
+                                    : const Color(0xFFCBD5E1))),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 10),
 
                     // Sign in with Google Button
                     SizedBox(
                       width: double.infinity,
-                      height: 48,
+                      height: 46,
                       child: OutlinedButton.icon(
                         onPressed: _isSubmitting ? null : _handleGoogleSignIn,
                         icon: Container(
@@ -633,10 +688,16 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                             color: Color(0xFF4285F4),
                           ),
                           alignment: Alignment.center,
-                          child: const Text('G', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 14)),
+                          child: const Text('G',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: 14)),
                         ),
                         label: Text(
-                          _langService.t(en: 'Sign in with Google', sw: 'Ingia kwa Google'),
+                          _langService.t(
+                              en: 'Sign in with Google',
+                              sw: 'Ingia kwa Google'),
                           style: TextStyle(
                             color: textColor,
                             fontWeight: FontWeight.w800,
@@ -644,21 +705,28 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                           ),
                         ),
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1), width: 1.2),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          side: BorderSide(
+                              color: isDark
+                                  ? const Color(0xFF334155)
+                                  : const Color(0xFFCBD5E1),
+                              width: 1.2),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14)),
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 8),
 
               // Skip Button
               TextButton(
                 onPressed: _handleSkip,
                 child: Text(
-                  _langService.t(en: 'Skip for now • Continue as Guest', sw: 'Ruka kwa sasa • Endelea kama Mgeni'),
+                  _langService.t(
+                      en: 'Skip for now • Continue as Guest',
+                      sw: 'Ruka kwa sasa • Endelea kama Mgeni'),
                   style: const TextStyle(
                     color: AppColors.primary,
                     fontSize: 12.5,
@@ -666,11 +734,10 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 4),
 
               // Easy Access for Leaders during testing
               if (_isDemo) _buildDemoSection(isDark),
-              const SizedBox(height: 12),
+              const SizedBox(height: 6),
 
               // Privacy Policy
               Padding(
@@ -679,19 +746,22 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                   alignment: WrapAlignment.center,
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    const Icon(Icons.shield_outlined, size: 13, color: Color(0xFF64748B)),
+                    const Icon(Icons.shield_outlined,
+                        size: 13, color: Color(0xFF64748B)),
                     const SizedBox(width: 5),
                     Text(
                       _langService.t(
                         en: 'Your privacy is protected (PDPA 2022). ',
                         sw: 'Taarifa zako zinalindwa (PDPA 2022). ',
                       ),
-                      style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                      style: const TextStyle(
+                          fontSize: 11, color: Color(0xFF64748B)),
                     ),
                     GestureDetector(
                       onTap: () => PrivacyPolicyScreen.show(context),
                       child: Text(
-                        _langService.t(en: 'Privacy Policy', sw: 'Sera ya Faragha'),
+                        _langService.t(
+                            en: 'Privacy Policy', sw: 'Sera ya Faragha'),
                         style: const TextStyle(
                           fontSize: 11,
                           color: AppColors.primary,
@@ -739,13 +809,16 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
               Icon(
                 icon,
                 size: 16,
-                color: isSelected ? Colors.white : AppColors.textMutedOf(context),
+                color:
+                    isSelected ? Colors.white : AppColors.textMutedOf(context),
               ),
               const SizedBox(width: 5),
               Text(
                 label,
                 style: TextStyle(
-                  color: isSelected ? Colors.white : AppColors.textSecondaryOf(context),
+                  color: isSelected
+                      ? Colors.white
+                      : AppColors.textSecondaryOf(context),
                   fontSize: 11.5,
                   fontWeight: FontWeight.w800,
                 ),
@@ -768,7 +841,8 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final fieldBg = isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9);
-    final borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1);
+    final borderColor =
+        isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1);
 
     return Container(
       decoration: BoxDecoration(
@@ -810,7 +884,8 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
           focusedBorder: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
       ),
     );
@@ -822,11 +897,15 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(height: 1, width: 30, color: AppColors.primary.withOpacity(0.25)),
+            Container(
+                height: 1,
+                width: 30,
+                color: AppColors.primary.withOpacity(0.25)),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
-                _langService.t(en: 'QUICK DEMO ACCESS', sw: 'INGIA HARAKA (MAJARIBIO)'),
+                _langService.t(
+                    en: 'QUICK DEMO ACCESS', sw: 'INGIA HARAKA (MAJARIBIO)'),
                 style: const TextStyle(
                   color: AppColors.primary,
                   fontSize: 10,
@@ -835,7 +914,10 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                 ),
               ),
             ),
-            Container(height: 1, width: 30, color: AppColors.primary.withOpacity(0.25)),
+            Container(
+                height: 1,
+                width: 30,
+                color: AppColors.primary.withOpacity(0.25)),
           ],
         ),
         const SizedBox(height: 12),
@@ -844,73 +926,43 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
           runSpacing: 10,
           alignment: WrapAlignment.center,
           children: [
-            _buildLeaderButton('Askofu', 'pastor', Icons.account_balance_rounded, AppColors.primary),
-            _buildLeaderButton('Katibu', 'secretary', Icons.description_rounded, Colors.blue),
-            _buildLeaderButton('Hazina', 'treasurer', Icons.account_balance_wallet_rounded, Colors.teal),
-            _buildLeaderButton(_langService.t(en: 'Member', sw: 'Muumini'), 'member', Icons.person_rounded, AppColors.primaryLight),
+            _buildLeaderButton('Askofu', 'pastor',
+                Icons.account_balance_rounded, AppColors.primary),
+            _buildLeaderButton(
+                'Katibu', 'secretary', Icons.description_rounded, Colors.blue),
+            _buildLeaderButton('Hazina', 'treasurer',
+                Icons.account_balance_wallet_rounded, Colors.teal),
+            _buildLeaderButton(_langService.t(en: 'Member', sw: 'Muumini'),
+                'member', Icons.person_rounded, AppColors.primaryLight),
           ],
         ),
       ],
     );
   }
 
-  Widget _build3DIconBadge(String assetPath, String label) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
-        children: [
-          Container(
-            width: 100, // Increased from 85
-            height: 100, // Increased from 85
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: AppColors.primaryLight.withOpacity(0.35), width: 1.4),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Image.asset(assetPath, fit: BoxFit.contain),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimaryLight,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLeaderButton(String label, String role, IconData icon, Color color) {
+  Widget _buildLeaderButton(
+      String label, String role, IconData icon, Color color) {
     return InkWell(
-      onTap: _isSubmitting ? null : () async {
-        setState(() => _isSubmitting = true);
-        AppHaptics.heavyImpact();
-        if (role == 'member') {
-          await _authService.loginAsMember(
-            name: 'Muumini wa Sayuni',
-            phone: '+255 754 000 001',
-            memberId: 'ZION-DEMO1',
-            jumuiya: 'Mbagala Kijichi',
-          );
-        } else {
-          await _authService.loginAsLeader(role);
-        }
-        if (mounted) {
-          setState(() => _isSubmitting = false);
-          _finishAuth();
-        }
-      },
+      onTap: _isSubmitting
+          ? null
+          : () async {
+              setState(() => _isSubmitting = true);
+              AppHaptics.heavyImpact();
+              if (role == 'member') {
+                await _authService.loginAsMember(
+                  name: 'Muumini wa Sayuni',
+                  phone: '+255 754 000 001',
+                  memberId: 'ZION-DEMO1',
+                  jumuiya: 'Mbagala Kijichi',
+                );
+              } else {
+                await _authService.loginAsLeader(role);
+              }
+              if (mounted) {
+                setState(() => _isSubmitting = false);
+                _finishAuth();
+              }
+            },
       borderRadius: BorderRadius.circular(15),
       child: Container(
         width: 75,

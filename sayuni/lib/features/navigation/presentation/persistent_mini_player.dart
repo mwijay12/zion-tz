@@ -37,7 +37,8 @@ class PersistentMiniPlayer extends StatelessWidget {
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [Color(0xFF181C23), Color(0xFF1E232A)],
@@ -71,16 +72,23 @@ class PersistentMiniPlayer extends StatelessWidget {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: AppColors.primary.withOpacity(0.18),
-                          border: Border.all(color: AppColors.primary.withOpacity(0.4), width: 1.2),
+                          border: Border.all(
+                              color: AppColors.primary.withOpacity(0.4),
+                              width: 1.2),
                         ),
                         clipBehavior: Clip.antiAlias,
-                        child: (track.imageUrl != null && track.imageUrl!.isNotEmpty && track.imageUrl!.startsWith('http'))
+                        child: (track.imageUrl != null &&
+                                track.imageUrl!.isNotEmpty &&
+                                track.imageUrl!.startsWith('http'))
                             ? Image.network(
                                 track.imageUrl!,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) => Center(
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Center(
                                   child: Icon(
-                                    track.isLiveRadio ? Icons.radio_rounded : Icons.music_note_rounded,
+                                    track.isLiveRadio
+                                        ? Icons.radio_rounded
+                                        : Icons.music_note_rounded,
                                     color: AppColors.primaryLight,
                                     size: 20,
                                   ),
@@ -88,7 +96,9 @@ class PersistentMiniPlayer extends StatelessWidget {
                               )
                             : Center(
                                 child: Icon(
-                                  track.isLiveRadio ? Icons.radio_rounded : Icons.music_note_rounded,
+                                  track.isLiveRadio
+                                      ? Icons.radio_rounded
+                                      : Icons.music_note_rounded,
                                   color: AppColors.primaryLight,
                                   size: 20,
                                 ),
@@ -107,7 +117,8 @@ class PersistentMiniPlayer extends StatelessWidget {
                                 if (track.isLiveRadio)
                                   Container(
                                     margin: const EdgeInsets.only(right: 6),
-                                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5, vertical: 1),
                                     decoration: BoxDecoration(
                                       color: Colors.redAccent,
                                       borderRadius: BorderRadius.circular(4),
@@ -165,11 +176,14 @@ class PersistentMiniPlayer extends StatelessWidget {
                         IconButton(
                           icon: Icon(
                             Icons.skip_previous_rounded,
-                            color: audio.hasPrevious ? Colors.white : Colors.white38,
+                            color: audio.hasPrevious
+                                ? Colors.white
+                                : Colors.white38,
                             size: 24,
                           ),
                           padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                          constraints:
+                              const BoxConstraints(minWidth: 32, minHeight: 32),
                           onPressed: audio.hasPrevious
                               ? () {
                                   AppHaptics.selectionClick();
@@ -179,12 +193,15 @@ class PersistentMiniPlayer extends StatelessWidget {
                         ),
                         IconButton(
                           icon: Icon(
-                            audio.isPlaying ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded,
+                            audio.isPlaying
+                                ? Icons.pause_circle_filled_rounded
+                                : Icons.play_circle_fill_rounded,
                             color: AppColors.gold,
                             size: 34,
                           ),
                           padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                          constraints:
+                              const BoxConstraints(minWidth: 36, minHeight: 36),
                           onPressed: () {
                             AppHaptics.selectionClick();
                             audio.togglePlayPause();
@@ -193,11 +210,13 @@ class PersistentMiniPlayer extends StatelessWidget {
                         IconButton(
                           icon: Icon(
                             Icons.skip_next_rounded,
-                            color: audio.hasNext ? Colors.white : Colors.white38,
+                            color:
+                                audio.hasNext ? Colors.white : Colors.white38,
                             size: 24,
                           ),
                           padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                          constraints:
+                              const BoxConstraints(minWidth: 32, minHeight: 32),
                           onPressed: audio.hasNext
                               ? () {
                                   AppHaptics.selectionClick();
@@ -214,7 +233,8 @@ class PersistentMiniPlayer extends StatelessWidget {
                           size: 20,
                         ),
                         padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                        constraints:
+                            const BoxConstraints(minWidth: 28, minHeight: 28),
                         onPressed: () {
                           AppHaptics.lightImpact();
                           audio.stop();
@@ -251,8 +271,11 @@ class _FullAudioPlayerSheet extends StatelessWidget {
         final track = audio.currentTrack;
         if (track == null) return const SizedBox.shrink();
 
-        final maxDuration = audio.duration.inSeconds > 0 ? audio.duration.inSeconds.toDouble() : 1.0;
-        final currentPosition = audio.position.inSeconds.toDouble().clamp(0.0, maxDuration);
+        final maxDuration = audio.duration.inSeconds > 0
+            ? audio.duration.inSeconds.toDouble()
+            : 1.0;
+        final currentPosition =
+            audio.position.inSeconds.toDouble().clamp(0.0, maxDuration);
 
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
@@ -264,8 +287,10 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-              border: Border.all(color: AppColors.primary.withOpacity(0.35), width: 1.2),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(32)),
+              border: Border.all(
+                  color: AppColors.primary.withOpacity(0.35), width: 1.2),
               boxShadow: [
                 BoxShadow(
                   color: AppColors.primaryDark.withOpacity(0.5),
@@ -308,13 +333,17 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                     ],
                   ),
                   clipBehavior: Clip.antiAlias,
-                  child: (track.imageUrl != null && track.imageUrl!.isNotEmpty && track.imageUrl!.startsWith('http'))
+                  child: (track.imageUrl != null &&
+                          track.imageUrl!.isNotEmpty &&
+                          track.imageUrl!.startsWith('http'))
                       ? Image.network(
                           track.imageUrl!,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) => Center(
                             child: Icon(
-                              track.isLiveRadio ? Icons.radio_rounded : Icons.graphic_eq_rounded,
+                              track.isLiveRadio
+                                  ? Icons.radio_rounded
+                                  : Icons.graphic_eq_rounded,
                               color: Colors.white,
                               size: 64,
                             ),
@@ -322,7 +351,9 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                         )
                       : Center(
                           child: Icon(
-                            track.isLiveRadio ? Icons.radio_rounded : Icons.graphic_eq_rounded,
+                            track.isLiveRadio
+                                ? Icons.radio_rounded
+                                : Icons.graphic_eq_rounded,
                             color: Colors.white,
                             size: 64,
                           ),
@@ -332,14 +363,17 @@ class _FullAudioPlayerSheet extends StatelessWidget {
 
                 // Live Radio Badge / Audio Type
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: AppColors.gold.withOpacity(0.15),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: AppColors.gold.withOpacity(0.4)),
                   ),
                   child: Text(
-                    track.isLiveRadio ? 'LIVE GOSPEL RADIO • SAYUNI' : 'MAHUBIRI & NYIMBO',
+                    track.isLiveRadio
+                        ? 'LIVE GOSPEL RADIO • SAYUNI'
+                        : 'MAHUBIRI & NYIMBO',
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w800,
@@ -382,7 +416,8 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                       activeTrackColor: AppColors.gold,
                       inactiveTrackColor: Colors.white.withOpacity(0.15),
                       thumbColor: AppColors.gold,
-                      thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+                      thumbShape:
+                          const RoundSliderThumbShape(enabledThumbRadius: 6),
                       trackHeight: 3,
                     ),
                     child: Slider(
@@ -400,11 +435,15 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                       children: [
                         Text(
                           _formatDuration(audio.position),
-                          style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 11),
+                          style: TextStyle(
+                              color: Colors.white.withOpacity(0.5),
+                              fontSize: 11),
                         ),
                         Text(
                           _formatDuration(audio.duration),
-                          style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 11),
+                          style: TextStyle(
+                              color: Colors.white.withOpacity(0.5),
+                              fontSize: 11),
                         ),
                       ],
                     ),
@@ -448,7 +487,8 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                           : null,
                       icon: Icon(
                         Icons.skip_previous_rounded,
-                        color: audio.hasPrevious ? Colors.white : Colors.white24,
+                        color:
+                            audio.hasPrevious ? Colors.white : Colors.white24,
                         size: 34,
                       ),
                       tooltip: 'Wimbo / Redio Iliyopita',
@@ -458,9 +498,11 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                       IconButton(
                         onPressed: () {
                           AppHaptics.lightImpact();
-                          audio.seek(audio.position - const Duration(seconds: 10));
+                          audio.seek(
+                              audio.position - const Duration(seconds: 10));
                         },
-                        icon: const Icon(Icons.replay_10_rounded, color: Colors.white70, size: 26),
+                        icon: const Icon(Icons.replay_10_rounded,
+                            color: Colors.white70, size: 26),
                       ),
                     const SizedBox(width: 8),
                     Container(
@@ -481,7 +523,9 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                       ),
                       child: IconButton(
                         icon: Icon(
-                          audio.isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                          audio.isPlaying
+                              ? Icons.pause_rounded
+                              : Icons.play_arrow_rounded,
                           color: const Color(0xFF0A2540),
                           size: 38,
                         ),
@@ -496,9 +540,11 @@ class _FullAudioPlayerSheet extends StatelessWidget {
                       IconButton(
                         onPressed: () {
                           AppHaptics.lightImpact();
-                          audio.seek(audio.position + const Duration(seconds: 10));
+                          audio.seek(
+                              audio.position + const Duration(seconds: 10));
                         },
-                        icon: const Icon(Icons.forward_10_rounded, color: Colors.white70, size: 26),
+                        icon: const Icon(Icons.forward_10_rounded,
+                            color: Colors.white70, size: 26),
                       ),
                     const SizedBox(width: 6),
                     IconButton(

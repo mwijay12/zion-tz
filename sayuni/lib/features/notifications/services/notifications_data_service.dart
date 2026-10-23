@@ -5,7 +5,8 @@ import '../../../core/services/church_auth_service.dart';
 import '../models/church_announcement.dart';
 
 class NotificationsDataService extends ChangeNotifier {
-  static final NotificationsDataService _instance = NotificationsDataService._internal();
+  static final NotificationsDataService _instance =
+      NotificationsDataService._internal();
   factory NotificationsDataService() => _instance;
   NotificationsDataService._internal() {
     _loadReadStatus();
@@ -21,7 +22,8 @@ class NotificationsDataService extends ChangeNotifier {
       date: 'Jumapili, 6 Septemba 2026',
       time: 'Saa 02:30 Asubuhi - 07:00 Mchana',
       location: 'Hekalu Kuu la Sayuni, Mbagala Kwa Matope',
-      summary: 'Askofu Mercy Mgalla ataongoza ibada ya sifa, uponyaji na ushirika mtakatifu.',
+      summary:
+          'Askofu Mercy Mgalla ataongoza ibada ya sifa, uponyaji na ushirika mtakatifu.',
       fullDetails:
           'Tunakukaribisha wewe, familia yako na majirani katika Ibada Kuu ya Ushindi. Kutakuwa na meza ya Bwana, maombi maalum ya uponyaji kwa wagonjwa, na neno la kinabii la kuvuka dhoruba. '
           'Mavazi ya heshima yanazingatiwa. Waumini wanaotaka kubatizwa wafike ofisi ya kanisa saa 01:30 asubuhi.',
@@ -35,7 +37,8 @@ class NotificationsDataService extends ChangeNotifier {
       date: 'Ijumaa Ijayo, 11 Septemba 2026',
       time: 'Saa 03:00 Usiku Hadi Mapambazuko (Asubuhi)',
       location: 'Hekalu Kuu la Sayuni',
-      summary: 'Mkesha wa kufunga na kuomba kubomoa ngome na kuachilia vifungo vya kiroho.',
+      summary:
+          'Mkesha wa kufunga na kuomba kubomoa ngome na kuachilia vifungo vya kiroho.',
       fullDetails:
           'Mkesha huu maalum unakutanisha matawi yote 5 ya Sayuni (Mbagala, Chamazi, Kibada, Charambe, Vikindu). '
           'Wazee wa maombi, jopo la maombezi na kwaya zote zitakuwepo. Usikose nguvu ya upako wa usiku wa manane kama Paulo na Sila.',
@@ -49,7 +52,8 @@ class NotificationsDataService extends ChangeNotifier {
       date: 'Mwezi Huu wa Septemba 2026',
       time: 'Michango Inapokelewa Kila Siku',
       location: 'Ofisi ya Hazina / Lipa Namba M-Pesa 5522114',
-      summary: 'Ujenzi wa jengo la kisasa la ibada ya watoto (Sunday School) na uzio wa hekalu.',
+      summary:
+          'Ujenzi wa jengo la kisasa la ibada ya watoto (Sunday School) na uzio wa hekalu.',
       fullDetails:
           'Kamati ya Ujenzi inawashukuru waumini wote waliojitolea mifuko ya saruji na nondo. Tumeanza kumwaga nguzo za madarasa 4 mapya ya watoto. '
           'Kiwango cha ushiriki: Mfuko 1 wa Saruji ni TZS 22,000. Unaweza kutuma sadaka ya ujenzi moja kwa moja kupitia kitufe cha "Sadaka & Zaka" kwenye app.',
@@ -63,7 +67,8 @@ class NotificationsDataService extends ChangeNotifier {
       date: 'Jumamosi, 19 Septemba 2026',
       time: 'Saa 08:30 Mchana - 11:30 Jioni',
       location: 'Ukumbi wa Sayuni Fellowship',
-      summary: 'Kujenga misingi imara ya kiungu katika ndoa, mawasiliano na uchumi wa familia.',
+      summary:
+          'Kujenga misingi imara ya kiungu katika ndoa, mawasiliano na uchumi wa familia.',
       fullDetails:
           'Wamama na Wababa wa Sayuni pamoja na vijana wanakaribishwa katika semina ya wazi ya ujenzi wa ndoa imara na kulea watoto katika njia ya Bwana. '
           'Kutakuwa na chakula cha jioni cha pamoja na nafasi ya maswali na ushauri wa kichungaji kwa siri.',
@@ -93,7 +98,8 @@ class NotificationsDataService extends ChangeNotifier {
       time: 'Saa 10:00 Jioni - 12:30 Jioni',
       location: 'Chumba cha Mkutano cha Wachungaji (Pastoral Boardroom)',
       summary: 'Tathmini ya maendeleo ya ujenzi na maandalizi ya Semina.',
-      fullDetails: 'Kikao hiki ni kwa ajili ya Wazee wa Kanisa wote, Mashemasi, Katibu na Viongozi wote wa Idara. '
+      fullDetails:
+          'Kikao hiki ni kwa ajili ya Wazee wa Kanisa wote, Mashemasi, Katibu na Viongozi wote wa Idara. '
           'Tafadhali fika na ripoti fupi ya idara yako kwa mwezi uliopita. Taarifa hii ni ya siri ya uongozi.',
       preacherOrLeader: 'Askofu Mkuu Mercy Mgalla & Katibu Mkuu',
       isHighPriority: true,
@@ -128,7 +134,8 @@ class NotificationsDataService extends ChangeNotifier {
         try {
           final List<dynamic> decoded = jsonDecode(savedNoticesJson);
           for (final item in decoded.reversed) {
-            final announcement = ChurchAnnouncement.fromJson(Map<String, dynamic>.from(item));
+            final announcement =
+                ChurchAnnouncement.fromJson(Map<String, dynamic>.from(item));
             if (!_announcements.any((a) => a.id == announcement.id)) {
               _announcements.insert(0, announcement);
             }
@@ -148,7 +155,8 @@ class NotificationsDataService extends ChangeNotifier {
   }
 
   /// Dynamically inserts a new announcement received in real-time from the Web Portal Katibu/Admin
-  Future<void> addAnnouncementFromPortal(ChurchAnnouncement announcement) async {
+  Future<void> addAnnouncementFromPortal(
+      ChurchAnnouncement announcement) async {
     // Remove if already present
     _announcements.removeWhere((a) => a.id == announcement.id);
     // Prepend to top of list as unread
@@ -172,7 +180,8 @@ class NotificationsDataService extends ChangeNotifier {
   }
 
   Future<void> markAsRead(String id) async {
-    final item = _announcements.firstWhere((a) => a.id == id, orElse: () => _announcements.first);
+    final item = _announcements.firstWhere((a) => a.id == id,
+        orElse: () => _announcements.first);
     if (!item.isRead) {
       item.isRead = true;
       notifyListeners();

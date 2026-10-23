@@ -36,8 +36,10 @@ class RadioStation {
     this.isCurated = false,
   });
 
-  factory RadioStation.fromJson(Map<String, dynamic> json, {String category = 'global'}) {
-    final rawUrl = (json['url_resolved'] ?? json['url'] ?? '').toString().trim();
+  factory RadioStation.fromJson(Map<String, dynamic> json,
+      {String category = 'global'}) {
+    final rawUrl =
+        (json['url_resolved'] ?? json['url'] ?? '').toString().trim();
     final name = (json['name'] ?? 'Bila Jina').toString().trim();
     final favicon = (json['favicon'] ?? '').toString().trim();
     final country = (json['country'] ?? '').toString().trim();
@@ -51,7 +53,8 @@ class RadioStation {
     final stationuuid = (json['stationuuid'] ?? '').toString().trim();
 
     return RadioStation(
-      stationuuid: stationuuid.isNotEmpty ? stationuuid : rawUrl.hashCode.toString(),
+      stationuuid:
+          stationuuid.isNotEmpty ? stationuuid : rawUrl.hashCode.toString(),
       name: name,
       urlResolved: rawUrl,
       favicon: favicon,
@@ -113,14 +116,14 @@ class RadioBrowserService {
   List<RadioStation> _allStationsCache = [];
   final Map<String, List<RadioStation>> _genreCache = {};
 
-
   // Guaranteed instant-playing Curated Stations for Afro Gospel (Nigeria & Africa)
   static const List<RadioStation> curatedAfroGospelRadios = [
     RadioStation(
       stationuuid: 'ng-gospel-001',
       name: 'African Gospel Praise Radio',
       urlResolved: 'http://stream.zeno.fm/3fmqr74a7f8uv',
-      favicon: 'https://nigeriangospelmusic.com.ng/wp-content/uploads/2022/09/NGM-icon.png',
+      favicon:
+          'https://nigeriangospelmusic.com.ng/wp-content/uploads/2022/09/NGM-icon.png',
       country: 'Afrika Mashariki & Kati',
       countryCode: 'AF',
       state: 'Praise & Worship',
@@ -135,7 +138,8 @@ class RadioBrowserService {
       stationuuid: 'ng-gospel-003',
       name: 'Praiseworld Gospel Radio',
       urlResolved: 'https://streaming.radio.co/s7dc18f0ad/listen',
-      favicon: 'https://www.praiseworldradio.com/wp-content/uploads/2020/05/praiseworldlogo-1.png',
+      favicon:
+          'https://www.praiseworldradio.com/wp-content/uploads/2020/05/praiseworldlogo-1.png',
       country: 'Afrika & Kimataifa',
       countryCode: 'AF',
       state: 'Contemporary Gospel',
@@ -180,7 +184,8 @@ class RadioBrowserService {
       stationuuid: 'ng-gospel-007',
       name: 'Adamimogo Prayer & Gospel',
       urlResolved: 'http://stream.zeno.fm/sywy4vua6zhvv',
-      favicon: 'https://i0.wp.com/adamimogofm.com/wp-content/uploads/2022/12/logo-removebg-preview-2.png',
+      favicon:
+          'https://i0.wp.com/adamimogofm.com/wp-content/uploads/2022/12/logo-removebg-preview-2.png',
       country: 'Afrika',
       countryCode: 'AF',
       state: 'Maombi & Sala',
@@ -229,7 +234,8 @@ class RadioBrowserService {
       stationuuid: 'tz-gospel-002',
       name: 'Radio Maria Tanzania',
       urlResolved: 'https://dreamsiteradiocp.com:8096/stream',
-      favicon: 'https://www.radiomaria.co.tz/wp-content/uploads/2019/07/cropped-radio-maria-logo-192x192.png',
+      favicon:
+          'https://www.radiomaria.co.tz/wp-content/uploads/2019/07/cropped-radio-maria-logo-192x192.png',
       country: 'Tanzania',
       countryCode: 'TZ',
       state: 'Dar es Salaam',
@@ -244,7 +250,8 @@ class RadioBrowserService {
       stationuuid: 'tz-gospel-003',
       name: 'Praise Live Global & Africa',
       urlResolved: 'https://stream.streamexperts.com:8062/live',
-      favicon: 'https://praiselive.org/wp-content/uploads/2021/08/cropped-favicon-192x192.png',
+      favicon:
+          'https://praiselive.org/wp-content/uploads/2021/08/cropped-favicon-192x192.png',
       country: 'Tanzania / East Africa',
       countryCode: 'TZ',
       state: 'East Africa',
@@ -308,7 +315,8 @@ class RadioBrowserService {
       stationuuid: 'news-001',
       name: 'BBC World Service',
       urlResolved: 'http://stream.live.vc.bbcmedia.co.uk/bbc_world_service',
-      favicon: 'https://rmp.files.bbci.co.uk/playspace/img/apple-touch-icon.96d5401f35.png',
+      favicon:
+          'https://rmp.files.bbci.co.uk/playspace/img/apple-touch-icon.96d5401f35.png',
       country: 'United Kingdom',
       countryCode: 'GB',
       state: 'London',
@@ -382,8 +390,10 @@ class RadioBrowserService {
     RadioStation(
       stationuuid: 'news-006',
       name: 'BBC World Service East Asia / Africa',
-      urlResolved: 'https://stream.live.vc.bbcmedia.co.uk/bbc_world_service_east_asia',
-      favicon: 'https://rmp.files.bbci.co.uk/playspace/img/apple-touch-icon.96d5401f35.png',
+      urlResolved:
+          'https://stream.live.vc.bbcmedia.co.uk/bbc_world_service_east_asia',
+      favicon:
+          'https://rmp.files.bbci.co.uk/playspace/img/apple-touch-icon.96d5401f35.png',
       country: 'United Kingdom',
       countryCode: 'GB',
       state: 'London',
@@ -422,13 +432,17 @@ class RadioBrowserService {
 
   /// Register station click to keep Radio Browser rankings accurate
   Future<void> registerStationClick(String stationuuid) async {
-    if (stationuuid.isEmpty || stationuuid.startsWith('ng-') || stationuuid.startsWith('tz-') || stationuuid.startsWith('news-')) {
+    if (stationuuid.isEmpty ||
+        stationuuid.startsWith('ng-') ||
+        stationuuid.startsWith('tz-') ||
+        stationuuid.startsWith('news-')) {
       return;
     }
     try {
       final mirror = _mirrors.first;
       final uri = Uri.parse('$mirror/url/$stationuuid');
-      await http.get(uri, headers: {'User-Agent': _userAgent}).timeout(const Duration(seconds: 4));
+      await http.get(uri, headers: {'User-Agent': _userAgent}).timeout(
+          const Duration(seconds: 4));
     } catch (_) {
       // Best-effort metric tracking
     }
@@ -448,7 +462,9 @@ class RadioBrowserService {
       if (raw1 != null) {
         for (final item in raw1) {
           final st = RadioStation.fromJson(item, category: 'afrogospel');
-          if (st.urlResolved.isNotEmpty && !seenIds.contains(st.stationuuid) && !seenUrls.contains(st.urlResolved)) {
+          if (st.urlResolved.isNotEmpty &&
+              !seenIds.contains(st.stationuuid) &&
+              !seenUrls.contains(st.urlResolved)) {
             seenIds.add(st.stationuuid);
             seenUrls.add(st.urlResolved);
             results.add(st);
@@ -463,7 +479,9 @@ class RadioBrowserService {
       if (raw2 != null) {
         for (final item in raw2) {
           final st = RadioStation.fromJson(item, category: 'afrogospel');
-          if (st.urlResolved.isNotEmpty && !seenIds.contains(st.stationuuid) && !seenUrls.contains(st.urlResolved)) {
+          if (st.urlResolved.isNotEmpty &&
+              !seenIds.contains(st.stationuuid) &&
+              !seenUrls.contains(st.urlResolved)) {
             seenIds.add(st.stationuuid);
             seenUrls.add(st.urlResolved);
             results.add(st);
@@ -520,7 +538,9 @@ class RadioBrowserService {
               name.contains('wapo') ||
               name.contains('praise') ||
               name.contains('heaven')) {
-            if (st.urlResolved.isNotEmpty && !seenIds.contains(st.stationuuid) && !seenUrls.contains(st.urlResolved)) {
+            if (st.urlResolved.isNotEmpty &&
+                !seenIds.contains(st.stationuuid) &&
+                !seenUrls.contains(st.urlResolved)) {
               seenIds.add(st.stationuuid);
               seenUrls.add(st.urlResolved);
               results.add(st);
@@ -548,7 +568,9 @@ class RadioBrowserService {
       if (raw != null) {
         for (final item in raw) {
           final st = RadioStation.fromJson(item, category: 'global');
-          if (st.urlResolved.isNotEmpty && !seenIds.contains(st.stationuuid) && !seenUrls.contains(st.urlResolved)) {
+          if (st.urlResolved.isNotEmpty &&
+              !seenIds.contains(st.stationuuid) &&
+              !seenUrls.contains(st.urlResolved)) {
             seenIds.add(st.stationuuid);
             seenUrls.add(st.urlResolved);
             results.add(st);
@@ -575,7 +597,9 @@ class RadioBrowserService {
       if (raw != null) {
         for (final item in raw) {
           final st = RadioStation.fromJson(item, category: 'news');
-          if (st.urlResolved.isNotEmpty && !seenIds.contains(st.stationuuid) && !seenUrls.contains(st.urlResolved)) {
+          if (st.urlResolved.isNotEmpty &&
+              !seenIds.contains(st.stationuuid) &&
+              !seenUrls.contains(st.urlResolved)) {
             seenIds.add(st.stationuuid);
             seenUrls.add(st.urlResolved);
             results.add(st);
@@ -596,9 +620,25 @@ class RadioBrowserService {
 
     // 1. Exclude non-gospel, secular, hindi, bollywood, islam, secular rap/metal, etc.
     const badWords = [
-      'hindi', 'bollywood', 'islam', 'quran', 'koran', 'deshi', 'punjabi',
-      'arabic', 'mosque', 'secular', 'heavy metal', 'edm', 'club', 'dancehall',
-      'nightclub', 'adult', 'dating', 'tarab', 'taarab'
+      'hindi',
+      'bollywood',
+      'islam',
+      'quran',
+      'koran',
+      'deshi',
+      'punjabi',
+      'arabic',
+      'mosque',
+      'secular',
+      'heavy metal',
+      'edm',
+      'club',
+      'dancehall',
+      'nightclub',
+      'adult',
+      'dating',
+      'tarab',
+      'taarab'
     ];
     for (final bad in badWords) {
       if (t.contains(bad) || n.contains(bad)) {
@@ -608,11 +648,43 @@ class RadioBrowserService {
 
     // 2. Must match positive Christian / Gospel indicator
     const goodWords = [
-      'gospel', 'christian', 'worship', 'praise', 'church', 'jesus', 'christ',
-      'bible', 'sayuni', 'uhai', 'maria', 'hallelujah', 'amen', 'pastor', 'bishop',
-      'choir', 'kwaya', 'tenzi', 'roho', 'faith', 'hope', 'inspirational', 'swahili',
-      'injili', 'imani', 'neema', 'hekalu', 'sayuni jerusalem', 'uzima', 'tumaini',
-      'baraka', 'ibada', 'sala', 'neno', 'safina', 'wapo', 'upendo'
+      'gospel',
+      'christian',
+      'worship',
+      'praise',
+      'church',
+      'jesus',
+      'christ',
+      'bible',
+      'sayuni',
+      'uhai',
+      'maria',
+      'hallelujah',
+      'amen',
+      'pastor',
+      'bishop',
+      'choir',
+      'kwaya',
+      'tenzi',
+      'roho',
+      'faith',
+      'hope',
+      'inspirational',
+      'swahili',
+      'injili',
+      'imani',
+      'neema',
+      'hekalu',
+      'sayuni jerusalem',
+      'uzima',
+      'tumaini',
+      'baraka',
+      'ibada',
+      'sala',
+      'neno',
+      'safina',
+      'wapo',
+      'upendo'
     ];
     for (final good in goodWords) {
       if (t.contains(good) || n.contains(good)) {
@@ -623,7 +695,8 @@ class RadioBrowserService {
   }
 
   /// Fetch 1,000+ Top Live Gospel Radio Stations across the world (Strictly Gospel & Christian)
-  Future<List<RadioStation>> fetchAllTopStations({int limit = 1000, bool forceRefresh = false}) async {
+  Future<List<RadioStation>> fetchAllTopStations(
+      {int limit = 1000, bool forceRefresh = false}) async {
     if (!forceRefresh && _allStationsCache.isNotEmpty) {
       return _allStationsCache;
     }
@@ -639,9 +712,9 @@ class RadioBrowserService {
 
         for (final item in raw) {
           final st = RadioStation.fromJson(item, category: 'all');
-          if (st.urlResolved.isNotEmpty && 
+          if (st.urlResolved.isNotEmpty &&
               isGospelOrChristianStation(st) &&
-              !seenIds.contains(st.stationuuid) && 
+              !seenIds.contains(st.stationuuid) &&
               !seenUrls.contains(st.urlResolved)) {
             seenIds.add(st.stationuuid);
             seenUrls.add(st.urlResolved);
@@ -656,9 +729,9 @@ class RadioBrowserService {
         if (rawWorship != null) {
           for (final item in rawWorship) {
             final st = RadioStation.fromJson(item, category: 'all');
-            if (st.urlResolved.isNotEmpty && 
+            if (st.urlResolved.isNotEmpty &&
                 isGospelOrChristianStation(st) &&
-                !seenIds.contains(st.stationuuid) && 
+                !seenIds.contains(st.stationuuid) &&
                 !seenUrls.contains(st.urlResolved)) {
               seenIds.add(st.stationuuid);
               seenUrls.add(st.urlResolved);
@@ -686,7 +759,8 @@ class RadioBrowserService {
   }
 
   /// Fetch stations by Tag/Genre (e.g. pop, jazz, classical, reggae, etc.)
-  Future<List<RadioStation>> fetchStationsByGenre(String tag, {int limit = 200}) async {
+  Future<List<RadioStation>> fetchStationsByGenre(String tag,
+      {int limit = 200}) async {
     final key = tag.toLowerCase().trim();
     if (_genreCache.containsKey(key) && _genreCache[key]!.isNotEmpty) {
       return _genreCache[key]!;
@@ -704,9 +778,9 @@ class RadioBrowserService {
 
         for (final item in raw) {
           final st = RadioStation.fromJson(item, category: key);
-          if (st.urlResolved.isNotEmpty && 
+          if (st.urlResolved.isNotEmpty &&
               isGospelOrChristianStation(st) &&
-              !seenIds.contains(st.stationuuid) && 
+              !seenIds.contains(st.stationuuid) &&
               !seenUrls.contains(st.urlResolved)) {
             seenIds.add(st.stationuuid);
             seenUrls.add(st.urlResolved);
@@ -740,7 +814,7 @@ class RadioBrowserService {
       if (raw != null) {
         for (final item in raw) {
           final st = RadioStation.fromJson(item, category: 'search');
-          if (st.urlResolved.isNotEmpty && 
+          if (st.urlResolved.isNotEmpty &&
               isGospelOrChristianStation(st) &&
               !seenUrls.contains(st.urlResolved)) {
             seenUrls.add(st.urlResolved);

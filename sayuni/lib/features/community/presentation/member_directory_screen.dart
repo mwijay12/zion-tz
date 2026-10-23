@@ -49,8 +49,10 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
 
   void _openWhatsApp(String phone, String name) async {
     AppHaptics.lightImpact();
-    final cleanPhone = phone.replaceAll('+', '').replaceAll(' ', '').replaceAll('-', '');
-    final msg = Uri.encodeComponent('Bwana Yesu Asifiwe $name, nimepata mawasiliano yako kwenye App ya Sayuni Jerusalem Church.');
+    final cleanPhone =
+        phone.replaceAll('+', '').replaceAll(' ', '').replaceAll('-', '');
+    final msg = Uri.encodeComponent(
+        'Bwana Yesu Asifiwe $name, nimepata mawasiliano yako kwenye App ya Sayuni Jerusalem Church.');
     final uri = Uri.parse('https://wa.me/$cleanPhone?text=$msg');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
@@ -62,10 +64,12 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
   void _showAddSkillDialog() {
     AppHaptics.lightImpact();
     final auth = ChurchAuthService();
-    final nameCtrl = TextEditingController(text: auth.name.isNotEmpty ? auth.name : '');
+    final nameCtrl =
+        TextEditingController(text: auth.name.isNotEmpty ? auth.name : '');
     final professionCtrl = TextEditingController();
     final descCtrl = TextEditingController();
-    final phoneCtrl = TextEditingController(text: auth.phone.isNotEmpty ? auth.phone : '');
+    final phoneCtrl =
+        TextEditingController(text: auth.phone.isNotEmpty ? auth.phone : '');
     final locationCtrl = TextEditingController(text: 'Mbagala');
     final expCtrl = TextEditingController(text: 'Miaka 3');
     String selectedCat = 'Kilimo & Mifugo';
@@ -116,7 +120,8 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                           children: [
                             Text(
                               'Tangaza Ujuzi / Biashara Yako',
-                              style: AppTypography.headlineMedium(color: AppColors.textPrimary),
+                              style: AppTypography.headlineMedium(
+                                  color: AppColors.textPrimary),
                             ),
                             IconButton(
                               icon: const Icon(Icons.close_rounded),
@@ -137,18 +142,21 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                           controller: professionCtrl,
                           decoration: const InputDecoration(
                             labelText: 'Taaluma / Kazi / Biashara Yako *',
-                            hintText: 'Mf. Mkulima wa Mboga, Fundi Umeme, Daktari',
+                            hintText:
+                                'Mf. Mkulima wa Mboga, Fundi Umeme, Daktari',
                           ),
                         ),
                         const SizedBox(height: 12),
                         DropdownButtonFormField<String>(
                           value: selectedCat,
-                          decoration: const InputDecoration(labelText: 'Kundi la Ujuzi'),
+                          decoration: const InputDecoration(
+                              labelText: 'Kundi la Ujuzi'),
                           items: _categories.where((c) => c != 'Yote').map((c) {
                             return DropdownMenuItem(value: c, child: Text(c));
                           }).toList(),
                           onChanged: (val) {
-                            if (val != null) setModalState(() => selectedCat = val);
+                            if (val != null)
+                              setModalState(() => selectedCat = val);
                           },
                         ),
                         const SizedBox(height: 12),
@@ -157,7 +165,8 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                           maxLines: 3,
                           decoration: const InputDecoration(
                             labelText: 'Maelezo ya Huduma / Bidhaa Zako *',
-                            hintText: 'Eleza unachoweza kuwasaidia waumini wenzako...',
+                            hintText:
+                                'Eleza unachoweza kuwasaidia waumini wenzako...',
                             alignLabelWithHint: true,
                           ),
                         ),
@@ -206,8 +215,12 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                                     ? descCtrl.text.trim()
                                     : 'Natoa huduma kwa uaminifu na viwango vya kikanisa.',
                                 phone: phoneCtrl.text.trim(),
-                                location: locationCtrl.text.trim().isNotEmpty ? locationCtrl.text.trim() : 'Mbagala',
-                                jumuiya: auth.jumuiya.isNotEmpty ? auth.jumuiya : 'Sayuni Fellowship',
+                                location: locationCtrl.text.trim().isNotEmpty
+                                    ? locationCtrl.text.trim()
+                                    : 'Mbagala',
+                                jumuiya: auth.jumuiya.isNotEmpty
+                                    ? auth.jumuiya
+                                    : 'Sayuni Fellowship',
                                 experienceYears: expCtrl.text.trim(),
                                 avatarEmoji: selectedCat.contains('Kilimo')
                                     ? '🥬'
@@ -215,7 +228,9 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                                         ? '💻'
                                         : (selectedCat.contains('Ufundi')
                                             ? '⚡'
-                                            : (selectedCat.contains('Mavazi') ? '🧵' : '💼'))),
+                                            : (selectedCat.contains('Mavazi')
+                                                ? '🧵'
+                                                : '💼'))),
                               );
 
                               await _service.registerMemberSkill(newProfile);
@@ -224,7 +239,8 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                               if (mounted) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text('Ujuzi wako umeongezwa kwenye Saraka ya Waumini!'),
+                                    content: Text(
+                                        'Ujuzi wako umeongezwa kwenye Saraka ya Waumini!'),
                                     backgroundColor: AppColors.primary,
                                     behavior: SnackBarBehavior.floating,
                                   ),
@@ -254,11 +270,14 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
       listenable: _service,
       builder: (context, _) {
         final profiles = _service.allProfiles.where((p) {
-          final matchesCategory = _selectedCategory == 'Yote' || p.category == _selectedCategory;
+          final matchesCategory =
+              _selectedCategory == 'Yote' || p.category == _selectedCategory;
           final matchesQuery = _searchQuery.isEmpty ||
               p.fullName.toLowerCase().contains(_searchQuery.toLowerCase()) ||
               p.profession.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-              p.description.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+              p.description
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase()) ||
               p.location.toLowerCase().contains(_searchQuery.toLowerCase());
           return matchesCategory && matchesQuery;
         }).toList();
@@ -271,7 +290,8 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
                 child: AppCard(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   child: Row(
                     children: [
                       Container(
@@ -280,7 +300,8 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                           color: AppColors.gold.withOpacity(0.15),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.handshake_rounded, color: AppColors.gold, size: 20),
+                        child: const Icon(Icons.handshake_rounded,
+                            color: AppColors.gold, size: 20),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
@@ -289,11 +310,15 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                           children: [
                             Text(
                               'Kusaidiana Kiuchumi & Biashara',
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.textPrimary),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                  color: AppColors.textPrimary),
                             ),
                             Text(
                               'Fursa na huduma za waumini Sayuni',
-                              style: AppTypography.caption(color: AppColors.textMuted),
+                              style: AppTypography.caption(
+                                  color: AppColors.textMuted),
                             ),
                           ],
                         ),
@@ -303,10 +328,12 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                         icon: const Icon(Icons.add_rounded, size: 15),
                         label: const Text('Jiunge'),
                         style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 6),
                           minimumSize: Size.zero,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                          textStyle: const TextStyle(
+                              fontSize: 11, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ],
@@ -318,7 +345,8 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
             // Search Box (scrolls smoothly with content)
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Container(
                   decoration: BoxDecoration(
                     color: AppColors.surface,
@@ -329,17 +357,21 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                     onChanged: (val) => setState(() => _searchQuery = val),
                     decoration: InputDecoration(
                       hintText: 'Tafuta fundi, mkulima, biashara...',
-                      hintStyle: AppTypography.bodySmall(color: AppColors.textMuted),
-                      prefixIcon: const Icon(Icons.search_rounded, color: AppColors.primary, size: 18),
+                      hintStyle:
+                          AppTypography.bodySmall(color: AppColors.textMuted),
+                      prefixIcon: const Icon(Icons.search_rounded,
+                          color: AppColors.primary, size: 18),
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
                               icon: const Icon(Icons.close_rounded, size: 16),
-                              onPressed: () => setState(() => _searchQuery = ''),
+                              onPressed: () =>
+                                  setState(() => _searchQuery = ''),
                             )
                           : null,
                       border: InputBorder.none,
                       isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 10),
                     ),
                   ),
                 ),
@@ -353,7 +385,8 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
                   itemCount: _categories.length,
                   itemBuilder: (ctx, idx) {
                     final cat = _categories[idx];
@@ -371,12 +404,17 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                         backgroundColor: AppColors.surface,
                         labelStyle: TextStyle(
                           fontSize: 11,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                          color: isSelected ? Colors.white : AppColors.textPrimary,
+                          fontWeight:
+                              isSelected ? FontWeight.bold : FontWeight.w500,
+                          color:
+                              isSelected ? Colors.white : AppColors.textPrimary,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
-                          side: BorderSide(color: isSelected ? AppColors.primary : AppColors.border),
+                          side: BorderSide(
+                              color: isSelected
+                                  ? AppColors.primary
+                                  : AppColors.border),
                         ),
                         showCheckmark: false,
                       ),
@@ -396,9 +434,11 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.person_search_rounded, size: 48, color: AppColors.textMuted),
+                      Icon(Icons.person_search_rounded,
+                          size: 48, color: AppColors.textMuted),
                       const SizedBox(height: 8),
-                      const Text('Hakuna Ujuzi Uliopatikana', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const Text('Hakuna Ujuzi Uliopatikana',
+                          style: TextStyle(fontWeight: FontWeight.bold)),
                       const SizedBox(height: 4),
                       const Text('Jaribu neno jingine au weka ujuzi wako.'),
                       const SizedBox(height: 12),
@@ -430,26 +470,36 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                                 children: [
                                   CircleAvatar(
                                     radius: 24,
-                                    backgroundColor: AppColors.primary.withOpacity(0.12),
-                                    child: Text(p.avatarEmoji, style: const TextStyle(fontSize: 22)),
+                                    backgroundColor:
+                                        AppColors.primary.withOpacity(0.12),
+                                    child: Text(p.avatarEmoji,
+                                        style: const TextStyle(fontSize: 22)),
                                   ),
                                   const SizedBox(width: 12),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
                                             Expanded(
                                               child: Text(
                                                 p.fullName,
-                                                style: AppTypography.titleMedium(color: AppColors.textPrimary),
+                                                style:
+                                                    AppTypography.titleMedium(
+                                                        color: AppColors
+                                                            .textPrimary),
                                               ),
                                             ),
                                             if (p.isVerifiedMember)
                                               const Tooltip(
-                                                message: 'Muumini Aliyehakikiwa Sayuni',
-                                                child: Icon(Icons.verified_rounded, size: 16, color: Color(0xFF16A34A)),
+                                                message:
+                                                    'Muumini Aliyehakikiwa Sayuni',
+                                                child: Icon(
+                                                    Icons.verified_rounded,
+                                                    size: 16,
+                                                    color: Color(0xFF16A34A)),
                                               ),
                                           ],
                                         ),
@@ -465,7 +515,8 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                                         const SizedBox(height: 2),
                                         Text(
                                           '${p.location} • ${p.jumuiya}',
-                                          style: AppTypography.caption(color: AppColors.textMuted),
+                                          style: AppTypography.caption(
+                                              color: AppColors.textMuted),
                                         ),
                                       ],
                                     ),
@@ -475,7 +526,9 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                               const SizedBox(height: 12),
                               Text(
                                 p.description,
-                                style: AppTypography.bodyMedium(color: AppColors.textSecondary).copyWith(height: 1.5),
+                                style: AppTypography.bodyMedium(
+                                        color: AppColors.textSecondary)
+                                    .copyWith(height: 1.5),
                               ),
                               const SizedBox(height: 14),
                               const Divider(height: 1),
@@ -487,27 +540,39 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                                   Expanded(
                                     child: ElevatedButton.icon(
                                       onPressed: () => _callMember(p.phone),
-                                      icon: const Icon(Icons.call_rounded, size: 16),
+                                      icon: const Icon(Icons.call_rounded,
+                                          size: 16),
                                       label: const Text('Piga Simu'),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.surfaceContainer,
+                                        backgroundColor:
+                                            AppColors.surfaceContainer,
                                         foregroundColor: AppColors.primary,
-                                        padding: const EdgeInsets.symmetric(vertical: 10),
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
                                       ),
                                     ),
                                   ),
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: ElevatedButton.icon(
-                                      onPressed: () => _openWhatsApp(p.phone, p.fullName),
-                                      icon: const Icon(Icons.chat_rounded, size: 16),
+                                      onPressed: () =>
+                                          _openWhatsApp(p.phone, p.fullName),
+                                      icon: const Icon(Icons.chat_rounded,
+                                          size: 16),
                                       label: const Text('WhatsApp'),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF25D366).withOpacity(0.15),
-                                        foregroundColor: const Color(0xFF0F5132),
-                                        padding: const EdgeInsets.symmetric(vertical: 10),
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                        backgroundColor: const Color(0xFF25D366)
+                                            .withOpacity(0.15),
+                                        foregroundColor:
+                                            const Color(0xFF0F5132),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 10),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
                                       ),
                                     ),
                                   ),

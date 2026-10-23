@@ -246,7 +246,9 @@ Kutoka kizazi hata kizazi!''',
 
       for (final u in urls) {
         try {
-          final res = await http.get(Uri.parse(u)).timeout(const Duration(milliseconds: 1500));
+          final res = await http
+              .get(Uri.parse(u))
+              .timeout(const Duration(milliseconds: 1500));
           if (res.statusCode == 200) {
             final decoded = jsonDecode(res.body);
             if (decoded is List) {
@@ -281,15 +283,20 @@ Kutoka kizazi hata kizazi!''',
 
   ChoirSongItem _parseSongMap(Map<String, dynamic> item) {
     return ChoirSongItem(
-      id: item['id']?.toString() ?? 'song-${DateTime.now().millisecondsSinceEpoch}',
+      id: item['id']?.toString() ??
+          'song-${DateTime.now().millisecondsSinceEpoch}',
       title: item['title']?.toString() ?? 'Wimbo Mpya wa Kwaya',
-      choir: item['choirName']?.toString() ?? item['choir']?.toString() ?? 'Kwaya ya Sayuni',
+      choir: item['choirName']?.toString() ??
+          item['choir']?.toString() ??
+          'Kwaya ya Sayuni',
       album: 'Sayuni Worship Live',
       key: item['key']?.toString() ?? 'Key G',
       tempo: item['tempo']?.toString() ?? '100 BPM',
       duration: item['duration']?.toString() ?? '04:30',
       lyrics: item['lyrics']?.toString() ?? '',
-      audioUrl: item['audioDemoUrl']?.toString() ?? item['audioUrl']?.toString() ?? 'https://stream.zeno.fm/4v4e91y9sm8uv',
+      audioUrl: item['audioDemoUrl']?.toString() ??
+          item['audioUrl']?.toString() ??
+          'https://stream.zeno.fm/4v4e91y9sm8uv',
       imagePath: 'assets/images/zion_worship_choir_1788577423671.jpg',
       isPortalUpload: true,
     );
@@ -349,12 +356,15 @@ Kutoka kizazi hata kizazi!''',
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
                             color: AppColors.surfaceContainer,
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Text(song.choir, style: AppTypography.caption(color: AppColors.primary)),
+                          child: Text(song.choir,
+                              style: AppTypography.caption(
+                                  color: AppColors.primary)),
                         ),
                         IconButton(
                           icon: const Icon(Icons.close_rounded),
@@ -363,29 +373,39 @@ Kutoka kizazi hata kizazi!''',
                       ],
                     ),
                     const SizedBox(height: 12),
-                    Text(song.title, style: AppTypography.headlineMedium(color: AppColors.textPrimary)),
+                    Text(song.title,
+                        style: AppTypography.headlineMedium(
+                            color: AppColors.textPrimary)),
                     const SizedBox(height: 6),
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
                             color: AppColors.goldContainer,
                             borderRadius: BorderRadius.circular(6),
                           ),
-                          child: Text(song.key, style: AppTypography.caption(color: AppColors.onGoldContainer)),
+                          child: Text(song.key,
+                              style: AppTypography.caption(
+                                  color: AppColors.onGoldContainer)),
                         ),
                         const SizedBox(width: 8),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
                             color: AppColors.surfaceContainer,
                             borderRadius: BorderRadius.circular(6),
                           ),
-                          child: Text(song.tempo, style: AppTypography.caption(color: AppColors.primary)),
+                          child: Text(song.tempo,
+                              style: AppTypography.caption(
+                                  color: AppColors.primary)),
                         ),
                         const SizedBox(width: 8),
-                        Text(song.duration, style: AppTypography.caption(color: AppColors.textMuted)),
+                        Text(song.duration,
+                            style: AppTypography.caption(
+                                color: AppColors.textMuted)),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -394,17 +414,24 @@ Kutoka kizazi hata kizazi!''',
                     ListenableBuilder(
                       listenable: _audioService,
                       builder: (context, _) {
-                        final isPlayingThis = _audioService.currentTrack?.id == song.id && _audioService.isPlaying;
+                        final isPlayingThis =
+                            _audioService.currentTrack?.id == song.id &&
+                                _audioService.isPlaying;
                         return SizedBox(
                           width: double.infinity,
                           child: ElevatedButton.icon(
                             onPressed: () {
                               _playSong(song);
                             },
-                            icon: Icon(isPlayingThis ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded),
+                            icon: Icon(isPlayingThis
+                                ? Icons.pause_circle_filled_rounded
+                                : Icons.play_circle_fill_rounded),
                             label: Text(
-                              isPlayingThis ? 'Sitisha Wimbo (Inacheza...)' : 'Sikiliza Wimbo Huu',
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              isPlayingThis
+                                  ? 'Sitisha Wimbo (Inacheza...)'
+                                  : 'Sikiliza Wimbo Huu',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                         );
@@ -419,13 +446,16 @@ Kutoka kizazi hata kizazi!''',
                       children: [
                         Text(
                           'Maneno ya Wimbo (Lyrics)',
-                          style: AppTypography.titleMedium(color: AppColors.textPrimary),
+                          style: AppTypography.titleMedium(
+                              color: AppColors.textPrimary),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.share_rounded, size: 18, color: AppColors.primary),
+                          icon: const Icon(Icons.share_rounded,
+                              size: 18, color: AppColors.primary),
                           tooltip: 'Shiriki Maneno',
                           onPressed: () {
-                            Share.share('${song.title} - ${song.choir}\n\n${song.lyrics}\n\nKutoka App ya Sayuni Church.');
+                            Share.share(
+                                '${song.title} - ${song.choir}\n\n${song.lyrics}\n\nKutoka App ya Sayuni Church.');
                           },
                         ),
                       ],
@@ -440,7 +470,9 @@ Kutoka kizazi hata kizazi!''',
                       ),
                       child: Text(
                         song.lyrics,
-                        style: AppTypography.bodyLarge(color: AppColors.textPrimary).copyWith(height: 1.8),
+                        style: AppTypography.bodyLarge(
+                                color: AppColors.textPrimary)
+                            .copyWith(height: 1.8),
                       ),
                     ),
                   ],
@@ -479,7 +511,8 @@ Kutoka kizazi hata kizazi!''',
         listenable: _audioService,
         builder: (context, _) {
           return ListView(
-            padding: EdgeInsets.only(left: 16, right: 16, top: 12, bottom: bottomInset),
+            padding: EdgeInsets.only(
+                left: 16, right: 16, top: 12, bottom: bottomInset),
             physics: const BouncingScrollPhysics(),
             children: [
               // Choir Ministry Photo Banner
@@ -489,7 +522,8 @@ Kutoka kizazi hata kizazi!''',
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ClipRRect(
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(16)),
                       child: Image.asset(
                         'assets/images/zion_worship_choir_1788577423671.jpg',
                         height: 160,
@@ -499,7 +533,8 @@ Kutoka kizazi hata kizazi!''',
                           height: 140,
                           color: AppColors.surfaceContainer,
                           child: const Center(
-                            child: Icon(Icons.music_note_rounded, size: 48, color: AppColors.primary),
+                            child: Icon(Icons.music_note_rounded,
+                                size: 48, color: AppColors.primary),
                           ),
                         ),
                       ),
@@ -514,17 +549,20 @@ Kutoka kizazi hata kizazi!''',
                             children: [
                               Text(
                                 'Huduma ya Sifa na Nyimbo',
-                                style: AppTypography.titleMedium(color: AppColors.textPrimary),
+                                style: AppTypography.titleMedium(
+                                    color: AppColors.textPrimary),
                               ),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 3),
                                 decoration: BoxDecoration(
                                   color: AppColors.goldContainer,
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: Text(
                                   'Nyimbo ${_songs.length}',
-                                  style: AppTypography.caption(color: AppColors.onGoldContainer),
+                                  style: AppTypography.caption(
+                                      color: AppColors.onGoldContainer),
                                 ),
                               ),
                             ],
@@ -532,7 +570,8 @@ Kutoka kizazi hata kizazi!''',
                           const SizedBox(height: 6),
                           Text(
                             'Kwaya Kuu ya Sayuni, Kwaya ya Galilaya, Praise Team, Wamama na Vijana. Sikiliza nyimbo zote hapa na udhibiti sauti moja kwa moja kwenye lock screen.',
-                            style: AppTypography.bodyMedium(color: AppColors.textSecondary),
+                            style: AppTypography.bodyMedium(
+                                color: AppColors.textSecondary),
                           ),
                         ],
                       ),
@@ -547,7 +586,8 @@ Kutoka kizazi hata kizazi!''',
                 children: [
                   Text(
                     'Nyimbo za Kwaya za Sayuni',
-                    style: AppTypography.titleMedium(color: AppColors.textPrimary),
+                    style:
+                        AppTypography.titleMedium(color: AppColors.textPrimary),
                   ),
                   Text(
                     'Bofya kusikiliza',
@@ -566,7 +606,8 @@ Kutoka kizazi hata kizazi!''',
                   child: AppCard(
                     onTap: () => _openSongDetails(song),
                     padding: const EdgeInsets.all(14),
-                    borderColor: isCurrent ? AppColors.primary : AppColors.border,
+                    borderColor:
+                        isCurrent ? AppColors.primary : AppColors.border,
                     child: Row(
                       children: [
                         // Group/Choir Thumbnail with Play/Pause Overlay
@@ -580,11 +621,13 @@ Kutoka kizazi hata kizazi!''',
                                 width: 54,
                                 height: 54,
                                 fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) => Container(
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Container(
                                   width: 54,
                                   height: 54,
                                   color: AppColors.surfaceContainer,
-                                  child: const Icon(Icons.music_note_rounded, color: AppColors.primary),
+                                  child: const Icon(Icons.music_note_rounded,
+                                      color: AppColors.primary),
                                 ),
                               ),
                             ),
@@ -598,7 +641,9 @@ Kutoka kizazi hata kizazi!''',
                             ),
                             IconButton(
                               icon: Icon(
-                                isPlaying ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded,
+                                isPlaying
+                                    ? Icons.pause_circle_filled_rounded
+                                    : Icons.play_circle_fill_rounded,
                                 color: Colors.white,
                                 size: 30,
                               ),
@@ -617,25 +662,31 @@ Kutoka kizazi hata kizazi!''',
                                     child: Text(
                                       song.title,
                                       style: AppTypography.labelLarge(
-                                        color: isCurrent ? AppColors.primary : AppColors.textPrimary,
+                                        color: isCurrent
+                                            ? AppColors.primary
+                                            : AppColors.textPrimary,
                                       ),
                                     ),
                                   ),
                                   if (isPlaying)
-                                    const Icon(Icons.graphic_eq_rounded, color: AppColors.primary, size: 18),
+                                    const Icon(Icons.graphic_eq_rounded,
+                                        color: AppColors.primary, size: 18),
                                 ],
                               ),
                               if (song.isPortalUpload) ...[
                                 const SizedBox(height: 3),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 2),
                                   decoration: BoxDecoration(
                                     color: AppColors.primary.withOpacity(0.12),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Text(
                                     'Wimbo Mpya • Kwaya Portal',
-                                    style: AppTypography.caption(color: AppColors.primary).copyWith(
+                                    style: AppTypography.caption(
+                                            color: AppColors.primary)
+                                        .copyWith(
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -645,19 +696,22 @@ Kutoka kizazi hata kizazi!''',
                               const SizedBox(height: 3),
                               Text(
                                 '${song.choir} • ${song.key}',
-                                style: AppTypography.caption(color: AppColors.textMuted),
+                                style: AppTypography.caption(
+                                    color: AppColors.textMuted),
                               ),
                               const SizedBox(height: 2),
                               Text(
                                 song.duration,
-                                style: AppTypography.caption(color: AppColors.textSecondary),
+                                style: AppTypography.caption(
+                                    color: AppColors.textSecondary),
                               ),
                             ],
                           ),
                         ),
                         const SizedBox(width: 8),
                         IconButton(
-                          icon: Icon(Icons.lyrics_rounded, color: AppColors.textMuted, size: 20),
+                          icon: Icon(Icons.lyrics_rounded,
+                              color: AppColors.textMuted, size: 20),
                           tooltip: 'Angalia Maneno',
                           onPressed: () => _openSongDetails(song),
                         ),

@@ -45,23 +45,34 @@ class _NotesScreenState extends State<NotesScreen> {
   void _showAddNoteDialog() {
     AppHaptics.lightImpact();
     final titleController = TextEditingController();
-    final preacherController = TextEditingController(text: ChurchProfile.headBishop);
+    final preacherController =
+        TextEditingController(text: ChurchProfile.headBishop);
     final scriptureController = TextEditingController();
     final contentController = TextEditingController();
 
     void insertFormatting(String prefix, [String suffix = '']) {
       final text = contentController.text;
       final selection = contentController.selection;
-      if (selection.start >= 0 && selection.end >= 0 && selection.start != selection.end) {
+      if (selection.start >= 0 &&
+          selection.end >= 0 &&
+          selection.start != selection.end) {
         final selectedText = text.substring(selection.start, selection.end);
-        final newText = text.replaceRange(selection.start, selection.end, '$prefix$selectedText$suffix');
+        final newText = text.replaceRange(
+            selection.start, selection.end, '$prefix$selectedText$suffix');
         contentController.text = newText;
-        contentController.selection = TextSelection.collapsed(offset: selection.start + prefix.length + selectedText.length + suffix.length);
+        contentController.selection = TextSelection.collapsed(
+            offset: selection.start +
+                prefix.length +
+                selectedText.length +
+                suffix.length);
       } else {
-        final cursorPos = selection.baseOffset >= 0 ? selection.baseOffset : text.length;
-        final newText = text.replaceRange(cursorPos, cursorPos, '$prefix$suffix');
+        final cursorPos =
+            selection.baseOffset >= 0 ? selection.baseOffset : text.length;
+        final newText =
+            text.replaceRange(cursorPos, cursorPos, '$prefix$suffix');
         contentController.text = newText;
-        contentController.selection = TextSelection.collapsed(offset: cursorPos + prefix.length);
+        contentController.selection =
+            TextSelection.collapsed(offset: cursorPos + prefix.length);
       }
     }
 
@@ -126,7 +137,8 @@ class _NotesScreenState extends State<NotesScreen> {
                           children: [
                             Text(
                               'Andika Dokezo Jipya',
-                              style: AppTypography.headlineMedium(color: AppColors.textPrimary),
+                              style: AppTypography.headlineMedium(
+                                  color: AppColors.textPrimary),
                             ),
                             IconButton(
                               icon: const Icon(Icons.close_rounded),
@@ -134,178 +146,195 @@ class _NotesScreenState extends State<NotesScreen> {
                             ),
                           ],
                         ),
-                    const SizedBox(height: 12),
+                        const SizedBox(height: 12),
 
-                    // Quick Template Chips
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          ActionChip(
-                            avatar: const Icon(Icons.favorite_rounded, color: Colors.redAccent, size: 16),
-                            label: const Text(
-                              'Sala kwa Wazee (Sweetheart)',
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary),
-                            ),
-                            backgroundColor: AppColors.primaryContainer,
-                            side: BorderSide(color: AppColors.border),
-                            onPressed: () {
-                              setModalState(() {
-                                loadEldersPrayerTemplate();
-                              });
-                            },
-                          ),
-                          const SizedBox(width: 8),
-                          ActionChip(
-                            avatar: const Icon(Icons.shield_rounded, color: AppColors.gold, size: 16),
-                            label: Text(
-                              'Maombi ya Vita vya Kiroho',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
+                        // Quick Template Chips
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: [
+                              ActionChip(
+                                avatar: const Icon(Icons.favorite_rounded,
+                                    color: Colors.redAccent, size: 16),
+                                label: const Text(
+                                  'Sala kwa Wazee (Sweetheart)',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primary),
+                                ),
+                                backgroundColor: AppColors.primaryContainer,
+                                side: BorderSide(color: AppColors.border),
+                                onPressed: () {
+                                  setModalState(() {
+                                    loadEldersPrayerTemplate();
+                                  });
+                                },
                               ),
-                            ),
-                            backgroundColor: AppColors.surfaceLow,
-                            side: BorderSide(color: AppColors.border),
-                            onPressed: () {
-                              setModalState(() {
-                                titleController.text = 'Maombi ya Vita vya Kiroho & Ushindi';
-                                scriptureController.text = 'Waefeso 6:10-18';
-                                contentController.text =
-                                    '**SALA YA VITA VYA KIROHO**\n\n'
-                                    '1. Kuvaa silaha zote za Mungu.\n'
-                                    '2. Ngao ya imani kuzima mishale yote yenye moto.\n'
-                                    '3. Upanga wa Roho ambao ni Neno la Mungu.';
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-
-                    TextField(
-                      controller: titleController,
-                      decoration: const InputDecoration(
-                        labelText: 'Kichwa cha Somo *',
-                        hintText: 'Mf. Kusimama Imara Katika Maombi',
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: preacherController,
-                            decoration: const InputDecoration(
-                              labelText: 'Mhubiri',
-                              hintText: 'Jina la Mtumishi',
-                            ),
+                              const SizedBox(width: 8),
+                              ActionChip(
+                                avatar: const Icon(Icons.shield_rounded,
+                                    color: AppColors.gold, size: 16),
+                                label: Text(
+                                  'Maombi ya Vita vya Kiroho',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                                backgroundColor: AppColors.surfaceLow,
+                                side: BorderSide(color: AppColors.border),
+                                onPressed: () {
+                                  setModalState(() {
+                                    titleController.text =
+                                        'Maombi ya Vita vya Kiroho & Ushindi';
+                                    scriptureController.text =
+                                        'Waefeso 6:10-18';
+                                    contentController.text =
+                                        '**SALA YA VITA VYA KIROHO**\n\n'
+                                        '1. Kuvaa silaha zote za Mungu.\n'
+                                        '2. Ngao ya imani kuzima mishale yote yenye moto.\n'
+                                        '3. Upanga wa Roho ambao ni Neno la Mungu.';
+                                  });
+                                },
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: TextField(
-                            controller: scriptureController,
-                            decoration: const InputDecoration(
-                              labelText: 'Mstari wa Biblia',
-                              hintText: 'Mf. Zaburi 132',
+                        const SizedBox(height: 14),
+
+                        TextField(
+                          controller: titleController,
+                          decoration: const InputDecoration(
+                            labelText: 'Kichwa cha Somo *',
+                            hintText: 'Mf. Kusimama Imara Katika Maombi',
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: preacherController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Mhubiri',
+                                  hintText: 'Jina la Mtumishi',
+                                ),
+                              ),
                             ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: TextField(
+                                controller: scriptureController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Mstari wa Biblia',
+                                  hintText: 'Mf. Zaburi 132',
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+
+                        // Formatting Toolbar (Bold, Italic, Bullets, Verse)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceLow,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppColors.border),
+                          ),
+                          child: Row(
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.format_bold_rounded,
+                                    size: 20),
+                                tooltip: 'Koleza (Bold)',
+                                onPressed: () => insertFormatting('**', '**'),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.format_italic_rounded,
+                                    size: 20),
+                                tooltip: 'Mshazari (Italic)',
+                                onPressed: () => insertFormatting('*', '*'),
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                    Icons.format_list_bulleted_rounded,
+                                    size: 20),
+                                tooltip: 'Nukta (Bullet)',
+                                onPressed: () => insertFormatting('\n• '),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.menu_book_rounded,
+                                    size: 20),
+                                tooltip: 'Nukuu ya Mstari',
+                                onPressed: () => insertFormatting('📖 '),
+                              ),
+                              const Spacer(),
+                              Text(
+                                'Markdown',
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    color: AppColors.textMuted,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+
+                        TextField(
+                          controller: contentController,
+                          maxLines: 6,
+                          decoration: const InputDecoration(
+                            labelText: 'Kumbukumbu & Mafundisho *',
+                            hintText:
+                                'Andika maneno makuu, unabii, na mafundisho uliyojifunza...',
+                            alignLabelWithHint: true,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (titleController.text.trim().isEmpty ||
+                                  contentController.text.trim().isEmpty) {
+                                return;
+                              }
+                              AppHaptics.mediumImpact();
+                              final newNote = SermonNote(
+                                id: 'note-${DateTime.now().millisecondsSinceEpoch}',
+                                title: titleController.text.trim(),
+                                preacher: preacherController.text.trim().isEmpty
+                                    ? ChurchProfile.headBishop
+                                    : preacherController.text.trim(),
+                                scripture: scriptureController.text.trim(),
+                                content: contentController.text.trim(),
+                                date: DateTime.now(),
+                              );
+                              await _notesService.addNote(newNote);
+                              if (ctx.mounted) Navigator.pop(ctx);
+                              _loadNotes();
+                            },
+                            child: const Text('Hifadhi Dokezo'),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 14),
-
-                    // Formatting Toolbar (Bold, Italic, Bullets, Verse)
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.surfaceLow,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppColors.border),
-                      ),
-                      child: Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.format_bold_rounded, size: 20),
-                            tooltip: 'Koleza (Bold)',
-                            onPressed: () => insertFormatting('**', '**'),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.format_italic_rounded, size: 20),
-                            tooltip: 'Mshazari (Italic)',
-                            onPressed: () => insertFormatting('*', '*'),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.format_list_bulleted_rounded, size: 20),
-                            tooltip: 'Nukta (Bullet)',
-                            onPressed: () => insertFormatting('\n• '),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.menu_book_rounded, size: 20),
-                            tooltip: 'Nukuu ya Mstari',
-                            onPressed: () => insertFormatting('📖 '),
-                          ),
-                          const Spacer(),
-                          Text(
-                            'Markdown',
-                            style: TextStyle(fontSize: 10, color: AppColors.textMuted, fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-
-                    TextField(
-                      controller: contentController,
-                      maxLines: 6,
-                      decoration: const InputDecoration(
-                        labelText: 'Kumbukumbu & Mafundisho *',
-                        hintText: 'Andika maneno makuu, unabii, na mafundisho uliyojifunza...',
-                        alignLabelWithHint: true,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          if (titleController.text.trim().isEmpty ||
-                              contentController.text.trim().isEmpty) {
-                            return;
-                          }
-                          AppHaptics.mediumImpact();
-                          final newNote = SermonNote(
-                            id: 'note-${DateTime.now().millisecondsSinceEpoch}',
-                            title: titleController.text.trim(),
-                            preacher: preacherController.text.trim().isEmpty
-                                ? ChurchProfile.headBishop
-                                : preacherController.text.trim(),
-                            scripture: scriptureController.text.trim(),
-                            content: contentController.text.trim(),
-                            date: DateTime.now(),
-                          );
-                          await _notesService.addNote(newNote);
-                          if (ctx.mounted) Navigator.pop(ctx);
-                          _loadNotes();
-                        },
-                        child: const Text('Hifadhi Dokezo'),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
-  },
-);
-}
+  }
 
   void _shareNote(SermonNote note) {
     AppHaptics.lightImpact();
@@ -352,12 +381,14 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                       ),
                       pw.Text(
                         'Kwa Matope, Mbagala • Dar es Salaam, Tanzania',
-                        style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
+                        style: const pw.TextStyle(
+                            fontSize: 10, color: PdfColors.grey700),
                       ),
                     ],
                   ),
                   pw.Container(
-                    padding: const pw.EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: const pw.EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 5),
                     decoration: pw.BoxDecoration(
                       color: PdfColors.amber100,
                       borderRadius: pw.BorderRadius.circular(6),
@@ -391,19 +422,26 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
               // Preacher & Scripture
               pw.Row(
                 children: [
-                  pw.Text('Mhubiri: ', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 11)),
-                  pw.Text(note.preacher, style: const pw.TextStyle(fontSize: 11)),
+                  pw.Text('Mhubiri: ',
+                      style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold, fontSize: 11)),
+                  pw.Text(note.preacher,
+                      style: const pw.TextStyle(fontSize: 11)),
                   pw.SizedBox(width: 16),
                   if (note.scripture.isNotEmpty) ...[
-                    pw.Text('Maandiko: ', style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 11)),
-                    pw.Text(note.scripture, style: const pw.TextStyle(fontSize: 11)),
+                    pw.Text('Maandiko: ',
+                        style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold, fontSize: 11)),
+                    pw.Text(note.scripture,
+                        style: const pw.TextStyle(fontSize: 11)),
                   ],
                 ],
               ),
               pw.SizedBox(height: 6),
               pw.Text(
                 'Tarehe: ${AppFormatters.formatSwahiliDate(note.date)}',
-                style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey600),
+                style:
+                    const pw.TextStyle(fontSize: 10, color: PdfColors.grey600),
               ),
               pw.SizedBox(height: 18),
 
@@ -427,8 +465,12 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('Hekalu la Sayuni — Nuru ya Mataifa', style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey600)),
-                  pw.Text('Simu: ${ChurchProfile.pastoralHelpline}', style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey600)),
+                  pw.Text('Hekalu la Sayuni — Nuru ya Mataifa',
+                      style: const pw.TextStyle(
+                          fontSize: 9, color: PdfColors.grey600)),
+                  pw.Text('Simu: ${ChurchProfile.pastoralHelpline}',
+                      style: const pw.TextStyle(
+                          fontSize: 9, color: PdfColors.grey600)),
                 ],
               ),
             ],
@@ -490,7 +532,8 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                     children: [
                       Text(
                         'Hariri Dokezo',
-                        style: AppTypography.headlineMedium(color: AppColors.textPrimaryOf(context)),
+                        style: AppTypography.headlineMedium(
+                            color: AppColors.textPrimaryOf(context)),
                       ),
                       IconButton(
                         icon: const Icon(Icons.close_rounded),
@@ -571,7 +614,8 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                         backgroundColor: AppColors.primary,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                       ),
                     ),
                   ),
@@ -595,7 +639,9 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
         continue;
       }
 
-      if (trimmed.startsWith('### ') || trimmed.startsWith('## ') || trimmed.startsWith('# ')) {
+      if (trimmed.startsWith('### ') ||
+          trimmed.startsWith('## ') ||
+          trimmed.startsWith('# ')) {
         final cleanHeader = trimmed.replaceFirst(RegExp(r'^#+\s*'), '');
         children.add(
           Padding(
@@ -613,7 +659,9 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
         continue;
       }
 
-      final isBullet = trimmed.startsWith('• ') || trimmed.startsWith('- ') || trimmed.startsWith('* ');
+      final isBullet = trimmed.startsWith('• ') ||
+          trimmed.startsWith('- ') ||
+          trimmed.startsWith('* ');
       final contentLine = isBullet ? trimmed.substring(2) : trimmed;
       final spans = _parseMarkdownSpans(contentLine, textColor);
 
@@ -635,7 +683,10 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                 ),
                 Expanded(
                   child: RichText(
-                    text: TextSpan(children: spans, style: TextStyle(color: textColor, fontSize: 13, height: 1.45)),
+                    text: TextSpan(
+                        children: spans,
+                        style: TextStyle(
+                            color: textColor, fontSize: 13, height: 1.45)),
                   ),
                 ),
               ],
@@ -647,7 +698,10 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
           Padding(
             padding: const EdgeInsets.only(bottom: 4),
             child: RichText(
-              text: TextSpan(children: spans, style: TextStyle(color: textColor, fontSize: 13, height: 1.45)),
+              text: TextSpan(
+                  children: spans,
+                  style:
+                      TextStyle(color: textColor, fontSize: 13, height: 1.45)),
             ),
           ),
         );
@@ -728,7 +782,8 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
           appBar: AppBar(
             title: Text(
               'Daftari la Mahubiri & Sala',
-              style: AppTypography.titleMedium(color: AppColors.textPrimaryOf(context)),
+              style: AppTypography.titleMedium(
+                  color: AppColors.textPrimaryOf(context)),
             ),
             actions: [
               IconButton(
@@ -745,7 +800,8 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
               foregroundColor: Colors.white,
               elevation: 4,
               icon: const Icon(Icons.edit_note_rounded),
-              label: const Text('Andika Dokezo', style: TextStyle(fontWeight: FontWeight.bold)),
+              label: const Text('Andika Dokezo',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
             ),
           ),
           body: _isLoading
@@ -754,7 +810,8 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                   ? EmptyStateView(
                       icon: Icons.edit_note_rounded,
                       title: 'Daftari Liko Tupu',
-                      description: 'Hujarekodi dokezo lolote la mahubiri. Bofya kitufe cha chini kuanza.',
+                      description:
+                          'Hujarekodi dokezo lolote la mahubiri. Bofya kitufe cha chini kuanza.',
                       actionLabel: 'Andika Dokezo la Kwanza',
                       onAction: _showAddNoteDialog,
                     )
@@ -766,7 +823,8 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                         bottom: 120 + MediaQuery.of(context).padding.bottom,
                       ),
                       itemCount: _notes.length,
-                      separatorBuilder: (context, idx) => const SizedBox(height: 12),
+                      separatorBuilder: (context, idx) =>
+                          const SizedBox(height: 12),
                       itemBuilder: (context, index) {
                         final note = _notes[index];
                         return AppCard(
@@ -775,31 +833,44 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 3),
                                     decoration: BoxDecoration(
-                                      color: AppColors.surfaceContainerOf(context),
+                                      color:
+                                          AppColors.surfaceContainerOf(context),
                                       borderRadius: BorderRadius.circular(6),
                                     ),
                                     child: Text(
-                                      note.scripture.isNotEmpty ? note.scripture : 'Somo la Ibada',
-                                      style: AppTypography.caption(color: AppColors.primary),
+                                      note.scripture.isNotEmpty
+                                          ? note.scripture
+                                          : 'Somo la Ibada',
+                                      style: AppTypography.caption(
+                                          color: AppColors.primary),
                                     ),
                                   ),
                                   Row(
                                     children: [
                                       IconButton(
-                                        icon: const Icon(Icons.edit_note_rounded, size: 22, color: AppColors.gold),
+                                        icon: const Icon(
+                                            Icons.edit_note_rounded,
+                                            size: 22,
+                                            color: AppColors.gold),
                                         tooltip: 'Hariri Dokezo',
-                                        onPressed: () => _showEditNoteDialog(note),
+                                        onPressed: () =>
+                                            _showEditNoteDialog(note),
                                         padding: EdgeInsets.zero,
                                         constraints: const BoxConstraints(),
                                       ),
                                       const SizedBox(width: 10),
                                       IconButton(
-                                        icon: const Icon(Icons.picture_as_pdf_rounded, size: 20, color: Color(0xFFDC2626)),
+                                        icon: const Icon(
+                                            Icons.picture_as_pdf_rounded,
+                                            size: 20,
+                                            color: Color(0xFFDC2626)),
                                         tooltip: 'Pakua PDF',
                                         onPressed: () => _exportNoteAsPdf(note),
                                         padding: EdgeInsets.zero,
@@ -807,7 +878,8 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                                       ),
                                       const SizedBox(width: 10),
                                       IconButton(
-                                        icon: const Icon(Icons.share_rounded, size: 18, color: AppColors.primary),
+                                        icon: const Icon(Icons.share_rounded,
+                                            size: 18, color: AppColors.primary),
                                         tooltip: 'Shiriki',
                                         onPressed: () => _shareNote(note),
                                         padding: EdgeInsets.zero,
@@ -815,7 +887,10 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                                       ),
                                       const SizedBox(width: 10),
                                       IconButton(
-                                        icon: const Icon(Icons.delete_outline_rounded, size: 18, color: AppColors.error),
+                                        icon: const Icon(
+                                            Icons.delete_outline_rounded,
+                                            size: 18,
+                                            color: AppColors.error),
                                         tooltip: 'Futa',
                                         onPressed: () => _deleteNote(note.id),
                                         padding: EdgeInsets.zero,
@@ -828,12 +903,14 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                               const SizedBox(height: 10),
                               Text(
                                 note.title,
-                                style: AppTypography.titleMedium(color: AppColors.textPrimaryOf(context)),
+                                style: AppTypography.titleMedium(
+                                    color: AppColors.textPrimaryOf(context)),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 'Mhubiri: ${note.preacher} • ${AppFormatters.formatSwahiliDate(note.date)}',
-                                style: AppTypography.caption(color: AppColors.textMutedOf(context)),
+                                style: AppTypography.caption(
+                                    color: AppColors.textMutedOf(context)),
                               ),
                               const SizedBox(height: 10),
                               _buildFormattedNoteContent(

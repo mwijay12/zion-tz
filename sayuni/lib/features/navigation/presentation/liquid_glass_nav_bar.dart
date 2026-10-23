@@ -61,7 +61,8 @@ class LiquidGlassNavBar extends StatelessWidget {
                 filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
                 child: Container(
                   height: 58,
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                   decoration: BoxDecoration(
                     // Sleek Dark Pill Surface matching #1E232A with subtle Electric Blue trim
                     gradient: LinearGradient(
@@ -164,7 +165,8 @@ class LiquidGlassNavBar extends StatelessWidget {
                         ),
                         child: Icon(
                           Icons.grid_view_rounded,
-                          color: isDark ? AppColors.goldLight : AppColors.goldDark,
+                          color:
+                              isDark ? AppColors.goldLight : AppColors.goldDark,
                           size: 20,
                         ),
                       ),
@@ -211,7 +213,9 @@ class LiquidGlassNavBar extends StatelessWidget {
             border: Border.all(
               color: isSelected
                   ? Colors.white.withOpacity(0.35)
-                  : (isDark ? Colors.white.withOpacity(0.08) : AppColors.borderLight),
+                  : (isDark
+                      ? Colors.white.withOpacity(0.08)
+                      : AppColors.borderLight),
               width: isSelected ? 1.4 : 1.0,
             ),
             boxShadow: isSelected
@@ -233,7 +237,9 @@ class LiquidGlassNavBar extends StatelessWidget {
                 size: isSelected ? 21 : 19,
                 color: isSelected
                     ? const Color(0xFFFFFFFF)
-                    : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF5A6B85)),
+                    : (isDark
+                        ? const Color(0xFF94A3B8)
+                        : const Color(0xFF5A6B85)),
               ),
               if (isSelected) ...[
                 const SizedBox(height: 2),

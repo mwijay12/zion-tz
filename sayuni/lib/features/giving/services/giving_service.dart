@@ -53,21 +53,25 @@ class GivingService {
 
   // Church Building Project Parameters
   static const double buildingTarget = 120000000; // TSh 120,000,000
-  static const double buildingRaised = 68450000;   // TSh 68,450,000
-  static const String buildingProjectName = 'Ujenzi wa Hekalu — Awamu ya Pili (Kuezeka na Sakafu)';
+  static const double buildingRaised = 68450000; // TSh 68,450,000
+  static const String buildingProjectName =
+      'Ujenzi wa Hekalu — Awamu ya Pili (Kuezeka na Sakafu)';
 
   Future<List<GivingRecord>> getRecords() async {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString(_recordsKey);
     if (jsonString == null) return [];
     final List<dynamic> list = json.decode(jsonString);
-    return list.map((item) => GivingRecord.fromJson(item as Map<String, dynamic>)).toList();
+    return list
+        .map((item) => GivingRecord.fromJson(item as Map<String, dynamic>))
+        .toList();
   }
 
   Future<void> addRecord(GivingRecord record) async {
     final list = await getRecords();
     list.insert(0, record);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_recordsKey, json.encode(list.map((r) => r.toJson()).toList()));
+    await prefs.setString(
+        _recordsKey, json.encode(list.map((r) => r.toJson()).toList()));
   }
 }

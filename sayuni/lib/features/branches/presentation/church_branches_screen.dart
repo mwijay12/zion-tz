@@ -72,8 +72,11 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
   @override
   Widget build(BuildContext context) {
     final filteredBranches = ChurchBranch.defaultBranches.where((branch) {
-      final matchesCity = _selectedCity == 'Yote' || branch.city == _selectedCity;
-      final matchesSearch = branch.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+      final matchesCity =
+          _selectedCity == 'Yote' || branch.city == _selectedCity;
+      final matchesSearch = branch.name
+              .toLowerCase()
+              .contains(_searchQuery.toLowerCase()) ||
           branch.city.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           branch.pastor.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           branch.location.toLowerCase().contains(_searchQuery.toLowerCase());
@@ -101,7 +104,8 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                 ModuleBanner(
                   eyebrow: 'Mikoa • Misheni • Mabalo',
                   title: 'Matawi ya Kanisa',
-                  subtitle: 'Tafuta tawi karibu nawe, pigia simu au tuma WhatsApp.',
+                  subtitle:
+                      'Tafuta tawi karibu nawe, pigia simu au tuma WhatsApp.',
                   imageAsset: 'assets/images/3d_branch_network.png',
                   gradient: const <Color>[Color(0xFF0D52CD), Color(0xFF0A2540)],
                   stats: <ModuleBannerStat>[
@@ -117,11 +121,14 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                   onChanged: (val) => setState(() => _searchQuery = val),
                   decoration: InputDecoration(
                     hintText: 'Tafuta tawi, mji, au mchungaji...',
-                    hintStyle: AppTypography.bodySmall(color: AppColors.textSecondary),
-                    prefixIcon: const Icon(Icons.search_rounded, color: AppColors.primary, size: 20),
+                    hintStyle:
+                        AppTypography.bodySmall(color: AppColors.textSecondary),
+                    prefixIcon: const Icon(Icons.search_rounded,
+                        color: AppColors.primary, size: 20),
                     filled: true,
                     fillColor: AppColors.canvas,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(color: AppColors.border),
@@ -140,7 +147,8 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     itemCount: _cities.length,
-                    separatorBuilder: (context, index) => const SizedBox(width: 8),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(width: 8),
                     itemBuilder: (context, idx) {
                       final city = _cities[idx];
                       final isSelected = _selectedCity == city;
@@ -156,12 +164,15 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                         selectedColor: AppColors.primary,
                         backgroundColor: AppColors.canvas,
                         labelStyle: TextStyle(
-                          color: isSelected ? Colors.white : AppColors.textPrimary,
+                          color:
+                              isSelected ? Colors.white : AppColors.textPrimary,
                           fontSize: 12,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          fontWeight:
+                              isSelected ? FontWeight.bold : FontWeight.normal,
                         ),
                         side: BorderSide(
-                          color: isSelected ? AppColors.primary : AppColors.border,
+                          color:
+                              isSelected ? AppColors.primary : AppColors.border,
                         ),
                       );
                     },
@@ -191,7 +202,9 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                           child: Image.asset(
                             'assets/images/3d_branch_network.png',
                             fit: BoxFit.contain,
-                            errorBuilder: (BuildContext c, Object e, StackTrace? st) => Icon(
+                            errorBuilder:
+                                (BuildContext c, Object e, StackTrace? st) =>
+                                    Icon(
                               Icons.church_rounded,
                               size: 44,
                               color: AppColors.textMuted,
@@ -201,12 +214,14 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                         const SizedBox(height: 14),
                         Text(
                           'Hakuna tawi lililopatikana',
-                          style: AppTypography.titleMedium(color: AppColors.textPrimary),
+                          style: AppTypography.titleMedium(
+                              color: AppColors.textPrimary),
                         ),
                         const SizedBox(height: 4),
                         Text(
                           'Jaribu kubadilisha jina la mji au neno la kutafuta',
-                          style: AppTypography.bodySmall(color: AppColors.textSecondary),
+                          style: AppTypography.bodySmall(
+                              color: AppColors.textSecondary),
                         ),
                       ],
                     ),
@@ -214,7 +229,8 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                 : ListView.separated(
                     padding: const EdgeInsets.all(16),
                     itemCount: filteredBranches.length,
-                    separatorBuilder: (context, index) => const SizedBox(height: 14),
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 14),
                     itemBuilder: (context, index) {
                       final branch = filteredBranches[index];
                       return _buildBranchCard(branch, index);
@@ -254,12 +270,16 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                             padding: const EdgeInsets.all(9),
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
-                                colors: [accent.withOpacity(0.24), accent.withOpacity(0.08)],
+                                colors: [
+                                  accent.withOpacity(0.24),
+                                  accent.withOpacity(0.08)
+                                ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
                               borderRadius: BorderRadius.circular(13),
-                              border: Border.all(color: accent.withOpacity(0.32)),
+                              border:
+                                  Border.all(color: accent.withOpacity(0.32)),
                             ),
                             child: Icon(
                               branch.isHeadquarters
@@ -277,7 +297,8 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                                 if (branch.isHeadquarters)
                                   Container(
                                     margin: const EdgeInsets.only(bottom: 5),
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2.5),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 2.5),
                                     decoration: BoxDecoration(
                                       color: accent,
                                       borderRadius: BorderRadius.circular(6),
@@ -295,13 +316,16 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                                 Text(
                                   branch.name,
                                   style: AppTypography.titleMedium(
-                                    color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                                    color: isDark
+                                        ? Colors.white
+                                        : AppColors.textPrimaryLight,
                                   ).copyWith(fontWeight: FontWeight.w800),
                                 ),
                                 const SizedBox(height: 3),
                                 Row(
                                   children: [
-                                    Icon(Icons.location_on_rounded, size: 13, color: accent),
+                                    Icon(Icons.location_on_rounded,
+                                        size: 13, color: accent),
                                     const SizedBox(width: 4),
                                     Expanded(
                                       child: Text(
@@ -321,10 +345,10 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                           ),
                         ],
                       ),
-
                       const SizedBox(height: 12),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 9),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 11, vertical: 9),
                         decoration: BoxDecoration(
                           color: accent.withOpacity(0.07),
                           borderRadius: BorderRadius.circular(11),
@@ -335,18 +359,22 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                           children: [
                             Row(
                               children: [
-                                const Icon(Icons.person_rounded, size: 14, color: AppColors.primary),
+                                const Icon(Icons.person_rounded,
+                                    size: 14, color: AppColors.primary),
                                 const SizedBox(width: 7),
                                 Text(
                                   'Kiongozi:',
-                                  style: AppTypography.caption(color: AppColors.textMuted),
+                                  style: AppTypography.caption(
+                                      color: AppColors.textMuted),
                                 ),
                                 const SizedBox(width: 5),
                                 Expanded(
                                   child: Text(
                                     branch.pastor,
                                     style: AppTypography.bodySmall(
-                                      color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                                      color: isDark
+                                          ? Colors.white
+                                          : AppColors.textPrimaryLight,
                                     ).copyWith(fontWeight: FontWeight.w700),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -357,7 +385,8 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(Icons.schedule_rounded, size: 14, color: accent),
+                                Icon(Icons.schedule_rounded,
+                                    size: 14, color: accent),
                                 const SizedBox(width: 7),
                                 Expanded(
                                   child: Text(
@@ -374,7 +403,6 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                           ],
                         ),
                       ),
-
                       const SizedBox(height: 13),
                       Row(
                         children: [
@@ -384,12 +412,16 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                               icon: const Icon(Icons.phone_rounded, size: 15),
                               label: const Text(
                                 'Piga Simu',
-                                style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700),
+                                style: TextStyle(
+                                    fontSize: 11.5,
+                                    fontWeight: FontWeight.w700),
                               ),
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: accent,
-                                side: BorderSide(color: accent.withOpacity(0.7)),
-                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                side:
+                                    BorderSide(color: accent.withOpacity(0.7)),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -399,16 +431,20 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                           const SizedBox(width: 10),
                           Expanded(
                             child: ElevatedButton.icon(
-                              onPressed: () => _openWhatsApp(branch.whatsapp, branch.name),
+                              onPressed: () =>
+                                  _openWhatsApp(branch.whatsapp, branch.name),
                               icon: const Icon(Icons.chat_rounded, size: 15),
                               label: const Text(
                                 'WhatsApp',
-                                style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700),
+                                style: TextStyle(
+                                    fontSize: 11.5,
+                                    fontWeight: FontWeight.w700),
                               ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF25D366),
                                 foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),

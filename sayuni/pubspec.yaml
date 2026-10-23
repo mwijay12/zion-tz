@@ -39,7 +39,6 @@ dependencies:
   url_launcher: any
   share_plus: any
   flutter_tts: any
-  audioplayers: any
   pdf: any
   printing: any
   path_provider: any
@@ -53,8 +52,13 @@ dependencies:
   sqflite_common_ffi: any
   sqflite_common_ffi_web: any
   path: any
+  # Audio: single background-capable player (just_audio) + media session
+  # (audio_service) + OS audio focus/interruptions (audio_session).
+  # NOTE: audioplayers was removed on purpose - only one player may exist.
   audio_service: any
   just_audio: any
+  audio_session: any
+  rxdart: any
 
 dev_dependencies:
   flutter_test:

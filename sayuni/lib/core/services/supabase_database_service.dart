@@ -9,7 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// - Pre-configured SQL schema & RLS policies for Church roles
 /// - Graceful offline-first fallback using local storage
 class SupabaseDatabaseService {
-  static final SupabaseDatabaseService _instance = SupabaseDatabaseService._internal();
+  static final SupabaseDatabaseService _instance =
+      SupabaseDatabaseService._internal();
   factory SupabaseDatabaseService() => _instance;
   SupabaseDatabaseService._internal();
 
@@ -18,14 +19,16 @@ class SupabaseDatabaseService {
   static const String supabaseAnonKey = 'your-anon-key';
 
   bool get isConfigured =>
-      !supabaseUrl.contains('your-project-ref') && !supabaseAnonKey.contains('your-anon-key');
+      !supabaseUrl.contains('your-project-ref') &&
+      !supabaseAnonKey.contains('your-anon-key');
 
   /// Fetches published sermons from Supabase or returns local cache
   Future<List<Map<String, dynamic>>> fetchSermons() async {
     try {
       if (isConfigured) {
         final response = await http.get(
-          Uri.parse('$supabaseUrl/rest/v1/sermons?select=*&order=created_at.desc'),
+          Uri.parse(
+              '$supabaseUrl/rest/v1/sermons?select=*&order=created_at.desc'),
           headers: {
             'apikey': supabaseAnonKey,
             'Authorization': 'Bearer $supabaseAnonKey',

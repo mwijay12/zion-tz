@@ -50,36 +50,39 @@ class SermonMediaItem {
   });
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'title': title,
-    'preacher': preacher,
-    'scripture': scripture,
-    'date': date,
-    'duration': duration,
-    'type': type,
-    'category': category,
-    'description': description,
-    'imageUrl': imageUrl,
-    'audioUrl': audioUrl,
-    'videoUrl': videoUrl,
-    'isAdminUpload': isAdminUpload,
-  };
+        'id': id,
+        'title': title,
+        'preacher': preacher,
+        'scripture': scripture,
+        'date': date,
+        'duration': duration,
+        'type': type,
+        'category': category,
+        'description': description,
+        'imageUrl': imageUrl,
+        'audioUrl': audioUrl,
+        'videoUrl': videoUrl,
+        'isAdminUpload': isAdminUpload,
+      };
 
-  factory SermonMediaItem.fromJson(Map<String, dynamic> json) => SermonMediaItem(
-    id: json['id']?.toString() ?? '',
-    title: json['title']?.toString() ?? '',
-    preacher: json['preacher']?.toString() ?? '',
-    scripture: json['scripture']?.toString() ?? '',
-    date: json['date']?.toString() ?? '',
-    duration: json['duration']?.toString() ?? '45 min',
-    type: json['type']?.toString() ?? 'video',
-    category: json['category']?.toString() ?? 'Mahubiri',
-    description: json['description']?.toString() ?? '',
-    imageUrl: json['imageUrl']?.toString() ?? 'assets/images/church_front.jpg',
-    audioUrl: json['audioUrl']?.toString() ?? 'https://stream.zeno.fm/4v4e91y9sm8uv',
-    videoUrl: json['videoUrl']?.toString() ?? '',
-    isAdminUpload: json['isAdminUpload'] == true,
-  );
+  factory SermonMediaItem.fromJson(Map<String, dynamic> json) =>
+      SermonMediaItem(
+        id: json['id']?.toString() ?? '',
+        title: json['title']?.toString() ?? '',
+        preacher: json['preacher']?.toString() ?? '',
+        scripture: json['scripture']?.toString() ?? '',
+        date: json['date']?.toString() ?? '',
+        duration: json['duration']?.toString() ?? '45 min',
+        type: json['type']?.toString() ?? 'video',
+        category: json['category']?.toString() ?? 'Mahubiri',
+        description: json['description']?.toString() ?? '',
+        imageUrl:
+            json['imageUrl']?.toString() ?? 'assets/images/church_front.jpg',
+        audioUrl: json['audioUrl']?.toString() ??
+            'https://stream.zeno.fm/4v4e91y9sm8uv',
+        videoUrl: json['videoUrl']?.toString() ?? '',
+        isAdminUpload: json['isAdminUpload'] == true,
+      );
 }
 
 class MediaHubScreen extends StatefulWidget {
@@ -128,28 +131,33 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
         final List<dynamic> decoded = jsonDecode(raw);
         setState(() {
           _customSermons = decoded
-              .map((e) => SermonMediaItem.fromJson(Map<String, dynamic>.from(e)))
+              .map(
+                  (e) => SermonMediaItem.fromJson(Map<String, dynamic>.from(e)))
               .toList();
         });
       }
       final customService = ChurchCustomizationService();
       await customService.init();
       if (customService.customSermons.isNotEmpty) {
-        final synced = customService.customSermons.map((cs) => SermonMediaItem(
-          id: cs.id,
-          title: cs.title,
-          preacher: cs.preacher,
-          scripture: cs.scripture,
-          date: 'Ibada ya Sayuni',
-          duration: cs.duration,
-          type: cs.type,
-          category: cs.category,
-          description: 'Ujumbe wa kiroho kutoka Hekalu Kuu la Sayuni.',
-          imageUrl: cs.thumbnailUrl ?? 'assets/images/church_front.jpg',
-          audioUrl: cs.type == 'audio' ? cs.mediaUrl : 'https://stream.zeno.fm/4v4e91y9sm8uv',
-          videoUrl: cs.type == 'video' ? cs.mediaUrl : '',
-          isAdminUpload: true,
-        )).toList();
+        final synced = customService.customSermons
+            .map((cs) => SermonMediaItem(
+                  id: cs.id,
+                  title: cs.title,
+                  preacher: cs.preacher,
+                  scripture: cs.scripture,
+                  date: 'Ibada ya Sayuni',
+                  duration: cs.duration,
+                  type: cs.type,
+                  category: cs.category,
+                  description: 'Ujumbe wa kiroho kutoka Hekalu Kuu la Sayuni.',
+                  imageUrl: cs.thumbnailUrl ?? 'assets/images/church_front.jpg',
+                  audioUrl: cs.type == 'audio'
+                      ? cs.mediaUrl
+                      : 'https://stream.zeno.fm/4v4e91y9sm8uv',
+                  videoUrl: cs.type == 'video' ? cs.mediaUrl : '',
+                  isAdminUpload: true,
+                ))
+            .toList();
         for (final s in synced) {
           if (!_customSermons.any((existing) => existing.id == s.id)) {
             _customSermons.add(s);
@@ -165,7 +173,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
   Future<void> _saveCustomSermons() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final encoded = jsonEncode(_customSermons.map((e) => e.toJson()).toList());
+      final encoded =
+          jsonEncode(_customSermons.map((e) => e.toJson()).toList());
       await prefs.setString('zion_admin_uploaded_media', encoded);
     } catch (e) {
       debugPrint('Error saving custom sermons: $e');
@@ -204,14 +213,17 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
         controller: controller,
         maxLines: maxLines,
         cursorColor: AppColors.primaryLight,
-        style: const TextStyle(color: Colors.white, fontSize: 13.5, fontWeight: FontWeight.w500),
+        style: const TextStyle(
+            color: Colors.white, fontSize: 13.5, fontWeight: FontWeight.w500),
         decoration: InputDecoration(
           filled: true,
           fillColor: const Color(0xFF162235),
           labelText: label,
-          labelStyle: const TextStyle(color: AppColors.primaryLight, fontSize: 12),
+          labelStyle:
+              const TextStyle(color: AppColors.primaryLight, fontSize: 12),
           hintText: hint,
-          hintStyle: TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 12),
+          hintStyle:
+              TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 12),
           prefixIcon: Icon(icon, color: AppColors.primaryLight, size: 18),
           border: InputBorder.none,
           enabledBorder: InputBorder.none,
@@ -219,7 +231,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
             borderRadius: BorderRadius.circular(12),
             borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
           ),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         ),
       ),
     );
@@ -251,7 +264,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
             return BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
               child: Container(
-                padding: EdgeInsets.fromLTRB(20, 16, 20, MediaQuery.of(ctx).viewInsets.bottom + 24),
+                padding: EdgeInsets.fromLTRB(
+                    20, 16, 20, MediaQuery.of(ctx).viewInsets.bottom + 24),
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Color(0xFF0A2540), Color(0xFF0F3E7A)],
@@ -284,7 +298,10 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                               color: AppColors.gold.withOpacity(0.2),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.admin_panel_settings_rounded, color: AppColors.gold, size: 20),
+                            child: const Icon(
+                                Icons.admin_panel_settings_rounded,
+                                color: AppColors.gold,
+                                size: 20),
                           ),
                           const SizedBox(width: 10),
                           const Expanded(
@@ -311,7 +328,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                           ),
                           IconButton(
                             onPressed: () => Navigator.pop(ctx),
-                            icon: const Icon(Icons.close_rounded, color: Colors.white70),
+                            icon: const Icon(Icons.close_rounded,
+                                color: Colors.white70),
                           ),
                         ],
                       ),
@@ -322,22 +340,33 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                         children: [
                           Expanded(
                             child: GestureDetector(
-                              onTap: () => setModalState(() => mediaType = 'video'),
+                              onTap: () =>
+                                  setModalState(() => mediaType = 'video'),
                               child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
                                 decoration: BoxDecoration(
-                                  color: mediaType == 'video' ? AppColors.primary : Colors.white.withOpacity(0.08),
+                                  color: mediaType == 'video'
+                                      ? AppColors.primary
+                                      : Colors.white.withOpacity(0.08),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: mediaType == 'video' ? Colors.white : Colors.white24,
+                                    color: mediaType == 'video'
+                                        ? Colors.white
+                                        : Colors.white24,
                                   ),
                                 ),
                                 child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.videocam_rounded, color: Colors.white, size: 18),
+                                    Icon(Icons.videocam_rounded,
+                                        color: Colors.white, size: 18),
                                     SizedBox(width: 6),
-                                    Text('Video ya Hubiri', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+                                    Text('Video ya Hubiri',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12)),
                                   ],
                                 ),
                               ),
@@ -346,25 +375,37 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                           const SizedBox(width: 10),
                           Expanded(
                             child: GestureDetector(
-                              onTap: () => setModalState(() => mediaType = 'audio'),
+                              onTap: () =>
+                                  setModalState(() => mediaType = 'audio'),
                               child: Container(
-                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 10),
                                 decoration: BoxDecoration(
-                                  color: mediaType == 'audio' ? AppColors.gold : Colors.white.withOpacity(0.08),
+                                  color: mediaType == 'audio'
+                                      ? AppColors.gold
+                                      : Colors.white.withOpacity(0.08),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: mediaType == 'audio' ? Colors.white : Colors.white24,
+                                    color: mediaType == 'audio'
+                                        ? Colors.white
+                                        : Colors.white24,
                                   ),
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.audiotrack_rounded, color: mediaType == 'audio' ? const Color(0xFF0A2540) : Colors.white, size: 18),
+                                    Icon(Icons.audiotrack_rounded,
+                                        color: mediaType == 'audio'
+                                            ? const Color(0xFF0A2540)
+                                            : Colors.white,
+                                        size: 18),
                                     const SizedBox(width: 6),
                                     Text(
                                       'Sauti / Audio',
                                       style: TextStyle(
-                                        color: mediaType == 'audio' ? const Color(0xFF0A2540) : Colors.white,
+                                        color: mediaType == 'audio'
+                                            ? const Color(0xFF0A2540)
+                                            : Colors.white,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 12,
                                       ),
@@ -390,11 +431,15 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                           children: [
                             Expanded(
                               child: GestureDetector(
-                                onTap: () => setModalState(() => sourceMode = 'gallery'),
+                                onTap: () =>
+                                    setModalState(() => sourceMode = 'gallery'),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8),
                                   decoration: BoxDecoration(
-                                    color: sourceMode == 'gallery' ? AppColors.primary : Colors.transparent,
+                                    color: sourceMode == 'gallery'
+                                        ? AppColors.primary
+                                        : Colors.transparent,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Row(
@@ -403,15 +448,21 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                       Icon(
                                         Icons.video_library_rounded,
                                         size: 16,
-                                        color: sourceMode == 'gallery' ? Colors.white : Colors.white70,
+                                        color: sourceMode == 'gallery'
+                                            ? Colors.white
+                                            : Colors.white70,
                                       ),
                                       const SizedBox(width: 6),
                                       Text(
                                         'Kutoka Maktaba (Library)',
                                         style: TextStyle(
                                           fontSize: 11.5,
-                                          fontWeight: sourceMode == 'gallery' ? FontWeight.bold : FontWeight.normal,
-                                          color: sourceMode == 'gallery' ? Colors.white : Colors.white70,
+                                          fontWeight: sourceMode == 'gallery'
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                          color: sourceMode == 'gallery'
+                                              ? Colors.white
+                                              : Colors.white70,
                                         ),
                                       ),
                                     ],
@@ -421,11 +472,15 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                             ),
                             Expanded(
                               child: GestureDetector(
-                                onTap: () => setModalState(() => sourceMode = 'link'),
+                                onTap: () =>
+                                    setModalState(() => sourceMode = 'link'),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 8),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8),
                                   decoration: BoxDecoration(
-                                    color: sourceMode == 'link' ? AppColors.primary : Colors.transparent,
+                                    color: sourceMode == 'link'
+                                        ? AppColors.primary
+                                        : Colors.transparent,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Row(
@@ -434,15 +489,21 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                       Icon(
                                         Icons.link_rounded,
                                         size: 16,
-                                        color: sourceMode == 'link' ? Colors.white : Colors.white70,
+                                        color: sourceMode == 'link'
+                                            ? Colors.white
+                                            : Colors.white70,
                                       ),
                                       const SizedBox(width: 6),
                                       Text(
                                         'Kiungo cha Mtandaoni (Link)',
                                         style: TextStyle(
                                           fontSize: 11.5,
-                                          fontWeight: sourceMode == 'link' ? FontWeight.bold : FontWeight.normal,
-                                          color: sourceMode == 'link' ? Colors.white : Colors.white70,
+                                          fontWeight: sourceMode == 'link'
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                          color: sourceMode == 'link'
+                                              ? Colors.white
+                                              : Colors.white70,
                                         ),
                                       ),
                                     ],
@@ -473,17 +534,22 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                           child: Column(
                             children: [
                               if (pickedVideo == null) ...[
-                                const Icon(Icons.cloud_upload_rounded, color: AppColors.gold, size: 36),
+                                const Icon(Icons.cloud_upload_rounded,
+                                    color: AppColors.gold, size: 36),
                                 const SizedBox(height: 8),
                                 const Text(
                                   'Chagua Video Kutoka Maktaba ya Simu yako',
-                                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13),
                                   textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: 4),
                                 const Text(
                                   'Inasaidia faili za MP4, MOV au WebM kutoka gallery',
-                                  style: TextStyle(color: Colors.white70, fontSize: 11),
+                                  style: TextStyle(
+                                      color: Colors.white70, fontSize: 11),
                                   textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: 10),
@@ -495,7 +561,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                           setModalState(() => isPicking = true);
                                           try {
                                             final picker = ImagePicker();
-                                            final XFile? file = await picker.pickVideo(
+                                            final XFile? file =
+                                                await picker.pickVideo(
                                               source: ImageSource.gallery,
                                             );
                                             if (file != null) {
@@ -508,22 +575,32 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                           } catch (e) {
                                             debugPrint('Video pick error: $e');
                                           } finally {
-                                            setModalState(() => isPicking = false);
+                                            setModalState(
+                                                () => isPicking = false);
                                           }
                                         },
                                   icon: isPicking
                                       ? const SizedBox(
                                           width: 16,
                                           height: 16,
-                                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                          child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              color: Colors.white),
                                         )
-                                      : const Icon(Icons.video_collection_rounded, size: 18),
-                                  label: Text(isPicking ? 'Inafungua Maktaba...' : 'Fungua Maktaba ya Kifaa'),
+                                      : const Icon(
+                                          Icons.video_collection_rounded,
+                                          size: 18),
+                                  label: Text(isPicking
+                                      ? 'Inafungua Maktaba...'
+                                      : 'Fungua Maktaba ya Kifaa'),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: AppColors.primary,
                                     foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 10),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
                                   ),
                                 ),
                               ] else ...[
@@ -532,15 +609,20 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                     Container(
                                       padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFF16A34A).withOpacity(0.2),
+                                        color: const Color(0xFF16A34A)
+                                            .withOpacity(0.2),
                                         shape: BoxShape.circle,
                                       ),
-                                      child: const Icon(Icons.check_circle_rounded, color: Color(0xFF22C55E), size: 24),
+                                      child: const Icon(
+                                          Icons.check_circle_rounded,
+                                          color: Color(0xFF22C55E),
+                                          size: 24),
                                     ),
                                     const SizedBox(width: 12),
                                     Expanded(
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           const Text(
                                             'Video Imechaguliwa Kutoka Maktaba!',
@@ -569,7 +651,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                         AppHaptics.lightImpact();
                                         try {
                                           final picker = ImagePicker();
-                                          final XFile? file = await picker.pickVideo(
+                                          final XFile? file =
+                                              await picker.pickVideo(
                                             source: ImageSource.gallery,
                                           );
                                           if (file != null) {
@@ -581,7 +664,10 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                           }
                                         } catch (_) {}
                                       },
-                                      child: const Text('Badili', style: TextStyle(color: AppColors.primaryLight, fontSize: 12)),
+                                      child: const Text('Badili',
+                                          style: TextStyle(
+                                              color: AppColors.primaryLight,
+                                              fontSize: 12)),
                                     ),
                                   ],
                                 ),
@@ -600,37 +686,53 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                       const SizedBox(height: 10),
 
                       // Input Fields
-                      _buildAdminField(titleCtrl, 'Kichwa cha Hubiri / Somo', Icons.title_rounded, 'Mf. Nuru ya Sayuni Inang\'aa'),
+                      _buildAdminField(titleCtrl, 'Kichwa cha Hubiri / Somo',
+                          Icons.title_rounded, 'Mf. Nuru ya Sayuni Inang\'aa'),
                       const SizedBox(height: 10),
-                      _buildAdminField(preacherCtrl, 'Mhubiri / Mtumishi', Icons.person_rounded, 'Askofu Messi Mgala'),
+                      _buildAdminField(preacherCtrl, 'Mhubiri / Mtumishi',
+                          Icons.person_rounded, 'Askofu Messi Mgala'),
                       const SizedBox(height: 10),
-                      _buildAdminField(scriptureCtrl, 'Mstari wa Biblia', Icons.menu_book_rounded, 'Isaya 60:1-3'),
+                      _buildAdminField(scriptureCtrl, 'Mstari wa Biblia',
+                          Icons.menu_book_rounded, 'Isaya 60:1-3'),
                       const SizedBox(height: 10),
                       Row(
                         children: [
                           Expanded(
-                            child: _buildAdminField(durationCtrl, 'Muda', Icons.timer_rounded, '45 min'),
+                            child: _buildAdminField(durationCtrl, 'Muda',
+                                Icons.timer_rounded, '45 min'),
                           ),
                           const SizedBox(width: 10),
                           Expanded(
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 4),
                               decoration: BoxDecoration(
                                 color: Colors.white.withOpacity(0.08),
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: AppColors.gold.withOpacity(0.35)),
+                                border: Border.all(
+                                    color: AppColors.gold.withOpacity(0.35)),
                               ),
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton<String>(
                                   value: category,
                                   dropdownColor: const Color(0xFF0F2644),
-                                  style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
                                   isExpanded: true,
-                                  items: ['Mahubiri', 'Mafundisho', 'Kwaya', 'Podcasts'].map((c) {
-                                    return DropdownMenuItem(value: c, child: Text(c));
+                                  items: [
+                                    'Mahubiri',
+                                    'Mafundisho',
+                                    'Kwaya',
+                                    'Podcasts'
+                                  ].map((c) {
+                                    return DropdownMenuItem(
+                                        value: c, child: Text(c));
                                   }).toList(),
                                   onChanged: (val) {
-                                    if (val != null) setModalState(() => category = val);
+                                    if (val != null)
+                                      setModalState(() => category = val);
                                   },
                                 ),
                               ),
@@ -639,7 +741,12 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                         ],
                       ),
                       const SizedBox(height: 10),
-                      _buildAdminField(descCtrl, 'Maelezo ya Hubiri', Icons.description_rounded, 'Ujumbe wa ukombozi kutoka Sayuni...', maxLines: 2),
+                      _buildAdminField(
+                          descCtrl,
+                          'Maelezo ya Hubiri',
+                          Icons.description_rounded,
+                          'Ujumbe wa ukombozi kutoka Sayuni...',
+                          maxLines: 2),
                       const SizedBox(height: 18),
 
                       // Submit Button
@@ -653,28 +760,38 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                             final url = urlCtrl.text.trim();
                             if (title.isEmpty) {
                               messenger.showSnackBar(
-                                const SnackBar(content: Text('Tafadhali weka Kichwa cha Hubiri')),
+                                const SnackBar(
+                                    content: Text(
+                                        'Tafadhali weka Kichwa cha Hubiri')),
                               );
                               return;
                             }
-                            if (sourceMode == 'gallery' && pickedVideo == null && url.isEmpty) {
+                            if (sourceMode == 'gallery' &&
+                                pickedVideo == null &&
+                                url.isEmpty) {
                               messenger.showSnackBar(
-                                const SnackBar(content: Text('Tafadhali chagua video kutoka kwenye maktaba ya simu yako')),
+                                const SnackBar(
+                                    content: Text(
+                                        'Tafadhali chagua video kutoka kwenye maktaba ya simu yako')),
                               );
                               return;
                             }
 
                             String finalVideoUrl = url;
-                            if (sourceMode == 'gallery' && pickedVideo != null) {
+                            if (sourceMode == 'gallery' &&
+                                pickedVideo != null) {
                               setModalState(() => isUploading = true);
                               try {
                                 final bytes = await pickedVideo!.readAsBytes();
-                                final uploadedUrl = await CloudinaryMediaService.uploadMediaBytes(
+                                final uploadedUrl = await CloudinaryMediaService
+                                    .uploadMediaBytes(
                                   bytes: bytes,
                                   filename: pickedVideo!.name,
-                                  resourceType: mediaType == 'video' ? 'video' : 'auto',
+                                  resourceType:
+                                      mediaType == 'video' ? 'video' : 'auto',
                                 );
-                                if (uploadedUrl != null && uploadedUrl.isNotEmpty) {
+                                if (uploadedUrl != null &&
+                                    uploadedUrl.isNotEmpty) {
                                   finalVideoUrl = uploadedUrl;
                                 } else {
                                   finalVideoUrl = pickedVideo!.path;
@@ -690,16 +807,28 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                             final newItem = SermonMediaItem(
                               id: 'admin-${DateTime.now().millisecondsSinceEpoch}',
                               title: title,
-                              preacher: preacherCtrl.text.trim().isNotEmpty ? preacherCtrl.text.trim() : ChurchProfile.headBishop,
-                              scripture: scriptureCtrl.text.trim().isNotEmpty ? scriptureCtrl.text.trim() : 'Zaburi 121:1-8',
-                              date: 'Leo, ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
-                              duration: durationCtrl.text.trim().isNotEmpty ? durationCtrl.text.trim() : '45 min',
+                              preacher: preacherCtrl.text.trim().isNotEmpty
+                                  ? preacherCtrl.text.trim()
+                                  : ChurchProfile.headBishop,
+                              scripture: scriptureCtrl.text.trim().isNotEmpty
+                                  ? scriptureCtrl.text.trim()
+                                  : 'Zaburi 121:1-8',
+                              date:
+                                  'Leo, ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
+                              duration: durationCtrl.text.trim().isNotEmpty
+                                  ? durationCtrl.text.trim()
+                                  : '45 min',
                               type: mediaType,
                               category: category,
-                              description: descCtrl.text.trim().isNotEmpty ? descCtrl.text.trim() : 'Ujumbe wa kiroho uliowekwa na Utawala wa Sayuni.',
+                              description: descCtrl.text.trim().isNotEmpty
+                                  ? descCtrl.text.trim()
+                                  : 'Ujumbe wa kiroho uliowekwa na Utawala wa Sayuni.',
                               imageUrl: 'assets/images/church_front.jpg',
-                              audioUrl: mediaType == 'audio' ? finalVideoUrl : 'https://stream.zeno.fm/4v4e91y9sm8uv',
-                              videoUrl: mediaType == 'video' ? finalVideoUrl : '',
+                              audioUrl: mediaType == 'audio'
+                                  ? finalVideoUrl
+                                  : 'https://stream.zeno.fm/4v4e91y9sm8uv',
+                              videoUrl:
+                                  mediaType == 'video' ? finalVideoUrl : '',
                               isAdminUpload: true,
                             );
 
@@ -724,7 +853,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                             if (mounted) {
                               messenger.showSnackBar(
                                 const SnackBar(
-                                  content: Text('✅ Hubiri limepakiwa kikamilifu na linapatikana kwa waumini wote!'),
+                                  content: Text(
+                                      '✅ Hubiri limepakiwa kikamilifu na linapatikana kwa waumini wote!'),
                                   backgroundColor: Color(0xFF16A34A),
                                 ),
                               );
@@ -734,16 +864,24 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                               ? const SizedBox(
                                   width: 18,
                                   height: 18,
-                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                  child: CircularProgressIndicator(
+                                      strokeWidth: 2, color: Colors.white),
                                 )
-                              : const Icon(Icons.cloud_upload_rounded, color: Colors.white),
+                              : const Icon(Icons.cloud_upload_rounded,
+                                  color: Colors.white),
                           label: Text(
-                            isUploading ? 'Inapakia kwenye Cloudinary...' : 'Hifadhi & Chapisha Video',
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13.5),
+                            isUploading
+                                ? 'Inapakia kwenye Cloudinary...'
+                                : 'Hifadhi & Chapisha Video',
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13.5),
                           ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14)),
                           ),
                         ),
                       ),
@@ -825,29 +963,40 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
-                                color: isVideo ? const Color(0xFFDC2626) : AppColors.primary,
+                                color: isVideo
+                                    ? const Color(0xFFDC2626)
+                                    : AppColors.primary,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    isVideo ? Icons.videocam_rounded : Icons.headphones_rounded,
+                                    isVideo
+                                        ? Icons.videocam_rounded
+                                        : Icons.headphones_rounded,
                                     size: 14,
                                     color: Colors.white,
                                   ),
                                   const SizedBox(width: 5),
                                   Text(
-                                    isVideo ? 'VIDEO YA MAHUBIRI' : 'SAUTI YA MAHUBIRI & KWAYA',
-                                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Colors.white),
+                                    isVideo
+                                        ? 'VIDEO YA MAHUBIRI'
+                                        : 'SAUTI YA MAHUBIRI & KWAYA',
+                                    style: const TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w900,
+                                        color: Colors.white),
                                   ),
                                 ],
                               ),
                             ),
                             IconButton(
-                              icon: const Icon(Icons.close_rounded, color: Colors.white),
+                              icon: const Icon(Icons.close_rounded,
+                                  color: Colors.white),
                               onPressed: () => Navigator.pop(ctx),
                             ),
                           ],
@@ -864,15 +1013,26 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                 alignment: Alignment.center,
                                 children: [
                                   Image(
-                                    image: (item.imageUrl.startsWith('http') || item.imageUrl.startsWith('blob:') || item.imageUrl.startsWith('assets/'))
-                                        ? (item.imageUrl.startsWith('assets/') ? AssetImage(item.imageUrl) as ImageProvider : NetworkImage(item.imageUrl))
-                                        : const AssetImage('assets/images/pastoral_leadership_1788577468703.jpg'),
+                                    image: (item.imageUrl.startsWith('http') ||
+                                            item.imageUrl.startsWith('blob:') ||
+                                            item.imageUrl.startsWith('assets/'))
+                                        ? (item.imageUrl.startsWith('assets/')
+                                            ? AssetImage(item.imageUrl)
+                                                as ImageProvider
+                                            : NetworkImage(item.imageUrl))
+                                        : const AssetImage(
+                                            'assets/images/pastoral_leadership_1788577468703.jpg'),
                                     width: double.infinity,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) => Container(
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            Container(
                                       color: Colors.black87,
                                       child: const Center(
-                                        child: Icon(Icons.play_circle_fill_rounded, size: 60, color: AppColors.gold),
+                                        child: Icon(
+                                            Icons.play_circle_fill_rounded,
+                                            size: 60,
+                                            color: AppColors.gold),
                                       ),
                                     ),
                                   ),
@@ -882,13 +1042,16 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                   IconButton(
                                     iconSize: 64,
                                     icon: Icon(
-                                      isPlaying ? Icons.pause_circle_filled_rounded : Icons.play_circle_fill_rounded,
+                                      isPlaying
+                                          ? Icons.pause_circle_filled_rounded
+                                          : Icons.play_circle_fill_rounded,
                                       color: AppColors.gold,
                                     ),
                                     onPressed: () {
                                       AppHaptics.lightImpact();
                                       ChurchAudioService().togglePlayPause();
-                                      setModalState(() => isPlaying = !isPlaying);
+                                      setModalState(
+                                          () => isPlaying = !isPlaying);
                                     },
                                   ),
                                   Positioned(
@@ -896,12 +1059,14 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                     left: 12,
                                     right: 12,
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           'HD • Cloudinary CDN Streaming',
                                           style: TextStyle(
-                                            color: Colors.white.withOpacity(0.8),
+                                            color:
+                                                Colors.white.withOpacity(0.8),
                                             fontSize: 11,
                                             fontWeight: FontWeight.w600,
                                           ),
@@ -930,9 +1095,13 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 gradient: const RadialGradient(
-                                  colors: [Color(0xFF1E6BFF), Color(0xFF0A2540)],
+                                  colors: [
+                                    Color(0xFF1E6BFF),
+                                    Color(0xFF0A2540)
+                                  ],
                                 ),
-                                border: Border.all(color: AppColors.gold, width: 2.5),
+                                border: Border.all(
+                                    color: AppColors.gold, width: 2.5),
                                 boxShadow: [
                                   BoxShadow(
                                     color: AppColors.gold.withOpacity(0.35),
@@ -942,19 +1111,28 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                 ],
                               ),
                               clipBehavior: Clip.antiAlias,
-                              child: (item.imageUrl.startsWith('http') || item.imageUrl.startsWith('blob:'))
+                              child: (item.imageUrl.startsWith('http') ||
+                                      item.imageUrl.startsWith('blob:'))
                                   ? Image.network(
                                       item.imageUrl,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) => const Center(
-                                        child: Icon(Icons.music_note_rounded, size: 54, color: Colors.white),
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              const Center(
+                                        child: Icon(Icons.music_note_rounded,
+                                            size: 54, color: Colors.white),
                                       ),
                                     )
                                   : Image.asset(
-                                      item.imageUrl.startsWith('assets/') ? item.imageUrl : 'assets/images/church_front.jpg',
+                                      item.imageUrl.startsWith('assets/')
+                                          ? item.imageUrl
+                                          : 'assets/images/church_front.jpg',
                                       fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) => const Center(
-                                        child: Icon(Icons.music_note_rounded, size: 54, color: Colors.white),
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              const Center(
+                                        child: Icon(Icons.music_note_rounded,
+                                            size: 54, color: Colors.white),
                                       ),
                                     ),
                             ),
@@ -966,11 +1144,21 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                             listenable: ChurchAudioService(),
                             builder: (context, _) {
                               final audio = ChurchAudioService();
-                              final maxSec = audio.duration.inSeconds > 0 ? audio.duration.inSeconds.toDouble() : 1.0;
-                              final curSec = audio.position.inSeconds.toDouble().clamp(0.0, maxSec);
+                              final maxSec = audio.duration.inSeconds > 0
+                                  ? audio.duration.inSeconds.toDouble()
+                                  : 1.0;
+                              final curSec = audio.position.inSeconds
+                                  .toDouble()
+                                  .clamp(0.0, maxSec);
                               String fmt(Duration d) {
-                                final m = d.inMinutes.remainder(60).toString().padLeft(2, '0');
-                                final s = d.inSeconds.remainder(60).toString().padLeft(2, '0');
+                                final m = d.inMinutes
+                                    .remainder(60)
+                                    .toString()
+                                    .padLeft(2, '0');
+                                final s = d.inSeconds
+                                    .remainder(60)
+                                    .toString()
+                                    .padLeft(2, '0');
                                 return '$m:$s';
                               }
 
@@ -981,24 +1169,34 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                       activeTrackColor: AppColors.gold,
                                       inactiveTrackColor: Colors.white24,
                                       thumbColor: AppColors.gold,
-                                      thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+                                      thumbShape: const RoundSliderThumbShape(
+                                          enabledThumbRadius: 6),
                                       trackHeight: 3,
                                     ),
                                     child: Slider(
                                       value: curSec,
                                       max: maxSec,
                                       onChanged: (val) {
-                                        audio.seek(Duration(seconds: val.toInt()));
+                                        audio.seek(
+                                            Duration(seconds: val.toInt()));
                                       },
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 14),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(fmt(audio.position), style: const TextStyle(color: Colors.white54, fontSize: 11)),
-                                        Text(fmt(audio.duration), style: const TextStyle(color: Colors.white54, fontSize: 11)),
+                                        Text(fmt(audio.position),
+                                            style: const TextStyle(
+                                                color: Colors.white54,
+                                                fontSize: 11)),
+                                        Text(fmt(audio.duration),
+                                            style: const TextStyle(
+                                                color: Colors.white54,
+                                                fontSize: 11)),
                                       ],
                                     ),
                                   ),
@@ -1014,11 +1212,13 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.replay_10_rounded, color: Colors.white70, size: 28),
+                                icon: const Icon(Icons.replay_10_rounded,
+                                    color: Colors.white70, size: 28),
                                 onPressed: () {
                                   AppHaptics.lightImpact();
                                   final audio = ChurchAudioService();
-                                  audio.seek(audio.position - const Duration(seconds: 10));
+                                  audio.seek(audio.position -
+                                      const Duration(seconds: 10));
                                 },
                               ),
                               const SizedBox(width: 14),
@@ -1028,7 +1228,10 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   gradient: const LinearGradient(
-                                    colors: [Color(0xFFFFDF70), Color(0xFFD4AF37)],
+                                    colors: [
+                                      Color(0xFFFFDF70),
+                                      Color(0xFFD4AF37)
+                                    ],
                                   ),
                                   boxShadow: [
                                     BoxShadow(
@@ -1039,7 +1242,9 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                 ),
                                 child: IconButton(
                                   icon: Icon(
-                                    isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                                    isPlaying
+                                        ? Icons.pause_rounded
+                                        : Icons.play_arrow_rounded,
                                     color: const Color(0xFF0A2540),
                                     size: 32,
                                   ),
@@ -1052,11 +1257,13 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                               ),
                               const SizedBox(width: 14),
                               IconButton(
-                                icon: const Icon(Icons.forward_10_rounded, color: Colors.white70, size: 28),
+                                icon: const Icon(Icons.forward_10_rounded,
+                                    color: Colors.white70, size: 28),
                                 onPressed: () {
                                   AppHaptics.lightImpact();
                                   final audio = ChurchAudioService();
-                                  audio.seek(audio.position + const Duration(seconds: 10));
+                                  audio.seek(audio.position +
+                                      const Duration(seconds: 10));
                                 },
                               ),
                             ],
@@ -1066,20 +1273,24 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
 
                         // Lock Screen & Cloudinary Streaming Badge
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
                           decoration: BoxDecoration(
                             color: const Color(0xFF0D233A),
                             borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                            border: Border.all(
+                                color: AppColors.primary.withOpacity(0.3)),
                           ),
                           child: const Row(
                             children: [
-                              Icon(Icons.lock_clock_rounded, color: AppColors.gold, size: 18),
+                              Icon(Icons.lock_clock_rounded,
+                                  color: AppColors.gold, size: 18),
                               SizedBox(width: 8),
                               Expanded(
                                 child: Text(
                                   'Inaendelea kucheza hata ukifunga simu (Lock Screen Controls)',
-                                  style: TextStyle(color: Colors.white70, fontSize: 11),
+                                  style: TextStyle(
+                                      color: Colors.white70, fontSize: 11),
                                 ),
                               ),
                             ],
@@ -1123,18 +1334,25 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                 AppHaptics.mediumImpact();
                                 final uri = Uri.tryParse(item.videoUrl);
                                 if (uri != null) {
-                                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                                  await launchUrl(uri,
+                                      mode: LaunchMode.externalApplication);
                                 }
                               },
-                              icon: const Icon(Icons.open_in_new_rounded, color: Colors.white, size: 18),
+                              icon: const Icon(Icons.open_in_new_rounded,
+                                  color: Colors.white, size: 18),
                               label: const Text(
                                 'Fungua Kiungo cha Video (YouTube / Cloudinary / MP4)',
-                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12),
                               ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFFDC2626),
-                                padding: const EdgeInsets.symmetric(vertical: 12),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
                               ),
                             ),
                           ),
@@ -1190,91 +1408,104 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                       ),
                     ),
                     const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'Maudhui & Video za ',
-                                    style: AppTypography.titleMedium(color: AppColors.textPrimary).copyWith(
-                                      fontWeight: FontWeight.w900,
-                                      letterSpacing: -0.5,
-                                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Maudhui & Video za ',
+                                  style: AppTypography.titleMedium(
+                                          color: AppColors.textPrimary)
+                                      .copyWith(
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: -0.5,
                                   ),
-                                  TextSpan(
-                                    text: 'Sayuni',
-                                    style: AppTypography.displayLarge(color: AppColors.primary).copyWith(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w900,
-                                      fontStyle: FontStyle.italic,
-                                      decoration: TextDecoration.underline,
-                                      decorationThickness: 2,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 1),
-                            Text(
-                              'Neno la Uzima, Sauti & Video za Ibada',
-                              style: AppTypography.caption(color: AppColors.textSecondary).copyWith(
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (_auth.isAdmin)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8),
-                          child: InkWell(
-                            onTap: _showAdminUploadVideoDialog,
-                            borderRadius: BorderRadius.circular(20),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [AppColors.primary, AppColors.primary.withOpacity(0.8)],
                                 ),
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.primary.withOpacity(0.3),
-                                    blurRadius: 8,
-                                    offset: const Offset(0, 2),
+                                TextSpan(
+                                  text: 'Sayuni',
+                                  style: AppTypography.displayLarge(
+                                          color: AppColors.primary)
+                                      .copyWith(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w900,
+                                    fontStyle: FontStyle.italic,
+                                    decoration: TextDecoration.underline,
+                                    decorationThickness: 2,
                                   ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 1),
+                          Text(
+                            'Neno la Uzima, Sauti & Video za Ibada',
+                            style: AppTypography.caption(
+                                    color: AppColors.textSecondary)
+                                .copyWith(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (_auth.isAdmin)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: InkWell(
+                          onTap: _showAdminUploadVideoDialog,
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  AppColors.primary,
+                                  AppColors.primary.withOpacity(0.8)
                                 ],
                               ),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.add_circle_outline_rounded, color: Colors.white, size: 14),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    'Admin',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 10,
-                                    ),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.primary.withOpacity(0.3),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.add_circle_outline_rounded,
+                                    color: Colors.white, size: 14),
+                                SizedBox(width: 4),
+                                Text(
+                                  'Admin',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 10,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
+                      ),
                     IconButton(
                       onPressed: () {
                         AppHaptics.mediumImpact();
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const OnlineRadioScreen()),
+                          MaterialPageRoute(
+                              builder: (_) => const OnlineRadioScreen()),
                         );
                       },
-                      icon: const Icon(Icons.radio_rounded, color: Colors.redAccent, size: 22),
+                      icon: const Icon(Icons.radio_rounded,
+                          color: Colors.redAccent, size: 22),
                       tooltip: 'Redio za Moja kwa Moja',
                     ),
                     IconButton(
@@ -1282,10 +1513,12 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                         AppHaptics.lightImpact();
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const NotesScreen()),
+                          MaterialPageRoute(
+                              builder: (_) => const NotesScreen()),
                         );
                       },
-                      icon: const Icon(Icons.edit_note_rounded, color: AppColors.primary),
+                      icon: const Icon(Icons.edit_note_rounded,
+                          color: AppColors.primary),
                       tooltip: 'Daftari la Mahubiri',
                     ),
                   ],
@@ -1296,7 +1529,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
             // Search Bar
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                 child: Container(
                   decoration: BoxDecoration(
                     color: AppColors.surface,
@@ -1307,16 +1541,20 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                     onChanged: (val) => setState(() => _searchQuery = val),
                     decoration: InputDecoration(
                       hintText: 'Tafuta mahubiri, mchungaji au andiko...',
-                      hintStyle: AppTypography.bodySmall(color: AppColors.textMuted),
-                      prefixIcon: const Icon(Icons.search_rounded, color: AppColors.primary, size: 20),
+                      hintStyle:
+                          AppTypography.bodySmall(color: AppColors.textMuted),
+                      prefixIcon: const Icon(Icons.search_rounded,
+                          color: AppColors.primary, size: 20),
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
                               icon: const Icon(Icons.close_rounded, size: 18),
-                              onPressed: () => setState(() => _searchQuery = ''),
+                              onPressed: () =>
+                                  setState(() => _searchQuery = ''),
                             )
                           : null,
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 12),
                     ),
                   ),
                 ),
@@ -1330,7 +1568,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   itemCount: _categories.length,
                   itemBuilder: (ctx, idx) {
                     final cat = _categories[idx];
@@ -1339,7 +1578,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                       padding: const EdgeInsets.only(right: 8),
                       child: ChoiceChip(
                         visualDensity: VisualDensity.compact,
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
                         label: Text(cat),
                         selected: isSelected,
                         onSelected: (_) {
@@ -1350,13 +1590,17 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                         backgroundColor: AppColors.surface,
                         labelStyle: TextStyle(
                           fontSize: 12,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                          color: isSelected ? Colors.white : AppColors.textPrimary,
+                          fontWeight:
+                              isSelected ? FontWeight.bold : FontWeight.w500,
+                          color:
+                              isSelected ? Colors.white : AppColors.textPrimary,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                           side: BorderSide(
-                            color: isSelected ? AppColors.primary : AppColors.border,
+                            color: isSelected
+                                ? AppColors.primary
+                                : AppColors.border,
                           ),
                         ),
                         showCheckmark: false,
@@ -1384,19 +1628,24 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                               children: [
                                 TextSpan(
                                   text: 'Maudhui & Video za ',
-                                  style: AppTypography.titleSmall(color: AppColors.textPrimary).copyWith(
+                                  style: AppTypography.titleSmall(
+                                          color: AppColors.textPrimary)
+                                      .copyWith(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13,
                                   ),
                                 ),
                                 TextSpan(
                                   text: 'Sayuni',
-                                  style: AppTypography.displayLarge(color: AppColors.primary).copyWith(
+                                  style: AppTypography.displayLarge(
+                                          color: AppColors.primary)
+                                      .copyWith(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w900,
                                     fontStyle: FontStyle.italic,
                                     decoration: TextDecoration.underline,
-                                    decorationColor: AppColors.gold.withOpacity(0.5),
+                                    decorationColor:
+                                        AppColors.gold.withOpacity(0.5),
                                     decorationThickness: 3,
                                   ),
                                 ),
@@ -1406,20 +1655,21 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                           const SizedBox(height: 2),
                           Text(
                             'Maktaba ya Kiroho • Digital Hub',
-                            style: AppTypography.caption(color: AppColors.textSecondary),
+                            style: AppTypography.caption(
+                                color: AppColors.textSecondary),
                           ),
                         ],
                       ),
                     ),
-                    if (_auth.isAdmin)
-                      _buildAdminBadge(),
+                    if (_auth.isAdmin) _buildAdminBadge(),
                   ],
                 ),
               ),
             ),
 
             // Online Gospel Radios Carousel
-            if (_selectedCategory == 'Yote' || _selectedCategory == 'Radio za Injili') ...[
+            if (_selectedCategory == 'Yote' ||
+                _selectedCategory == 'Radio za Injili') ...[
               SliverToBoxAdapter(
                 child: _buildGospelRadioSection(),
               ),
@@ -1434,7 +1684,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                         AppHaptics.mediumImpact();
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const OnlineRadioScreen()),
+                          MaterialPageRoute(
+                              builder: (_) => const OnlineRadioScreen()),
                         );
                       },
                       child: Row(
@@ -1445,7 +1696,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                               color: AppColors.gold.withOpacity(0.15),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.tune_rounded, color: AppColors.gold, size: 26),
+                            child: const Icon(Icons.tune_rounded,
+                                color: AppColors.gold, size: 26),
                           ),
                           const SizedBox(width: 14),
                           Expanded(
@@ -1463,12 +1715,14 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                 const SizedBox(height: 2),
                                 Text(
                                   'Afro Gospel 🇳🇬, Tanzania 🇹🇿, Global Worship & Habari za Dunia 📰',
-                                  style: AppTypography.caption(color: Colors.white70),
+                                  style: AppTypography.caption(
+                                      color: Colors.white70),
                                 ),
                               ],
                             ),
                           ),
-                          const Icon(Icons.arrow_forward_ios_rounded, color: AppColors.gold, size: 15),
+                          const Icon(Icons.arrow_forward_ios_rounded,
+                              color: AppColors.gold, size: 15),
                         ],
                       ),
                     ),
@@ -1477,7 +1731,9 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
             ],
 
             // Featured Hero Card (Mahubiri Kinara)
-            if ((_selectedCategory == 'Yote' || _selectedCategory == 'Mahubiri') && sermons.isNotEmpty)
+            if ((_selectedCategory == 'Yote' ||
+                    _selectedCategory == 'Mahubiri') &&
+                sermons.isNotEmpty)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
@@ -1525,7 +1781,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                 Row(
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 4),
                                       decoration: BoxDecoration(
                                         color: const Color(0xFFDC2626),
                                         borderRadius: BorderRadius.circular(10),
@@ -1533,7 +1790,10 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                       child: const Row(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Icon(Icons.fiber_manual_record_rounded, size: 10, color: Colors.white),
+                                          Icon(
+                                              Icons.fiber_manual_record_rounded,
+                                              size: 10,
+                                              color: Colors.white),
                                           SizedBox(width: 4),
                                           Text(
                                             'MAHUBIRI KINARA',
@@ -1550,7 +1810,10 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                     const Spacer(),
                                     Text(
                                       '${sermons.first.duration} • ${sermons.first.type.toUpperCase()}',
-                                      style: const TextStyle(fontSize: 11, color: AppColors.gold, fontWeight: FontWeight.bold),
+                                      style: const TextStyle(
+                                          fontSize: 11,
+                                          color: AppColors.gold,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ],
                                 ),
@@ -1578,15 +1841,20 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                 Row(
                                   children: [
                                     ElevatedButton.icon(
-                                      onPressed: () => _openMediaPlayer(sermons.first),
-                                      icon: const Icon(Icons.play_arrow_rounded, size: 20),
+                                      onPressed: () =>
+                                          _openMediaPlayer(sermons.first),
+                                      icon: const Icon(Icons.play_arrow_rounded,
+                                          size: 20),
                                       label: const Text('Tazama Sasa'),
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: AppColors.gold,
-                                        foregroundColor: const Color(0xFF0A2540),
-                                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
+                                        foregroundColor:
+                                            const Color(0xFF0A2540),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 18, vertical: 11),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(14),
+                                          borderRadius:
+                                              BorderRadius.circular(14),
                                         ),
                                         textStyle: const TextStyle(
                                           fontWeight: FontWeight.w800,
@@ -1599,17 +1867,24 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                       onPressed: () {
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (_) => const NotesScreen()),
+                                          MaterialPageRoute(
+                                              builder: (_) =>
+                                                  const NotesScreen()),
                                         );
                                       },
-                                      icon: const Icon(Icons.edit_note_rounded, size: 18),
+                                      icon: const Icon(Icons.edit_note_rounded,
+                                          size: 18),
                                       label: const Text('Dokezo'),
                                       style: OutlinedButton.styleFrom(
                                         foregroundColor: Colors.white,
-                                        side: BorderSide(color: Colors.white.withOpacity(0.3)),
-                                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                                        side: BorderSide(
+                                            color:
+                                                Colors.white.withOpacity(0.3)),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 14, vertical: 11),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(14),
+                                          borderRadius:
+                                              BorderRadius.circular(14),
                                         ),
                                       ),
                                     ),
@@ -1632,11 +1907,13 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
             if (sermons.isEmpty)
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(16, 18, 16, 180 + MediaQuery.of(context).padding.bottom),
+                  padding: EdgeInsets.fromLTRB(
+                      16, 18, 16, 180 + MediaQuery.of(context).padding.bottom),
                   child: Center(
                     child: Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 40),
                       decoration: BoxDecoration(
                         color: AppColors.surface,
                         borderRadius: BorderRadius.circular(24),
@@ -1674,7 +1951,9 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                           const SizedBox(height: 24),
                           Text(
                             'Kuna Utulivu Kwenye Maktaba',
-                            style: AppTypography.titleMedium(color: AppColors.textPrimary).copyWith(
+                            style: AppTypography.titleMedium(
+                                    color: AppColors.textPrimary)
+                                .copyWith(
                               fontWeight: FontWeight.w900,
                               fontSize: 18,
                             ),
@@ -1685,7 +1964,9 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                             _selectedCategory == 'Yote'
                                 ? 'Mascot wetu wa Sayuni anatafuta mahubiri mapya kwa ajili yako. Punde yataonekana hapa!'
                                 : 'Hakuna maudhui yaliyopatikana kwa kipengele cha "$_selectedCategory". Jaribu kingine!',
-                            style: AppTypography.bodyMedium(color: AppColors.textSecondary).copyWith(
+                            style: AppTypography.bodyMedium(
+                                    color: AppColors.textSecondary)
+                                .copyWith(
                               height: 1.5,
                             ),
                             textAlign: TextAlign.center,
@@ -1702,7 +1983,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
               )
             else
               SliverPadding(
-                padding: EdgeInsets.fromLTRB(16, 12, 16, 180 + MediaQuery.of(context).padding.bottom),
+                padding: EdgeInsets.fromLTRB(
+                    16, 12, 16, 180 + MediaQuery.of(context).padding.bottom),
                 sliver: SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (ctx, idx) {
@@ -1755,50 +2037,68 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                 // Details
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
-                                           if (item.isAdminUpload)
-                                             Container(
-                                               margin: const EdgeInsets.only(right: 6),
-                                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                                               decoration: BoxDecoration(
-                                                 gradient: const LinearGradient(
-                                                   colors: [AppColors.gold, AppColors.goldLight],
-                                                 ),
-                                                 borderRadius: BorderRadius.circular(8),
-                                                 boxShadow: [
-                                                   BoxShadow(
-                                                     color: AppColors.gold.withOpacity(0.3),
-                                                     blurRadius: 4,
-                                                   ),
-                                                 ],
-                                               ),
-                                               child: Row(
-                                                 mainAxisSize: MainAxisSize.min,
-                                                 children: [
-                                                   const Icon(Icons.verified_rounded, color: Colors.white, size: 10),
-                                                   const SizedBox(width: 4),
-                                                   const Text(
-                                                     'VIONGOZI',
-                                                     style: TextStyle(
-                                                       fontSize: 8,
-                                                       fontWeight: FontWeight.w900,
-                                                       color: Colors.white,
-                                                       letterSpacing: 0.5,
-                                                     ),
-                                                   ),
-                                                 ],
-                                               ),
-                                             ),
+                                          if (item.isAdminUpload)
+                                            Container(
+                                              margin: const EdgeInsets.only(
+                                                  right: 6),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 3),
+                                              decoration: BoxDecoration(
+                                                gradient: const LinearGradient(
+                                                  colors: [
+                                                    AppColors.gold,
+                                                    AppColors.goldLight
+                                                  ],
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: AppColors.gold
+                                                        .withOpacity(0.3),
+                                                    blurRadius: 4,
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  const Icon(
+                                                      Icons.verified_rounded,
+                                                      color: Colors.white,
+                                                      size: 10),
+                                                  const SizedBox(width: 4),
+                                                  const Text(
+                                                    'VIONGOZI',
+                                                    style: TextStyle(
+                                                      fontSize: 8,
+                                                      fontWeight:
+                                                          FontWeight.w900,
+                                                      color: Colors.white,
+                                                      letterSpacing: 0.5,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                           Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 7, vertical: 2),
                                             decoration: BoxDecoration(
                                               color: item.type == 'video'
-                                                  ? const Color(0xFFDC2626).withOpacity(0.12)
-                                                  : AppColors.primary.withOpacity(0.12),
-                                              borderRadius: BorderRadius.circular(6),
+                                                  ? const Color(0xFFDC2626)
+                                                      .withOpacity(0.12)
+                                                  : AppColors.primary
+                                                      .withOpacity(0.12),
+                                              borderRadius:
+                                                  BorderRadius.circular(6),
                                             ),
                                             child: Text(
                                               item.type.toUpperCase(),
@@ -1814,14 +2114,17 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                           const SizedBox(width: 8),
                                           Text(
                                             item.duration,
-                                            style: AppTypography.caption(color: AppColors.textMuted),
+                                            style: AppTypography.caption(
+                                                color: AppColors.textMuted),
                                           ),
                                         ],
                                       ),
                                       const SizedBox(height: 6),
                                       Text(
                                         item.title,
-                                        style: AppTypography.titleSmall(color: AppColors.textPrimary).copyWith(
+                                        style: AppTypography.titleSmall(
+                                                color: AppColors.textPrimary)
+                                            .copyWith(
                                           fontWeight: FontWeight.w800,
                                           fontSize: 14,
                                           height: 1.2,
@@ -1832,7 +2135,9 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                       const SizedBox(height: 4),
                                       Text(
                                         '${item.preacher} • ${item.scripture}',
-                                        style: AppTypography.caption(color: AppColors.textSecondary).copyWith(
+                                        style: AppTypography.caption(
+                                                color: AppColors.textSecondary)
+                                            .copyWith(
                                           fontSize: 11,
                                         ),
                                       ),
@@ -1862,7 +2167,6 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                   ),
                 ),
               ),
-
           ],
         ),
       ),
@@ -1889,11 +2193,13 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: Colors.redAccent.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.redAccent.withOpacity(0.3)),
+                      border:
+                          Border.all(color: Colors.redAccent.withOpacity(0.3)),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -1923,7 +2229,9 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                   Expanded(
                     child: Text(
                       'Radio za Injili Moja kwa Moja',
-                      style: AppTypography.titleSmall(color: AppColors.textPrimary).copyWith(fontWeight: FontWeight.bold),
+                      style:
+                          AppTypography.titleSmall(color: AppColors.textPrimary)
+                              .copyWith(fontWeight: FontWeight.bold),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -1933,10 +2241,12 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                       AppHaptics.lightImpact();
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const OnlineRadioScreen()),
+                        MaterialPageRoute(
+                            builder: (_) => const OnlineRadioScreen()),
                       );
                     },
-                    icon: const Icon(Icons.arrow_forward_rounded, size: 15, color: AppColors.gold),
+                    icon: const Icon(Icons.arrow_forward_rounded,
+                        size: 15, color: AppColors.gold),
                     label: const Text(
                       'Ona Zote',
                       style: TextStyle(
@@ -1946,7 +2256,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                       ),
                     ),
                     style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
                       minimumSize: Size.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
@@ -1969,7 +2280,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                         AppHaptics.mediumImpact();
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const OnlineRadioScreen()),
+                          MaterialPageRoute(
+                              builder: (_) => const OnlineRadioScreen()),
                         );
                       },
                       child: Container(
@@ -1989,7 +2301,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                 color: AppColors.primary.withOpacity(0.15),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(Icons.tune_rounded, color: AppColors.primary, size: 24),
+                              child: const Icon(Icons.tune_rounded,
+                                  color: AppColors.primary, size: 24),
                             ),
                             const SizedBox(height: 10),
                             Text(
@@ -2003,7 +2316,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                             const SizedBox(height: 2),
                             Text(
                               'Afro Gospel, TZ & Habari',
-                              style: AppTypography.caption(color: AppColors.textMuted),
+                              style: AppTypography.caption(
+                                  color: AppColors.textMuted),
                               textAlign: TextAlign.center,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -2015,7 +2329,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                   }
 
                   final station = previewStations[idx];
-                  final isCurrentRadio = audio.currentTrack?.id == station.stationuuid;
+                  final isCurrentRadio =
+                      audio.currentTrack?.id == station.stationuuid;
                   final isPlayingThis = isCurrentRadio && audio.isPlaying;
 
                   return GestureDetector(
@@ -2025,7 +2340,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                         audio.togglePlayPause();
                       } else {
                         audio.playRadioBrowserStation(station);
-                        RadioBrowserService().registerStationClick(station.stationuuid);
+                        RadioBrowserService()
+                            .registerStationClick(station.stationuuid);
                       }
                     },
                     child: Container(
@@ -2034,7 +2350,10 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: isCurrentRadio
-                              ? [const Color(0xFF0A2540), const Color(0xFF0D52CD)]
+                              ? [
+                                  const Color(0xFF0A2540),
+                                  const Color(0xFF0D52CD)
+                                ]
                               : [AppColors.surface, AppColors.surfaceLow],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -2072,14 +2391,18 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                   shape: BoxShape.circle,
                                 ),
                                 clipBehavior: Clip.antiAlias,
-                                child: (station.favicon.isNotEmpty && station.favicon.startsWith('http'))
+                                child: (station.favicon.isNotEmpty &&
+                                        station.favicon.startsWith('http'))
                                     ? Image.network(
                                         station.favicon,
                                         fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) => Center(
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                Center(
                                           child: Text(
                                             station.flagEmoji,
-                                            style: const TextStyle(fontSize: 18),
+                                            style:
+                                                const TextStyle(fontSize: 18),
                                           ),
                                         ),
                                       )
@@ -2096,7 +2419,9 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      station.country.isNotEmpty ? station.country : 'Live Radio',
+                                      station.country.isNotEmpty
+                                          ? station.country
+                                          : 'Live Radio',
                                       style: TextStyle(
                                         color: isCurrentRadio
                                             ? AppColors.gold
@@ -2108,9 +2433,13 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     Text(
-                                      station.state.isNotEmpty ? station.state : station.codec,
+                                      station.state.isNotEmpty
+                                          ? station.state
+                                          : station.codec,
                                       style: AppTypography.caption(
-                                        color: isCurrentRadio ? Colors.white70 : AppColors.textMuted,
+                                        color: isCurrentRadio
+                                            ? Colors.white70
+                                            : AppColors.textMuted,
                                       ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
@@ -2122,7 +2451,9 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                 isPlayingThis
                                     ? Icons.pause_circle_filled_rounded
                                     : Icons.play_circle_fill_rounded,
-                                color: isCurrentRadio ? AppColors.gold : AppColors.primary,
+                                color: isCurrentRadio
+                                    ? AppColors.gold
+                                    : AppColors.primary,
                                 size: 30,
                               ),
                             ],
@@ -2130,7 +2461,9 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                           Text(
                             station.name,
                             style: TextStyle(
-                              color: isCurrentRadio ? Colors.white : AppColors.textPrimary,
+                              color: isCurrentRadio
+                                  ? Colors.white
+                                  : AppColors.textPrimary,
                               fontWeight: FontWeight.w700,
                               fontSize: 13.5,
                             ),
@@ -2138,9 +2471,13 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
-                            station.tags.isNotEmpty ? station.tags : 'Gospel & Praise 24/7',
+                            station.tags.isNotEmpty
+                                ? station.tags
+                                : 'Gospel & Praise 24/7',
                             style: TextStyle(
-                              color: isCurrentRadio ? Colors.white60 : AppColors.textSecondary,
+                              color: isCurrentRadio
+                                  ? Colors.white60
+                                  : AppColors.textSecondary,
                               fontSize: 10.5,
                             ),
                             maxLines: 1,
@@ -2189,7 +2526,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                 color: Colors.white,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.add_rounded, size: 12, color: AppColors.primary),
+              child: const Icon(Icons.add_rounded,
+                  size: 12, color: AppColors.primary),
             ),
             const SizedBox(width: 8),
             const Text(

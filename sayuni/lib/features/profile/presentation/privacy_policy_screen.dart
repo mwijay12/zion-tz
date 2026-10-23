@@ -63,7 +63,9 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       backgroundColor: isDark ? AppColors.canvasDark : AppColors.canvasLight,
       appBar: AppBar(
         title: Text(
-          _isSwahili ? 'Sera ya Faragha (PDPA 2022)' : 'Privacy Policy (PDPA 2022)',
+          _isSwahili
+              ? 'Sera ya Faragha (PDPA 2022)'
+              : 'Privacy Policy (PDPA 2022)',
           style: AppTypography.titleMedium(
             color: isDark ? Colors.white : AppColors.textPrimaryLight,
           ),
@@ -94,7 +96,8 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
               ),
               backgroundColor: primaryColor.withOpacity(isDark ? 0.25 : 0.12),
               side: BorderSide(color: primaryColor.withOpacity(0.4)),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
               onPressed: () {
                 AppHaptics.selectionClick();
                 setState(() => _isSwahili = !_isSwahili);
@@ -105,15 +108,18 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       ),
       body: ListView(
         physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.fromLTRB(16, 12, 16, 40 + MediaQuery.of(context).padding.bottom),
+        padding: EdgeInsets.fromLTRB(
+            16, 12, 16, 40 + MediaQuery.of(context).padding.bottom),
         children: [
           // Header Badge & Compliance Banner
           _buildComplianceBanner(isDark, primaryColor),
           const SizedBox(height: 16),
 
           // Policy Sections
-          if (_isSwahili) ..._buildSwahiliContent(isDark, primaryColor)
-          else ..._buildEnglishContent(isDark, primaryColor),
+          if (_isSwahili)
+            ..._buildSwahiliContent(isDark, primaryColor)
+          else
+            ..._buildEnglishContent(isDark, primaryColor),
 
           const SizedBox(height: 24),
           _buildDpoContactCard(isDark, primaryColor),
@@ -156,7 +162,8 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                   color: AppColors.gold.withOpacity(0.2),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.verified_user_rounded, color: AppColors.goldLight, size: 22),
+                child: const Icon(Icons.verified_user_rounded,
+                    color: AppColors.goldLight, size: 22),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -164,7 +171,9 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _isSwahili ? 'ULINZI WA TAARIFA BINAFSI' : 'DATA PROTECTION COMPLIANCE',
+                      _isSwahili
+                          ? 'ULINZI WA TAARIFA BINAFSI'
+                          : 'DATA PROTECTION COMPLIANCE',
                       style: const TextStyle(
                         color: AppColors.goldLight,
                         fontSize: 11,
@@ -201,7 +210,9 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            _isSwahili ? 'Toleo: Septemba 2026 • Linatumika mara moja' : 'Version: September 2026 • Effective immediately',
+            _isSwahili
+                ? 'Toleo: Septemba 2026 • Linatumika mara moja'
+                : 'Version: September 2026 • Effective immediately',
             style: const TextStyle(
               color: AppColors.goldLight,
               fontSize: 11,
@@ -381,7 +392,8 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: (isHighlight ? AppColors.gold : primaryColor).withOpacity(0.15),
+                    color: (isHighlight ? AppColors.gold : primaryColor)
+                        .withOpacity(0.15),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
@@ -409,7 +421,8 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
               style: TextStyle(
                 fontSize: 12.5,
                 height: 1.5,
-                color: isDark ? const Color(0xFFCBD5E1) : const Color(0xFF334155),
+                color:
+                    isDark ? const Color(0xFFCBD5E1) : const Color(0xFF334155),
               ),
             ),
           ],
@@ -430,7 +443,9 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
               Icon(Icons.contact_mail_rounded, color: primaryColor, size: 20),
               const SizedBox(width: 10),
               Text(
-                _isSwahili ? 'Mawasiliano ya Faragha (DPO Contact)' : 'Data Protection Officer (DPO)',
+                _isSwahili
+                    ? 'Mawasiliano ya Faragha (DPO Contact)'
+                    : 'Data Protection Officer (DPO)',
                 style: TextStyle(
                   fontSize: 13.5,
                   fontWeight: FontWeight.bold,
@@ -446,15 +461,20 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
                 : 'For any privacy inquiries or to exercise your rights under PDPA 2022, please contact our Data Protection Officer:',
             style: TextStyle(
               fontSize: 12,
-              color: isDark ? const Color(0xFF94A3B8) : AppColors.textSecondaryLight,
+              color: isDark
+                  ? const Color(0xFF94A3B8)
+                  : AppColors.textSecondaryLight,
             ),
           ),
           const SizedBox(height: 10),
-          _buildContactRow(Icons.email_outlined, 'Barua Pepe / Email: privacy@zionjerusalem.org', isDark),
+          _buildContactRow(Icons.email_outlined,
+              'Barua Pepe / Email: privacy@zionjerusalem.org', isDark),
           const SizedBox(height: 6),
-          _buildContactRow(Icons.location_on_outlined, 'Ofisi Kuu: ${ChurchProfile.location}', isDark),
+          _buildContactRow(Icons.location_on_outlined,
+              'Ofisi Kuu: ${ChurchProfile.location}', isDark),
           const SizedBox(height: 6),
-          _buildContactRow(Icons.phone_outlined, 'Simu ya Utawala: ${ChurchProfile.pastoralHelpline}', isDark),
+          _buildContactRow(Icons.phone_outlined,
+              'Simu ya Utawala: ${ChurchProfile.pastoralHelpline}', isDark),
         ],
       ),
     );
@@ -463,7 +483,9 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
   Widget _buildContactRow(IconData icon, String text, bool isDark) {
     return Row(
       children: [
-        Icon(icon, size: 14, color: isDark ? const Color(0xFF94A3B8) : AppColors.textMutedLight),
+        Icon(icon,
+            size: 14,
+            color: isDark ? const Color(0xFF94A3B8) : AppColors.textMutedLight),
         const SizedBox(width: 8),
         Expanded(
           child: Text(

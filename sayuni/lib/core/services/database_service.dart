@@ -78,20 +78,24 @@ class DatabaseService {
   // Generic helper methods
   Future<int> insert(String table, Map<String, dynamic> data) async {
     final db = await database;
-    return await db.insert(table, data, conflictAlgorithm: ConflictAlgorithm.replace);
+    return await db.insert(table, data,
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<List<Map<String, dynamic>>> query(String table, {String? where, List<dynamic>? whereArgs}) async {
+  Future<List<Map<String, dynamic>>> query(String table,
+      {String? where, List<dynamic>? whereArgs}) async {
     final db = await database;
     return await db.query(table, where: where, whereArgs: whereArgs);
   }
 
-  Future<int> update(String table, Map<String, dynamic> data, String where, List<dynamic> whereArgs) async {
+  Future<int> update(String table, Map<String, dynamic> data, String where,
+      List<dynamic> whereArgs) async {
     final db = await database;
     return await db.update(table, data, where: where, whereArgs: whereArgs);
   }
 
-  Future<int> delete(String table, String where, List<dynamic> whereArgs) async {
+  Future<int> delete(
+      String table, String where, List<dynamic> whereArgs) async {
     final db = await database;
     return await db.delete(table, where: where, whereArgs: whereArgs);
   }

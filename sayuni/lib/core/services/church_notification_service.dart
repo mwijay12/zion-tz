@@ -17,21 +17,25 @@ void notificationTapBackground(NotificationResponse details) {
 }
 
 class ChurchNotificationService {
-  static final ChurchNotificationService _instance = ChurchNotificationService._internal();
+  static final ChurchNotificationService _instance =
+      ChurchNotificationService._internal();
   factory ChurchNotificationService() => _instance;
 
   ChurchNotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _notificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   bool _isInitialized = false;
 
   static const String channelId = 'zion_church_lock_screen_alerts';
   static const String channelName = 'Sayuni Arifa za Juu & Lock Screen';
-  static const String channelDescription = 'Arifa za ibada, maombi, na matangazo ya Sayuni Jerusalem Church';
+  static const String channelDescription =
+      'Arifa za ibada, maombi, na matangazo ya Sayuni Jerusalem Church';
 
   static const String mediaChannelId = 'zion_church_media_playback';
   static const String mediaChannelName = 'Sayuni Media & Audio Controls';
-  static const String mediaChannelDescription = 'Udhibiti wa sauti na redio ya Sayuni kwenye lock screen';
+  static const String mediaChannelDescription =
+      'Udhibiti wa sauti na redio ya Sayuni kwenye lock screen';
   static const int mediaNotificationId = 8888;
 
   static VoidCallback? onPlayPauseAction;
@@ -43,7 +47,8 @@ class ChurchNotificationService {
     if (_isInitialized) return;
 
     try {
-      const androidSettings = AndroidInitializationSettings('@drawable/ic_notification');
+      const androidSettings =
+          AndroidInitializationSettings('@drawable/ic_notification');
       const darwinSettings = DarwinInitializationSettings(
         requestAlertPermission: true,
         requestBadgePermission: true,
@@ -58,7 +63,8 @@ class ChurchNotificationService {
       await _notificationsPlugin.initialize(
         initSettings,
         onDidReceiveNotificationResponse: (details) {
-          debugPrint('Notification clicked: ${details.payload}, actionId: ${details.actionId}');
+          debugPrint(
+              'Notification clicked: ${details.payload}, actionId: ${details.actionId}');
           if (details.actionId == 'action_play_pause') {
             onPlayPauseAction?.call();
           } else if (details.actionId == 'action_stop') {
@@ -73,8 +79,9 @@ class ChurchNotificationService {
       );
 
       // Create Channels for Android
-      final androidImplementation = _notificationsPlugin.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>();
+      final androidImplementation =
+          _notificationsPlugin.resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>();
 
       if (androidImplementation != null) {
         // 1. High priority worship reminder channel
@@ -162,7 +169,8 @@ class ChurchNotificationService {
       await showLockScreenNotification(
         id: 777,
         title: '🔔 Kesho ni Ibada Kuu ya Sayuni!',
-        body: 'Usisahau kufika Hekaluni Mbagala Kwa Matope saa 02:30 Asubuhi. Askofu Messi Mgala na jopo la wachungaji wameandaa neno la uponyaji na ukombozi kwa ajili yako!',
+        body:
+            'Usisahau kufika Hekaluni Mbagala Kwa Matope saa 02:30 Asubuhi. Askofu Messi Mgala na jopo la wachungaji wameandaa neno la uponyaji na ukombozi kwa ajili yako!',
         payload: 'saturday_service_reminder',
       );
     } else if (now.weekday == DateTime.sunday) {
@@ -170,7 +178,8 @@ class ChurchNotificationService {
       await showLockScreenNotification(
         id: 778,
         title: '☀️ Karibu Nyumbani mwa Bwana Leo!',
-        body: 'Ibada Kuu ya Hekalu la Sayuni inaanza. Lete familia na marafiki kwa ajili ya sifa, maombi na neno lenye uzima.',
+        body:
+            'Ibada Kuu ya Hekalu la Sayuni inaanza. Lete familia na marafiki kwa ajili ya sifa, maombi na neno lenye uzima.',
         payload: 'sunday_service_reminder',
       );
     }

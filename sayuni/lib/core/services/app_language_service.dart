@@ -9,13 +9,15 @@ class AppLanguageService extends ChangeNotifier {
   AppLanguageService._internal();
 
   static const String _prefKey = 'setting_app_language_code';
-  AppLanguage _currentLanguage = AppLanguage.english; // Default English as requested
+  AppLanguage _currentLanguage =
+      AppLanguage.english; // Default English as requested
   bool _isInitialized = false;
 
   AppLanguage get currentLanguage => _currentLanguage;
   bool get isEnglish => _currentLanguage == AppLanguage.english;
   bool get isSwahili => _currentLanguage == AppLanguage.swahili;
-  String get languageCode => _currentLanguage == AppLanguage.english ? 'en' : 'sw';
+  String get languageCode =>
+      _currentLanguage == AppLanguage.english ? 'en' : 'sw';
 
   Future<void> init() async {
     if (_isInitialized) return;
@@ -39,7 +41,8 @@ class AppLanguageService extends ChangeNotifier {
     notifyListeners();
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_prefKey, language == AppLanguage.swahili ? 'sw' : 'en');
+      await prefs.setString(
+          _prefKey, language == AppLanguage.swahili ? 'sw' : 'en');
     } catch (_) {}
   }
 

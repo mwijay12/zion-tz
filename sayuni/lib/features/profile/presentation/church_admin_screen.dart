@@ -25,7 +25,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
 
   // New Sermon / Media State
   final _sermonTitleController = TextEditingController();
-  final _sermonPreacherController = TextEditingController(text: ChurchProfile.headBishop);
+  final _sermonPreacherController =
+      TextEditingController(text: ChurchProfile.headBishop);
   final _sermonScriptureController = TextEditingController();
   final _sermonDurationController = TextEditingController(text: '45 min');
   final _sermonMediaUrlController = TextEditingController();
@@ -40,9 +41,12 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
     super.initState();
     _customService.init();
     _bishopController = TextEditingController(text: _customService.bishopName);
-    _coLeaderController = TextEditingController(text: _customService.coLeaderName);
-    _assistantPastorController = TextEditingController(text: _customService.assistantPastor);
-    _assistantPhoneController = TextEditingController(text: _customService.assistantPhone);
+    _coLeaderController =
+        TextEditingController(text: _customService.coLeaderName);
+    _assistantPastorController =
+        TextEditingController(text: _customService.assistantPastor);
+    _assistantPhoneController =
+        TextEditingController(text: _customService.assistantPhone);
 
     _sermonMediaUrlController.addListener(() {
       setState(() {});
@@ -101,12 +105,14 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
 
   void _showLeadershipUrlDialog() {
     AppHaptics.selectionClick();
-    final urlCtrl = TextEditingController(text: _customService.leadershipPhoto ?? '');
+    final urlCtrl =
+        TextEditingController(text: _customService.leadershipPhoto ?? '');
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: const Text('Weka Link ya Picha ya Viongozi', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        title: const Text('Weka Link ya Picha ya Viongozi',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,7 +141,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
             onPressed: () async {
               final link = urlCtrl.text.trim();
               Navigator.pop(ctx);
-              await _customService.updateLeadershipPhoto(link.isNotEmpty ? link : null);
+              await _customService
+                  .updateLeadershipPhoto(link.isNotEmpty ? link : null);
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
@@ -146,7 +153,9 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                 );
               }
             },
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white),
             child: const Text('Hifadhi'),
           ),
         ],
@@ -170,13 +179,15 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
 
   // --- Fellowship Photo Actions ---
 
-  Future<void> _pickFellowshipPhoto(String key, String title, bool fromCamera) async {
+  Future<void> _pickFellowshipPhoto(
+      String key, String title, bool fromCamera) async {
     AppHaptics.lightImpact();
     final path = fromCamera
         ? await _customService.pickImageFromCamera()
         : await _customService.pickImageFromGallery();
     if (path != null) {
-      await _customService.updateFellowshipPhoto(fellowshipKey: key, pathOrUrl: path);
+      await _customService.updateFellowshipPhoto(
+          fellowshipKey: key, pathOrUrl: path);
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -189,14 +200,16 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
     }
   }
 
-  void _showFellowshipUrlDialog(String key, String title, String? currentPhoto) {
+  void _showFellowshipUrlDialog(
+      String key, String title, String? currentPhoto) {
     AppHaptics.selectionClick();
     final urlCtrl = TextEditingController(text: currentPhoto ?? '');
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.surface,
-        title: Text('Link ya Picha: $title', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        title: Text('Link ya Picha: $title',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,7 +238,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
             onPressed: () async {
               final link = urlCtrl.text.trim();
               Navigator.pop(ctx);
-              await _customService.updateFellowshipPhoto(fellowshipKey: key, pathOrUrl: link.isNotEmpty ? link : null);
+              await _customService.updateFellowshipPhoto(
+                  fellowshipKey: key, pathOrUrl: link.isNotEmpty ? link : null);
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
@@ -236,7 +250,9 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                 );
               }
             },
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary, foregroundColor: Colors.white),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white),
             child: const Text('Hifadhi'),
           ),
         ],
@@ -290,7 +306,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
 
     final rawUrl = _sermonMediaUrlController.text.trim();
     final isYt = ChurchCustomizationService.isYouTubeUrl(rawUrl);
-    final thumb = isYt ? ChurchCustomizationService.getYouTubeThumbnail(rawUrl) : null;
+    final thumb =
+        isYt ? ChurchCustomizationService.getYouTubeThumbnail(rawUrl) : null;
 
     AppHaptics.mediumImpact();
     setState(() => _isPublishingSermon = true);
@@ -333,7 +350,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Video/Mahubiri: "${_sermonTitleController.text}" yamewekwa kwenye Media Hub!'),
+          content: Text(
+              'Video/Mahubiri: "${_sermonTitleController.text}" yamewekwa kwenye Media Hub!'),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
         ),
@@ -354,7 +372,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
           appBar: AppBar(
             title: const Text(
               'Utawala wa Kanisa (Admin)',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
             backgroundColor: const Color(0xFF0A2540),
             elevation: 2,
@@ -390,7 +409,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                         color: AppColors.gold.withOpacity(0.2),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.admin_panel_settings_rounded, color: AppColors.gold, size: 26),
+                      child: const Icon(Icons.admin_panel_settings_rounded,
+                          color: AppColors.gold, size: 26),
                     ),
                     const SizedBox(width: 12),
                     const Expanded(
@@ -399,12 +419,18 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                         children: [
                           Text(
                             'Mfumo wa Usimamizi wa Ndani',
-                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15),
                           ),
                           SizedBox(height: 3),
                           Text(
                             'Badili picha kutoka simuni au viungo vya mtandao, dhibiti viongozi na pakia video za YouTube.',
-                            style: TextStyle(color: Colors.white70, fontSize: 12, height: 1.3),
+                            style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                                height: 1.3),
                           ),
                         ],
                       ),
@@ -428,7 +454,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                       decoration: BoxDecoration(
                         color: AppColors.surfaceLow,
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppColors.gold.withOpacity(0.3)),
+                        border:
+                            Border.all(color: AppColors.gold.withOpacity(0.3)),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -441,7 +468,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                 height: 76,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  border: Border.all(color: AppColors.gold, width: 2.5),
+                                  border: Border.all(
+                                      color: AppColors.gold, width: 2.5),
                                   boxShadow: [
                                     BoxShadow(
                                       color: AppColors.gold.withOpacity(0.3),
@@ -472,10 +500,13 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                     ),
                                     const SizedBox(height: 4),
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 2),
                                       decoration: BoxDecoration(
-                                        color: _customService.leadershipPhoto != null
-                                            ? AppColors.success.withOpacity(0.15)
+                                        color: _customService.leadershipPhoto !=
+                                                null
+                                            ? AppColors.success
+                                                .withOpacity(0.15)
                                             : AppColors.surfaceContainer,
                                         borderRadius: BorderRadius.circular(6),
                                       ),
@@ -486,16 +517,20 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                         style: TextStyle(
                                           fontSize: 10.5,
                                           fontWeight: FontWeight.w700,
-                                          color: _customService.leadershipPhoto != null
-                                              ? AppColors.success
-                                              : AppColors.textSecondary,
+                                          color:
+                                              _customService.leadershipPhoto !=
+                                                      null
+                                                  ? AppColors.success
+                                                  : AppColors.textSecondary,
                                         ),
                                       ),
                                     ),
                                     const SizedBox(height: 6),
                                     Text(
                                       'Inaonekana kwenye Skrini Kuu (Home)',
-                                      style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
+                                      style: TextStyle(
+                                          fontSize: 11,
+                                          color: AppColors.textSecondary),
                                     ),
                                   ],
                                 ),
@@ -513,26 +548,36 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                             children: [
                               ElevatedButton.icon(
                                 onPressed: _pickLeadershipFromGallery,
-                                icon: const Icon(Icons.photo_library_rounded, size: 16),
+                                icon: const Icon(Icons.photo_library_rounded,
+                                    size: 16),
                                 label: const Text('Simu (Gallery)'),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFF0A2540),
                                   foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                  textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 8),
+                                  textStyle: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
                                 ),
                               ),
                               ElevatedButton.icon(
                                 onPressed: _pickLeadershipFromCamera,
-                                icon: const Icon(Icons.camera_alt_rounded, size: 16),
+                                icon: const Icon(Icons.camera_alt_rounded,
+                                    size: 16),
                                 label: const Text('Kamera'),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFF0F52BA),
                                   foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                  textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 8),
+                                  textStyle: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
                                 ),
                               ),
                               OutlinedButton.icon(
@@ -541,17 +586,26 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                 label: Text('Link (URL)'),
                                 style: OutlinedButton.styleFrom(
                                   foregroundColor: AppColors.primary,
-                                  side: const BorderSide(color: AppColors.primary),
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                  textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                  side: const BorderSide(
+                                      color: AppColors.primary),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 8),
+                                  textStyle: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
                                 ),
                               ),
                               if (_customService.leadershipPhoto != null)
                                 TextButton.icon(
                                   onPressed: _resetLeadershipPhoto,
-                                  icon: const Icon(Icons.restart_alt_rounded, size: 16, color: AppColors.error),
-                                  label: Text('Rejesha', style: TextStyle(color: AppColors.error, fontSize: 12)),
+                                  icon: const Icon(Icons.restart_alt_rounded,
+                                      size: 16, color: AppColors.error),
+                                  label: Text('Rejesha',
+                                      style: TextStyle(
+                                          color: AppColors.error,
+                                          fontSize: 12)),
                                 ),
                             ],
                           ),
@@ -588,20 +642,26 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
-                        onPressed: _isSavingLeadership ? null : _saveLeadershipSettings,
+                        onPressed: _isSavingLeadership
+                            ? null
+                            : _saveLeadershipSettings,
                         icon: _isSavingLeadership
                             ? const SizedBox(
                                 width: 18,
                                 height: 18,
-                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2, color: Colors.white),
                               )
                             : const Icon(Icons.save_rounded, size: 20),
-                        label: Text(_isSavingLeadership ? 'Inahifadhi...' : 'Hifadhi Mabadiliko ya Viongozi'),
+                        label: Text(_isSavingLeadership
+                            ? 'Inahifadhi...'
+                            : 'Hifadhi Mabadiliko ya Viongozi'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF0A2540),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 13),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                         ),
                       ),
                     ),
@@ -611,7 +671,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
               const SizedBox(height: 24),
 
               // ================= SECTION: LOCAL DATA BACKUP & SOVEREIGNTY =================
-              _buildSectionTitle('HIFADHI NAKALA YA DATA (DATA VAULT & BACKUP)'),
+              _buildSectionTitle(
+                  'HIFADHI NAKALA YA DATA (DATA VAULT & BACKUP)'),
               AppCard(
                 backgroundColor: AppColors.surface,
                 borderColor: AppColors.border,
@@ -626,7 +687,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                             color: const Color(0xFF10B981).withOpacity(0.15),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: const Icon(Icons.shield_rounded, color: Color(0xFF10B981), size: 22),
+                          child: const Icon(Icons.shield_rounded,
+                              color: Color(0xFF10B981), size: 22),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -635,11 +697,14 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                             children: [
                               Text(
                                 'Hifadhi Salama ya Kanisa (Sovereign Vault)',
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 13),
                               ),
                               Text(
                                 'Data zote za kanisa zibaki mikononi mwenu bila hofu ya kufutika kwa Firebase.',
-                                style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
+                                style: TextStyle(
+                                    fontSize: 11,
+                                    color: AppColors.textSecondary),
                               ),
                             ],
                           ),
@@ -654,19 +719,24 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                           AppHaptics.mediumImpact();
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                              content: Text('✓ Data zote zimehifadhiwa salama kwenye kumbukumbu ya simu na Web!'),
+                              content: Text(
+                                  '✓ Data zote zimehifadhiwa salama kwenye kumbukumbu ya simu na Web!'),
                               backgroundColor: Color(0xFF10B981),
                               behavior: SnackBarBehavior.floating,
                             ),
                           );
                         },
-                        icon: const Icon(Icons.cloud_download_rounded, size: 18),
-                        label: const Text('Thibitisha Data Ziko Salama (Audit Snapshot)'),
+                        icon:
+                            const Icon(Icons.cloud_download_rounded, size: 18),
+                        label: const Text(
+                            'Thibitisha Data Ziko Salama (Audit Snapshot)'),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xFF10B981),
-                          side: const BorderSide(color: Color(0xFF10B981), width: 1.2),
+                          side: const BorderSide(
+                              color: Color(0xFF10B981), width: 1.2),
                           padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
                         ),
                       ),
                     ),
@@ -674,7 +744,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                 ),
               ),
               // ================= SECTION: GRANT ADMIN ROLES BY EMAIL =================
-              _buildSectionTitle('GAWA MAMLAKA YA USIMAMIZI (GRANT ADMIN BY EMAIL)'),
+              _buildSectionTitle(
+                  'GAWA MAMLAKA YA USIMAMIZI (GRANT ADMIN BY EMAIL)'),
               AppCard(
                 backgroundColor: AppColors.surface,
                 borderColor: AppColors.border,
@@ -689,7 +760,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                             color: const Color(0xFF0F52BA).withOpacity(0.12),
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: const Icon(Icons.manage_accounts_rounded, color: Color(0xFF0F52BA), size: 22),
+                          child: const Icon(Icons.manage_accounts_rounded,
+                              color: Color(0xFF0F52BA), size: 22),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -698,11 +770,14 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                             children: [
                               Text(
                                 'Ongeza Msimamizi Mpya wa Mfumo',
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 13),
                               ),
                               Text(
                                 'Mpe mtumiaji hadhi ya Admin kupitia barua pepe yake ya Google / Email.',
-                                style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
+                                style: TextStyle(
+                                    fontSize: 11,
+                                    color: AppColors.textSecondary),
                               ),
                             ],
                           ),
@@ -722,7 +797,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                               final isRoot = email == 'admin@zionjerusalem.org';
                               return Container(
                                 margin: const EdgeInsets.only(bottom: 8),
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
                                   color: AppColors.surfaceLow,
                                   borderRadius: BorderRadius.circular(10),
@@ -730,23 +806,32 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                 ),
                                 child: Row(
                                   children: [
-                                    const Icon(Icons.verified_user_rounded, color: Color(0xFF16A34A), size: 16),
+                                    const Icon(Icons.verified_user_rounded,
+                                        color: Color(0xFF16A34A), size: 16),
                                     const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
                                         email,
-                                        style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
+                                        style: const TextStyle(
+                                            fontSize: 12.5,
+                                            fontWeight: FontWeight.w600),
                                       ),
                                     ),
                                     if (!isRoot)
                                       IconButton(
-                                        icon: const Icon(Icons.remove_circle_outline_rounded, color: AppColors.error, size: 18),
+                                        icon: const Icon(
+                                            Icons.remove_circle_outline_rounded,
+                                            color: AppColors.error,
+                                            size: 18),
                                         onPressed: () async {
                                           AppHaptics.lightImpact();
                                           await auth.revokeAdminEmail(email);
                                           if (context.mounted) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(content: Text('Uongozi wa $email umeondolewa')),
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                  content: Text(
+                                                      'Uongozi wa $email umeondolewa')),
                                             );
                                           }
                                         },
@@ -754,12 +839,19 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                       )
                                     else
                                       Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 6, vertical: 2),
                                         decoration: BoxDecoration(
-                                          color: AppColors.primary.withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(6),
+                                          color: AppColors.primary
+                                              .withOpacity(0.1),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
                                         ),
-                                        child: Text('Root', style: TextStyle(fontSize: 10, color: AppColors.primary, fontWeight: FontWeight.bold)),
+                                        child: Text('Root',
+                                            style: TextStyle(
+                                                fontSize: 10,
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.bold)),
                                       ),
                                   ],
                                 ),
@@ -776,20 +868,29 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                     context: context,
                                     builder: (ctx) => AlertDialog(
                                       backgroundColor: AppColors.surface,
-                                      title: const Text('Ongeza Barua Pepe ya Admin', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                                      title: const Text(
+                                          'Ongeza Barua Pepe ya Admin',
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold)),
                                       content: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Text(
                                             'Weka barua pepe (Gmail) ya mtumiaji anayetakiwa kupata jukumu la Admin:',
-                                            style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: AppColors.textSecondary),
                                           ),
                                           const SizedBox(height: 12),
                                           TextField(
                                             controller: newEmailCtrl,
-                                            keyboardType: TextInputType.emailAddress,
+                                            keyboardType:
+                                                TextInputType.emailAddress,
                                             decoration: const InputDecoration(
-                                              prefixIcon: Icon(Icons.email_outlined, size: 18),
+                                              prefixIcon: Icon(
+                                                  Icons.email_outlined,
+                                                  size: 18),
                                               hintText: 'mchungaji@gmail.com',
                                               border: OutlineInputBorder(),
                                             ),
@@ -797,7 +898,9 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                         ],
                                       ),
                                       actions: [
-                                        TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Ghairi')),
+                                        TextButton(
+                                            onPressed: () => Navigator.pop(ctx),
+                                            child: const Text('Ghairi')),
                                         ElevatedButton(
                                           onPressed: () async {
                                             final em = newEmailCtrl.text.trim();
@@ -806,29 +909,40 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                               if (!ctx.mounted) return;
                                               Navigator.pop(ctx);
                                               if (context.mounted) {
-                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
                                                   SnackBar(
-                                                    content: Text('✓ $em sasa amepewa mamlaka ya Admin!'),
-                                                    backgroundColor: const Color(0xFF16A34A),
+                                                    content: Text(
+                                                        '✓ $em sasa amepewa mamlaka ya Admin!'),
+                                                    backgroundColor:
+                                                        const Color(0xFF16A34A),
                                                   ),
                                                 );
                                               }
                                             }
                                           },
-                                          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF0F52BA), foregroundColor: Colors.white),
-                                          child: const Text('Gawa Mamlaka (Grant)'),
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  const Color(0xFF0F52BA),
+                                              foregroundColor: Colors.white),
+                                          child: const Text(
+                                              'Gawa Mamlaka (Grant)'),
                                         ),
                                       ],
                                     ),
                                   );
                                 },
-                                icon: const Icon(Icons.person_add_alt_1_rounded, size: 18),
-                                label: const Text('Ongeza Barua Pepe ya Admin (Grant Role)'),
+                                icon: const Icon(Icons.person_add_alt_1_rounded,
+                                    size: 18),
+                                label: const Text(
+                                    'Ongeza Barua Pepe ya Admin (Grant Role)'),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFF0A2540),
                                   foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
                                 ),
                               ),
                             ),
@@ -845,7 +959,9 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
               _buildSectionTitle('2. PICHA ZA IDARA & JUMUIYA ZA KANISA'),
               Text(
                 'Badilisha picha za makundi ya kanisa. Unaweza kupakia picha kutoka simuni au kuweka link ya mtandao.',
-                style: TextStyle(fontSize: 12, color: AppColors.textSecondary.withOpacity(0.9)),
+                style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.textSecondary.withOpacity(0.9)),
               ),
               const SizedBox(height: 12),
 
@@ -886,7 +1002,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
               const SizedBox(height: 24),
 
               // ================= SECTION 3: YOUTUBE & MEDIA HUB =================
-              _buildSectionTitle('3. PAKIA VIDEO ZA YOUTUBE & MAHUBIRI (MEDIA HUB)'),
+              _buildSectionTitle(
+                  '3. PAKIA VIDEO ZA YOUTUBE & MAHUBIRI (MEDIA HUB)'),
               AppCard(
                 backgroundColor: AppColors.surface,
                 borderColor: AppColors.border,
@@ -899,12 +1016,14 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                       decoration: BoxDecoration(
                         color: const Color(0xFF0A2540).withOpacity(0.06),
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: const Color(0xFF0F52BA).withOpacity(0.25)),
+                        border: Border.all(
+                            color: const Color(0xFF0F52BA).withOpacity(0.25)),
                       ),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.video_library_rounded, color: Color(0xFFDC2626), size: 24),
+                          Icon(Icons.video_library_rounded,
+                              color: Color(0xFFDC2626), size: 24),
                           SizedBox(width: 10),
                           Expanded(
                             child: Column(
@@ -912,12 +1031,18 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                               children: [
                                 Text(
                                   'Inasaidia YouTube Moja kwa Moja na Cloudinary:',
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.textPrimary),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13,
+                                      color: AppColors.textPrimary),
                                 ),
                                 SizedBox(height: 4),
                                 Text(
                                   'Bandika link ya YouTube (mfano: https://youtu.be/... au https://youtube.com/watch?v=...) mfumo utavuta picha (thumbnail) na video moja kwa moja!',
-                                  style: TextStyle(fontSize: 12, color: AppColors.textSecondary, height: 1.35),
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.textSecondary,
+                                      height: 1.35),
                                 ),
                               ],
                             ),
@@ -932,23 +1057,28 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                       label: 'URL ya YouTube / Cloudinary / Video / Audio',
                       controller: _sermonMediaUrlController,
                       icon: Icons.link_rounded,
-                      hint: 'https://youtu.be/... au https://res.cloudinary.com/...',
+                      hint:
+                          'https://youtu.be/... au https://res.cloudinary.com/...',
                     ),
 
                     // YouTube Live Detection & Preview
                     if (_sermonMediaUrlController.text.trim().isNotEmpty) ...[
                       const SizedBox(height: 10),
-                      if (ChurchCustomizationService.isYouTubeUrl(_sermonMediaUrlController.text.trim())) ...[
+                      if (ChurchCustomizationService.isYouTubeUrl(
+                          _sermonMediaUrlController.text.trim())) ...[
                         Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: const Color(0xFFDC2626).withOpacity(0.1),
                             borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: const Color(0xFFDC2626).withOpacity(0.3)),
+                            border: Border.all(
+                                color:
+                                    const Color(0xFFDC2626).withOpacity(0.3)),
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.check_circle_rounded, color: Color(0xFFDC2626), size: 18),
+                              const Icon(Icons.check_circle_rounded,
+                                  color: Color(0xFFDC2626), size: 18),
                               const SizedBox(width: 8),
                               const Expanded(
                                 child: Text(
@@ -961,25 +1091,34 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                 ),
                               ),
                               TextButton(
-                                onPressed: () => ChurchCustomizationService.launchMediaUrl(_sermonMediaUrlController.text),
-                                child: const Text('Jaribu Kiungo', style: TextStyle(fontSize: 11)),
+                                onPressed: () =>
+                                    ChurchCustomizationService.launchMediaUrl(
+                                        _sermonMediaUrlController.text),
+                                child: const Text('Jaribu Kiungo',
+                                    style: TextStyle(fontSize: 11)),
                               ),
                             ],
                           ),
                         ),
                         const SizedBox(height: 8),
-                        if (ChurchCustomizationService.getYouTubeThumbnail(_sermonMediaUrlController.text.trim()) != null)
+                        if (ChurchCustomizationService.getYouTubeThumbnail(
+                                _sermonMediaUrlController.text.trim()) !=
+                            null)
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Stack(
                               alignment: Alignment.center,
                               children: [
                                 Image.network(
-                                  ChurchCustomizationService.getYouTubeThumbnail(_sermonMediaUrlController.text.trim())!,
+                                  ChurchCustomizationService
+                                      .getYouTubeThumbnail(
+                                          _sermonMediaUrlController.text
+                                              .trim())!,
                                   height: 130,
                                   width: double.infinity,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const SizedBox.shrink(),
                                 ),
                                 Container(
                                   padding: const EdgeInsets.all(8),
@@ -987,7 +1126,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                     color: Colors.black.withOpacity(0.6),
                                     shape: BoxShape.circle,
                                   ),
-                                  child: const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 28),
+                                  child: const Icon(Icons.play_arrow_rounded,
+                                      color: Colors.white, size: 28),
                                 ),
                               ],
                             ),
@@ -1030,15 +1170,21 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                             value: _sermonType,
                             decoration: InputDecoration(
                               labelText: 'Aina ya Media',
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
                             ),
                             items: const [
-                              DropdownMenuItem(value: 'video', child: Text('Video (YouTube/MP4)')),
-                              DropdownMenuItem(value: 'audio', child: Text('Audio (Sauti)')),
+                              DropdownMenuItem(
+                                  value: 'video',
+                                  child: Text('Video (YouTube/MP4)')),
+                              DropdownMenuItem(
+                                  value: 'audio', child: Text('Audio (Sauti)')),
                             ],
                             onChanged: (val) {
-                              if (val != null) setState(() => _sermonType = val);
+                              if (val != null)
+                                setState(() => _sermonType = val);
                             },
                           ),
                         ),
@@ -1048,17 +1194,25 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                             value: _sermonCategory,
                             decoration: InputDecoration(
                               labelText: 'Kundi (Category)',
-                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
                             ),
                             items: const [
-                              DropdownMenuItem(value: 'Mahubiri', child: Text('Mahubiri')),
-                              DropdownMenuItem(value: 'Mafundisho', child: Text('Mafundisho')),
-                              DropdownMenuItem(value: 'Kwaya & Sifa', child: Text('Kwaya')),
-                              DropdownMenuItem(value: 'Podcasts', child: Text('Podcasts')),
+                              DropdownMenuItem(
+                                  value: 'Mahubiri', child: Text('Mahubiri')),
+                              DropdownMenuItem(
+                                  value: 'Mafundisho',
+                                  child: Text('Mafundisho')),
+                              DropdownMenuItem(
+                                  value: 'Kwaya & Sifa', child: Text('Kwaya')),
+                              DropdownMenuItem(
+                                  value: 'Podcasts', child: Text('Podcasts')),
                             ],
                             onChanged: (val) {
-                              if (val != null) setState(() => _sermonCategory = val);
+                              if (val != null)
+                                setState(() => _sermonCategory = val);
                             },
                           ),
                         ),
@@ -1070,13 +1224,17 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                       child: ElevatedButton.icon(
                         onPressed: _isPublishingSermon ? null : _publishSermon,
                         icon: const Icon(Icons.publish_rounded, size: 20),
-                        label: Text(_isPublishingSermon ? 'Inachapisha...' : 'Chapisha Somo Kwenye Media Hub'),
+                        label: Text(_isPublishingSermon
+                            ? 'Inachapisha...'
+                            : 'Chapisha Somo Kwenye Media Hub'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.gold,
                           foregroundColor: const Color(0xFF0A2540),
                           padding: const EdgeInsets.symmetric(vertical: 13),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                          textStyle: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14),
                         ),
                       ),
                     ),
@@ -1107,14 +1265,17 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                   width: 60,
                                   height: 48,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) => const Icon(Icons.movie_rounded, size: 36),
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      const Icon(Icons.movie_rounded, size: 36),
                                 )
                               : Container(
                                   width: 60,
                                   height: 48,
                                   color: AppColors.surfaceContainer,
                                   child: Icon(
-                                    sermon.type == 'video' ? Icons.videocam_rounded : Icons.mic_rounded,
+                                    sermon.type == 'video'
+                                        ? Icons.videocam_rounded
+                                        : Icons.mic_rounded,
                                     color: AppColors.primary,
                                   ),
                                 ),
@@ -1128,24 +1289,31 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                 sermon.title,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 13),
                               ),
                               const SizedBox(height: 2),
                               Text(
                                 '${sermon.preacher} • ${sermon.duration}',
-                                style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
+                                style: TextStyle(
+                                    fontSize: 11,
+                                    color: AppColors.textSecondary),
                               ),
                             ],
                           ),
                         ),
                         if (sermon.mediaUrl.isNotEmpty)
                           IconButton(
-                            icon: const Icon(Icons.open_in_new_rounded, color: AppColors.primary, size: 18),
-                            onPressed: () => ChurchCustomizationService.launchMediaUrl(sermon.mediaUrl),
+                            icon: const Icon(Icons.open_in_new_rounded,
+                                color: AppColors.primary, size: 18),
+                            onPressed: () =>
+                                ChurchCustomizationService.launchMediaUrl(
+                                    sermon.mediaUrl),
                             tooltip: 'Tazama',
                           ),
                         IconButton(
-                          icon: const Icon(Icons.delete_outline_rounded, color: AppColors.error, size: 18),
+                          icon: const Icon(Icons.delete_outline_rounded,
+                              color: AppColors.error, size: 18),
                           onPressed: () async {
                             AppHaptics.lightImpact();
                             await _customService.deleteSermon(sermon.id);
@@ -1180,7 +1348,9 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: hasCustom ? AppColors.gold.withOpacity(0.5) : AppColors.border),
+        border: Border.all(
+            color:
+                hasCustom ? AppColors.gold.withOpacity(0.5) : AppColors.border),
       ),
       child: Row(
         children: [
@@ -1196,7 +1366,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                 width: 64,
                 height: 64,
                 color: AppColors.surfaceContainer,
-                child: Icon(Icons.image_not_supported_rounded, color: AppColors.textSecondary),
+                child: Icon(Icons.image_not_supported_rounded,
+                    color: AppColors.textSecondary),
               ),
             ),
           ),
@@ -1207,11 +1378,15 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
               children: [
                 Text(
                   title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.textPrimary),
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      color: AppColors.textPrimary),
                 ),
                 Text(
                   subtitle,
-                  style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
+                  style:
+                      TextStyle(fontSize: 11, color: AppColors.textSecondary),
                 ),
                 const SizedBox(height: 6),
                 Wrap(
@@ -1220,7 +1395,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                     InkWell(
                       onTap: () => _pickFellowshipPhoto(keyName, title, false),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: const Color(0xFF0A2540).withOpacity(0.08),
                           borderRadius: BorderRadius.circular(6),
@@ -1228,9 +1404,14 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                         child: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.photo_library_rounded, size: 12, color: Color(0xFF0A2540)),
+                            Icon(Icons.photo_library_rounded,
+                                size: 12, color: Color(0xFF0A2540)),
                             SizedBox(width: 4),
-                            Text('Simu', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFF0A2540))),
+                            Text('Simu',
+                                style: TextStyle(
+                                    fontSize: 10.5,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF0A2540))),
                           ],
                         ),
                       ),
@@ -1238,7 +1419,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                     InkWell(
                       onTap: () => _pickFellowshipPhoto(keyName, title, true),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: const Color(0xFF0F52BA).withOpacity(0.08),
                           borderRadius: BorderRadius.circular(6),
@@ -1246,17 +1428,24 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                         child: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.camera_alt_rounded, size: 12, color: Color(0xFF0F52BA)),
+                            Icon(Icons.camera_alt_rounded,
+                                size: 12, color: Color(0xFF0F52BA)),
                             SizedBox(width: 4),
-                            Text('Kamera', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: Color(0xFF0F52BA))),
+                            Text('Kamera',
+                                style: TextStyle(
+                                    fontSize: 10.5,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF0F52BA))),
                           ],
                         ),
                       ),
                     ),
                     InkWell(
-                      onTap: () => _showFellowshipUrlDialog(keyName, title, currentPhoto),
+                      onTap: () => _showFellowshipUrlDialog(
+                          keyName, title, currentPhoto),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: AppColors.gold.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(6),
@@ -1264,9 +1453,14 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                         child: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.link_rounded, size: 12, color: AppColors.goldDark),
+                            Icon(Icons.link_rounded,
+                                size: 12, color: AppColors.goldDark),
                             SizedBox(width: 4),
-                            Text('Link', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.bold, color: AppColors.goldDark)),
+                            Text('Link',
+                                style: TextStyle(
+                                    fontSize: 10.5,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.goldDark)),
                           ],
                         ),
                       ),
@@ -1275,15 +1469,18 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                       InkWell(
                         onTap: () async {
                           AppHaptics.lightImpact();
-                          await _customService.updateFellowshipPhoto(fellowshipKey: keyName, pathOrUrl: null);
+                          await _customService.updateFellowshipPhoto(
+                              fellowshipKey: keyName, pathOrUrl: null);
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 4),
                           decoration: BoxDecoration(
                             color: AppColors.error.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(6),
                           ),
-                          child: const Icon(Icons.close_rounded, size: 12, color: AppColors.error),
+                          child: const Icon(Icons.close_rounded,
+                              size: 12, color: AppColors.error),
                         ),
                       ),
                   ],
@@ -1326,7 +1523,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
         hintText: hint,
         prefixIcon: Icon(icon, color: const Color(0xFF0F52BA), size: 20),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       ),
     );
   }

@@ -17,7 +17,8 @@ class NotificationsScreen extends StatefulWidget {
   State<NotificationsScreen> createState() => _NotificationsScreenState();
 }
 
-class _NotificationsScreenState extends State<NotificationsScreen> with SingleTickerProviderStateMixin {
+class _NotificationsScreenState extends State<NotificationsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final NotificationsDataService _service = NotificationsDataService();
   String _selectedBranch = 'Zote';
@@ -111,7 +112,8 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
                             color: ann.isHighPriority
                                 ? const Color(0xFFDC2626).withOpacity(0.15)
@@ -123,7 +125,9 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
-                              color: ann.isHighPriority ? const Color(0xFFDC2626) : AppColors.primary,
+                              color: ann.isHighPriority
+                                  ? const Color(0xFFDC2626)
+                                  : AppColors.primary,
                             ),
                           ),
                         ),
@@ -136,7 +140,8 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                     const SizedBox(height: 12),
                     Text(
                       ann.title,
-                      style: AppTypography.headlineMedium(color: AppColors.textPrimary),
+                      style: AppTypography.headlineMedium(
+                          color: AppColors.textPrimary),
                     ),
                     const SizedBox(height: 14),
 
@@ -149,13 +154,17 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                       ),
                       child: Column(
                         children: [
-                          _buildDetailRow(Icons.calendar_today_rounded, 'Tarehe:', ann.date),
+                          _buildDetailRow(Icons.calendar_today_rounded,
+                              'Tarehe:', ann.date),
                           const SizedBox(height: 8),
-                          _buildDetailRow(Icons.access_time_rounded, 'Muda:', ann.time),
+                          _buildDetailRow(
+                              Icons.access_time_rounded, 'Muda:', ann.time),
                           const SizedBox(height: 8),
-                          _buildDetailRow(Icons.place_rounded, 'Mahali:', ann.location),
+                          _buildDetailRow(
+                              Icons.place_rounded, 'Mahali:', ann.location),
                           const SizedBox(height: 8),
-                          _buildDetailRow(Icons.person_rounded, 'Kiongozi:', ann.preacherOrLeader),
+                          _buildDetailRow(Icons.person_rounded, 'Kiongozi:',
+                              ann.preacherOrLeader),
                         ],
                       ),
                     ),
@@ -163,12 +172,15 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
 
                     Text(
                       'Maelezo Kamili:',
-                      style: AppTypography.titleSmall(color: AppColors.textPrimary),
+                      style: AppTypography.titleSmall(
+                          color: AppColors.textPrimary),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       ann.fullDetails,
-                      style: AppTypography.bodyLarge(color: AppColors.textSecondary).copyWith(height: 1.6),
+                      style: AppTypography.bodyLarge(
+                              color: AppColors.textSecondary)
+                          .copyWith(height: 1.6),
                     ),
                     const SizedBox(height: 20),
 
@@ -210,7 +222,8 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
         const SizedBox(width: 8),
         Text(
           label,
-          style: AppTypography.caption(color: AppColors.textMuted).copyWith(fontWeight: FontWeight.bold),
+          style: AppTypography.caption(color: AppColors.textMuted)
+              .copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(width: 6),
         Expanded(
@@ -225,7 +238,8 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
 
   void _callChurchOffice() async {
     AppHaptics.lightImpact();
-    final uri = Uri.parse('tel:${ChurchProfile.pastoralHelpline.replaceAll(' ', '')}');
+    final uri =
+        Uri.parse('tel:${ChurchProfile.pastoralHelpline.replaceAll(' ', '')}');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     }
@@ -254,8 +268,10 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                 ),
               );
             },
-            icon: const Icon(Icons.done_all_rounded, size: 16, color: AppColors.primary),
-            label: const Text('Soma Yote', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+            icon: const Icon(Icons.done_all_rounded,
+                size: 16, color: AppColors.primary),
+            label: const Text('Soma Yote',
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
           ),
         ],
         bottom: TabBar(
@@ -263,11 +279,18 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
           indicatorColor: AppColors.primary,
           labelColor: AppColors.primary,
           unselectedLabelColor: AppColors.textMuted,
-          labelStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          labelStyle:
+              const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
           tabs: [
-            Tab(text: 'Matangazo (${_service.filteredAnnouncements.length})', icon: const Icon(Icons.campaign_rounded, size: 18)),
-            const Tab(text: 'Ratiba za Ibada', icon: Icon(Icons.schedule_rounded, size: 18)),
-            const Tab(text: 'Ofisi & Mawasiliano', icon: Icon(Icons.contact_phone_rounded, size: 18)),
+            Tab(
+                text: 'Matangazo (${_service.filteredAnnouncements.length})',
+                icon: const Icon(Icons.campaign_rounded, size: 18)),
+            const Tab(
+                text: 'Ratiba za Ibada',
+                icon: Icon(Icons.schedule_rounded, size: 18)),
+            const Tab(
+                text: 'Ofisi & Mawasiliano',
+                icon: Icon(Icons.contact_phone_rounded, size: 18)),
           ],
         ),
       ),
@@ -306,7 +329,8 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                 valueListenable: ChurchSyncService.isCloudConnected,
                 builder: (context, isConnected, _) {
                   return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
                       color: isConnected
                           ? const Color(0xFF16A34A).withOpacity(0.12)
@@ -322,9 +346,13 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                     child: Row(
                       children: [
                         Icon(
-                          isConnected ? Icons.cloud_done_rounded : Icons.cloud_off_rounded,
+                          isConnected
+                              ? Icons.cloud_done_rounded
+                              : Icons.cloud_off_rounded,
                           size: 16,
-                          color: isConnected ? const Color(0xFF16A34A) : AppColors.textMuted,
+                          color: isConnected
+                              ? const Color(0xFF16A34A)
+                              : AppColors.textMuted,
                         ),
                         const SizedBox(width: 8),
                         Expanded(
@@ -333,7 +361,9 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                             style: TextStyle(
                               fontSize: 11.5,
                               fontWeight: FontWeight.w600,
-                              color: isConnected ? const Color(0xFF15803D) : AppColors.textSecondary,
+                              color: isConnected
+                                  ? const Color(0xFF15803D)
+                                  : AppColors.textSecondary,
                             ),
                           ),
                         ),
@@ -365,9 +395,11 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                 },
                 borderRadius: BorderRadius.circular(16),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: isSel ? AppColors.primary : AppColors.surfaceContainer,
+                    color:
+                        isSel ? AppColors.primary : AppColors.surfaceContainer,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
                       color: isSel ? AppColors.primary : AppColors.border,
@@ -398,11 +430,14 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.campaign_outlined, size: 48, color: AppColors.textMuted.withOpacity(0.4)),
+                      Icon(Icons.campaign_outlined,
+                          size: 48,
+                          color: AppColors.textMuted.withOpacity(0.4)),
                       const SizedBox(height: 8),
                       Text(
                         'Hakuna matangazo ya ${_selectedBranch == "Zote" ? "sasa" : _selectedBranch}',
-                        style: TextStyle(color: AppColors.textMuted, fontSize: 13),
+                        style:
+                            TextStyle(color: AppColors.textMuted, fontSize: 13),
                       ),
                     ],
                   ),
@@ -411,7 +446,8 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                   padding: EdgeInsets.fromLTRB(16, 6, 16, bottomInset),
                   physics: const BouncingScrollPhysics(),
                   itemCount: announcements.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 12),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final ann = announcements[index];
 
@@ -432,7 +468,8 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                       badgeTextColor = const Color(0xFFEA580C);
                       badgeLabel = '⚡ DHARURA';
                     } else {
-                      borderColor = !ann.isRead ? AppColors.primary : AppColors.border;
+                      borderColor =
+                          !ann.isRead ? AppColors.primary : AppColors.border;
                       badgeBgColor = AppColors.surfaceContainer;
                       badgeTextColor = AppColors.primary;
                       badgeLabel = ann.category;
@@ -449,7 +486,8 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
                                 decoration: BoxDecoration(
                                   color: badgeBgColor,
                                   borderRadius: BorderRadius.circular(6),
@@ -466,11 +504,13 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                               if (ann.branch != 'Zote') ...[
                                 const SizedBox(width: 6),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 3),
                                   decoration: BoxDecoration(
                                     color: AppColors.surfaceContainer,
                                     borderRadius: BorderRadius.circular(6),
-                                    border: Border.all(color: AppColors.border, width: 0.6),
+                                    border: Border.all(
+                                        color: AppColors.border, width: 0.6),
                                   ),
                                   child: Text(
                                     '📍 ${ann.branch}',
@@ -487,7 +527,8 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                                 children: [
                                   Text(
                                     ann.date.split(',').first,
-                                    style: AppTypography.caption(color: AppColors.textMuted),
+                                    style: AppTypography.caption(
+                                        color: AppColors.textMuted),
                                   ),
                                   if (!ann.isRead) ...[
                                     const SizedBox(width: 6),
@@ -507,14 +548,19 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                           const SizedBox(height: 8),
                           Text(
                             ann.title,
-                            style: AppTypography.titleMedium(color: AppColors.textPrimary).copyWith(
-                              fontWeight: !ann.isRead ? FontWeight.w800 : FontWeight.w600,
+                            style: AppTypography.titleMedium(
+                                    color: AppColors.textPrimary)
+                                .copyWith(
+                              fontWeight: !ann.isRead
+                                  ? FontWeight.w800
+                                  : FontWeight.w600,
                             ),
                           ),
                           const SizedBox(height: 6),
                           Text(
                             ann.summary,
-                            style: AppTypography.bodyMedium(color: AppColors.textSecondary),
+                            style: AppTypography.bodyMedium(
+                                color: AppColors.textSecondary),
                           ),
                           const SizedBox(height: 10),
                           Row(
@@ -522,22 +568,26 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                             children: [
                               Row(
                                 children: [
-                                  Icon(Icons.access_time_rounded, size: 14, color: AppColors.textMuted),
+                                  Icon(Icons.access_time_rounded,
+                                      size: 14, color: AppColors.textMuted),
                                   const SizedBox(width: 4),
                                   Text(
                                     ann.time.split('-').first,
-                                    style: AppTypography.caption(color: AppColors.textMuted),
+                                    style: AppTypography.caption(
+                                        color: AppColors.textMuted),
                                   ),
                                 ],
                               ),
                               Row(
                                 children: [
                                   IconButton(
-                                    icon: const Icon(Icons.share_rounded, size: 20, color: AppColors.primary),
+                                    icon: const Icon(Icons.share_rounded,
+                                        size: 20, color: AppColors.primary),
                                     tooltip: 'Shiriki',
                                     onPressed: () => _shareAnnouncement(ann),
                                   ),
-                                  Icon(Icons.chevron_right_rounded, color: AppColors.textMuted),
+                                  Icon(Icons.chevron_right_rounded,
+                                      color: AppColors.textMuted),
                                 ],
                               ),
                             ],
@@ -558,7 +608,8 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
         'day': 'Jumapili (Sunday)',
         'title': 'Ibada Kuu ya Ushindi & Sifa',
         'time': 'Saa 02:30 Asubuhi - 07:00 Mchana',
-        'desc': 'Ibada Kuu ya Hekaluni, meza ya Bwana, sifa za kwaya na maombi ya uponyaji.',
+        'desc':
+            'Ibada Kuu ya Hekaluni, meza ya Bwana, sifa za kwaya na maombi ya uponyaji.',
         'icon': Icons.wb_sunny_rounded,
         'badge': 'Ibada Kuu',
       },
@@ -582,7 +633,8 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
         'day': 'Alhamisi (Thursday)',
         'title': 'Umoja wa Wanawake (Wamama wa Sayuni)',
         'time': 'Saa 09:30 Alasiri - 11:30 Jioni',
-        'desc': 'Maombi ya kina ya familia, kulea watoto na kusaidia wasiojiweza.',
+        'desc':
+            'Maombi ya kina ya familia, kulea watoto na kusaidia wasiojiweza.',
         'icon': Icons.people_outline_rounded,
         'badge': 'Wamama',
       },
@@ -622,17 +674,22 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                 children: [
                   Text(
                     item['day'] as String,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.primary),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        color: AppColors.primary),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
                       color: AppColors.goldContainer,
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
                       item['badge'] as String,
-                      style: AppTypography.caption(color: AppColors.onGoldContainer),
+                      style: AppTypography.caption(
+                          color: AppColors.onGoldContainer),
                     ),
                   ),
                 ],
@@ -645,11 +702,13 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
               const SizedBox(height: 4),
               Row(
                 children: [
-                  Icon(Icons.access_time_rounded, size: 14, color: AppColors.textMuted),
+                  Icon(Icons.access_time_rounded,
+                      size: 14, color: AppColors.textMuted),
                   const SizedBox(width: 4),
                   Text(
                     item['time'] as String,
-                    style: AppTypography.caption(color: AppColors.textSecondary),
+                    style:
+                        AppTypography.caption(color: AppColors.textSecondary),
                   ),
                 ],
               ),
@@ -697,7 +756,9 @@ Sayuni Jerusalem Church — Nuru ya Mataifa.
                 subtitle: Text(ChurchProfile.pastoralHelpline),
                 trailing: ElevatedButton(
                   onPressed: _callChurchOffice,
-                  style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8)),
+                  style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 8)),
                   child: const Text('Piga'),
                 ),
               ),

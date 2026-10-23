@@ -35,9 +35,11 @@ class ChurchBranch {
       phone: '+255754000111',
       whatsapp: '255754000111',
       email: 'info@zionjerusalem.org',
-      serviceTimes: 'Jumapili: 08:30 - 13:30 | Jumatano: 16:30 - 18:30 | Ijumaa: 21:00 (Mkesha)',
+      serviceTimes:
+          'Jumapili: 08:30 - 13:30 | Jumatano: 16:30 - 18:30 | Ijumaa: 21:00 (Mkesha)',
       isHeadquarters: true,
-      description: 'Hekalu Kuu la Sayuni — Makao Makuu ya Huduma, Ukombozi na Mafundisho ya Neno la Uzima.',
+      description:
+          'Hekalu Kuu la Sayuni — Makao Makuu ya Huduma, Ukombozi na Mafundisho ya Neno la Uzima.',
     ),
     ChurchBranch(
       id: 'mbagala-kibondemaji',
@@ -50,7 +52,8 @@ class ChurchBranch {
       email: 'kibondemaji@zionjerusalem.org',
       serviceTimes: 'Jumapili: 09:00 - 12:30 | Alhamisi: 16:30 - 18:30',
       isHeadquarters: false,
-      description: 'Tawi la Kibondemaji — Kituo cha Ibada, Maombi na Ushirika wa Nyumba kwa Nyumba.',
+      description:
+          'Tawi la Kibondemaji — Kituo cha Ibada, Maombi na Ushirika wa Nyumba kwa Nyumba.',
     ),
     ChurchBranch(
       id: 'vikindu-branch',
@@ -76,7 +79,8 @@ class ChurchBranch {
       email: 'kisemvule@zionjerusalem.org',
       serviceTimes: 'Jumapili: 08:30 - 12:30 | Jumanne: 16:30 - 18:30',
       isHeadquarters: false,
-      description: 'Sayuni Kisemvule — Ushirika wa Upendo na Maombi ya Ukombozi.',
+      description:
+          'Sayuni Kisemvule — Ushirika wa Upendo na Maombi ya Ukombozi.',
     ),
     ChurchBranch(
       id: 'morogoro-branch',
@@ -89,7 +93,8 @@ class ChurchBranch {
       email: 'morogoro@zionjerusalem.org',
       serviceTimes: 'Jumapili: 09:00 - 13:00 | Alhamisi: 17:00 - 18:30',
       isHeadquarters: false,
-      description: 'Sauti ya Sayuni Mkoani Morogoro — Ibada za Kufunguliwa na Nuru.',
+      description:
+          'Sauti ya Sayuni Mkoani Morogoro — Ibada za Kufunguliwa na Nuru.',
     ),
     ChurchBranch(
       id: 'bukoba-branch',
@@ -102,7 +107,8 @@ class ChurchBranch {
       email: 'bukoba@zionjerusalem.org',
       serviceTimes: 'Jumapili: 09:00 - 13:00 | Jumatano: 16:30 - 18:30',
       isHeadquarters: false,
-      description: 'Sayuni Kanda ya Ziwa Magharibi — Kituo cha Uinjilisti na Maombi.',
+      description:
+          'Sayuni Kanda ya Ziwa Magharibi — Kituo cha Uinjilisti na Maombi.',
     ),
     ChurchBranch(
       id: 'njombe-branch',
@@ -115,7 +121,8 @@ class ChurchBranch {
       email: 'njombe@zionjerusalem.org',
       serviceTimes: 'Jumapili: 09:00 - 12:30 | Ijumaa: 17:00 - 18:30',
       isHeadquarters: false,
-      description: 'Kituo cha Sayuni Nyanda za Juu Kusini — Moto wa Maombi na Neema.',
+      description:
+          'Kituo cha Sayuni Nyanda za Juu Kusini — Moto wa Maombi na Neema.',
     ),
     ChurchBranch(
       id: 'makambako-branch',

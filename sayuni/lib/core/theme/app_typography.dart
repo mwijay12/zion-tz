@@ -4,19 +4,23 @@ import 'app_colors.dart';
 import 'church_theme_service.dart';
 
 abstract class AppTypography {
-  static Color _resolveColor(Color? color, {required Color defaultLight, required Color defaultDark}) {
+  static Color _resolveColor(Color? color,
+      {required Color defaultLight, required Color defaultDark}) {
     final isDark = ChurchThemeService().isDarkMode;
     if (color == null) {
       return isDark ? defaultDark : defaultLight;
     }
     if (isDark) {
-      if (color == AppColors.textPrimaryLight || color == const Color(0xFF0A1E3F)) {
+      if (color == AppColors.textPrimaryLight ||
+          color == const Color(0xFF0A1E3F)) {
         return AppColors.textPrimaryDark;
       }
-      if (color == AppColors.textSecondaryLight || color == const Color(0xFF334155)) {
+      if (color == AppColors.textSecondaryLight ||
+          color == const Color(0xFF334155)) {
         return AppColors.textSecondaryDark;
       }
-      if (color == AppColors.textMutedLight || color == const Color(0xFF64748B)) {
+      if (color == AppColors.textMutedLight ||
+          color == const Color(0xFF64748B)) {
         return AppColors.textMutedDark;
       }
     }
@@ -28,7 +32,9 @@ abstract class AppTypography {
     return GoogleFonts.newsreader(
       fontSize: 28,
       fontWeight: FontWeight.w700,
-      color: _resolveColor(color, defaultLight: AppColors.textPrimaryLight, defaultDark: AppColors.textPrimaryDark),
+      color: _resolveColor(color,
+          defaultLight: AppColors.textPrimaryLight,
+          defaultDark: AppColors.textPrimaryDark),
       letterSpacing: -0.5,
       height: 1.2,
     );
@@ -38,7 +44,9 @@ abstract class AppTypography {
     return GoogleFonts.newsreader(
       fontSize: 22,
       fontWeight: FontWeight.w700,
-      color: _resolveColor(color, defaultLight: AppColors.textPrimaryLight, defaultDark: AppColors.textPrimaryDark),
+      color: _resolveColor(color,
+          defaultLight: AppColors.textPrimaryLight,
+          defaultDark: AppColors.textPrimaryDark),
       height: 1.25,
     );
   }
@@ -52,7 +60,9 @@ abstract class AppTypography {
       fontSize: fontSize,
       fontWeight: FontWeight.w500,
       fontStyle: fontStyle,
-      color: _resolveColor(color, defaultLight: AppColors.textPrimaryLight, defaultDark: AppColors.textPrimaryDark),
+      color: _resolveColor(color,
+          defaultLight: AppColors.textPrimaryLight,
+          defaultDark: AppColors.textPrimaryDark),
       height: 1.5,
     );
   }
@@ -62,7 +72,9 @@ abstract class AppTypography {
     return GoogleFonts.plusJakartaSans(
       fontSize: 16,
       fontWeight: FontWeight.w700,
-      color: _resolveColor(color, defaultLight: AppColors.textPrimaryLight, defaultDark: AppColors.textPrimaryDark),
+      color: _resolveColor(color,
+          defaultLight: AppColors.textPrimaryLight,
+          defaultDark: AppColors.textPrimaryDark),
       height: 1.3,
     );
   }
@@ -71,7 +83,9 @@ abstract class AppTypography {
     return GoogleFonts.plusJakartaSans(
       fontSize: 14,
       fontWeight: FontWeight.w700,
-      color: _resolveColor(color, defaultLight: AppColors.textPrimaryLight, defaultDark: AppColors.textPrimaryDark),
+      color: _resolveColor(color,
+          defaultLight: AppColors.textPrimaryLight,
+          defaultDark: AppColors.textPrimaryDark),
       height: 1.3,
     );
   }
@@ -80,7 +94,9 @@ abstract class AppTypography {
     return GoogleFonts.plusJakartaSans(
       fontSize: 15,
       fontWeight: FontWeight.w400,
-      color: _resolveColor(color, defaultLight: AppColors.textSecondaryLight, defaultDark: AppColors.textSecondaryDark),
+      color: _resolveColor(color,
+          defaultLight: AppColors.textSecondaryLight,
+          defaultDark: AppColors.textSecondaryDark),
       height: 1.5,
     );
   }
@@ -89,7 +105,9 @@ abstract class AppTypography {
     return GoogleFonts.plusJakartaSans(
       fontSize: 13.5,
       fontWeight: FontWeight.w400,
-      color: _resolveColor(color, defaultLight: AppColors.textSecondaryLight, defaultDark: AppColors.textSecondaryDark),
+      color: _resolveColor(color,
+          defaultLight: AppColors.textSecondaryLight,
+          defaultDark: AppColors.textSecondaryDark),
       height: 1.45,
     );
   }
@@ -98,7 +116,9 @@ abstract class AppTypography {
     return GoogleFonts.plusJakartaSans(
       fontSize: 12.5,
       fontWeight: FontWeight.w400,
-      color: _resolveColor(color, defaultLight: AppColors.textSecondaryLight, defaultDark: AppColors.textSecondaryDark),
+      color: _resolveColor(color,
+          defaultLight: AppColors.textSecondaryLight,
+          defaultDark: AppColors.textSecondaryDark),
       height: 1.4,
     );
   }
@@ -107,7 +127,9 @@ abstract class AppTypography {
     return GoogleFonts.plusJakartaSans(
       fontSize: 13,
       fontWeight: FontWeight.w600,
-      color: _resolveColor(color, defaultLight: AppColors.textPrimaryLight, defaultDark: AppColors.textPrimaryDark),
+      color: _resolveColor(color,
+          defaultLight: AppColors.textPrimaryLight,
+          defaultDark: AppColors.textPrimaryDark),
       letterSpacing: 0.2,
     );
   }
@@ -116,7 +138,9 @@ abstract class AppTypography {
     return GoogleFonts.plusJakartaSans(
       fontSize: 11.5,
       fontWeight: FontWeight.w500,
-      color: _resolveColor(color, defaultLight: AppColors.textMutedLight, defaultDark: AppColors.textMutedDark),
+      color: _resolveColor(color,
+          defaultLight: AppColors.textMutedLight,
+          defaultDark: AppColors.textMutedDark),
     );
   }
 }

@@ -35,7 +35,8 @@ class _MainScaffoldState extends State<MainScaffold> {
 
   @override
   void dispose() {
-    ChurchSyncService.currentInAppNotice.removeListener(_handleInAppNoticeChange);
+    ChurchSyncService.currentInAppNotice
+        .removeListener(_handleInAppNoticeChange);
     _bannerDismissTimer?.cancel();
     super.dispose();
   }
@@ -85,7 +86,8 @@ class _MainScaffoldState extends State<MainScaffold> {
                 color: AppColors.primary.withOpacity(0.12),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.church_rounded, color: AppColors.primary, size: 22),
+              child: const Icon(Icons.church_rounded,
+                  color: AppColors.primary, size: 22),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -105,7 +107,8 @@ class _MainScaffoldState extends State<MainScaffold> {
             onPressed: () => Navigator.pop(ctx, false),
             child: const Text(
               'Baki Ndani',
-              style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  color: AppColors.primary, fontWeight: FontWeight.bold),
             ),
           ),
           ElevatedButton(
@@ -113,7 +116,8 @@ class _MainScaffoldState extends State<MainScaffold> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFDC2626),
               foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
             ),
             child: const Text('Ndio, Funga App'),
           ),
@@ -149,10 +153,15 @@ class _MainScaffoldState extends State<MainScaffold> {
             child: Material(
               color: Colors.transparent,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF0A2540), Color(0xFF082F70), Color(0xFF0D52CD)],
+                    colors: [
+                      Color(0xFF0A2540),
+                      Color(0xFF082F70),
+                      Color(0xFF0D52CD)
+                    ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -177,7 +186,8 @@ class _MainScaffoldState extends State<MainScaffold> {
                       decoration: BoxDecoration(
                         color: AppColors.gold.withOpacity(0.2),
                         shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.gold.withOpacity(0.5)),
+                        border:
+                            Border.all(color: AppColors.gold.withOpacity(0.5)),
                       ),
                       child: const Center(
                         child: Icon(
@@ -198,7 +208,8 @@ class _MainScaffoldState extends State<MainScaffold> {
                           Row(
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 6, vertical: 1.5),
                                 decoration: BoxDecoration(
                                   color: AppColors.gold,
                                   borderRadius: BorderRadius.circular(4),
@@ -237,7 +248,9 @@ class _MainScaffoldState extends State<MainScaffold> {
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            notice.summary.isNotEmpty ? notice.summary : notice.fullDetails,
+                            notice.summary.isNotEmpty
+                                ? notice.summary
+                                : notice.fullDetails,
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.85),
                               fontSize: 11,
@@ -258,20 +271,24 @@ class _MainScaffoldState extends State<MainScaffold> {
                         NotificationsDataService().markAsRead(notice.id);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+                          MaterialPageRoute(
+                              builder: (_) => const NotificationsScreen()),
                         );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.gold,
                         foregroundColor: const Color(0xFF0A2540),
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
                         visualDensity: VisualDensity.compact,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
                         elevation: 0,
                       ),
                       child: const Text(
                         'Fungua',
-                        style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 11.5, fontWeight: FontWeight.bold),
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -288,7 +305,8 @@ class _MainScaffoldState extends State<MainScaffold> {
                           color: Colors.white.withOpacity(0.1),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.close_rounded, size: 16, color: Colors.white70),
+                        child: const Icon(Icons.close_rounded,
+                            size: 16, color: Colors.white70),
                       ),
                     ),
                   ],

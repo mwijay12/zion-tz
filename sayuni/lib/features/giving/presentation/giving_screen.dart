@@ -97,7 +97,8 @@ class _GivingScreenState extends State<GivingScreen> {
                       children: [
                         Text(
                           'Rekodi Sadaka au Zaka',
-                          style: AppTypography.headlineMedium(color: AppColors.textPrimary),
+                          style: AppTypography.headlineMedium(
+                              color: AppColors.textPrimary),
                         ),
                         IconButton(
                           icon: const Icon(Icons.close_rounded),
@@ -108,16 +109,28 @@ class _GivingScreenState extends State<GivingScreen> {
                     const SizedBox(height: 14),
                     DropdownButtonFormField<String>(
                       value: selectedCategory,
-                      decoration: const InputDecoration(labelText: 'Aina ya Utoaji'),
+                      decoration:
+                          const InputDecoration(labelText: 'Aina ya Utoaji'),
                       items: const [
-                        DropdownMenuItem(value: 'Sadaka ya Jumapili', child: Text('Sadaka ya Jumapili')),
-                        DropdownMenuItem(value: 'Zaka (Fungu la Kumi)', child: Text('Zaka (Fungu la Kumi)')),
-                        DropdownMenuItem(value: 'Ujenzi wa Hekalu', child: Text('Ujenzi wa Hekalu (Mabati/Sakafu)')),
-                        DropdownMenuItem(value: 'Sadaka ya Shukrani', child: Text('Sadaka ya Shukrani')),
-                        DropdownMenuItem(value: 'Sadaka ya Vikundi', child: Text('Sadaka ya Jumuiya ya Nyumbani')),
+                        DropdownMenuItem(
+                            value: 'Sadaka ya Jumapili',
+                            child: Text('Sadaka ya Jumapili')),
+                        DropdownMenuItem(
+                            value: 'Zaka (Fungu la Kumi)',
+                            child: Text('Zaka (Fungu la Kumi)')),
+                        DropdownMenuItem(
+                            value: 'Ujenzi wa Hekalu',
+                            child: Text('Ujenzi wa Hekalu (Mabati/Sakafu)')),
+                        DropdownMenuItem(
+                            value: 'Sadaka ya Shukrani',
+                            child: Text('Sadaka ya Shukrani')),
+                        DropdownMenuItem(
+                            value: 'Sadaka ya Vikundi',
+                            child: Text('Sadaka ya Jumuiya ya Nyumbani')),
                       ],
                       onChanged: (val) {
-                        if (val != null) setModalState(() => selectedCategory = val);
+                        if (val != null)
+                          setModalState(() => selectedCategory = val);
                       },
                     ),
                     const SizedBox(height: 12),
@@ -132,16 +145,28 @@ class _GivingScreenState extends State<GivingScreen> {
                     const SizedBox(height: 12),
                     DropdownButtonFormField<String>(
                       value: selectedChannel,
-                      decoration: const InputDecoration(labelText: 'Njia Uliyotumia'),
+                      decoration:
+                          const InputDecoration(labelText: 'Njia Uliyotumia'),
                       items: const [
-                        DropdownMenuItem(value: 'M-Pesa (5524101)', child: Text('Vodacom M-Pesa (5524101)')),
-                        DropdownMenuItem(value: 'TigoPesa (8919293)', child: Text('Tigo Pesa (8919293)')),
-                        DropdownMenuItem(value: 'Airtel Money (3310022)', child: Text('Airtel Money (3310022)')),
-                        DropdownMenuItem(value: 'Benki ya CRDB', child: Text('Benki ya CRDB (0150829103900)')),
-                        DropdownMenuItem(value: 'Pesa Taslimu', child: Text('Pesa Taslimu (Bahashani)')),
+                        DropdownMenuItem(
+                            value: 'M-Pesa (5524101)',
+                            child: Text('Vodacom M-Pesa (5524101)')),
+                        DropdownMenuItem(
+                            value: 'TigoPesa (8919293)',
+                            child: Text('Tigo Pesa (8919293)')),
+                        DropdownMenuItem(
+                            value: 'Airtel Money (3310022)',
+                            child: Text('Airtel Money (3310022)')),
+                        DropdownMenuItem(
+                            value: 'Benki ya CRDB',
+                            child: Text('Benki ya CRDB (0150829103900)')),
+                        DropdownMenuItem(
+                            value: 'Pesa Taslimu',
+                            child: Text('Pesa Taslimu (Bahashani)')),
                       ],
                       onChanged: (val) {
-                        if (val != null) setModalState(() => selectedChannel = val);
+                        if (val != null)
+                          setModalState(() => selectedChannel = val);
                       },
                     ),
                     const SizedBox(height: 12),
@@ -157,7 +182,9 @@ class _GivingScreenState extends State<GivingScreen> {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () async {
-                          final amount = double.tryParse(amountController.text.trim()) ?? 0;
+                          final amount =
+                              double.tryParse(amountController.text.trim()) ??
+                                  0;
                           if (amount <= 0) return;
 
                           AppHaptics.mediumImpact();
@@ -176,7 +203,8 @@ class _GivingScreenState extends State<GivingScreen> {
                           if (mounted) {
                             scaffoldMessenger.showSnackBar(
                               const SnackBar(
-                                content: Text('Kumbukumbu ya sadaka imehifadhiwa salama!'),
+                                content: Text(
+                                    'Kumbukumbu ya sadaka imehifadhiwa salama!'),
                                 backgroundColor: AppColors.primary,
                                 behavior: SnackBarBehavior.floating,
                               ),
@@ -213,7 +241,8 @@ class _GivingScreenState extends State<GivingScreen> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 96),
+        padding:
+            const EdgeInsets.only(left: 16, right: 16, top: 12, bottom: 96),
         children: [
           // Building Project Tracker Card (Stitch specification)
           _buildBuildingProjectCard(),
@@ -224,7 +253,8 @@ class _GivingScreenState extends State<GivingScreen> {
             title: 'Njia Rasmi za Kutoa',
             subtitle: 'Bofya namba kunakili au bofya USSD kupiga moja kwa moja',
           ),
-          ...GivingService.channels.map((channel) => _buildChannelTile(channel)),
+          ...GivingService.channels
+              .map((channel) => _buildChannelTile(channel)),
           const SizedBox(height: 24),
 
           // Scripture Promise on Giving
@@ -264,14 +294,16 @@ class _GivingScreenState extends State<GivingScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.goldContainer,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   'MRADI WA KANISA',
-                  style: AppTypography.caption(color: AppColors.onGoldContainer),
+                  style:
+                      AppTypography.caption(color: AppColors.onGoldContainer),
                 ),
               ),
               Text(
@@ -302,15 +334,21 @@ class _GivingScreenState extends State<GivingScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Zilizopatikana', style: AppTypography.caption(color: AppColors.textMuted)),
-                  Text(AppFormatters.formatTsh(raised), style: AppTypography.labelLarge(color: AppColors.textPrimary)),
+                  Text('Zilizopatikana',
+                      style: AppTypography.caption(color: AppColors.textMuted)),
+                  Text(AppFormatters.formatTsh(raised),
+                      style: AppTypography.labelLarge(
+                          color: AppColors.textPrimary)),
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text('Lengo Kuu', style: AppTypography.caption(color: AppColors.textMuted)),
-                  Text(AppFormatters.formatTsh(target), style: AppTypography.labelLarge(color: AppColors.primary)),
+                  Text('Lengo Kuu',
+                      style: AppTypography.caption(color: AppColors.textMuted)),
+                  Text(AppFormatters.formatTsh(target),
+                      style:
+                          AppTypography.labelLarge(color: AppColors.primary)),
                 ],
               ),
             ],
@@ -336,15 +374,20 @@ class _GivingScreenState extends State<GivingScreen> {
                     color: channel.brandColor.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Icon(channel.icon, color: channel.brandColor, size: 22),
+                  child:
+                      Icon(channel.icon, color: channel.brandColor, size: 22),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(channel.name, style: AppTypography.titleMedium(color: AppColors.textPrimary)),
-                      Text(channel.accountName, style: AppTypography.caption(color: AppColors.textMuted)),
+                      Text(channel.name,
+                          style: AppTypography.titleMedium(
+                              color: AppColors.textPrimary)),
+                      Text(channel.accountName,
+                          style: AppTypography.caption(
+                              color: AppColors.textMuted)),
                     ],
                   ),
                 ),
@@ -364,10 +407,13 @@ class _GivingScreenState extends State<GivingScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Namba ya Malipo:', style: AppTypography.caption(color: AppColors.textMuted)),
+                      Text('Namba ya Malipo:',
+                          style: AppTypography.caption(
+                              color: AppColors.textMuted)),
                       Text(
                         channel.payNumber,
-                        style: AppTypography.titleMedium(color: AppColors.textPrimary),
+                        style: AppTypography.titleMedium(
+                            color: AppColors.textPrimary),
                       ),
                     ],
                   ),
@@ -376,14 +422,16 @@ class _GivingScreenState extends State<GivingScreen> {
                     children: [
                       Expanded(
                         child: ElevatedButton.icon(
-                          onPressed: () => _copyToClipboard(channel.payNumber, channel.name),
+                          onPressed: () =>
+                              _copyToClipboard(channel.payNumber, channel.name),
                           icon: const Icon(Icons.copy_rounded, size: 14),
                           label: const Text('Nakili'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.surfaceContainer,
                             foregroundColor: AppColors.primary,
                             padding: const EdgeInsets.symmetric(vertical: 10),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
                           ),
                         ),
                       ),
@@ -397,7 +445,8 @@ class _GivingScreenState extends State<GivingScreen> {
                             backgroundColor: AppColors.primary,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 10),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
                           ),
                         ),
                       ),
@@ -452,7 +501,8 @@ class _GivingScreenState extends State<GivingScreen> {
               color: AppColors.gold.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.security_rounded, color: AppColors.gold, size: 20),
+            child: const Icon(Icons.security_rounded,
+                color: AppColors.gold, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -478,7 +528,11 @@ class _GivingScreenState extends State<GivingScreen> {
               minimumSize: Size.zero,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
-            child: const Text('Sera', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary)),
+            child: const Text('Sera',
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary)),
           ),
         ],
       ),
@@ -492,7 +546,8 @@ class _GivingScreenState extends State<GivingScreen> {
         child: Center(
           child: Column(
             children: [
-              Icon(Icons.receipt_long_rounded, color: AppColors.textMuted, size: 36),
+              Icon(Icons.receipt_long_rounded,
+                  color: AppColors.textMuted, size: 36),
               const SizedBox(height: 8),
               Text(
                 'Hujarekodi utoaji wowote bado',
@@ -521,7 +576,9 @@ class _GivingScreenState extends State<GivingScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(rec.category, style: AppTypography.labelLarge(color: AppColors.textPrimary)),
+                    Text(rec.category,
+                        style: AppTypography.labelLarge(
+                            color: AppColors.textPrimary)),
                     const SizedBox(height: 2),
                     Text(
                       '${rec.paymentChannel} • ${AppFormatters.formatSwahiliDate(rec.date)}',

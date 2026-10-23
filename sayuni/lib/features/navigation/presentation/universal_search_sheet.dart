@@ -13,7 +13,8 @@ import '../../notifications/presentation/notifications_screen.dart';
 class SearchResultItem {
   final String title;
   final String subtitle;
-  final String category; // 'Waumini & Ujuzi' | 'Biblia' | 'Tenzi' | 'Mahubiri' | 'Redio' | 'Matangazo' | 'Jumuiya'
+  final String
+      category; // 'Waumini & Ujuzi' | 'Biblia' | 'Tenzi' | 'Mahubiri' | 'Redio' | 'Matangazo' | 'Jumuiya'
   final IconData icon;
   final Color color;
   final MemberSkillProfile? memberProfile;
@@ -86,98 +87,112 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
     // Biblia
     SearchResultItem(
       title: 'Yohana 3:16',
-      subtitle: 'Kwa maana jinsi hii Mungu aliupenda ulimwengu, hata akamtoa Mwanawe wa pekee...',
+      subtitle:
+          'Kwa maana jinsi hii Mungu aliupenda ulimwengu, hata akamtoa Mwanawe wa pekee...',
       category: 'Biblia',
       icon: Icons.menu_book_rounded,
       color: Color(0xFF0F52BA),
     ),
     SearchResultItem(
       title: 'Zaburi 23:1-4',
-      subtitle: 'Bwana ndiye mchungaji wangu, sitapungukiwa na kitu. Katika malisho ya majani mabichi hunilaza...',
+      subtitle:
+          'Bwana ndiye mchungaji wangu, sitapungukiwa na kitu. Katika malisho ya majani mabichi hunilaza...',
       category: 'Biblia',
       icon: Icons.menu_book_rounded,
       color: Color(0xFF0F52BA),
     ),
     SearchResultItem(
       title: 'Isaya 41:10',
-      subtitle: 'Usiogope, kwa maana mimi ni pamoja nawe; usifadhaike, kwa maana mimi ni Mungu wako...',
+      subtitle:
+          'Usiogope, kwa maana mimi ni pamoja nawe; usifadhaike, kwa maana mimi ni Mungu wako...',
       category: 'Biblia',
       icon: Icons.menu_book_rounded,
       color: Color(0xFF0F52BA),
     ),
     SearchResultItem(
       title: 'Wafilipi 4:6-7',
-      subtitle: 'Msijisumbue kwa neno lo lote; bali katika kila neno kwa kusali na kuomba, pamoja na kushukuru...',
+      subtitle:
+          'Msijisumbue kwa neno lo lote; bali katika kila neno kwa kusali na kuomba, pamoja na kushukuru...',
       category: 'Biblia',
       icon: Icons.menu_book_rounded,
       color: Color(0xFF0F52BA),
     ),
     SearchResultItem(
       title: 'Zaburi 132:13-14',
-      subtitle: 'Kwa kuwa Bwana ameichagua Sayuni; Ameitamani akae ndani yake. Hapa ndipo patakapokuwa pumziko langu...',
+      subtitle:
+          'Kwa kuwa Bwana ameichagua Sayuni; Ameitamani akae ndani yake. Hapa ndipo patakapokuwa pumziko langu...',
       category: 'Biblia',
       icon: Icons.menu_book_rounded,
       color: Color(0xFF0F52BA),
     ),
     SearchResultItem(
       title: 'Isaya 60:1-3',
-      subtitle: 'Ondoka, uangaze; kwa kuwa nuru yako imekuja, na utukufu wa Bwana umekuzukia...',
+      subtitle:
+          'Ondoka, uangaze; kwa kuwa nuru yako imekuja, na utukufu wa Bwana umekuzukia...',
       category: 'Biblia',
       icon: Icons.menu_book_rounded,
       color: Color(0xFF0F52BA),
     ),
     SearchResultItem(
       title: 'Mathayo 6:33',
-      subtitle: 'Basi utafuteni kwanza ufalme wake, na haki yake; na hayo yote mtazidishiwa...',
+      subtitle:
+          'Basi utafuteni kwanza ufalme wake, na haki yake; na hayo yote mtazidishiwa...',
       category: 'Biblia',
       icon: Icons.menu_book_rounded,
       color: Color(0xFF0F52BA),
     ),
     SearchResultItem(
       title: 'Warumi 8:28',
-      subtitle: 'Nasi twajua ya kuwa katika mambo yote Mungu hufanya kazi pamoja na wale wampendao...',
+      subtitle:
+          'Nasi twajua ya kuwa katika mambo yote Mungu hufanya kazi pamoja na wale wampendao...',
       category: 'Biblia',
       icon: Icons.menu_book_rounded,
       color: Color(0xFF0F52BA),
     ),
     SearchResultItem(
       title: 'Waebrania 11:1',
-      subtitle: 'Basi imani ni kuwa na hakika ya mambo yatarajiwayo, ni bayana ya mambo yasiyoonekana...',
+      subtitle:
+          'Basi imani ni kuwa na hakika ya mambo yatarajiwayo, ni bayana ya mambo yasiyoonekana...',
       category: 'Biblia',
       icon: Icons.menu_book_rounded,
       color: Color(0xFF0F52BA),
     ),
     SearchResultItem(
       title: '1 Wakorintho 13:4-8',
-      subtitle: 'Upendo huvumilia, hufadhili; upendo hauhusudu; upendo hautakabari, haujivuni...',
+      subtitle:
+          'Upendo huvumilia, hufadhili; upendo hauhusudu; upendo hautakabari, haujivuni...',
       category: 'Biblia',
       icon: Icons.menu_book_rounded,
       color: Color(0xFF0F52BA),
     ),
     SearchResultItem(
       title: 'Mithali 3:5-6',
-      subtitle: 'Mtumaini Bwana kwa moyo wako wote, wala usizitegemee akili zako mwenyewe; Katika njia zako zote mkiri yeye...',
+      subtitle:
+          'Mtumaini Bwana kwa moyo wako wote, wala usizitegemee akili zako mwenyewe; Katika njia zako zote mkiri yeye...',
       category: 'Biblia',
       icon: Icons.menu_book_rounded,
       color: Color(0xFF0F52BA),
     ),
     SearchResultItem(
       title: 'Yeremia 29:11',
-      subtitle: 'Maana nayajua mawazo ninayowawazia ninyi, asema Bwana, ni mawazo ya amani wala si ya mabaya...',
+      subtitle:
+          'Maana nayajua mawazo ninayowawazia ninyi, asema Bwana, ni mawazo ya amani wala si ya mabaya...',
       category: 'Biblia',
       icon: Icons.menu_book_rounded,
       color: Color(0xFF0F52BA),
     ),
     SearchResultItem(
       title: 'Zaburi 91:1-2',
-      subtitle: 'Aketiye mahali pa siri pake Aliye Juu Atakaa katika uvuli wake Mwenyezi. Nitasema, Bwana ndiye kimbilio langu...',
+      subtitle:
+          'Aketiye mahali pa siri pake Aliye Juu Atakaa katika uvuli wake Mwenyezi. Nitasema, Bwana ndiye kimbilio langu...',
       category: 'Biblia',
       icon: Icons.menu_book_rounded,
       color: Color(0xFF0F52BA),
     ),
     SearchResultItem(
       title: 'Yohana 14:1-3',
-      subtitle: 'Msifadhaike mioyoni mwenu; mnamwamini Mungu, niaminini na mimi. Nyumbani mwa Baba yangu mna makao mengi...',
+      subtitle:
+          'Msifadhaike mioyoni mwenu; mnamwamini Mungu, niaminini na mimi. Nyumbani mwa Baba yangu mna makao mengi...',
       category: 'Biblia',
       icon: Icons.menu_book_rounded,
       color: Color(0xFF0F52BA),
@@ -186,35 +201,40 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
     // Tenzi za Rohoni
     SearchResultItem(
       title: 'Tenzi 130: Salama Rohoni Mwangu',
-      subtitle: 'Nionapo amani kama shwari, au nionapo shida; Kwa hali yoyote umenifundisha: Ni salama rohoni mwangu...',
+      subtitle:
+          'Nionapo amani kama shwari, au nionapo shida; Kwa hali yoyote umenifundisha: Ni salama rohoni mwangu...',
       category: 'Tenzi',
       icon: Icons.music_note_rounded,
       color: Color(0xFFC59B27),
     ),
     SearchResultItem(
       title: 'Tenzi 1: Mtakatifu, Mtakatifu, Mtakatifu',
-      subtitle: 'Mtakatifu, Mtakatifu, Mtakatifu! Bwana Mungu Mwenyezi! Asubuhi na mapema sifa zetu zitaenda Kwako...',
+      subtitle:
+          'Mtakatifu, Mtakatifu, Mtakatifu! Bwana Mungu Mwenyezi! Asubuhi na mapema sifa zetu zitaenda Kwako...',
       category: 'Tenzi',
       icon: Icons.music_note_rounded,
       color: Color(0xFFC59B27),
     ),
     SearchResultItem(
       title: 'Tenzi 23: Yesu Kwetu Ni Rafiki',
-      subtitle: 'Yesu kwetu ni Rafiki, Hwambiwa haja pia; Tukiomba kwa Babaye, Maombi asikia...',
+      subtitle:
+          'Yesu kwetu ni Rafiki, Hwambiwa haja pia; Tukiomba kwa Babaye, Maombi asikia...',
       category: 'Tenzi',
       icon: Icons.music_note_rounded,
       color: Color(0xFFC59B27),
     ),
     SearchResultItem(
       title: 'Tenzi 47: Cha Kutumaini Sina',
-      subtitle: 'Cha kutumaini sina, ila damu yake Bwana; Sina wema wa kutosha, Dhambi zangu kuziosha...',
+      subtitle:
+          'Cha kutumaini sina, ila damu yake Bwana; Sina wema wa kutosha, Dhambi zangu kuziosha...',
       category: 'Tenzi',
       icon: Icons.music_note_rounded,
       color: Color(0xFFC59B27),
     ),
     SearchResultItem(
       title: 'Tenzi 88: Usinipite Mwokozi',
-      subtitle: 'Usinipite Mwokozi, Unisikie; Unapowazuru wengine, Usinipite...',
+      subtitle:
+          'Usinipite Mwokozi, Unisikie; Unapowazuru wengine, Usinipite...',
       category: 'Tenzi',
       icon: Icons.music_note_rounded,
       color: Color(0xFFC59B27),
@@ -223,7 +243,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
     // Redio za Mtandaoni (Gospel & News)
     SearchResultItem(
       title: 'Praiseworld Radio (Nigeria)',
-      subtitle: 'Afro Gospel, Praise, Worship & Contemporary African Christian Hits',
+      subtitle:
+          'Afro Gospel, Praise, Worship & Contemporary African Christian Hits',
       category: 'Redio',
       icon: Icons.radio_rounded,
       color: Color(0xFFE50914),
@@ -231,7 +252,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
     ),
     SearchResultItem(
       title: 'Radio Safina (Tanzania)',
-      subtitle: 'Nyimbo za injili za Kiswahili, mafundisho na maombi ya moja kwa moja',
+      subtitle:
+          'Nyimbo za injili za Kiswahili, mafundisho na maombi ya moja kwa moja',
       category: 'Redio',
       icon: Icons.radio_rounded,
       color: Color(0xFFE50914),
@@ -247,7 +269,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
     ),
     SearchResultItem(
       title: 'BBC Swahili Radio',
-      subtitle: 'Matangazo ya habari za ulimwengu, Dira ya Dunia na makala za Kiswahili',
+      subtitle:
+          'Matangazo ya habari za ulimwengu, Dira ya Dunia na makala za Kiswahili',
       category: 'Redio',
       icon: Icons.radio_rounded,
       color: Color(0xFFDC2626),
@@ -255,7 +278,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
     ),
     SearchResultItem(
       title: 'DW Swahili (Deutsche Welle)',
-      subtitle: 'Habari za Afrika na kimataifa, uchambuzi na masuala ya kijamii',
+      subtitle:
+          'Habari za Afrika na kimataifa, uchambuzi na masuala ya kijamii',
       category: 'Redio',
       icon: Icons.radio_rounded,
       color: Color(0xFFDC2626),
@@ -265,7 +289,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
     // Matangazo ya Kanisa
     SearchResultItem(
       title: 'Ujenzi wa Hekalu — Harambee ya Mabati & Sakafu',
-      subtitle: 'Ununuzi wa mabati 120 kwa hekalu jipya la Mbagala Kwa Matope. Lipa Namba 5524101',
+      subtitle:
+          'Ununuzi wa mabati 120 kwa hekalu jipya la Mbagala Kwa Matope. Lipa Namba 5524101',
       category: 'Matangazo',
       icon: Icons.campaign_rounded,
       color: Color(0xFFF59E0B),
@@ -273,7 +298,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
     ),
     SearchResultItem(
       title: 'Maombi ya Vikundi vya Nyumbani (Jumuiya)',
-      subtitle: 'Vikundi vyote 5 vya maombi vinakutana Ijumaa saa 10:00 Jioni majumbani',
+      subtitle:
+          'Vikundi vyote 5 vya maombi vinakutana Ijumaa saa 10:00 Jioni majumbani',
       category: 'Matangazo',
       icon: Icons.groups_rounded,
       color: Color(0xFF16A34A),
@@ -291,7 +317,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
     // Jumuiya & Matawi
     SearchResultItem(
       title: 'Jumuiya ya Sayuni Kwa Matope',
-      subtitle: 'Kiongozi: Mzee Boniface Mlay • Mkutano: Kila Ijumaa Saa 10:00 Jioni',
+      subtitle:
+          'Kiongozi: Mzee Boniface Mlay • Mkutano: Kila Ijumaa Saa 10:00 Jioni',
       category: 'Jumuiya',
       icon: Icons.groups_rounded,
       color: Color(0xFF16A34A),
@@ -313,7 +340,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
       fullList.add(
         SearchResultItem(
           title: '${profile.fullName} (${profile.profession})',
-          subtitle: '${profile.category} • ${profile.location} • ${profile.description}',
+          subtitle:
+              '${profile.category} • ${profile.location} • ${profile.description}',
           category: 'Waumini & Ujuzi',
           icon: Icons.badge_rounded,
           color: const Color(0xFF10B981),
@@ -334,7 +362,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
     final q = _query.trim().toLowerCase();
 
     return all.where((item) {
-      final matchesCategory = _selectedCategory == 'Zote' || item.category == _selectedCategory;
+      final matchesCategory =
+          _selectedCategory == 'Zote' || item.category == _selectedCategory;
       final matchesQuery = q.isEmpty ||
           item.title.toLowerCase().contains(q) ||
           item.subtitle.toLowerCase().contains(q) ||
@@ -394,7 +423,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                     CircleAvatar(
                       radius: 28,
                       backgroundColor: AppColors.primaryContainer,
-                      child: Text(profile.avatarEmoji, style: const TextStyle(fontSize: 28)),
+                      child: Text(profile.avatarEmoji,
+                          style: const TextStyle(fontSize: 28)),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -403,7 +433,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                         children: [
                           Text(
                             profile.fullName,
-                            style: AppTypography.titleMedium(color: AppColors.textPrimary),
+                            style: AppTypography.titleMedium(
+                                color: AppColors.textPrimary),
                           ),
                           Text(
                             profile.profession,
@@ -415,7 +446,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                           ),
                           Text(
                             '📍 ${profile.location} • ${profile.jumuiya}',
-                            style: AppTypography.caption(color: AppColors.textSecondary),
+                            style: AppTypography.caption(
+                                color: AppColors.textSecondary),
                           ),
                         ],
                       ),
@@ -432,7 +464,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                   ),
                   child: Text(
                     profile.description,
-                    style: AppTypography.bodySmall(color: AppColors.textPrimary),
+                    style:
+                        AppTypography.bodySmall(color: AppColors.textPrimary),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -454,7 +487,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                           backgroundColor: const Color(0xFF10B981),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                         ),
                       ),
                     ),
@@ -463,13 +497,18 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                       child: ElevatedButton.icon(
                         onPressed: () async {
                           AppHaptics.mediumImpact();
-                          final clean = profile.phone.replaceAll('+', '').replaceAll(' ', '').replaceAll('-', '');
+                          final clean = profile.phone
+                              .replaceAll('+', '')
+                              .replaceAll(' ', '')
+                              .replaceAll('-', '');
                           final msg = Uri.encodeComponent(
                             'Bwana Yesu Asifiwe ${profile.fullName}, nimepata mawasiliano yako kwenye App ya Kanisa la Zion Jerusalem.',
                           );
-                          final uri = Uri.parse('https://wa.me/$clean?text=$msg');
+                          final uri =
+                              Uri.parse('https://wa.me/$clean?text=$msg');
                           if (await canLaunchUrl(uri)) {
-                            await launchUrl(uri, mode: LaunchMode.externalApplication);
+                            await launchUrl(uri,
+                                mode: LaunchMode.externalApplication);
                           }
                         },
                         icon: const Icon(Icons.chat_rounded),
@@ -478,7 +517,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                           backgroundColor: const Color(0xFF25D366),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
                         ),
                       ),
                     ),
@@ -503,17 +543,25 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
         ? const Color(0xFF181C23).withOpacity(0.96)
         : const Color(0xFFF8FAFC).withOpacity(0.98);
     final elevBg = isDark ? const Color(0xFF1E2530) : const Color(0xFFFFFFFF);
-    final cardBg = isDark ? Colors.white.withOpacity(0.07) : const Color(0xFFFFFFFF);
-    final cardBorder = isDark ? Colors.white.withOpacity(0.10) : const Color(0xFFD8E6F8);
-    final hairline = isDark ? Colors.white.withOpacity(0.15) : const Color(0xFFD8E6F8);
-    final pillBg = isDark ? Colors.white.withOpacity(0.08) : const Color(0xFFEFF6FF);
-    final pillBorder = isDark ? Colors.white.withOpacity(0.12) : const Color(0xFFD8E6F8);
+    final cardBg =
+        isDark ? Colors.white.withOpacity(0.07) : const Color(0xFFFFFFFF);
+    final cardBorder =
+        isDark ? Colors.white.withOpacity(0.10) : const Color(0xFFD8E6F8);
+    final hairline =
+        isDark ? Colors.white.withOpacity(0.15) : const Color(0xFFD8E6F8);
+    final pillBg =
+        isDark ? Colors.white.withOpacity(0.08) : const Color(0xFFEFF6FF);
+    final pillBorder =
+        isDark ? Colors.white.withOpacity(0.12) : const Color(0xFFD8E6F8);
     final inkStrong = isDark ? Colors.white : const Color(0xFF0A1E3F);
-    final inkSoft = isDark ? Colors.white.withOpacity(0.65) : const Color(0xFF334155);
-    final inkMuted = isDark ? Colors.white.withOpacity(0.60) : const Color(0xFF64748B);
+    final inkSoft =
+        isDark ? Colors.white.withOpacity(0.65) : const Color(0xFF334155);
+    final inkMuted =
+        isDark ? Colors.white.withOpacity(0.60) : const Color(0xFF64748B);
     final inkFaint = isDark ? const Color(0xFF94A3B8) : const Color(0xFF7C8BA3);
     final iconTint = isDark ? Colors.white70 : const Color(0xFF334155);
-    Color accentInk(Color c) => isDark ? c : Color.lerp(c, const Color(0xFF0A1E3F), 0.45)!;
+    Color accentInk(Color c) =>
+        isDark ? c : Color.lerp(c, const Color(0xFF0A1E3F), 0.45)!;
 
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
@@ -523,7 +571,9 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
           color: sheetBg,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
           border: Border.all(
-            color: isDark ? const Color(0xFF0D52CD).withOpacity(0.35) : const Color(0xFFCFE2FA),
+            color: isDark
+                ? const Color(0xFF0D52CD).withOpacity(0.35)
+                : const Color(0xFFCFE2FA),
             width: 1.2,
           ),
           boxShadow: [
@@ -542,7 +592,9 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
               width: 44,
               height: 5,
               decoration: BoxDecoration(
-                color: isDark ? Colors.white.withOpacity(0.3) : const Color(0xFFCBD5E1),
+                color: isDark
+                    ? Colors.white.withOpacity(0.3)
+                    : const Color(0xFFCBD5E1),
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
@@ -608,20 +660,26 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                   controller: _controller,
                   autofocus: false,
                   cursorColor: AppColors.primary,
-                  style: TextStyle(color: inkStrong, fontSize: 14.5, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                      color: inkStrong,
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w600),
                   onChanged: (val) => setState(() => _query = val),
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: elevBg,
-                    hintText: 'Tafuta muumini, andiko, tenzi, redio au habari...',
+                    hintText:
+                        'Tafuta muumini, andiko, tenzi, redio au habari...',
                     hintStyle: TextStyle(
                       color: inkFaint,
                       fontSize: 13,
                     ),
-                    prefixIcon: const Icon(Icons.search_rounded, color: AppColors.primary, size: 22),
+                    prefixIcon: const Icon(Icons.search_rounded,
+                        color: AppColors.primary, size: 22),
                     suffixIcon: _query.isNotEmpty
                         ? IconButton(
-                            icon: Icon(Icons.clear_rounded, color: iconTint, size: 18),
+                            icon: Icon(Icons.clear_rounded,
+                                color: iconTint, size: 18),
                             onPressed: () {
                               _controller.clear();
                               setState(() => _query = '');
@@ -638,9 +696,11 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
-                      borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                      borderSide: const BorderSide(
+                          color: AppColors.primary, width: 1.5),
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 13),
                   ),
                 ),
               ),
@@ -667,24 +727,31 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                       },
                       borderRadius: BorderRadius.circular(16),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 8),
                         decoration: BoxDecoration(
                           gradient: isSelected
                               ? const LinearGradient(
-                                  colors: [Color(0xFF1E6BFF), Color(0xFF0D52CD)],
+                                  colors: [
+                                    Color(0xFF1E6BFF),
+                                    Color(0xFF0D52CD)
+                                  ],
                                 )
                               : null,
                           color: isSelected ? null : pillBg,
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: isSelected ? const Color(0xFF0D52CD) : pillBorder,
+                            color: isSelected
+                                ? const Color(0xFF0D52CD)
+                                : pillBorder,
                           ),
                         ),
                         child: Text(
                           cat,
                           style: TextStyle(
                             fontSize: 12,
-                            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                            fontWeight:
+                                isSelected ? FontWeight.w700 : FontWeight.w500,
                             color: isSelected ? Colors.white : inkStrong,
                           ),
                         ),
@@ -702,7 +769,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                 padding: const EdgeInsets.fromLTRB(16, 4, 16, 6),
                 child: Row(
                   children: [
-                    const Icon(Icons.explore_rounded, color: AppColors.primary, size: 14),
+                    const Icon(Icons.explore_rounded,
+                        color: AppColors.primary, size: 14),
                     const SizedBox(width: 6),
                     Text(
                       'ZINAZOTAFUTWA ZAIDI:',
@@ -723,7 +791,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: _trendingPills.length,
-                  separatorBuilder: (context, index) => const SizedBox(width: 6),
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(width: 6),
                   itemBuilder: (ctx, idx) {
                     final pill = _trendingPills[idx];
                     return InkWell(
@@ -734,7 +803,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                       },
                       borderRadius: BorderRadius.circular(16),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(
                           color: elevBg,
                           borderRadius: BorderRadius.circular(16),
@@ -777,7 +847,8 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                     Text(
                       'Kutafuta "$_query"',
                       style: TextStyle(
-                        color: isDark ? AppColors.primaryLight : AppColors.primary,
+                        color:
+                            isDark ? AppColors.primaryLight : AppColors.primary,
                         fontSize: 11.5,
                         fontWeight: FontWeight.w600,
                       ),
@@ -796,7 +867,9 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                           Icon(
                             Icons.search_off_rounded,
                             size: 56,
-                            color: isDark ? Colors.white.withOpacity(0.25) : const Color(0xFFCBD5E1),
+                            color: isDark
+                                ? Colors.white.withOpacity(0.25)
+                                : const Color(0xFFCBD5E1),
                           ),
                           const SizedBox(height: 10),
                           Text(
@@ -816,16 +889,21 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => MoodPsalmsScreen(initialQuery: _query),
+                                  builder: (_) =>
+                                      MoodPsalmsScreen(initialQuery: _query),
                                 ),
                               );
                             },
-                            icon: const Icon(Icons.spa_rounded, color: AppColors.gold, size: 16),
-                            label: const Text('Tafuta Ushauri wa Kiroho & Sala'),
+                            icon: const Icon(Icons.spa_rounded,
+                                color: AppColors.gold, size: 16),
+                            label:
+                                const Text('Tafuta Ushauri wa Kiroho & Sala'),
                             style: OutlinedButton.styleFrom(
                               foregroundColor: inkStrong,
-                              side: BorderSide(color: AppColors.gold.withOpacity(0.6)),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              side: BorderSide(
+                                  color: AppColors.gold.withOpacity(0.6)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
                             ),
                           ),
                         ],
@@ -866,25 +944,36 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                                   Container(
                                     padding: const EdgeInsets.all(10),
                                     decoration: BoxDecoration(
-                                      color: item.color.withOpacity(isDark ? 0.22 : 0.12),
+                                      color: item.color
+                                          .withOpacity(isDark ? 0.22 : 0.12),
                                       shape: BoxShape.circle,
                                     ),
-                                    child: isMember && item.memberProfile != null
-                                        ? Text(item.memberProfile!.avatarEmoji, style: const TextStyle(fontSize: 18))
-                                        : Icon(item.icon, color: item.color, size: 20),
+                                    child: isMember &&
+                                            item.memberProfile != null
+                                        ? Text(item.memberProfile!.avatarEmoji,
+                                            style:
+                                                const TextStyle(fontSize: 18))
+                                        : Icon(item.icon,
+                                            color: item.color, size: 20),
                                   ),
                                   const SizedBox(width: 14),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
                                             Container(
-                                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 7,
+                                                      vertical: 2),
                                               decoration: BoxDecoration(
-                                                color: item.color.withOpacity(isDark ? 0.18 : 0.12),
-                                                borderRadius: BorderRadius.circular(6),
+                                                color: item.color.withOpacity(
+                                                    isDark ? 0.18 : 0.12),
+                                                borderRadius:
+                                                    BorderRadius.circular(6),
                                               ),
                                               child: Text(
                                                 item.category.toUpperCase(),
@@ -933,7 +1022,9 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                                   ),
                                   Icon(
                                     Icons.arrow_forward_ios_rounded,
-                                    color: isDark ? Colors.white38 : const Color(0xFF94A3B8),
+                                    color: isDark
+                                        ? Colors.white38
+                                        : const Color(0xFF94A3B8),
                                     size: 14,
                                   ),
                                 ],

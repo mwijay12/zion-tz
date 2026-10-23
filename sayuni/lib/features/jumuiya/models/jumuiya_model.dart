@@ -70,22 +70,23 @@ class PrayerRequestItem {
   });
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'senderName': senderName,
-    'phone': phone,
-    'category': category,
-    'details': details,
-    'isConfidential': isConfidential,
-    'date': date.toIso8601String(),
-  };
+        'id': id,
+        'senderName': senderName,
+        'phone': phone,
+        'category': category,
+        'details': details,
+        'isConfidential': isConfidential,
+        'date': date.toIso8601String(),
+      };
 
-  factory PrayerRequestItem.fromJson(Map<String, dynamic> json) => PrayerRequestItem(
-    id: json['id'] as String,
-    senderName: json['senderName'] as String,
-    phone: json['phone'] as String,
-    category: json['category'] as String,
-    details: json['details'] as String,
-    isConfidential: json['isConfidential'] as bool? ?? false,
-    date: DateTime.parse(json['date'] as String),
-  );
+  factory PrayerRequestItem.fromJson(Map<String, dynamic> json) =>
+      PrayerRequestItem(
+        id: json['id'] as String,
+        senderName: json['senderName'] as String,
+        phone: json['phone'] as String,
+        category: json['category'] as String,
+        details: json['details'] as String,
+        isConfidential: json['isConfidential'] as bool? ?? false,
+        date: DateTime.parse(json['date'] as String),
+      );
 }

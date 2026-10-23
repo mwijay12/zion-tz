@@ -11,7 +11,8 @@ class NotesService {
       title: 'Kusimama Imara Katika Maombi na Tabia ya Uadilifu',
       preacher: 'Mchungaji Askofu Messi Mgala',
       scripture: 'Waefeso 6:10-18',
-      content: 'Askofu alisisitiza umuhimu wa kujiandaa kiroho kila asubuhi kabla ya kuanza shughuli za siku. Silaha za Mungu zinalinda moyo na mawazo yetu dhidi ya mashaka.',
+      content:
+          'Askofu alisisitiza umuhimu wa kujiandaa kiroho kila asubuhi kabla ya kuanza shughuli za siku. Silaha za Mungu zinalinda moyo na mawazo yetu dhidi ya mashaka.',
       date: DateTime.now().subtract(const Duration(days: 6)),
     ),
     SermonNote(
@@ -19,7 +20,8 @@ class NotesService {
       title: 'Nguvu ya Neno la Mungu Ndani ya Familia na Ndoa',
       preacher: 'Ndg. James Robert',
       scripture: 'Kumbukumbu la Torati 6:4-9',
-      content: 'Misingi ya hekima ya Mungu lazima ifundishwe kwa watoto nyumbani. Madhabahu ya familia (Family Altar) ndio ngome ya amani.',
+      content:
+          'Misingi ya hekima ya Mungu lazima ifundishwe kwa watoto nyumbani. Madhabahu ya familia (Family Altar) ndio ngome ya amani.',
       date: DateTime.now().subtract(const Duration(days: 13)),
     ),
   ];
@@ -32,7 +34,9 @@ class NotesService {
       return _initialNotes;
     }
     final List<dynamic> list = json.decode(jsonString);
-    return list.map((item) => SermonNote.fromJson(item as Map<String, dynamic>)).toList();
+    return list
+        .map((item) => SermonNote.fromJson(item as Map<String, dynamic>))
+        .toList();
   }
 
   Future<void> saveNotes(List<SermonNote> notes) async {

@@ -13,14 +13,15 @@ class TenziScreen extends StatefulWidget {
 
 class _TenziScreenState extends State<TenziScreen> {
   String _searchQuery = '';
-  
+
   @override
   Widget build(BuildContext context) {
-    final filteredSongs = TenziZaRohoniData.songs.where((s) => 
-      s.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-      s.lyrics.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-      s.number.toString().contains(_searchQuery)
-    ).toList();
+    final filteredSongs = TenziZaRohoniData.songs
+        .where((s) =>
+            s.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+            s.lyrics.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+            s.number.toString().contains(_searchQuery))
+        .toList();
 
     return Scaffold(
       backgroundColor: AppColors.canvas,
@@ -65,12 +66,15 @@ class _TenziScreenState extends State<TenziScreen> {
                     backgroundColor: AppColors.primary.withOpacity(0.1),
                     child: Text(
                       song.number.toString(),
-                      style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                   title: Text(song.title, style: AppTypography.titleSmall()),
                   subtitle: Text('Key: ${song.key} | Tempo: ${song.tempo}'),
-                  trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14),
+                  trailing:
+                      const Icon(Icons.arrow_forward_ios_rounded, size: 14),
                   onTap: () {
                     AppHaptics.lightImpact();
                     _showSongDetails(song);
@@ -118,7 +122,8 @@ class _TenziScreenState extends State<TenziScreen> {
                     children: [
                       Text(
                         'Wimbo Na. ${song.number}',
-                        style: TextStyle(color: AppColors.gold, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            color: AppColors.gold, fontWeight: FontWeight.bold),
                       ),
                       Text(
                         song.title,
@@ -128,12 +133,16 @@ class _TenziScreenState extends State<TenziScreen> {
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Text('Key: ${song.key}', style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+                  child: Text('Key: ${song.key}',
+                      style: const TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold)),
                 ),
               ],
             ),

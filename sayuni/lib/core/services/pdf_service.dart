@@ -23,7 +23,7 @@ class PDFService {
 
     // Load logo if available, otherwise use a placeholder or text
     // For now, we will use a stylish text header
-    
+
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4.landscape,
@@ -36,52 +36,67 @@ class PDFService {
             child: pw.Column(
               mainAxisAlignment: pw.MainAxisAlignment.center,
               children: [
-                pw.Text('ZION JERUSALEM CHURCH', 
-                    style: pw.TextStyle(fontSize: 40, fontWeight: pw.FontWeight.bold, color: PdfColors.blue900)),
+                pw.Text('ZION JERUSALEM CHURCH',
+                    style: pw.TextStyle(
+                        fontSize: 40,
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColors.blue900)),
                 pw.SizedBox(height: 10),
-                pw.Text('MBAGALA KWA MATOPE, DAR ES SALAAM', 
-                    style: pw.TextStyle(fontSize: 16, color: PdfColors.grey700)),
+                pw.Text('MBAGALA KWA MATOPE, DAR ES SALAAM',
+                    style:
+                        pw.TextStyle(fontSize: 16, color: PdfColors.grey700)),
                 pw.SizedBox(height: 30),
                 pw.Divider(color: PDFService.brandGold, thickness: 2),
                 pw.SizedBox(height: 20),
-                pw.Text('CHETI CHA UBATIZO', 
-                    style: pw.TextStyle(fontSize: 32, fontWeight: pw.FontWeight.bold)),
+                pw.Text('CHETI CHA UBATIZO',
+                    style: pw.TextStyle(
+                        fontSize: 32, fontWeight: pw.FontWeight.bold)),
                 pw.SizedBox(height: 20),
-                pw.Text('Hii inathibitisha kuwa:', style: const pw.TextStyle(fontSize: 18)),
+                pw.Text('Hii inathibitisha kuwa:',
+                    style: const pw.TextStyle(fontSize: 18)),
                 pw.SizedBox(height: 10),
-                pw.Text(memberName.toUpperCase(), 
-                    style: pw.TextStyle(fontSize: 28, fontWeight: pw.FontWeight.bold, color: PdfColors.blue800)),
+                pw.Text(memberName.toUpperCase(),
+                    style: pw.TextStyle(
+                        fontSize: 28,
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColors.blue800)),
                 pw.SizedBox(height: 10),
-                pw.Text('Alibatizwa kwa maji mengi katika jina la Baba, na Mwana, na Roho Mtakatifu.', 
-                    textAlign: pw.TextAlign.center, style: const pw.TextStyle(fontSize: 18)),
+                pw.Text(
+                    'Alibatizwa kwa maji mengi katika jina la Baba, na Mwana, na Roho Mtakatifu.',
+                    textAlign: pw.TextAlign.center,
+                    style: const pw.TextStyle(fontSize: 18)),
                 pw.SizedBox(height: 20),
                 pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
-                  children: [
-                    pw.Column(
-                      children: [
-                        pw.Text(baptismDate, style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                        pw.Container(width: 150, height: 1, color: PdfColors.black),
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
+                    children: [
+                      pw.Column(children: [
+                        pw.Text(baptismDate,
+                            style:
+                                pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        pw.Container(
+                            width: 150, height: 1, color: PdfColors.black),
                         pw.Text('Tarehe ya Ubatizo'),
-                      ]
-                    ),
-                    pw.Column(
-                      children: [
-                        pw.Text(ministerName, style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                        pw.Container(width: 150, height: 1, color: PdfColors.black),
+                      ]),
+                      pw.Column(children: [
+                        pw.Text(ministerName,
+                            style:
+                                pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        pw.Container(
+                            width: 150, height: 1, color: PdfColors.black),
                         pw.Text('Mchungaji Msimamizi'),
-                      ]
-                    ),
-                  ]
-                ),
+                      ]),
+                    ]),
                 pw.Spacer(),
                 pw.Row(
-                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                  children: [
-                    pw.Text('Namba ya Cheti: $certificateNumber', style: pw.TextStyle(fontSize: 12, color: PdfColors.grey)),
-                    pw.Text('Sayuni: Mahali pa Sifa na Uponyaji', style: pw.TextStyle(fontSize: 12, fontStyle: pw.FontStyle.italic)),
-                  ]
-                )
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      pw.Text('Namba ya Cheti: $certificateNumber',
+                          style: pw.TextStyle(
+                              fontSize: 12, color: PdfColors.grey)),
+                      pw.Text('Sayuni: Mahali pa Sifa na Uponyaji',
+                          style: pw.TextStyle(
+                              fontSize: 12, fontStyle: pw.FontStyle.italic)),
+                    ])
               ],
             ),
           );
@@ -110,24 +125,34 @@ class PDFService {
             padding: const pw.EdgeInsets.all(40),
             child: pw.Column(
               children: [
-                pw.Text('ZION JERUSALEM CHURCH', 
-                    style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
+                pw.Text('ZION JERUSALEM CHURCH',
+                    style: pw.TextStyle(
+                        fontSize: 24, fontWeight: pw.FontWeight.bold)),
                 pw.SizedBox(height: 40),
-                pw.Text('CHETI CHA UANACHAMA', 
-                    style: pw.TextStyle(fontSize: 30, fontWeight: pw.FontWeight.bold, color: PdfColors.blue900)),
+                pw.Text('CHETI CHA UANACHAMA',
+                    style: pw.TextStyle(
+                        fontSize: 30,
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColors.blue900)),
                 pw.SizedBox(height: 50),
-                pw.Text('Huu ni uthibitisho wa uanachama rasmi kwa:', textAlign: pw.TextAlign.center),
+                pw.Text('Huu ni uthibitisho wa uanachama rasmi kwa:',
+                    textAlign: pw.TextAlign.center),
                 pw.SizedBox(height: 20),
-                pw.Text(memberName, style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold)),
+                pw.Text(memberName,
+                    style: pw.TextStyle(
+                        fontSize: 22, fontWeight: pw.FontWeight.bold)),
                 pw.SizedBox(height: 30),
-                pw.Text('Amekubaliwa kuwa mwanachama wa Sayuni Jerusalem Church tangu tarehe $joinDate.', 
+                pw.Text(
+                    'Amekubaliwa kuwa mwanachama wa Sayuni Jerusalem Church tangu tarehe $joinDate.',
                     textAlign: pw.TextAlign.center),
                 pw.Spacer(),
                 pw.Divider(),
-                pw.Text('Askofu Messi Mgala', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                pw.Text('Askofu Messi Mgala',
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                 pw.Text('Kiongozi Mkuu wa Kiroho'),
                 pw.SizedBox(height: 20),
-                pw.Text('ID: $certificateNumber', style: const pw.TextStyle(fontSize: 10)),
+                pw.Text('ID: $certificateNumber',
+                    style: const pw.TextStyle(fontSize: 10)),
               ],
             ),
           );

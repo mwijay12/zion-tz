@@ -21,7 +21,11 @@ class _CommunityHubScreenState extends State<CommunityHubScreen> {
   final List<Map<String, dynamic>> _tabs = [
     {'title': 'Vikundi', 'icon': Icons.groups_rounded, 'badge': 'Sayuni'},
     {'title': 'Jumuiya', 'icon': Icons.home_work_rounded, 'badge': 'Mitaa'},
-    {'title': 'Ujuzi & Kazi', 'icon': Icons.handshake_rounded, 'badge': 'Biashara'},
+    {
+      'title': 'Ujuzi & Kazi',
+      'icon': Icons.handshake_rounded,
+      'badge': 'Biashara'
+    },
     {'title': 'War Room', 'icon': Icons.shield_moon_rounded, 'badge': 'Maombi'},
   ];
 
@@ -77,7 +81,8 @@ class _CommunityHubScreenState extends State<CommunityHubScreen> {
                       color: AppColors.primary,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.diversity_3_rounded, color: Colors.white, size: 20),
+                    child: const Icon(Icons.diversity_3_rounded,
+                        color: Colors.white, size: 20),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
@@ -108,12 +113,14 @@ class _CommunityHubScreenState extends State<CommunityHubScreen> {
                       AppHaptics.lightImpact();
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const ChurchBranchesScreen()),
+                        MaterialPageRoute(
+                            builder: (_) => const ChurchBranchesScreen()),
                       );
                     },
                     borderRadius: BorderRadius.circular(10),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 6),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withOpacity(0.08),
                         borderRadius: BorderRadius.circular(10),
@@ -125,7 +132,8 @@ class _CommunityHubScreenState extends State<CommunityHubScreen> {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: const [
-                          Icon(Icons.account_balance_rounded, size: 14, color: AppColors.primary),
+                          Icon(Icons.account_balance_rounded,
+                              size: 14, color: AppColors.primary),
                           SizedBox(width: 5),
                           Text(
                             'Matawi (8)',
@@ -158,7 +166,8 @@ class _CommunityHubScreenState extends State<CommunityHubScreen> {
                 },
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: AppColors.surfaceContainer,
                     borderRadius: BorderRadius.circular(12),
@@ -169,16 +178,19 @@ class _CommunityHubScreenState extends State<CommunityHubScreen> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.search_rounded, color: AppColors.primary, size: 18),
+                      const Icon(Icons.search_rounded,
+                          color: AppColors.primary, size: 18),
                       const SizedBox(width: 8),
                       const Expanded(
                         child: Text(
                           'Tafuta jumuiya, vikundi au waumini...',
-                          style: TextStyle(color: Color(0xFF64748B), fontSize: 12.5),
+                          style: TextStyle(
+                              color: Color(0xFF64748B), fontSize: 12.5),
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 7, vertical: 2),
                         decoration: BoxDecoration(
                           color: AppColors.primary.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(6),
@@ -224,7 +236,8 @@ class _CommunityHubScreenState extends State<CommunityHubScreen> {
                     final isSelected = _activeSubTab == idx;
                     return Expanded(
                       child: Material(
-                        color: isSelected ? AppColors.primary : Colors.transparent,
+                        color:
+                            isSelected ? AppColors.primary : Colors.transparent,
                         borderRadius: BorderRadius.circular(10),
                         child: InkWell(
                           onTap: () {
@@ -243,7 +256,9 @@ class _CommunityHubScreenState extends State<CommunityHubScreen> {
                                 Icon(
                                   item['icon'] as IconData,
                                   size: 14,
-                                  color: isSelected ? Colors.white : AppColors.primary,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : AppColors.primary,
                                 ),
                                 const SizedBox(width: 4),
                                 Flexible(
@@ -253,8 +268,12 @@ class _CommunityHubScreenState extends State<CommunityHubScreen> {
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       fontSize: 11,
-                                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                                      color: isSelected ? Colors.white : AppColors.textPrimary,
+                                      fontWeight: isSelected
+                                          ? FontWeight.w700
+                                          : FontWeight.w500,
+                                      color: isSelected
+                                          ? Colors.white
+                                          : AppColors.textPrimary,
                                     ),
                                   ),
                                 ),

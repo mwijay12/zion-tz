@@ -112,11 +112,14 @@ class _ConnectCardScreenState extends State<ConnectCardScreen> {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.church_rounded, color: AppColors.goldLight, size: 24),
+                          const Icon(Icons.church_rounded,
+                              color: AppColors.goldLight, size: 24),
                           const SizedBox(width: 8),
                           Text(
                             'KARIBU SAYUNI',
-                            style: AppTypography.caption(color: AppColors.goldLight).copyWith(
+                            style: AppTypography.caption(
+                                    color: AppColors.goldLight)
+                                .copyWith(
                               fontWeight: FontWeight.bold,
                               letterSpacing: 1.0,
                             ),
@@ -126,7 +129,8 @@ class _ConnectCardScreenState extends State<ConnectCardScreen> {
                       const SizedBox(height: 8),
                       Text(
                         'Tunafurahi Kuwa Nawe Leo!',
-                        style: AppTypography.titleMedium(color: Colors.white).copyWith(
+                        style: AppTypography.titleMedium(color: Colors.white)
+                            .copyWith(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -150,66 +154,78 @@ class _ConnectCardScreenState extends State<ConnectCardScreen> {
                     children: [
                       Text(
                         'Taarifa Zako',
-                        style: AppTypography.titleMedium(color: AppColors.textPrimary).copyWith(
+                        style: AppTypography.titleMedium(
+                                color: AppColors.textPrimary)
+                            .copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 14),
-
                       TextField(
                         controller: _nameController,
                         decoration: InputDecoration(
                           labelText: 'Jina Kamili',
-                          prefixIcon: const Icon(Icons.person_rounded, size: 20),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                          prefixIcon:
+                              const Icon(Icons.person_rounded, size: 20),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
                         ),
                       ),
                       const SizedBox(height: 12),
-
                       TextField(
                         controller: _phoneController,
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
                           labelText: 'Namba ya Simu / WhatsApp',
                           prefixIcon: const Icon(Icons.phone_rounded, size: 20),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
                         ),
                       ),
                       const SizedBox(height: 12),
-
                       TextField(
                         controller: _locationController,
                         decoration: InputDecoration(
                           labelText: 'Mtaa / Eneo Unaloishi',
-                          prefixIcon: const Icon(Icons.location_on_rounded, size: 20),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                          prefixIcon:
+                              const Icon(Icons.location_on_rounded, size: 20),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
                         ),
                       ),
                       const SizedBox(height: 14),
-
-                      Text('Aina ya Ugeni', style: AppTypography.caption(color: AppColors.textSecondary)),
+                      Text('Aina ya Ugeni',
+                          style: AppTypography.caption(
+                              color: AppColors.textSecondary)),
                       const SizedBox(height: 4),
                       DropdownButtonFormField<String>(
                         value: _visitorType,
                         decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 10),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
                         ),
-                        items: _visitorTypes.map((t) => DropdownMenuItem(value: t, child: Text(t, style: const TextStyle(fontSize: 13)))).toList(),
+                        items: _visitorTypes
+                            .map((t) => DropdownMenuItem(
+                                value: t,
+                                child: Text(t,
+                                    style: const TextStyle(fontSize: 13))))
+                            .toList(),
                         onChanged: (val) {
                           if (val != null) setState(() => _visitorType = val);
                         },
                       ),
                       const SizedBox(height: 16),
-
                       Text(
                         'Idara Zinazokuvutia (Chagua):',
-                        style: AppTypography.bodySmall(color: AppColors.textPrimary).copyWith(
+                        style: AppTypography.bodySmall(
+                                color: AppColors.textPrimary)
+                            .copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 8),
-
                       Wrap(
                         spacing: 8,
                         runSpacing: 6,
@@ -223,30 +239,34 @@ class _ConnectCardScreenState extends State<ConnectCardScreen> {
                             checkmarkColor: AppColors.primary,
                             labelStyle: TextStyle(
                               fontSize: 12,
-                              color: isSelected ? AppColors.primary : AppColors.textPrimary,
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              color: isSelected
+                                  ? AppColors.primary
+                                  : AppColors.textPrimary,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                             ),
                             side: BorderSide(
-                              color: isSelected ? AppColors.primary : AppColors.border,
+                              color: isSelected
+                                  ? AppColors.primary
+                                  : AppColors.border,
                             ),
                           );
                         }).toList(),
                       ),
-
                       const SizedBox(height: 14),
-
                       TextField(
                         controller: _prayerController,
                         maxLines: 2,
                         decoration: InputDecoration(
                           labelText: 'Ombi Maalumu la Maombi (Hiari)',
-                          prefixIcon: const Icon(Icons.favorite_rounded, size: 20),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                          prefixIcon:
+                              const Icon(Icons.favorite_rounded, size: 20),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
                         ),
                       ),
-
                       const SizedBox(height: 20),
-
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -255,9 +275,11 @@ class _ConnectCardScreenState extends State<ConnectCardScreen> {
                             backgroundColor: AppColors.primary,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
                           ),
-                          child: const Text('Wasilisha Kadi ya Mgeni', style: TextStyle(fontWeight: FontWeight.bold)),
+                          child: const Text('Wasilisha Kadi ya Mgeni',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                       ),
                     ],
@@ -281,12 +303,14 @@ class _ConnectCardScreenState extends State<ConnectCardScreen> {
                 color: Color(0xFF16A34A),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.check_rounded, color: Colors.white, size: 48),
+              child: const Icon(Icons.check_rounded,
+                  color: Colors.white, size: 48),
             ),
             const SizedBox(height: 20),
             Text(
               'Karibu Sana Nyumbani!',
-              style: AppTypography.titleMedium(color: AppColors.textPrimary).copyWith(
+              style: AppTypography.titleMedium(color: AppColors.textPrimary)
+                  .copyWith(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
@@ -303,8 +327,10 @@ class _ConnectCardScreenState extends State<ConnectCardScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
               ),
               child: const Text('Rudi Mwanzo'),
             ),

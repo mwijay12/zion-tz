@@ -68,7 +68,8 @@ class JumuiyaService {
       leaderTitle: 'Mwalimu Mkuu wa Kwaya',
       phone: '+255754000301',
       meetingSchedule: 'Jumanne & Jumamosi • 10:30 Jioni',
-      description: 'Kwaya Kuu inayoongoza sifa na kuabudu katika ibada zote kuu za Jumapili na mikutano ya injili.',
+      description:
+          'Kwaya Kuu inayoongoza sifa na kuabudu katika ibada zote kuu za Jumapili na mikutano ya injili.',
       imagePath: 'assets/images/zion_worship_choir_1788577423671.jpg',
       membersCount: 68,
       activities: ['Mazoezi ya Sauti', 'Albamu za Nyimbo', 'Huduma za Nje'],
@@ -81,7 +82,8 @@ class JumuiyaService {
       leaderTitle: 'Mwenyekiti wa Vijana',
       phone: '+255713000302',
       meetingSchedule: 'Jumamosi • 09:00 Alasiri',
-      description: 'Vijana wa Sayuni wakisimama imara katika neno, uamsho, vipaji vya muziki na uinjilisti wa kisasa.',
+      description:
+          'Vijana wa Sayuni wakisimama imara katika neno, uamsho, vipaji vya muziki na uinjilisti wa kisasa.',
       imagePath: 'assets/images/church_youth_fellowship.jpg',
       membersCount: 94,
       activities: ['Kwaya ya Vijana', 'Makongamano', 'Ujasiriamali wa Kiroho'],
@@ -94,7 +96,8 @@ class JumuiyaService {
       leaderTitle: 'Mlezi wa Idara ya Wamama',
       phone: '+255755000303',
       meetingSchedule: 'Alhamisi • 09:30 Alasiri',
-      description: 'Wamama wa Sayuni wakiwa nguzo ya maombi ya familia, kusaidia wasiojiweza, na malezi ya watoto.',
+      description:
+          'Wamama wa Sayuni wakiwa nguzo ya maombi ya familia, kusaidia wasiojiweza, na malezi ya watoto.',
       imagePath: 'assets/images/church_women_fellowship.jpg',
       membersCount: 118,
       activities: ['Maombi ya Wamama', 'Kusaidia Yatima', 'Semina za Ndoa'],
@@ -107,10 +110,15 @@ class JumuiyaService {
       leaderTitle: 'Mwenyekiti wa Wanaume',
       phone: '+255768000304',
       meetingSchedule: 'Jumapili ya Mwisho wa Mwezi • 11:30 Jioni',
-      description: 'Wababa na wazee wa kanisa wakisimamia misingi ya uongozi wa kiungu katika familia na kanisa.',
+      description:
+          'Wababa na wazee wa kanisa wakisimamia misingi ya uongozi wa kiungu katika familia na kanisa.',
       imagePath: 'assets/images/church_men_fellowship.jpg',
       membersCount: 76,
-      activities: ['Uongozi wa Familia', 'Miradi ya Ujenzi', 'Ushauri wa Kijamii'],
+      activities: [
+        'Uongozi wa Familia',
+        'Miradi ya Ujenzi',
+        'Ushauri wa Kijamii'
+      ],
     ),
     ChurchMinistryGroup(
       id: 'group-intercessors',
@@ -120,10 +128,15 @@ class JumuiyaService {
       leaderTitle: 'Mwangalizi wa War Room',
       phone: '+255714000305',
       meetingSchedule: 'Kila Siku • Saa 12:00 Asubuhi & 06:00 Usiku',
-      description: 'Walinzi wa kuta za Yerusalemu wanaoomba mfululizo kwa ajili ya kanisa, wagonjwa, na taifa.',
+      description:
+          'Walinzi wa kuta za Yerusalemu wanaoomba mfululizo kwa ajili ya kanisa, wagonjwa, na taifa.',
       imagePath: 'assets/images/pastoral_leadership_1788577468703.jpg',
       membersCount: 52,
-      activities: ['Mikesha ya Kila Mwezi', 'Kufunga na Kuomba', 'Kuponya Wagonjwa'],
+      activities: [
+        'Mikesha ya Kila Mwezi',
+        'Kufunga na Kuomba',
+        'Kuponya Wagonjwa'
+      ],
     ),
   ];
 
@@ -144,13 +157,16 @@ class JumuiyaService {
       ];
     }
     final List<dynamic> list = json.decode(jsonString);
-    return list.map((item) => PrayerRequestItem.fromJson(item as Map<String, dynamic>)).toList();
+    return list
+        .map((item) => PrayerRequestItem.fromJson(item as Map<String, dynamic>))
+        .toList();
   }
 
   Future<void> submitPrayerRequest(PrayerRequestItem request) async {
     final list = await getPrayerRequests();
     list.insert(0, request);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_prayersKey, json.encode(list.map((p) => p.toJson()).toList()));
+    await prefs.setString(
+        _prayersKey, json.encode(list.map((p) => p.toJson()).toList()));
   }
 }

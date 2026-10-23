@@ -24,7 +24,8 @@ class GivingChannel {
 
 class GivingRecord {
   final String id;
-  final String category; // Sadaka ya Jumapili, Zaka (Fungu la Kumi), Ujenzi wa Hekalu
+  final String
+      category; // Sadaka ya Jumapili, Zaka (Fungu la Kumi), Ujenzi wa Hekalu
   final double amount;
   final String paymentChannel;
   final String? referenceNumber;
@@ -40,20 +41,20 @@ class GivingRecord {
   });
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'category': category,
-    'amount': amount,
-    'paymentChannel': paymentChannel,
-    'referenceNumber': referenceNumber,
-    'date': date.toIso8601String(),
-  };
+        'id': id,
+        'category': category,
+        'amount': amount,
+        'paymentChannel': paymentChannel,
+        'referenceNumber': referenceNumber,
+        'date': date.toIso8601String(),
+      };
 
   factory GivingRecord.fromJson(Map<String, dynamic> json) => GivingRecord(
-    id: json['id'] as String,
-    category: json['category'] as String,
-    amount: (json['amount'] as num).toDouble(),
-    paymentChannel: json['paymentChannel'] as String,
-    referenceNumber: json['referenceNumber'] as String?,
-    date: DateTime.parse(json['date'] as String),
-  );
+        id: json['id'] as String,
+        category: json['category'] as String,
+        amount: (json['amount'] as num).toDouble(),
+        paymentChannel: json['paymentChannel'] as String,
+        referenceNumber: json['referenceNumber'] as String?,
+        date: DateTime.parse(json['date'] as String),
+      );
 }

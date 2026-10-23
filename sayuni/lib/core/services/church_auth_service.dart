@@ -1,11 +1,11 @@
- import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 enum ChurchUserRole {
   member, // Muumini wa Sayuni aliyesajiliwa
-  guest,  // Mgeni / Mshirika Mpya
-  admin,  // Msimamizi Mkuu / Administrator (Scene Editing, Content Uploads, RBAC Root)
+  guest, // Mgeni / Mshirika Mpya
+  admin, // Msimamizi Mkuu / Administrator (Scene Editing, Content Uploads, RBAC Root)
 }
 
 class ChurchAuthService extends ChangeNotifier {
@@ -33,7 +33,12 @@ class ChurchAuthService extends ChangeNotifier {
   bool get isMember => _role == ChurchUserRole.member;
   bool get isGuest => _role == ChurchUserRole.guest;
   bool get isAdmin => _role == ChurchUserRole.admin;
-  bool get isLeader => _role == ChurchUserRole.admin || _department.contains('Uongozi') || _department.contains('Wazee') || _department.contains('Mchungaji') || _department.contains('Katibu');
+  bool get isLeader =>
+      _role == ChurchUserRole.admin ||
+      _department.contains('Uongozi') ||
+      _department.contains('Wazee') ||
+      _department.contains('Mchungaji') ||
+      _department.contains('Katibu');
 
   String get name => _name;
   String get phone => _phone;
@@ -79,12 +84,16 @@ class ChurchAuthService extends ChangeNotifier {
         _role = ChurchUserRole.member;
       }
 
-      _name = prefs.getString('user_name') ?? (_role == ChurchUserRole.admin
-          ? 'Msimamizi Mkuu (Admin)'
-          : (_role == ChurchUserRole.guest ? 'Mgeni Karibu' : 'Muumini wa Sayuni'));
+      _name = prefs.getString('user_name') ??
+          (_role == ChurchUserRole.admin
+              ? 'Msimamizi Mkuu (Admin)'
+              : (_role == ChurchUserRole.guest
+                  ? 'Mgeni Karibu'
+                  : 'Muumini wa Sayuni'));
       _phone = prefs.getString('user_phone') ?? '+255 754 000 123';
       _email = prefs.getString('user_email') ?? 'muumini@zionjerusalem.org';
-      _jumuiya = prefs.getString('user_jumuiya') ?? 'Mbagala Kijichi (Mt. Petro)';
+      _jumuiya =
+          prefs.getString('user_jumuiya') ?? 'Mbagala Kijichi (Mt. Petro)';
       _department = prefs.getString('user_dept') ?? 'Kwaya ya Galilaya';
       _memberId = prefs.getString('user_member_id') ?? 'ZJC-2026-8894';
       _isBaptized = prefs.getBool('user_baptized') ?? true;
@@ -112,7 +121,8 @@ class ChurchAuthService extends ChangeNotifier {
     _phone = phone.trim();
     if (email != null && email.trim().isNotEmpty) _email = email.trim();
     if (jumuiya != null && jumuiya.trim().isNotEmpty) _jumuiya = jumuiya.trim();
-    if (department != null && department.trim().isNotEmpty) _department = department.trim();
+    if (department != null && department.trim().isNotEmpty)
+      _department = department.trim();
     _memberId = (memberId != null && memberId.trim().isNotEmpty)
         ? memberId.trim()
         : 'ZJC-${DateTime.now().year}-${1000 + (name.hashCode.abs() % 9000)}';
@@ -151,7 +161,8 @@ class ChurchAuthService extends ChangeNotifier {
     if (phone != null && phone.trim().isNotEmpty) _phone = phone.trim();
     if (email != null && email.trim().isNotEmpty) _email = email.trim();
     if (jumuiya != null && jumuiya.trim().isNotEmpty) _jumuiya = jumuiya.trim();
-    if (department != null && department.trim().isNotEmpty) _department = department.trim();
+    if (department != null && department.trim().isNotEmpty)
+      _department = department.trim();
     if (isBaptized != null) _isBaptized = isBaptized;
 
     await _persist();
@@ -171,7 +182,8 @@ class ChurchAuthService extends ChangeNotifier {
     if (clean.isNotEmpty) {
       _grantedAdminEmails.add(clean);
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setStringList('granted_admin_emails', _grantedAdminEmails.toList());
+      await prefs.setStringList(
+          'granted_admin_emails', _grantedAdminEmails.toList());
       notifyListeners();
     }
   }
@@ -182,7 +194,8 @@ class ChurchAuthService extends ChangeNotifier {
     if (clean != 'admin@zionjerusalem.org') {
       _grantedAdminEmails.remove(clean);
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setStringList('granted_admin_emails', _grantedAdminEmails.toList());
+      await prefs.setStringList(
+          'granted_admin_emails', _grantedAdminEmails.toList());
       notifyListeners();
     }
   }
@@ -198,13 +211,16 @@ class ChurchAuthService extends ChangeNotifier {
 
     _role = isAdminEmail ? ChurchUserRole.admin : ChurchUserRole.member;
     _isOnboarded = true;
-    _name = displayName.trim().isNotEmpty ? displayName.trim() : 'Muumini wa Sayuni';
+    _name = displayName.trim().isNotEmpty
+        ? displayName.trim()
+        : 'Muumini wa Sayuni';
     _email = cleanEmail;
     _phone = _phone.isNotEmpty ? _phone : '+255 700 000 000';
     _memberId = isAdminEmail
         ? 'ZJC-ADMIN-${10 + (cleanEmail.hashCode.abs() % 90)}'
         : 'ZJC-${DateTime.now().year}-${1000 + (cleanEmail.hashCode.abs() % 9000)}';
-    _department = isAdminEmail ? 'Utawala wa Kanisa & Tehama' : 'Ushirika wa Jumla';
+    _department =
+        isAdminEmail ? 'Utawala wa Kanisa & Tehama' : 'Ushirika wa Jumla';
 
     await _persist();
     notifyListeners();
@@ -221,8 +237,10 @@ class ChurchAuthService extends ChangeNotifier {
 
     try {
       // 1. Firebase Auth Sign In
-      final String email = cleanUser.contains('@') ? cleanUser : 'admin@zionjerusalem.org';
-      final UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      final String email =
+          cleanUser.contains('@') ? cleanUser : 'admin@zionjerusalem.org';
+      final UserCredential userCredential =
+          await _auth.signInWithEmailAndPassword(
         email: email,
         password: cleanPass,
       );
@@ -230,7 +248,9 @@ class ChurchAuthService extends ChangeNotifier {
       if (userCredential.user != null) {
         _role = ChurchUserRole.admin;
         _isOnboarded = true;
-        _name = cleanUser == 'admin' ? 'Msimamizi Mkuu' : cleanUser.split('@').first;
+        _name = cleanUser == 'admin'
+            ? 'Msimamizi Mkuu'
+            : cleanUser.split('@').first;
         _email = email;
         _phone = '+255 754 000 001';
         _department = 'Utawala wa Kanisa & Tehama';
@@ -244,16 +264,20 @@ class ChurchAuthService extends ChangeNotifier {
       }
     } catch (e) {
       debugPrint('Firebase Admin Login Error: $e');
-      
+
       // Fallback for demo if needed, but the goal is to move away from it.
       // For now, I'll keep the demo check as a secondary if the environment says so.
       const demoPassword = String.fromEnvironment('ADMIN_DEMO_PASSWORD');
-      final isGranted = _grantedAdminEmails.contains(cleanUser) || cleanUser == 'admin';
+      final isGranted =
+          _grantedAdminEmails.contains(cleanUser) || cleanUser == 'admin';
       if (isGranted && demoPassword.isNotEmpty && cleanPass == demoPassword) {
         _role = ChurchUserRole.admin;
         _isOnboarded = true;
-        _name = cleanUser == 'admin' ? 'Msimamizi Mkuu' : cleanUser.split('@').first;
-        _email = cleanUser.contains('@') ? cleanUser : 'admin@zionjerusalem.org';
+        _name = cleanUser == 'admin'
+            ? 'Msimamizi Mkuu'
+            : cleanUser.split('@').first;
+        _email =
+            cleanUser.contains('@') ? cleanUser : 'admin@zionjerusalem.org';
         _phone = '+255 754 000 001';
         _department = 'Utawala wa Kanisa & Tehama';
         _jumuiya = 'Hekalu Kuu Sayuni';

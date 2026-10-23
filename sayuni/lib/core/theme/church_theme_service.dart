@@ -41,16 +41,18 @@ class ChurchThemeService extends ChangeNotifier {
     notifyListeners();
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_keyThemeMode, _themeMode == ThemeMode.dark ? 'dark' : 'light');
+      await prefs.setString(
+          _keyThemeMode, _themeMode == ThemeMode.dark ? 'dark' : 'light');
     } catch (_) {}
   }
 
-  Future<void> toggleDarkMode() =>
-      setThemeMode(_themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark);
+  Future<void> toggleDarkMode() => setThemeMode(
+      _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark);
 
   // ---- The one and only brand palette ----
   Color get primaryColor => AppColors.primary; // Electric Blue #0D52CD
-  Color get primaryLightColor => AppColors.primaryLight; // Sky light blue (dark mode accent)
+  Color get primaryLightColor =>
+      AppColors.primaryLight; // Sky light blue (dark mode accent)
   Color get primaryDarkColor => AppColors.primaryDark; // Deep sanctuary navy
   String get themeName => 'Buluu ya Sayuni';
 
@@ -90,8 +92,10 @@ class ChurchThemeService extends ChangeNotifier {
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.dark,
         ),
-        titleTextStyle: AppTypography.titleMedium(color: AppColors.textPrimaryLight),
-        iconTheme: const IconThemeData(color: AppColors.textPrimaryLight, size: 22),
+        titleTextStyle:
+            AppTypography.titleMedium(color: AppColors.textPrimaryLight),
+        iconTheme:
+            const IconThemeData(color: AppColors.textPrimaryLight, size: 22),
       ),
       textTheme: const TextTheme(
         displayLarge: TextStyle(color: AppColors.textPrimaryLight),
@@ -124,7 +128,8 @@ class ChurchThemeService extends ChangeNotifier {
         iconColor: AppColors.primary,
         textColor: AppColors.textPrimaryLight,
       ),
-      iconTheme: const IconThemeData(color: AppColors.textPrimaryLight, size: 22),
+      iconTheme:
+          const IconThemeData(color: AppColors.textPrimaryLight, size: 22),
       dividerTheme: const DividerThemeData(
         color: AppColors.borderLight,
         thickness: 1,
@@ -137,7 +142,8 @@ class ChurchThemeService extends ChangeNotifier {
           foregroundColor: Colors.white,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           textStyle: AppTypography.labelLarge(color: Colors.white),
         ),
       ),
@@ -146,7 +152,8 @@ class ChurchThemeService extends ChangeNotifier {
           foregroundColor: primary,
           side: const BorderSide(color: primary, width: 1.2),
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           textStyle: AppTypography.labelLarge(color: primary),
         ),
       ),
@@ -159,9 +166,11 @@ class ChurchThemeService extends ChangeNotifier {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.surfaceLight,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         hintStyle: AppTypography.bodyMedium(color: AppColors.textMutedLight),
-        labelStyle: AppTypography.bodyMedium(color: AppColors.textSecondaryLight),
+        labelStyle:
+            AppTypography.bodyMedium(color: AppColors.textSecondaryLight),
         counterStyle: AppTypography.bodySmall(color: AppColors.textMutedLight),
         floatingLabelStyle: AppTypography.labelLarge(color: primary),
         prefixIconColor: AppColors.textMutedLight,
@@ -199,8 +208,10 @@ class ChurchThemeService extends ChangeNotifier {
       dialogTheme: DialogTheme(
         backgroundColor: AppColors.surfaceLight,
         surfaceTintColor: Colors.transparent,
-        titleTextStyle: AppTypography.titleMedium(color: AppColors.textPrimaryLight),
-        contentTextStyle: AppTypography.bodyMedium(color: AppColors.textSecondaryLight),
+        titleTextStyle:
+            AppTypography.titleMedium(color: AppColors.textPrimaryLight),
+        contentTextStyle:
+            AppTypography.bodyMedium(color: AppColors.textSecondaryLight),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
@@ -221,7 +232,8 @@ class ChurchThemeService extends ChangeNotifier {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
-      progressIndicatorTheme: const ProgressIndicatorThemeData(color: AppColors.primary),
+      progressIndicatorTheme:
+          const ProgressIndicatorThemeData(color: AppColors.primary),
       switchTheme: const SwitchThemeData(
         thumbColor: WidgetStatePropertyAll(AppColors.primary),
         trackColor: WidgetStatePropertyAll(Color(0xFFBFD3F5)),
@@ -238,7 +250,8 @@ class ChurchThemeService extends ChangeNotifier {
 
   // ----------------------------------------------------------------- DARK
   ThemeData get darkTheme {
-    const primary = AppColors.primaryLight; // Sky blue reads cleanly on midnight canvas
+    const primary =
+        AppColors.primaryLight; // Sky blue reads cleanly on midnight canvas
     const canvas = AppColors.canvasDark;
     const surface = AppColors.surfaceDark;
     const border = AppColors.borderDark;
@@ -275,7 +288,8 @@ class ChurchThemeService extends ChangeNotifier {
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.light,
         ),
-        titleTextStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+        titleTextStyle: TextStyle(
+            fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
         iconTheme: IconThemeData(color: Colors.white, size: 22),
       ),
       textTheme: const TextTheme(
@@ -310,7 +324,8 @@ class ChurchThemeService extends ChangeNotifier {
         textColor: Colors.white,
       ),
       iconTheme: const IconThemeData(color: Colors.white, size: 22),
-      dividerTheme: const DividerThemeData(color: border, thickness: 1, space: 1),
+      dividerTheme:
+          const DividerThemeData(color: border, thickness: 1, space: 1),
       dividerColor: border,
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -318,8 +333,12 @@ class ChurchThemeService extends ChangeNotifier {
           foregroundColor: const Color(0xFF04121F),
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF04121F)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          textStyle: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF04121F)),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
@@ -327,7 +346,8 @@ class ChurchThemeService extends ChangeNotifier {
           foregroundColor: primary,
           side: const BorderSide(color: border, width: 1.2),
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 13),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
@@ -336,11 +356,16 @@ class ChurchThemeService extends ChangeNotifier {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: surface,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        hintStyle: const TextStyle(color: AppColors.textMutedDark, fontSize: 13),
-        labelStyle: const TextStyle(color: AppColors.textSecondaryDark, fontSize: 13),
-        counterStyle: const TextStyle(color: AppColors.textMutedDark, fontSize: 11),
-        floatingLabelStyle: const TextStyle(color: primary, fontSize: 12, fontWeight: FontWeight.w600),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        hintStyle:
+            const TextStyle(color: AppColors.textMutedDark, fontSize: 13),
+        labelStyle:
+            const TextStyle(color: AppColors.textSecondaryDark, fontSize: 13),
+        counterStyle:
+            const TextStyle(color: AppColors.textMutedDark, fontSize: 11),
+        floatingLabelStyle: const TextStyle(
+            color: primary, fontSize: 12, fontWeight: FontWeight.w600),
         prefixIconColor: AppColors.textMutedDark,
         suffixIconColor: AppColors.textMutedDark,
         iconColor: AppColors.textMutedDark,
@@ -368,17 +393,22 @@ class ChurchThemeService extends ChangeNotifier {
       chipTheme: ChipThemeData(
         backgroundColor: surface,
         selectedColor: primary,
-        labelStyle: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+        labelStyle: const TextStyle(
+            color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
         secondaryLabelStyle: const TextStyle(
-            color: Color(0xFF04121F), fontSize: 12, fontWeight: FontWeight.bold),
+            color: Color(0xFF04121F),
+            fontSize: 12,
+            fontWeight: FontWeight.bold),
         side: const BorderSide(color: border),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       dialogTheme: DialogTheme(
         backgroundColor: surface,
         surfaceTintColor: Colors.transparent,
-        titleTextStyle: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),
-        contentTextStyle: const TextStyle(color: AppColors.textSecondaryDark, fontSize: 13.5),
+        titleTextStyle: const TextStyle(
+            fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white),
+        contentTextStyle:
+            const TextStyle(color: AppColors.textSecondaryDark, fontSize: 13.5),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
@@ -399,7 +429,8 @@ class ChurchThemeService extends ChangeNotifier {
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
-      progressIndicatorTheme: const ProgressIndicatorThemeData(color: AppColors.primaryLight),
+      progressIndicatorTheme:
+          const ProgressIndicatorThemeData(color: AppColors.primaryLight),
       switchTheme: const SwitchThemeData(
         thumbColor: WidgetStatePropertyAll(AppColors.primaryLight),
         trackColor: WidgetStatePropertyAll(Color(0xFF24344C)),

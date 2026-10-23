@@ -39,14 +39,16 @@ class _MoodPsalmsScreenState extends State<MoodPsalmsScreen> {
     {
       'id': 'comfort',
       'title': 'Faraja & Huzuni',
-      'query': 'Ninapitia huzuni, upweke na maumivu ya moyo nahitaji faraja ya Mungu',
+      'query':
+          'Ninapitia huzuni, upweke na maumivu ya moyo nahitaji faraja ya Mungu',
       'icon': Icons.healing_rounded,
       'color': Color(0xFF0F52BA),
     },
     {
       'id': 'strength',
       'title': 'Vita & Ushindi',
-      'query': 'Niko kwenye mapambano ya kiroho, majaribu na vita nahitaji ushindi wa Bwana',
+      'query':
+          'Niko kwenye mapambano ya kiroho, majaribu na vita nahitaji ushindi wa Bwana',
       'icon': Icons.shield_rounded,
       'color': Color(0xFFDC2626),
     },
@@ -60,28 +62,32 @@ class _MoodPsalmsScreenState extends State<MoodPsalmsScreen> {
     {
       'id': 'finances',
       'title': 'Kodi & Ada za Shule',
-      'query': 'Nina wasiwasi kuhusu fedha, madeni, kodi ya nyumba na ada za shule',
+      'query':
+          'Nina wasiwasi kuhusu fedha, madeni, kodi ya nyumba na ada za shule',
       'icon': Icons.account_balance_wallet_rounded,
       'color': Color(0xFFD97706),
     },
     {
       'id': 'job',
       'title': 'Kazi & Biashara',
-      'query': 'Natafuta kazi, mtaji wa biashara na mwongozo wa maamuzi ya kimaisha',
+      'query':
+          'Natafuta kazi, mtaji wa biashara na mwongozo wa maamuzi ya kimaisha',
       'icon': Icons.work_rounded,
       'color': Color(0xFF0D9488),
     },
     {
       'id': 'gratitude',
       'title': 'Shukrani & Sifa',
-      'query': 'Ninamshukuru Mungu kwa wema wake na matendo makuu maishani mwangu',
+      'query':
+          'Ninamshukuru Mungu kwa wema wake na matendo makuu maishani mwangu',
       'icon': Icons.celebration_rounded,
       'color': Color(0xFFC59B27),
     },
     {
       'id': 'rest',
       'title': 'Pumziko & Nguvu Mpya',
-      'query': 'Nimechoka kiakili na kimwili, nahitaji kuburudishwa na kupata nguvu mpya',
+      'query':
+          'Nimechoka kiakili na kimwili, nahitaji kuburudishwa na kupata nguvu mpya',
       'icon': Icons.nightlight_round,
       'color': AppColors.primary,
     },
@@ -94,7 +100,8 @@ class _MoodPsalmsScreenState extends State<MoodPsalmsScreen> {
     super.initState();
     _initTts();
     _selectedCategory = _moodCategories.first;
-    _fetchGuidance(widget.initialQuery ?? _selectedCategory!['query'] as String);
+    _fetchGuidance(
+        widget.initialQuery ?? _selectedCategory!['query'] as String);
   }
 
   Future<void> _initTts() async {
@@ -246,7 +253,8 @@ Ubarikiwe na Mungu wa Sayuni!
                           color: AppColors.primary.withOpacity(0.25),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.spa_rounded, color: Colors.white, size: 20),
+                        child: const Icon(Icons.spa_rounded,
+                            color: Colors.white, size: 20),
                       ),
                       const SizedBox(width: 10),
                       const Expanded(
@@ -264,7 +272,8 @@ Ubarikiwe na Mungu wa Sayuni!
                   const SizedBox(height: 8),
                   const Text(
                     'Chagua au andika haja ya moyo wako hapa chini ili kupata neno la Mungu, faraja ya kichungaji, na sala ya ushindi kwa ajili yako.',
-                    style: TextStyle(color: Colors.white70, fontSize: 12.5, height: 1.35),
+                    style: TextStyle(
+                        color: Colors.white70, fontSize: 12.5, height: 1.35),
                   ),
                   const SizedBox(height: 14),
 
@@ -281,17 +290,22 @@ Ubarikiwe na Mungu wa Sayuni!
                           child: TextField(
                             controller: _customNeedController,
                             cursorColor: AppColors.primaryLight,
-                            style: const TextStyle(color: Colors.white, fontSize: 13.5, fontWeight: FontWeight.w500),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 13.5,
+                                fontWeight: FontWeight.w500),
                             onSubmitted: (_) => _submitCustomNeed(),
                             decoration: InputDecoration(
                               filled: true,
                               fillColor: const Color(0xFF071933),
-                              hintText: 'Andika haja yako (mf. Ada za watoto, Kazi, Ugonjwa)...',
+                              hintText:
+                                  'Andika haja yako (mf. Ada za watoto, Kazi, Ugonjwa)...',
                               hintStyle: TextStyle(
                                 color: Colors.white.withOpacity(0.6),
                                 fontSize: 12,
                               ),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 12),
                               border: InputBorder.none,
                               enabledBorder: InputBorder.none,
                               focusedBorder: InputBorder.none,
@@ -301,7 +315,8 @@ Ubarikiwe na Mungu wa Sayuni!
                         Padding(
                           padding: const EdgeInsets.only(right: 6),
                           child: IconButton(
-                            icon: const Icon(Icons.arrow_forward_rounded, color: AppColors.primaryLight, size: 20),
+                            icon: const Icon(Icons.arrow_forward_rounded,
+                                color: AppColors.primaryLight, size: 20),
                             onPressed: _submitCustomNeed,
                           ),
                         ),
@@ -333,7 +348,8 @@ Ubarikiwe na Mungu wa Sayuni!
                     borderRadius: BorderRadius.circular(20),
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 8),
                       decoration: BoxDecoration(
                         color: isSelected ? catColor : AppColors.surface,
                         borderRadius: BorderRadius.circular(20),
@@ -364,8 +380,12 @@ Ubarikiwe na Mungu wa Sayuni!
                             cat['title'] as String,
                             style: TextStyle(
                               fontSize: 12,
-                              fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                              color: isSelected ? Colors.white : AppColors.textPrimary,
+                              fontWeight: isSelected
+                                  ? FontWeight.bold
+                                  : FontWeight.w600,
+                              color: isSelected
+                                  ? Colors.white
+                                  : AppColors.textPrimary,
                             ),
                           ),
                         ],
@@ -388,11 +408,13 @@ Ubarikiwe na Mungu wa Sayuni!
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const CircularProgressIndicator(color: AppColors.primary),
+                            const CircularProgressIndicator(
+                                color: AppColors.primary),
                             const SizedBox(height: 16),
                             Text(
                               'Inatafuta Neno la Faraja & Sala...',
-                              style: AppTypography.bodyMedium(color: AppColors.textSecondary),
+                              style: AppTypography.bodyMedium(
+                                  color: AppColors.textSecondary),
                             ),
                           ],
                         ),
@@ -425,7 +447,8 @@ Ubarikiwe na Mungu wa Sayuni!
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.primary.withOpacity(0.35), width: 1.2),
+        border:
+            Border.all(color: AppColors.primary.withOpacity(0.35), width: 1.2),
         boxShadow: [
           BoxShadow(
             color: AppColors.primaryDark.withOpacity(0.35),
@@ -443,7 +466,8 @@ Ubarikiwe na Mungu wa Sayuni!
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.gold.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(10),
@@ -452,7 +476,8 @@ Ubarikiwe na Mungu wa Sayuni!
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.auto_awesome_rounded, color: AppColors.goldLight, size: 13),
+                    Icon(Icons.auto_awesome_rounded,
+                        color: AppColors.goldLight, size: 13),
                     SizedBox(width: 4),
                     Text(
                       'NENO LA UZIMA • SAYUNI',
@@ -468,11 +493,15 @@ Ubarikiwe na Mungu wa Sayuni!
               ),
               IconButton(
                 icon: Icon(
-                  _isPlayingAudio ? Icons.stop_circle_rounded : Icons.volume_up_rounded,
-                  color: _isPlayingAudio ? Colors.redAccent : AppColors.goldLight,
+                  _isPlayingAudio
+                      ? Icons.stop_circle_rounded
+                      : Icons.volume_up_rounded,
+                  color:
+                      _isPlayingAudio ? Colors.redAccent : AppColors.goldLight,
                   size: 26,
                 ),
-                tooltip: _isPlayingAudio ? 'Simamisha Sauti' : 'Sikiliza kwa Sauti',
+                tooltip:
+                    _isPlayingAudio ? 'Simamisha Sauti' : 'Sikiliza kwa Sauti',
                 onPressed: _toggleAudio,
               ),
             ],
@@ -482,7 +511,8 @@ Ubarikiwe na Mungu wa Sayuni!
           // Scripture Reference Header
           Row(
             children: [
-              const Icon(Icons.menu_book_rounded, color: AppColors.gold, size: 20),
+              const Icon(Icons.menu_book_rounded,
+                  color: AppColors.gold, size: 20),
               const SizedBox(width: 8),
               Text(
                 guidance.scriptureReference,
@@ -517,7 +547,8 @@ Ubarikiwe na Mungu wa Sayuni!
           // Pastoral Word
           Row(
             children: [
-              const Icon(Icons.volunteer_activism_rounded, color: AppColors.goldLight, size: 16),
+              const Icon(Icons.volunteer_activism_rounded,
+                  color: AppColors.goldLight, size: 16),
               const SizedBox(width: 6),
               const Text(
                 'TAFAKARI YA KICHUNGAJI:',
@@ -533,7 +564,8 @@ Ubarikiwe na Mungu wa Sayuni!
           const SizedBox(height: 6),
           Text(
             guidance.pastoralWord,
-            style: const TextStyle(color: Colors.white70, fontSize: 13.5, height: 1.4),
+            style: const TextStyle(
+                color: Colors.white70, fontSize: 13.5, height: 1.4),
           ),
           const SizedBox(height: 16),
           const Divider(color: Colors.white24),
@@ -583,7 +615,8 @@ Ubarikiwe na Mungu wa Sayuni!
                     color: AppColors.gold,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.music_note_rounded, color: AppColors.primaryDark, size: 16),
+                  child: const Icon(Icons.music_note_rounded,
+                      color: AppColors.primaryDark, size: 16),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -626,7 +659,8 @@ Ubarikiwe na Mungu wa Sayuni!
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white,
                     side: BorderSide(color: Colors.white.withOpacity(0.3)),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                 ),
@@ -635,13 +669,18 @@ Ubarikiwe na Mungu wa Sayuni!
               Expanded(
                 child: ElevatedButton.icon(
                   onPressed: _toggleAudio,
-                  icon: Icon(_isPlayingAudio ? Icons.stop_rounded : Icons.play_arrow_rounded, size: 18),
+                  icon: Icon(
+                      _isPlayingAudio
+                          ? Icons.stop_rounded
+                          : Icons.play_arrow_rounded,
+                      size: 18),
                   label: Text(_isPlayingAudio ? 'Simamisha' : 'Sikiliza Sauti'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                     elevation: 2,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                     padding: const EdgeInsets.symmetric(vertical: 12),
                   ),
                 ),

@@ -59,7 +59,8 @@ class _BibleScreenState extends State<BibleScreen> {
   final Set<String> _bookmarkedVerses = {};
   int? _selectedVerseIndex;
   bool _showHighlightPicker = false;
-  final Map<String, int> _verseHighlights = {}; // 0: Gold, 1: Emerald, 2: Sky Blue, 3: Rose
+  final Map<String, int> _verseHighlights =
+      {}; // 0: Gold, 1: Emerald, 2: Sky Blue, 3: Rose
 
   // Offline Chapter Download State
   final Set<String> _downloadedOfflineChapters = {};
@@ -141,7 +142,8 @@ class _BibleScreenState extends State<BibleScreen> {
 
   void _openNoteDialogForVerse(BibleVerse verse) {
     AppHaptics.lightImpact();
-    final ref = '${_currentBook?.bookName} ${_currentChapter?.chapterNumber}:${verse.verseNumber}';
+    final ref =
+        '${_currentBook?.bookName} ${_currentChapter?.chapterNumber}:${verse.verseNumber}';
     final controller = TextEditingController();
 
     showModalBottomSheet(
@@ -167,11 +169,13 @@ class _BibleScreenState extends State<BibleScreen> {
                 children: [
                   Row(
                     children: [
-                      const Icon(Icons.edit_note_rounded, color: AppColors.primary, size: 22),
+                      const Icon(Icons.edit_note_rounded,
+                          color: AppColors.primary, size: 22),
                       const SizedBox(width: 8),
                       Text(
                         'Hifadhi Dokezo la Somo',
-                        style: AppTypography.titleMedium(color: AppColors.textPrimary),
+                        style: AppTypography.titleMedium(
+                            color: AppColors.textPrimary),
                       ),
                     ],
                   ),
@@ -235,7 +239,8 @@ class _BibleScreenState extends State<BibleScreen> {
                       AppTopAlert.show(
                         context,
                         title: 'Kidokezo Kimehifadhiwa',
-                        message: 'Dokezo limehifadhiwa kwenye Daftari la Mahubiri!',
+                        message:
+                            'Dokezo limehifadhiwa kwenye Daftari la Mahubiri!',
                         type: TopAlertType.success,
                       );
                     }
@@ -246,7 +251,8 @@ class _BibleScreenState extends State<BibleScreen> {
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
               ),
@@ -276,7 +282,8 @@ class _BibleScreenState extends State<BibleScreen> {
         context: context,
         builder: (ctx) => AlertDialog(
           backgroundColor: AppColors.surface,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: Text(
             'Futa Sura ya Offline?',
             style: AppTypography.titleMedium(color: AppColors.textPrimary),
@@ -296,11 +303,13 @@ class _BibleScreenState extends State<BibleScreen> {
                 setState(() {
                   _downloadedOfflineChapters.remove(key);
                 });
-                await prefs.setStringList('offline_audio_chapters', _downloadedOfflineChapters.toList());
+                await prefs.setStringList('offline_audio_chapters',
+                    _downloadedOfflineChapters.toList());
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Sura imeondolewa kwenye kumbukumbu ya offline.'),
+                      content: Text(
+                          'Sura imeondolewa kwenye kumbukumbu ya offline.'),
                       behavior: SnackBarBehavior.floating,
                     ),
                   );
@@ -318,11 +327,13 @@ class _BibleScreenState extends State<BibleScreen> {
         _downloadedOfflineChapters.add(key);
         _isDownloadingChapter = false;
       });
-      await prefs.setStringList('offline_audio_chapters', _downloadedOfflineChapters.toList());
+      await prefs.setStringList(
+          'offline_audio_chapters', _downloadedOfflineChapters.toList());
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('✓ Sura ya ${_currentBook?.bookName} ${_currentChapter?.chapterNumber} imepakuliwa kwa ajili ya offline audio!'),
+            content: Text(
+                '✓ Sura ya ${_currentBook?.bookName} ${_currentChapter?.chapterNumber} imepakuliwa kwa ajili ya offline audio!'),
             backgroundColor: const Color(0xFF16A34A),
             behavior: SnackBarBehavior.floating,
           ),
@@ -344,9 +355,9 @@ class _BibleScreenState extends State<BibleScreen> {
         final currentSession = _playbackSessionId;
         if (_currentChapter != null) {
           final nextIndex = (_activeSpeakingVerseIndex ?? 0) + 1;
-          if (nextIndex < _currentChapter!.verses.length && 
-              currentSession == _playbackSessionId && 
-              !_isExplicitlyStopped && 
+          if (nextIndex < _currentChapter!.verses.length &&
+              currentSession == _playbackSessionId &&
+              !_isExplicitlyStopped &&
               !_isAudioPaused) {
             _playVerseAudio(nextIndex);
           } else {
@@ -402,11 +413,13 @@ class _BibleScreenState extends State<BibleScreen> {
 
       if (_swBooks.isNotEmpty) {
         BibleBook targetBook;
-        if (widget.initialBookName != null && widget.initialBookName!.isNotEmpty) {
+        if (widget.initialBookName != null &&
+            widget.initialBookName!.isNotEmpty) {
           final queryBook = widget.initialBookName!.toLowerCase().trim();
           targetBook = _swBooks.firstWhere(
-            (b) => b.bookName.toLowerCase() == queryBook ||
-                   b.bookName.toLowerCase().contains(queryBook),
+            (b) =>
+                b.bookName.toLowerCase() == queryBook ||
+                b.bookName.toLowerCase().contains(queryBook),
             orElse: () => _swBooks.firstWhere(
               (b) => b.bookName.toLowerCase() == 'mathayo',
               orElse: () => _swBooks.first,
@@ -421,18 +434,28 @@ class _BibleScreenState extends State<BibleScreen> {
         _currentBook = targetBook;
         _selectedTestamentIndex = targetBook.isNewTestament ? 1 : 0;
 
-        if (widget.initialChapterNumber != null && widget.initialChapterNumber!.isNotEmpty) {
+        if (widget.initialChapterNumber != null &&
+            widget.initialChapterNumber!.isNotEmpty) {
           final matches = targetBook.chapters.where(
-            (c) => c.chapterNumber.toString() == widget.initialChapterNumber.toString(),
+            (c) =>
+                c.chapterNumber.toString() ==
+                widget.initialChapterNumber.toString(),
           );
-          _currentChapter = matches.isNotEmpty ? matches.first : (targetBook.chapters.isNotEmpty ? targetBook.chapters.first : null);
+          _currentChapter = matches.isNotEmpty
+              ? matches.first
+              : (targetBook.chapters.isNotEmpty
+                  ? targetBook.chapters.first
+                  : null);
         } else {
-          _currentChapter = targetBook.chapters.isNotEmpty ? targetBook.chapters.first : null;
+          _currentChapter =
+              targetBook.chapters.isNotEmpty ? targetBook.chapters.first : null;
         }
 
         if (widget.initialVerseNumber != null && _currentChapter != null) {
           final vIndex = _currentChapter!.verses.indexWhere(
-            (v) => v.verseNumber.toString() == widget.initialVerseNumber.toString(),
+            (v) =>
+                v.verseNumber.toString() ==
+                widget.initialVerseNumber.toString(),
           );
           if (vIndex != -1) {
             _selectedVerseIndex = vIndex;
@@ -457,7 +480,8 @@ class _BibleScreenState extends State<BibleScreen> {
   }
 
   Future<void> _playVerseAudio(int verseIndex) async {
-    if (_currentChapter == null || verseIndex >= _currentChapter!.verses.length) {
+    if (_currentChapter == null ||
+        verseIndex >= _currentChapter!.verses.length) {
       _stopAudio();
       return;
     }
@@ -529,9 +553,12 @@ class _BibleScreenState extends State<BibleScreen> {
       builder: (ctx) {
         return StatefulBuilder(
           builder: (context, setModalState) {
-            final activeList = _currentTranslation == 'kjv' ? _kjvBooks : _swBooks;
+            final activeList =
+                _currentTranslation == 'kjv' ? _kjvBooks : _swBooks;
             final filtered = activeList.where((book) {
-              final matchesQuery = book.bookName.toLowerCase().contains(_searchQuery.toLowerCase());
+              final matchesQuery = book.bookName
+                  .toLowerCase()
+                  .contains(_searchQuery.toLowerCase());
               final matchesTestament = _selectedTestamentIndex == 0
                   ? !book.isNewTestament
                   : book.isNewTestament;
@@ -548,7 +575,8 @@ class _BibleScreenState extends State<BibleScreen> {
                     children: [
                       Text(
                         'Chagua Kitabu cha Biblia (66)',
-                        style: AppTypography.titleMedium(color: AppColors.textPrimary),
+                        style: AppTypography.titleMedium(
+                            color: AppColors.textPrimary),
                       ),
                       IconButton(
                         icon: const Icon(Icons.close_rounded),
@@ -563,12 +591,15 @@ class _BibleScreenState extends State<BibleScreen> {
                     children: [
                       Expanded(
                         child: ChoiceChip(
-                          label: const Center(child: Text('Agano la Kale (39)')),
+                          label:
+                              const Center(child: Text('Agano la Kale (39)')),
                           selected: _selectedTestamentIndex == 0,
                           selectedColor: AppColors.primary,
                           backgroundColor: AppColors.surfaceLow,
                           labelStyle: TextStyle(
-                            color: _selectedTestamentIndex == 0 ? Colors.white : AppColors.textPrimary,
+                            color: _selectedTestamentIndex == 0
+                                ? Colors.white
+                                : AppColors.textPrimary,
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
                           ),
@@ -587,7 +618,9 @@ class _BibleScreenState extends State<BibleScreen> {
                           selectedColor: AppColors.primary,
                           backgroundColor: AppColors.surfaceLow,
                           labelStyle: TextStyle(
-                            color: _selectedTestamentIndex == 1 ? Colors.white : AppColors.textPrimary,
+                            color: _selectedTestamentIndex == 1
+                                ? Colors.white
+                                : AppColors.textPrimary,
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
                           ),
@@ -613,7 +646,8 @@ class _BibleScreenState extends State<BibleScreen> {
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 16),
                     ),
                     onChanged: (val) {
                       setModalState(() => _searchQuery = val);
@@ -624,9 +658,11 @@ class _BibleScreenState extends State<BibleScreen> {
                   // Books Grid
                   Expanded(
                     child: filtered.isEmpty
-                        ? const Center(child: Text('Hakuna kitabu kilichopatikana'))
+                        ? const Center(
+                            child: Text('Hakuna kitabu kilichopatikana'))
                         : GridView.builder(
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               childAspectRatio: 2.8,
                               crossAxisSpacing: 8,
@@ -635,7 +671,8 @@ class _BibleScreenState extends State<BibleScreen> {
                             itemCount: filtered.length,
                             itemBuilder: (context, idx) {
                               final book = filtered[idx];
-                              final isSelected = _currentBook?.bookNumber == book.bookNumber;
+                              final isSelected =
+                                  _currentBook?.bookNumber == book.bookNumber;
 
                               return InkWell(
                                 onTap: () {
@@ -643,18 +680,25 @@ class _BibleScreenState extends State<BibleScreen> {
                                   _stopAudio();
                                   setState(() {
                                     _currentBook = book;
-                                    _currentChapter = book.chapters.isNotEmpty ? book.chapters.first : null;
+                                    _currentChapter = book.chapters.isNotEmpty
+                                        ? book.chapters.first
+                                        : null;
                                   });
                                   Navigator.pop(ctx);
                                 },
                                 borderRadius: BorderRadius.circular(10),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 8),
                                   decoration: BoxDecoration(
-                                    color: isSelected ? AppColors.primaryContainer : AppColors.surfaceLow,
+                                    color: isSelected
+                                        ? AppColors.primaryContainer
+                                        : AppColors.surfaceLow,
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(
-                                      color: isSelected ? AppColors.primary : AppColors.border,
+                                      color: isSelected
+                                          ? AppColors.primary
+                                          : AppColors.border,
                                     ),
                                   ),
                                   child: Row(
@@ -663,9 +707,13 @@ class _BibleScreenState extends State<BibleScreen> {
                                         child: Text(
                                           book.bookName,
                                           style: AppTypography.bodyMedium(
-                                            color: isSelected ? AppColors.primaryDark : AppColors.textPrimary,
+                                            color: isSelected
+                                                ? AppColors.primaryDark
+                                                : AppColors.textPrimary,
                                           ).copyWith(
-                                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                                            fontWeight: isSelected
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -675,7 +723,9 @@ class _BibleScreenState extends State<BibleScreen> {
                                         '${book.chapters.length}',
                                         style: TextStyle(
                                           fontSize: 11,
-                                          color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                                          color: isSelected
+                                              ? AppColors.primary
+                                              : AppColors.textSecondary,
                                         ),
                                       ),
                                     ],
@@ -727,7 +777,8 @@ class _BibleScreenState extends State<BibleScreen> {
                   itemCount: _currentBook!.chapters.length,
                   itemBuilder: (context, idx) {
                     final chap = _currentBook!.chapters[idx];
-                    final isSelected = _currentChapter?.chapterNumber == chap.chapterNumber;
+                    final isSelected =
+                        _currentChapter?.chapterNumber == chap.chapterNumber;
 
                     return InkWell(
                       onTap: () {
@@ -740,10 +791,14 @@ class _BibleScreenState extends State<BibleScreen> {
                       child: Container(
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: isSelected ? AppColors.primary : AppColors.surfaceLow,
+                          color: isSelected
+                              ? AppColors.primary
+                              : AppColors.surfaceLow,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                            color: isSelected ? AppColors.primary : AppColors.border,
+                            color: isSelected
+                                ? AppColors.primary
+                                : AppColors.border,
                           ),
                         ),
                         child: Text(
@@ -751,7 +806,9 @@ class _BibleScreenState extends State<BibleScreen> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: isSelected ? AppColors.textWhite : AppColors.textPrimary,
+                            color: isSelected
+                                ? AppColors.textWhite
+                                : AppColors.textPrimary,
                           ),
                         ),
                       ),
@@ -779,8 +836,11 @@ class _BibleScreenState extends State<BibleScreen> {
         return StatefulBuilder(
           builder: (context, setModalState) {
             final filtered = _tenziList.where((h) {
-              final matchNum = h.number.toString().contains(_tenziSearchQuery.trim());
-              final matchTitle = h.title.toLowerCase().contains(_tenziSearchQuery.toLowerCase());
+              final matchNum =
+                  h.number.toString().contains(_tenziSearchQuery.trim());
+              final matchTitle = h.title
+                  .toLowerCase()
+                  .contains(_tenziSearchQuery.toLowerCase());
               return matchNum || matchTitle;
             }).toList();
 
@@ -794,7 +854,8 @@ class _BibleScreenState extends State<BibleScreen> {
                     children: [
                       Text(
                         'Kitabu cha Tenzi za Rohoni',
-                        style: AppTypography.titleMedium(color: AppColors.textPrimary),
+                        style: AppTypography.titleMedium(
+                            color: AppColors.textPrimary),
                       ),
                       IconButton(
                         icon: const Icon(Icons.close_rounded),
@@ -813,7 +874,8 @@ class _BibleScreenState extends State<BibleScreen> {
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
                       ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 16),
                     ),
                     onChanged: (val) {
                       setModalState(() => _tenziSearchQuery = val);
@@ -823,22 +885,30 @@ class _BibleScreenState extends State<BibleScreen> {
                   Expanded(
                     child: ListView.separated(
                       itemCount: filtered.length,
-                      separatorBuilder: (context, index) => const Divider(height: 1),
+                      separatorBuilder: (context, index) =>
+                          const Divider(height: 1),
                       itemBuilder: (context, idx) {
                         final hymn = filtered[idx];
                         final isSel = _selectedTenzi?.number == hymn.number;
 
                         return ListTile(
                           leading: CircleAvatar(
-                            backgroundColor: isSel ? AppColors.primary : AppColors.surfaceLow,
-                            foregroundColor: isSel ? AppColors.textWhite : AppColors.textPrimary,
+                            backgroundColor: isSel
+                                ? AppColors.primary
+                                : AppColors.surfaceLow,
+                            foregroundColor: isSel
+                                ? AppColors.textWhite
+                                : AppColors.textPrimary,
                             child: Text('${hymn.number}'),
                           ),
                           title: Text(
                             hymn.title,
                             style: TextStyle(
-                              fontWeight: isSel ? FontWeight.bold : FontWeight.w500,
-                              color: isSel ? AppColors.primary : AppColors.textPrimary,
+                              fontWeight:
+                                  isSel ? FontWeight.bold : FontWeight.w500,
+                              color: isSel
+                                  ? AppColors.primary
+                                  : AppColors.textPrimary,
                             ),
                           ),
                           subtitle: Text('${hymn.category} • ${hymn.key}'),
@@ -868,60 +938,71 @@ class _BibleScreenState extends State<BibleScreen> {
       builder: (context, _) {
         return Scaffold(
           backgroundColor: AppColors.canvas,
-      appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              _activeModuleIndex == 0 ? 'Biblia' : 'Tenzi',
-              style: AppTypography.titleMedium(color: AppColors.textPrimary),
-            ),
-            Text(
-              _activeModuleIndex == 0
-                  ? '${_currentBook?.bookName ?? ''} ${_currentChapter?.chapterNumber ?? ''}'
-                  : '${_selectedTenzi?.number ?? ''}. ${_selectedTenzi?.title ?? ''}',
-              style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
-            ),
-          ],
-        ),
-        actions: [
-          // Module Switcher Toggle (Bible vs Tenzi)
-          IconButton(
-            icon: Icon(
-              _activeModuleIndex == 0 ? Icons.music_note_rounded : Icons.menu_book_rounded,
-              color: AppColors.primary,
-            ),
-            tooltip: _activeModuleIndex == 0 ? 'Fungua Tenzi' : 'Fungua Biblia',
-            onPressed: () {
-              AppHaptics.lightImpact();
-              _stopAudio();
-              setState(() {
-                _activeModuleIndex = _activeModuleIndex == 0 ? 1 : 0;
-              });
-            },
-          ),
-          // Font size controls
-          IconButton(
-            icon: const Icon(Icons.text_fields_rounded),
-            tooltip: 'Ukubwa wa Maandishi',
-            onPressed: () {
-              setState(() {
-                _fontSize = _fontSize == 16.0 ? 19.0 : _fontSize == 19.0 ? 22.0 : 16.0;
-              });
-            },
-          ),
-        ],
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Stack(
+          appBar: AppBar(
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _activeModuleIndex == 0 ? _buildBibleView() : _buildTenziView(),
-                if (_activeModuleIndex == 0 && _selectedVerseIndex != null)
-                  _buildScriptureActionDock(),
-                if (_isPlayingAudio) _buildFloatingAudioDock(),
+                Text(
+                  _activeModuleIndex == 0 ? 'Biblia' : 'Tenzi',
+                  style:
+                      AppTypography.titleMedium(color: AppColors.textPrimary),
+                ),
+                Text(
+                  _activeModuleIndex == 0
+                      ? '${_currentBook?.bookName ?? ''} ${_currentChapter?.chapterNumber ?? ''}'
+                      : '${_selectedTenzi?.number ?? ''}. ${_selectedTenzi?.title ?? ''}',
+                  style:
+                      TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                ),
               ],
             ),
+            actions: [
+              // Module Switcher Toggle (Bible vs Tenzi)
+              IconButton(
+                icon: Icon(
+                  _activeModuleIndex == 0
+                      ? Icons.music_note_rounded
+                      : Icons.menu_book_rounded,
+                  color: AppColors.primary,
+                ),
+                tooltip:
+                    _activeModuleIndex == 0 ? 'Fungua Tenzi' : 'Fungua Biblia',
+                onPressed: () {
+                  AppHaptics.lightImpact();
+                  _stopAudio();
+                  setState(() {
+                    _activeModuleIndex = _activeModuleIndex == 0 ? 1 : 0;
+                  });
+                },
+              ),
+              // Font size controls
+              IconButton(
+                icon: const Icon(Icons.text_fields_rounded),
+                tooltip: 'Ukubwa wa Maandishi',
+                onPressed: () {
+                  setState(() {
+                    _fontSize = _fontSize == 16.0
+                        ? 19.0
+                        : _fontSize == 19.0
+                            ? 22.0
+                            : 16.0;
+                  });
+                },
+              ),
+            ],
+          ),
+          body: _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Stack(
+                  children: [
+                    _activeModuleIndex == 0
+                        ? _buildBibleView()
+                        : _buildTenziView(),
+                    if (_activeModuleIndex == 0 && _selectedVerseIndex != null)
+                      _buildScriptureActionDock(),
+                    if (_isPlayingAudio) _buildFloatingAudioDock(),
+                  ],
+                ),
         );
       },
     );
@@ -954,7 +1035,8 @@ class _BibleScreenState extends State<BibleScreen> {
                 flex: 2,
                 child: OutlinedButton.icon(
                   onPressed: _showBookSelector,
-                  icon: const Icon(Icons.auto_stories_rounded, size: 16, color: AppColors.primary),
+                  icon: const Icon(Icons.auto_stories_rounded,
+                      size: 16, color: AppColors.primary),
                   label: Text(
                     _currentBook?.bookName ?? 'Chagua Kitabu',
                     style: TextStyle(
@@ -968,8 +1050,10 @@ class _BibleScreenState extends State<BibleScreen> {
                     backgroundColor: AppColors.surfaceLow,
                     foregroundColor: AppColors.textPrimary,
                     side: BorderSide(color: AppColors.border, width: 1.2),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   ),
                 ),
               ),
@@ -982,8 +1066,10 @@ class _BibleScreenState extends State<BibleScreen> {
                   backgroundColor: AppColors.surfaceLow,
                   foregroundColor: AppColors.textPrimary,
                   side: BorderSide(color: AppColors.border, width: 1.2),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 ),
                 child: Text(
                   'Sura ${_currentChapter?.chapterNumber ?? "1"}',
@@ -998,16 +1084,20 @@ class _BibleScreenState extends State<BibleScreen> {
 
               // Translation Toggle
               PopupMenuButton<String>(
-                icon: const Icon(Icons.translate_rounded, color: AppColors.primary),
+                icon: const Icon(Icons.translate_rounded,
+                    color: AppColors.primary),
                 tooltip: 'Badili Tafsiri',
                 onSelected: (val) {
                   _stopAudio();
                   setState(() => _currentTranslation = val);
                 },
                 itemBuilder: (ctx) => [
-                  const PopupMenuItem(value: 'sw', child: Text('Kiswahili (SUV)')),
-                  const PopupMenuItem(value: 'kjv', child: Text('English (KJV)')),
-                  const PopupMenuItem(value: 'parallel', child: Text('Bilingual (Sambamba)')),
+                  const PopupMenuItem(
+                      value: 'sw', child: Text('Kiswahili (SUV)')),
+                  const PopupMenuItem(
+                      value: 'kjv', child: Text('English (KJV)')),
+                  const PopupMenuItem(
+                      value: 'parallel', child: Text('Bilingual (Sambamba)')),
                 ],
               ),
               const SizedBox(width: 4),
@@ -1015,10 +1105,13 @@ class _BibleScreenState extends State<BibleScreen> {
               // Chapter Audio Toggle
               IconButton(
                 icon: Icon(
-                  _isPlayingAudio ? Icons.stop_circle_rounded : Icons.volume_up_rounded,
+                  _isPlayingAudio
+                      ? Icons.stop_circle_rounded
+                      : Icons.volume_up_rounded,
                   color: _isPlayingAudio ? Colors.redAccent : AppColors.primary,
                 ),
-                tooltip: _isPlayingAudio ? 'Simamisha Sauti' : 'Sikiliza Sura Hii',
+                tooltip:
+                    _isPlayingAudio ? 'Simamisha Sauti' : 'Sikiliza Sura Hii',
                 onPressed: () {
                   if (_isPlayingAudio) {
                     _stopAudio();
@@ -1042,7 +1135,8 @@ class _BibleScreenState extends State<BibleScreen> {
                       onTap: _toggleDownloadChapter,
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: _isCurrentChapterDownloaded
                               ? const Color(0xFF16A34A).withOpacity(0.12)
@@ -1058,17 +1152,25 @@ class _BibleScreenState extends State<BibleScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Icon(
-                              _isCurrentChapterDownloaded ? Icons.cloud_done_rounded : Icons.download_rounded,
+                              _isCurrentChapterDownloaded
+                                  ? Icons.cloud_done_rounded
+                                  : Icons.download_rounded,
                               size: 13,
-                              color: _isCurrentChapterDownloaded ? const Color(0xFF16A34A) : AppColors.primary,
+                              color: _isCurrentChapterDownloaded
+                                  ? const Color(0xFF16A34A)
+                                  : AppColors.primary,
                             ),
                             const SizedBox(width: 4),
                             Text(
-                              _isCurrentChapterDownloaded ? '✓ Offline' : 'Pakua',
+                              _isCurrentChapterDownloaded
+                                  ? '✓ Offline'
+                                  : 'Pakua',
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
-                                color: _isCurrentChapterDownloaded ? const Color(0xFF16A34A) : AppColors.primary,
+                                color: _isCurrentChapterDownloaded
+                                    ? const Color(0xFF16A34A)
+                                    : AppColors.primary,
                               ),
                             ),
                           ],
@@ -1093,8 +1195,10 @@ class _BibleScreenState extends State<BibleScreen> {
                   itemCount: _currentChapter!.verses.length,
                   itemBuilder: (context, idx) {
                     final swVerse = _currentChapter!.verses[idx];
-                    final isSpeaking = _isPlayingAudio && _activeSpeakingVerseIndex == idx;
-                    final refKey = '${_currentBook?.bookNumber}:${_currentChapter?.chapterNumber}:${swVerse.verseNumber}';
+                    final isSpeaking =
+                        _isPlayingAudio && _activeSpeakingVerseIndex == idx;
+                    final refKey =
+                        '${_currentBook?.bookNumber}:${_currentChapter?.chapterNumber}:${swVerse.verseNumber}';
                     final isBookmarked = _bookmarkedVerses.contains(refKey);
 
                     // English counterpart for parallel mode
@@ -1106,29 +1210,41 @@ class _BibleScreenState extends State<BibleScreen> {
                       (c) => c.chapterNumber == _currentChapter?.chapterNumber,
                       orElse: () => _currentChapter!,
                     );
-                    final kjvVerse = idx < kjvChapter.verses.length ? kjvChapter.verses[idx] : null;
+                    final kjvVerse = idx < kjvChapter.verses.length
+                        ? kjvChapter.verses[idx]
+                        : null;
 
                     final isSelected = _selectedVerseIndex == idx;
                     final hlIndex = _verseHighlights[refKey];
                     final isDark = ChurchThemeService().isDarkMode;
                     Color? verseBg;
                     if (isSpeaking) {
-                      verseBg = AppColors.primaryContainer.withOpacity(isDark ? 0.4 : 0.2);
+                      verseBg = AppColors.primaryContainer
+                          .withOpacity(isDark ? 0.4 : 0.2);
                     } else if (isSelected) {
-                      verseBg = AppColors.primary.withOpacity(isDark ? 0.25 : 0.12);
+                      verseBg =
+                          AppColors.primary.withOpacity(isDark ? 0.25 : 0.12);
                     } else if (hlIndex != null) {
                       switch (hlIndex) {
                         case 0:
-                          verseBg = isDark ? const Color(0xFF78350F).withOpacity(0.45) : const Color(0xFFFEF3C7);
+                          verseBg = isDark
+                              ? const Color(0xFF78350F).withOpacity(0.45)
+                              : const Color(0xFFFEF3C7);
                           break;
                         case 1:
-                          verseBg = isDark ? const Color(0xFF064E3B).withOpacity(0.45) : const Color(0xFFD1FAE5);
+                          verseBg = isDark
+                              ? const Color(0xFF064E3B).withOpacity(0.45)
+                              : const Color(0xFFD1FAE5);
                           break;
                         case 2:
-                          verseBg = isDark ? const Color(0xFF1E3A8A).withOpacity(0.45) : const Color(0xFFDBEAFE);
+                          verseBg = isDark
+                              ? const Color(0xFF1E3A8A).withOpacity(0.45)
+                              : const Color(0xFFDBEAFE);
                           break;
                         case 3:
-                          verseBg = isDark ? const Color(0xFF881337).withOpacity(0.45) : const Color(0xFFFFE4E6);
+                          verseBg = isDark
+                              ? const Color(0xFF881337).withOpacity(0.45)
+                              : const Color(0xFFFFE4E6);
                           break;
                       }
                     }
@@ -1150,7 +1266,8 @@ class _BibleScreenState extends State<BibleScreen> {
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 150),
                         margin: const EdgeInsets.only(bottom: 8),
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 8),
                         decoration: BoxDecoration(
                           color: verseBg,
                           borderRadius: BorderRadius.circular(10),
@@ -1162,7 +1279,11 @@ class _BibleScreenState extends State<BibleScreen> {
                                     : (hlIndex != null
                                         ? AppColors.gold.withOpacity(0.3)
                                         : Colors.transparent),
-                            width: isSpeaking ? 2 : (isSelected ? 1.5 : (hlIndex != null ? 1 : 0)),
+                            width: isSpeaking
+                                ? 2
+                                : (isSelected
+                                    ? 1.5
+                                    : (hlIndex != null ? 1 : 0)),
                           ),
                         ),
                         child: Row(
@@ -1171,7 +1292,8 @@ class _BibleScreenState extends State<BibleScreen> {
                             // Compact Verse Number Pill
                             Container(
                               margin: const EdgeInsets.only(top: 2, right: 10),
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
                                 color: (isSpeaking || isSelected)
                                     ? AppColors.primary
@@ -1185,9 +1307,10 @@ class _BibleScreenState extends State<BibleScreen> {
                                 style: TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
-                                  color: (isSpeaking || isSelected || isBookmarked)
-                                      ? Colors.white
-                                      : AppColors.textSecondary,
+                                  color:
+                                      (isSpeaking || isSelected || isBookmarked)
+                                          ? Colors.white
+                                          : AppColors.textSecondary,
                                 ),
                               ),
                             ),
@@ -1261,9 +1384,11 @@ class _BibleScreenState extends State<BibleScreen> {
     }
 
     final verse = _currentChapter!.verses[_selectedVerseIndex!];
-    final refKey = '${_currentBook?.bookNumber}:${_currentChapter?.chapterNumber}:${verse.verseNumber}';
+    final refKey =
+        '${_currentBook?.bookNumber}:${_currentChapter?.chapterNumber}:${verse.verseNumber}';
     final isBookmarked = _bookmarkedVerses.contains(refKey);
-    final ref = '${_currentBook?.bookName} ${_currentChapter?.chapterNumber}:${verse.verseNumber}';
+    final ref =
+        '${_currentBook?.bookName} ${_currentChapter?.chapterNumber}:${verse.verseNumber}';
 
     return Positioned(
       left: 16,
@@ -1291,7 +1416,8 @@ class _BibleScreenState extends State<BibleScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withOpacity(0.12),
                       borderRadius: BorderRadius.circular(8),
@@ -1316,7 +1442,8 @@ class _BibleScreenState extends State<BibleScreen> {
                     borderRadius: BorderRadius.circular(16),
                     child: Padding(
                       padding: const EdgeInsets.all(4),
-                      child: Icon(Icons.close_rounded, size: 18, color: AppColors.textSecondary),
+                      child: Icon(Icons.close_rounded,
+                          size: 18, color: AppColors.textSecondary),
                     ),
                   ),
                 ],
@@ -1328,13 +1455,17 @@ class _BibleScreenState extends State<BibleScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _buildColorDot(refKey, 0, const Color(0xFFF59E0B), 'Dhahabu'),
-                    _buildColorDot(refKey, 1, const Color(0xFF10B981), 'Kijani'),
+                    _buildColorDot(
+                        refKey, 0, const Color(0xFFF59E0B), 'Dhahabu'),
+                    _buildColorDot(
+                        refKey, 1, const Color(0xFF10B981), 'Kijani'),
                     _buildColorDot(refKey, 2, const Color(0xFF0D52CD), 'Bluu'),
-                    _buildColorDot(refKey, 3, const Color(0xFFE11D48), 'Waridi'),
+                    _buildColorDot(
+                        refKey, 3, const Color(0xFFE11D48), 'Waridi'),
                     TextButton(
                       onPressed: () => _setHighlight(refKey, -1),
-                      child: const Text('Futa', style: TextStyle(fontSize: 11, color: Colors.red)),
+                      child: const Text('Futa',
+                          style: TextStyle(fontSize: 11, color: Colors.red)),
                     ),
                   ],
                 ),
@@ -1352,7 +1483,8 @@ class _BibleScreenState extends State<BibleScreen> {
                     color: AppColors.goldDark,
                     onTap: () {
                       AppHaptics.lightImpact();
-                      setState(() => _showHighlightPicker = !_showHighlightPicker);
+                      setState(
+                          () => _showHighlightPicker = !_showHighlightPicker);
                     },
                   ),
                   _buildActionButton(
@@ -1367,7 +1499,8 @@ class _BibleScreenState extends State<BibleScreen> {
                     color: AppColors.textPrimary,
                     onTap: () {
                       AppHaptics.lightImpact();
-                      final text = '"${verse.verseText}" - $ref (Zion Jerusalem)';
+                      final text =
+                          '"${verse.verseText}" - $ref (Zion Jerusalem)';
                       Clipboard.setData(ClipboardData(text: text));
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Mstari umenakiliwa!')),
@@ -1380,14 +1513,18 @@ class _BibleScreenState extends State<BibleScreen> {
                     color: const Color(0xFF16A34A),
                     onTap: () {
                       AppHaptics.lightImpact();
-                      final text = '*Biblia Takatifu — $ref*\n\n"${verse.verseText}"\n\n_Sayuni Jerusalem Church_';
+                      final text =
+                          '*Biblia Takatifu — $ref*\n\n"${verse.verseText}"\n\n_Sayuni Jerusalem Church_';
                       Share.share(text);
                     },
                   ),
                   _buildActionButton(
-                    icon: isBookmarked ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
+                    icon: isBookmarked
+                        ? Icons.bookmark_rounded
+                        : Icons.bookmark_border_rounded,
                     label: 'Alamisho',
-                    color: isBookmarked ? AppColors.gold : AppColors.textSecondary,
+                    color:
+                        isBookmarked ? AppColors.gold : AppColors.textSecondary,
                     onTap: () {
                       AppHaptics.lightImpact();
                       setState(() {
@@ -1414,7 +1551,8 @@ class _BibleScreenState extends State<BibleScreen> {
     );
   }
 
-  Widget _buildColorDot(String refKey, int colorIdx, Color color, String tooltip) {
+  Widget _buildColorDot(
+      String refKey, int colorIdx, Color color, String tooltip) {
     final isSelected = _verseHighlights[refKey] == colorIdx;
     return InkWell(
       onTap: () => _setHighlight(refKey, colorIdx),
@@ -1506,7 +1644,8 @@ class _BibleScreenState extends State<BibleScreen> {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.primary,
                     side: BorderSide(color: AppColors.border),
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   ),
                 ),
               ),
@@ -1515,7 +1654,8 @@ class _BibleScreenState extends State<BibleScreen> {
                 icon: const Icon(Icons.share_rounded),
                 onPressed: () {
                   AppHaptics.lightImpact();
-                  final text = '*Tenzi #${hymn.number} — ${hymn.title}* (${hymn.key})\n\n${hymn.stanzas.first.text}\n\n_Sayuni Jerusalem Church_';
+                  final text =
+                      '*Tenzi #${hymn.number} — ${hymn.title}* (${hymn.key})\n\n${hymn.stanzas.first.text}\n\n_Sayuni Jerusalem Church_';
                   Share.share(text);
                 },
               ),
@@ -1526,7 +1666,8 @@ class _BibleScreenState extends State<BibleScreen> {
         // Hymn details & lyrics
         Expanded(
           child: ListView(
-            padding: EdgeInsets.fromLTRB(16, 16, 16, 190.0 + MediaQuery.of(context).padding.bottom),
+            padding: EdgeInsets.fromLTRB(
+                16, 16, 16, 190.0 + MediaQuery.of(context).padding.bottom),
             children: [
               // Header Card
               AppCard(
@@ -1536,30 +1677,39 @@ class _BibleScreenState extends State<BibleScreen> {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
                             color: AppColors.primary,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
                             'Tenzi #${hymn.number}',
-                            style: const TextStyle(color: AppColors.textWhite, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                                color: AppColors.textWhite,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                         const SizedBox(width: 8),
-                        Text(hymn.key, style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.primary)),
+                        Text(hymn.key,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.primary)),
                         const SizedBox(width: 8),
-                        Text(hymn.timeSignature, style: TextStyle(color: AppColors.textSecondary)),
+                        Text(hymn.timeSignature,
+                            style: TextStyle(color: AppColors.textSecondary)),
                       ],
                     ),
                     const SizedBox(height: 8),
                     Text(
                       hymn.title,
-                      style: AppTypography.headlineMedium(color: AppColors.textPrimary),
+                      style: AppTypography.headlineMedium(
+                          color: AppColors.textPrimary),
                     ),
                     Text(
                       hymn.category,
-                      style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                      style: TextStyle(
+                          color: AppColors.textSecondary, fontSize: 13),
                     ),
                   ],
                 ),
@@ -1577,7 +1727,9 @@ class _BibleScreenState extends State<BibleScreen> {
                         radius: 12,
                         backgroundColor: AppColors.primaryContainer,
                         foregroundColor: AppColors.primary,
-                        child: Text('${stanza.verseNumber}', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        child: Text('${stanza.verseNumber}',
+                            style: const TextStyle(
+                                fontSize: 11, fontWeight: FontWeight.bold)),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -1643,7 +1795,8 @@ class _BibleScreenState extends State<BibleScreen> {
   // =========================================================================
   Widget _buildFloatingAudioDock() {
     return Positioned(
-      bottom: (_selectedVerseIndex != null ? 96.0 : 16.0) + MediaQuery.of(context).padding.bottom,
+      bottom: (_selectedVerseIndex != null ? 96.0 : 16.0) +
+          MediaQuery.of(context).padding.bottom,
       left: 16,
       right: 16,
       child: Container(
@@ -1664,7 +1817,8 @@ class _BibleScreenState extends State<BibleScreen> {
             const CircleAvatar(
               radius: 16,
               backgroundColor: AppColors.primary,
-              child: Icon(Icons.volume_up_rounded, size: 18, color: Colors.white),
+              child:
+                  Icon(Icons.volume_up_rounded, size: 18, color: Colors.white),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -1674,13 +1828,20 @@ class _BibleScreenState extends State<BibleScreen> {
                 children: [
                   Text(
                     '${_currentBook?.bookName} ${_currentChapter?.chapterNumber} : Mstari ${(_activeSpeakingVerseIndex ?? 0) + 1}',
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13),
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
-                    _isCurrentChapterDownloaded ? '✓ Sura ya Offline • Inasoma kwa sauti' : 'Inasoma kwa sauti...',
+                    _isCurrentChapterDownloaded
+                        ? '✓ Sura ya Offline • Inasoma kwa sauti'
+                        : 'Inasoma kwa sauti...',
                     style: TextStyle(
-                      color: _isCurrentChapterDownloaded ? const Color(0xFF4ADE80) : Colors.white70,
+                      color: _isCurrentChapterDownloaded
+                          ? const Color(0xFF4ADE80)
+                          : Colors.white70,
                       fontSize: 11,
                     ),
                   ),
@@ -1691,7 +1852,11 @@ class _BibleScreenState extends State<BibleScreen> {
               onPressed: () async {
                 AppHaptics.selectionClick();
                 setState(() {
-                  _speechRate = _speechRate == 0.5 ? 0.6 : _speechRate == 0.6 ? 0.4 : 0.5;
+                  _speechRate = _speechRate == 0.5
+                      ? 0.6
+                      : _speechRate == 0.6
+                          ? 0.4
+                          : 0.5;
                 });
                 await _flutterTts.setSpeechRate(_speechRate);
               },
@@ -1701,7 +1866,11 @@ class _BibleScreenState extends State<BibleScreen> {
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
               child: Text(
-                _speechRate == 0.5 ? '1.0x' : _speechRate == 0.6 ? '1.2x' : '0.8x',
+                _speechRate == 0.5
+                    ? '1.0x'
+                    : _speechRate == 0.6
+                        ? '1.2x'
+                        : '0.8x',
                 style: const TextStyle(
                   color: AppColors.goldLight,
                   fontWeight: FontWeight.bold,

@@ -11,8 +11,18 @@ abstract class AppFormatters {
   /// Formats date in Swahili (e.g. "06 Septemba 2026")
   static String formatSwahiliDate(DateTime date) {
     const swahiliMonths = [
-      'Januari', 'Februari', 'Machi', 'Aprili', 'Mei', 'Juni',
-      'Julai', 'Agosti', 'Septemba', 'Oktoba', 'Novemba', 'Desemba'
+      'Januari',
+      'Februari',
+      'Machi',
+      'Aprili',
+      'Mei',
+      'Juni',
+      'Julai',
+      'Agosti',
+      'Septemba',
+      'Oktoba',
+      'Novemba',
+      'Desemba'
     ];
     final day = date.day.toString().padLeft(2, '0');
     final month = swahiliMonths[date.month - 1];

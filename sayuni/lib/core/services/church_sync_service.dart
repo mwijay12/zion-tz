@@ -27,7 +27,8 @@ class ChurchSyncService extends ChangeNotifier {
   final SupabaseDatabaseService _supabase = SupabaseDatabaseService();
   bool _isInitialized = false;
   Timer? _syncTimer;
-  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _firestoreSubscription;
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+      _firestoreSubscription;
 
   /// Global reactive notifier for live portal / cloud connection status
   static final ValueNotifier<bool> isPortalConnected = ValueNotifier(false);
@@ -40,10 +41,12 @@ class ChurchSyncService extends ChangeNotifier {
       ValueNotifier('Inaunganisha na kanisa...');
 
   /// Global reactive notifier for the in-app top alert banner
-  static final ValueNotifier<ChurchAnnouncement?> currentInAppNotice = ValueNotifier(null);
+  static final ValueNotifier<ChurchAnnouncement?> currentInAppNotice =
+      ValueNotifier(null);
 
   /// Global reactive notifier for live War Room prayers
-  static final ValueNotifier<List<Map<String, dynamic>>> livePrayersNotifier = ValueNotifier([]);
+  static final ValueNotifier<List<Map<String, dynamic>>> livePrayersNotifier =
+      ValueNotifier([]);
 
   /// Set of IDs we have already alerted the user about
   final Set<String> _processedNoticeIds = {};
@@ -104,13 +107,15 @@ class ChurchSyncService extends ChangeNotifier {
         onError: (err) {
           debugPrint('Firestore announcements stream error: $err');
           isCloudConnected.value = false;
-          syncStatusMessage.value = '⚪ Nje ya mtandao — unaona matangazo yaliyohifadhiwa';
+          syncStatusMessage.value =
+              '⚪ Nje ya mtandao — unaona matangazo yaliyohifadhiwa';
         },
       );
     } catch (e) {
       debugPrint('Firestore announcements init stream error: $e');
       isCloudConnected.value = false;
-      syncStatusMessage.value = '⚪ Nje ya mtandao — unaona matangazo yaliyohifadhiwa';
+      syncStatusMessage.value =
+          '⚪ Nje ya mtandao — unaona matangazo yaliyohifadhiwa';
     }
   }
 
@@ -166,7 +171,10 @@ class ChurchSyncService extends ChangeNotifier {
           prefs.getString('zion_prayer_requests');
       if (raw != null && raw.isNotEmpty) {
         final List<dynamic> list = jsonDecode(raw);
-        final mapped = list.whereType<Map>().map((m) => Map<String, dynamic>.from(m)).toList();
+        final mapped = list
+            .whereType<Map>()
+            .map((m) => Map<String, dynamic>.from(m))
+            .toList();
         if (mapped.isNotEmpty) {
           livePrayersNotifier.value = mapped;
         }
@@ -186,7 +194,10 @@ class ChurchSyncService extends ChangeNotifier {
             .timeout(const Duration(milliseconds: 1500));
         if (response.statusCode == 200) {
           final List<dynamic> list = jsonDecode(response.body);
-          final mapped = list.whereType<Map>().map((m) => Map<String, dynamic>.from(m)).toList();
+          final mapped = list
+              .whereType<Map>()
+              .map((m) => Map<String, dynamic>.from(m))
+              .toList();
           if (mapped.isNotEmpty) {
             livePrayersNotifier.value = mapped;
           }
@@ -207,7 +218,8 @@ class ChurchSyncService extends ChangeNotifier {
 
     _processedNoticeIds.add(noticeId);
 
-    final targetAudience = item['targetAudience']?.toString() ?? (item['audience']?.toString() ?? 'all');
+    final targetAudience = item['targetAudience']?.toString() ??
+        (item['audience']?.toString() ?? 'all');
 
     // Create ChurchAnnouncement model
     final announcement = ChurchAnnouncement(
@@ -217,10 +229,13 @@ class ChurchSyncService extends ChangeNotifier {
       date: item['date']?.toString() ?? 'Leo',
       time: item['time']?.toString() ?? 'Saa za Ibada',
       location: item['location']?.toString() ?? 'Hekalu Kuu la Sayuni',
-      summary: item['summary']?.toString() ?? (item['content']?.toString() ?? ''),
-      fullDetails: item['content']?.toString() ?? (item['fullDetails']?.toString() ?? ''),
+      summary:
+          item['summary']?.toString() ?? (item['content']?.toString() ?? ''),
+      fullDetails: item['content']?.toString() ??
+          (item['fullDetails']?.toString() ?? ''),
       preacherOrLeader: 'Ofisi ya Katibu Mkuu wa Kanisa',
-      isHighPriority: item['isUrgent'] == true || item['isHighPriority'] == true,
+      isHighPriority:
+          item['isUrgent'] == true || item['isHighPriority'] == true,
       targetAudience: targetAudience,
       isRead: false,
     );
@@ -230,13 +245,17 @@ class ChurchSyncService extends ChangeNotifier {
 
     // 2. Trigger notifications if relevant to current user
     final auth = ChurchAuthService();
-    final bool shouldAlertUser = announcement.targetAudience == 'all' || auth.isAdmin || auth.isLeader;
+    final bool shouldAlertUser =
+        announcement.targetAudience == 'all' || auth.isAdmin || auth.isLeader;
 
     if (shouldAlertUser) {
       ChurchNotificationService().showLockScreenNotification(
         id: announcement.id.hashCode,
-        title: '${announcement.isForLeaders ? "🔒 " : "📢 "}${announcement.title}',
-        body: announcement.summary.isNotEmpty ? announcement.summary : announcement.fullDetails,
+        title:
+            '${announcement.isForLeaders ? "🔒 " : "📢 "}${announcement.title}',
+        body: announcement.summary.isNotEmpty
+            ? announcement.summary
+            : announcement.fullDetails,
         payload: announcement.id,
       );
 
@@ -287,8 +306,12 @@ class ChurchSyncService extends ChangeNotifier {
         'type': type,
         'category': category,
         'description': 'Mahubiri ya nguvu yaliyowekwa na Utawala wa Kanisa.',
-        'imageUrl': imageUrl ?? (type == 'video' ? 'assets/images/altar.jpg' : 'assets/images/church_front.jpg'),
-        'audioUrl': type == 'audio' ? mediaUrl : 'https://stream.zeno.fm/4v4e91y9sm8uv',
+        'imageUrl': imageUrl ??
+            (type == 'video'
+                ? 'assets/images/altar.jpg'
+                : 'assets/images/church_front.jpg'),
+        'audioUrl':
+            type == 'audio' ? mediaUrl : 'https://stream.zeno.fm/4v4e91y9sm8uv',
         'videoUrl': type == 'video' ? mediaUrl : '',
         'isAdminUpload': true,
       };
@@ -309,11 +332,13 @@ class ChurchSyncService extends ChangeNotifier {
             'http://10.0.2.2:5173/api/sync/sermons',
         ];
         for (final u in urls) {
-          http.post(
-            Uri.parse(u),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode(itemMap),
-          ).catchError((_) => http.Response('', 500));
+          http
+              .post(
+                Uri.parse(u),
+                headers: {'Content-Type': 'application/json'},
+                body: jsonEncode(itemMap),
+              )
+              .catchError((_) => http.Response('', 500));
         }
       } catch (_) {}
 
@@ -347,9 +372,12 @@ class ChurchSyncService extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       if (bishop != null) await prefs.setString('custom_bishop', bishop);
       if (coLeader != null) await prefs.setString('custom_co_leader', coLeader);
-      if (assistant != null) await prefs.setString('custom_assistant', assistant);
-      if (assistantPhone != null) await prefs.setString('custom_assistant_phone', assistantPhone);
-      if (photoUrl != null) await prefs.setString('custom_leadership_photo', photoUrl);
+      if (assistant != null)
+        await prefs.setString('custom_assistant', assistant);
+      if (assistantPhone != null)
+        await prefs.setString('custom_assistant_phone', assistantPhone);
+      if (photoUrl != null)
+        await prefs.setString('custom_leadership_photo', photoUrl);
       notifyListeners();
     } catch (e) {
       debugPrint('ChurchSyncService syncLeadershipInfo error: $e');
@@ -365,7 +393,10 @@ class ChurchSyncService extends ChangeNotifier {
           prefs.getString('zion_prayer_requests');
       if (raw != null && raw.isNotEmpty) {
         final List<dynamic> list = jsonDecode(raw);
-        return list.whereType<Map>().map((m) => Map<String, dynamic>.from(m)).toList();
+        return list
+            .whereType<Map>()
+            .map((m) => Map<String, dynamic>.from(m))
+            .toList();
       }
     } catch (_) {}
     return [];
@@ -384,7 +415,9 @@ class ChurchSyncService extends ChangeNotifier {
           prefs.getString('zion_prayer_requests');
       List<dynamic> list = [];
       if (raw != null && raw.isNotEmpty) {
-        try { list = jsonDecode(raw); } catch (_) {}
+        try {
+          list = jsonDecode(raw);
+        } catch (_) {}
       }
 
       final prayerMap = {
@@ -407,7 +440,10 @@ class ChurchSyncService extends ChangeNotifier {
       await prefs.setString('zion_prayer_requests', encoded);
       await prefs.setString('flutter.zion_prayer_requests', encoded);
 
-      livePrayersNotifier.value = list.whereType<Map>().map((m) => Map<String, dynamic>.from(m)).toList();
+      livePrayersNotifier.value = list
+          .whereType<Map>()
+          .map((m) => Map<String, dynamic>.from(m))
+          .toList();
 
       // Push to Vite Sync API
       final urls = [
@@ -416,11 +452,13 @@ class ChurchSyncService extends ChangeNotifier {
           'http://10.0.2.2:5173/api/sync/prayers',
       ];
       for (final u in urls) {
-        http.post(
-          Uri.parse(u),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(prayerMap),
-        ).catchError((_) => http.Response('', 500));
+        http
+            .post(
+              Uri.parse(u),
+              headers: {'Content-Type': 'application/json'},
+              body: jsonEncode(prayerMap),
+            )
+            .catchError((_) => http.Response('', 500));
       }
 
       notifyListeners();
@@ -441,7 +479,8 @@ class ChurchSyncService extends ChangeNotifier {
         if (item is Map && item['id'] == prayerId) {
           final currentJoined = item['hasJoined'] == true;
           item['hasJoined'] = !currentJoined;
-          item['intercessors'] = ((item['intercessors'] as int? ?? 1) + (!currentJoined ? 1 : -1));
+          item['intercessors'] =
+              ((item['intercessors'] as int? ?? 1) + (!currentJoined ? 1 : -1));
           break;
         }
       }
@@ -450,7 +489,10 @@ class ChurchSyncService extends ChangeNotifier {
       await prefs.setString('zion_prayer_requests', encoded);
       await prefs.setString('flutter.zion_prayer_requests', encoded);
 
-      livePrayersNotifier.value = list.whereType<Map>().map((m) => Map<String, dynamic>.from(m)).toList();
+      livePrayersNotifier.value = list
+          .whereType<Map>()
+          .map((m) => Map<String, dynamic>.from(m))
+          .toList();
       notifyListeners();
     } catch (e) {
       debugPrint('ChurchSyncService togglePrayerStandInGap error: $e');
@@ -466,7 +508,10 @@ class ChurchSyncService extends ChangeNotifier {
           prefs.getString('zion_portal_visitors');
       if (raw != null && raw.isNotEmpty) {
         final List<dynamic> list = jsonDecode(raw);
-        return list.whereType<Map>().map((m) => Map<String, dynamic>.from(m)).toList();
+        return list
+            .whereType<Map>()
+            .map((m) => Map<String, dynamic>.from(m))
+            .toList();
       }
     } catch (_) {}
     return [];
@@ -487,7 +532,9 @@ class ChurchSyncService extends ChangeNotifier {
           prefs.getString('zion_portal_visitors');
       List<dynamic> list = [];
       if (raw != null && raw.isNotEmpty) {
-        try { list = jsonDecode(raw); } catch (_) {}
+        try {
+          list = jsonDecode(raw);
+        } catch (_) {}
       }
 
       final visitorMap = {
@@ -498,7 +545,8 @@ class ChurchSyncService extends ChangeNotifier {
         'firstVisitDate': DateTime.now().toIso8601String().split('T')[0],
         'invitedBy': visitorType,
         'assignedJumuiya': assignedJumuiya,
-        'prayerRequest': prayerRequest.isNotEmpty ? prayerRequest : 'Maombi ya Baraka',
+        'prayerRequest':
+            prayerRequest.isNotEmpty ? prayerRequest : 'Maombi ya Baraka',
         'followUpStatus': 'Mpya',
         'welfareNeeds': interests,
         'registeredByDeacon': 'Simu ya Mkononi (Self-Registered)',
@@ -517,11 +565,13 @@ class ChurchSyncService extends ChangeNotifier {
           'http://10.0.2.2:5173/api/sync/visitors',
       ];
       for (final u in urls) {
-        http.post(
-          Uri.parse(u),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(visitorMap),
-        ).catchError((_) => http.Response('', 500));
+        http
+            .post(
+              Uri.parse(u),
+              headers: {'Content-Type': 'application/json'},
+              body: jsonEncode(visitorMap),
+            )
+            .catchError((_) => http.Response('', 500));
       }
 
       notifyListeners();

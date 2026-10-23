@@ -85,10 +85,13 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
 
   void _submitAppointment() {
     AppHaptics.mediumImpact();
-    if (_selectedDate == null || _selectedTime == null || _reasonController.text.trim().isEmpty) {
+    if (_selectedDate == null ||
+        _selectedTime == null ||
+        _reasonController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Tafadhali jaza tarehe, muda na maelezo mafupi ya miadi.'),
+          content:
+              Text('Tafadhali jaza tarehe, muda na maelezo mafupi ya miadi.'),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -140,7 +143,8 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
           ModuleBanner(
             eyebrow: 'Ushauri • Maombi • Ulinzi',
             title: 'Miadi ya Kichungaji',
-            subtitle: 'Omba muda wa kuonana na mchungaji kwa siri kamili ya kichungaji.',
+            subtitle:
+                'Omba muda wa kuonana na mchungaji kwa siri kamili ya kichungaji.',
             imageAsset: 'assets/images/3d_pastoral_meeting.png',
             gradient: const <Color>[Color(0xFF0E9E8F), Color(0xFF0A2540)],
             stats: <ModuleBannerStat>[
@@ -177,7 +181,8 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(13),
-                        border: Border.all(color: AppColors.primary.withOpacity(0.28)),
+                        border: Border.all(
+                            color: AppColors.primary.withOpacity(0.28)),
                         boxShadow: [
                           BoxShadow(
                             color: AppColors.primary.withOpacity(0.14),
@@ -186,7 +191,8 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                           ),
                         ],
                       ),
-                      child: const Icon(Icons.support_agent_rounded, color: AppColors.primary, size: 22),
+                      child: const Icon(Icons.support_agent_rounded,
+                          color: AppColors.primary, size: 22),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -195,13 +201,16 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                         children: [
                           Text(
                             'Dharura ya Kiroho au Maombi?',
-                            style: AppTypography.bodySmall(color: AppColors.textPrimary).copyWith(
+                            style: AppTypography.bodySmall(
+                                    color: AppColors.textPrimary)
+                                .copyWith(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           Text(
                             'Ofisi ya kichungaji inapatikana Jumanne hadi Jumamosi saa 03:00 - 10:00 Jioni.',
-                            style: AppTypography.caption(color: AppColors.textSecondary),
+                            style: AppTypography.caption(
+                                color: AppColors.textSecondary),
                           ),
                         ],
                       ),
@@ -220,12 +229,15 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                       }
                     },
                     icon: const Icon(Icons.phone_forwarded_rounded, size: 16),
-                    label: const Text('Piga Simu Moja kwa Moja', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                    label: const Text('Piga Simu Moja kwa Moja',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 13)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 10),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                     ),
                   ),
                 ),
@@ -270,29 +282,40 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                       child: Image.asset(
                         'assets/images/3d_counsel.png',
                         fit: BoxFit.contain,
-                        errorBuilder: (BuildContext c, Object e, StackTrace? st) => const SizedBox(),
+                        errorBuilder:
+                            (BuildContext c, Object e, StackTrace? st) =>
+                                const SizedBox(),
                       ),
                     ),
                   ],
                 ),
                 Text(
                   'Omba Miadi Mpya na Mchungaji',
-                  style: AppTypography.titleMedium(color: AppColors.textPrimary).copyWith(
+                  style: AppTypography.titleMedium(color: AppColors.textPrimary)
+                      .copyWith(
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 const SizedBox(height: 14),
 
                 // Pastor selector
-                Text('Mchungaji Unayetaka Kuonana Naye', style: AppTypography.caption(color: AppColors.textSecondary)),
+                Text('Mchungaji Unayetaka Kuonana Naye',
+                    style:
+                        AppTypography.caption(color: AppColors.textSecondary)),
                 const SizedBox(height: 4),
                 DropdownButtonFormField<String>(
                   value: _selectedPastor,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 10),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
                   ),
-                  items: _pastors.map((p) => DropdownMenuItem(value: p, child: Text(p, style: const TextStyle(fontSize: 13)))).toList(),
+                  items: _pastors
+                      .map((p) => DropdownMenuItem(
+                          value: p,
+                          child: Text(p, style: const TextStyle(fontSize: 13))))
+                      .toList(),
                   onChanged: (val) {
                     if (val != null) setState(() => _selectedPastor = val);
                   },
@@ -301,15 +324,23 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                 const SizedBox(height: 12),
 
                 // Category selector
-                Text('Lengo Kuu la Miadi', style: AppTypography.caption(color: AppColors.textSecondary)),
+                Text('Lengo Kuu la Miadi',
+                    style:
+                        AppTypography.caption(color: AppColors.textSecondary)),
                 const SizedBox(height: 4),
                 DropdownButtonFormField<String>(
                   value: _selectedCategory,
                   decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 10),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
                   ),
-                  items: _categories.map((c) => DropdownMenuItem(value: c, child: Text(c, style: const TextStyle(fontSize: 13)))).toList(),
+                  items: _categories
+                      .map((c) => DropdownMenuItem(
+                          value: c,
+                          child: Text(c, style: const TextStyle(fontSize: 13))))
+                      .toList(),
                   onChanged: (val) {
                     if (val != null) setState(() => _selectedCategory = val);
                   },
@@ -323,9 +354,12 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                     Expanded(
                       child: OutlinedButton.icon(
                         onPressed: _pickDate,
-                        icon: const Icon(Icons.calendar_today_rounded, size: 16),
+                        icon:
+                            const Icon(Icons.calendar_today_rounded, size: 16),
                         label: Text(
-                          _selectedDate == null ? 'Chagua Tarehe' : DateFormat('dd/MM/yyyy').format(_selectedDate!),
+                          _selectedDate == null
+                              ? 'Chagua Tarehe'
+                              : DateFormat('dd/MM/yyyy').format(_selectedDate!),
                           style: const TextStyle(fontSize: 12),
                         ),
                         style: OutlinedButton.styleFrom(
@@ -341,7 +375,9 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                         onPressed: _pickTime,
                         icon: const Icon(Icons.access_time_rounded, size: 16),
                         label: Text(
-                          _selectedTime == null ? 'Chagua Saa' : _selectedTime!.format(context),
+                          _selectedTime == null
+                              ? 'Chagua Saa'
+                              : _selectedTime!.format(context),
                           style: const TextStyle(fontSize: 12),
                         ),
                         style: OutlinedButton.styleFrom(
@@ -357,16 +393,21 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                 const SizedBox(height: 12),
 
                 // Notes / Description
-                Text('Maelezo Mafupi (Siri ya Kichungaji)', style: AppTypography.caption(color: AppColors.textSecondary)),
+                Text('Maelezo Mafupi (Siri ya Kichungaji)',
+                    style:
+                        AppTypography.caption(color: AppColors.textSecondary)),
                 const SizedBox(height: 4),
                 TextField(
                   controller: _reasonController,
                   maxLines: 2,
                   decoration: InputDecoration(
                     hintText: 'Eleza kwa ufupi jambo unalotaka kuzungumza...',
-                    hintStyle: AppTypography.caption(color: AppColors.textSecondary),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                    hintStyle:
+                        AppTypography.caption(color: AppColors.textSecondary),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 10),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
                   ),
                 ),
 
@@ -380,9 +421,11 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
                     ),
-                    child: const Text('Wasilisha Ombi la Miadi', style: TextStyle(fontWeight: FontWeight.bold)),
+                    child: const Text('Wasilisha Ombi la Miadi',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
               ],
@@ -402,7 +445,8 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
               Expanded(
                 child: Text(
                   'Maombi Yangu ya Miadi',
-                  style: AppTypography.titleMedium(color: AppColors.textPrimary).copyWith(
+                  style: AppTypography.titleMedium(color: AppColors.textPrimary)
+                      .copyWith(
                     fontWeight: FontWeight.w800,
                   ),
                 ),
@@ -449,12 +493,15 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                       children: [
                         Text(
                           app['pastor'],
-                          style: AppTypography.bodyMedium(color: AppColors.textPrimary).copyWith(
+                          style: AppTypography.bodyMedium(
+                                  color: AppColors.textPrimary)
+                              .copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
                             color: isApproved
                                 ? const Color(0xFFDCFCE7)
@@ -485,27 +532,33 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                     const SizedBox(height: 4),
                     Text(
                       app['category'],
-                      style: AppTypography.caption(color: AppColors.primary).copyWith(
+                      style: AppTypography.caption(color: AppColors.primary)
+                          .copyWith(
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.event_rounded, size: 14, color: AppColors.textSecondary),
+                        Icon(Icons.event_rounded,
+                            size: 14, color: AppColors.textSecondary),
                         const SizedBox(width: 4),
-                        Text('${app['date']} saa ${app['time']}', style: AppTypography.caption(color: AppColors.textSecondary)),
+                        Text('${app['date']} saa ${app['time']}',
+                            style: AppTypography.caption(
+                                color: AppColors.textSecondary)),
                       ],
                     ),
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(Icons.location_on_rounded, size: 14, color: AppColors.textSecondary),
+                        Icon(Icons.location_on_rounded,
+                            size: 14, color: AppColors.textSecondary),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
                             app['location'],
-                            style: AppTypography.caption(color: AppColors.textSecondary),
+                            style: AppTypography.caption(
+                                color: AppColors.textSecondary),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),

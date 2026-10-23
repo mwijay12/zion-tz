@@ -124,7 +124,8 @@ class ModuleBanner extends StatelessWidget {
                 child: Image.asset(
                   imageAsset,
                   fit: BoxFit.contain,
-                  errorBuilder: (BuildContext c, Object e, StackTrace? s) => const Icon(
+                  errorBuilder: (BuildContext c, Object e, StackTrace? s) =>
+                      const Icon(
                     Icons.auto_awesome_rounded,
                     color: AppColors.primary,
                     size: 28,
@@ -140,7 +141,8 @@ class ModuleBanner extends StatelessWidget {
               runSpacing: 8,
               children: stats.map((ModuleBannerStat s) {
                 return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.14),
                     borderRadius: BorderRadius.circular(10),

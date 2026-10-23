@@ -38,8 +38,8 @@ class AppCard extends StatelessWidget {
         ? (isLegacyLightBg ? AppColors.surfaceDark : backgroundColor!)
         : (backgroundColor ?? AppColors.surfaceLight);
 
-    final bool isLegacyLightBorder = borderColor == null ||
-        borderColor == AppColors.borderLight;
+    final bool isLegacyLightBorder =
+        borderColor == null || borderColor == AppColors.borderLight;
 
     final border = isDark
         ? (isLegacyLightBorder ? AppColors.borderDark : borderColor!)
@@ -54,7 +54,9 @@ class AppCard extends StatelessWidget {
         border: Border.all(color: border, width: 1),
         boxShadow: [
           BoxShadow(
-            color: isDark ? Colors.black.withOpacity(0.45) : AppColors.primaryDark.withOpacity(0.06),
+            color: isDark
+                ? Colors.black.withOpacity(0.45)
+                : AppColors.primaryDark.withOpacity(0.06),
             blurRadius: 18,
             offset: const Offset(0, 6),
             spreadRadius: -2,

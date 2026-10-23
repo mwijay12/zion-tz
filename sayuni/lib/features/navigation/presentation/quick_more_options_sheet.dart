@@ -40,7 +40,8 @@ class QuickMoreOptionsSheet extends StatelessWidget {
             context: context,
             isScrollControlled: true,
             backgroundColor: Colors.transparent,
-            builder: (_) => UniversalSearchSheet(onNavigateToTab: onNavigateToTab),
+            builder: (_) =>
+                UniversalSearchSheet(onNavigateToTab: onNavigateToTab),
           );
         },
       },
@@ -51,7 +52,8 @@ class QuickMoreOptionsSheet extends StatelessWidget {
         'color': AppColors.gold,
         'action': () {
           Navigator.pop(context);
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const ConnectCardScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const ConnectCardScreen()));
         },
       },
       {
@@ -61,7 +63,8 @@ class QuickMoreOptionsSheet extends StatelessWidget {
         'color': const Color(0xFF0284C7),
         'action': () {
           Navigator.pop(context);
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const ChurchBranchesScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const ChurchBranchesScreen()));
         },
       },
       {
@@ -71,7 +74,8 @@ class QuickMoreOptionsSheet extends StatelessWidget {
         'color': const Color(0xFF16A34A),
         'action': () {
           Navigator.pop(context);
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const GivingScreen()));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => const GivingScreen()));
         },
       },
       {
@@ -81,7 +85,8 @@ class QuickMoreOptionsSheet extends StatelessWidget {
         'color': const Color(0xFFDC2626),
         'action': () {
           Navigator.pop(context);
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const PrayerWarRoomScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const PrayerWarRoomScreen()));
         },
       },
       {
@@ -91,7 +96,8 @@ class QuickMoreOptionsSheet extends StatelessWidget {
         'color': const Color(0xFF8B5CF6),
         'action': () {
           Navigator.pop(context);
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const AppointmentsScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const AppointmentsScreen()));
         },
       },
       {
@@ -101,7 +107,8 @@ class QuickMoreOptionsSheet extends StatelessWidget {
         'color': const Color(0xFFF59E0B),
         'action': () {
           Navigator.pop(context);
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const NotesScreen()));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => const NotesScreen()));
         },
       },
       {
@@ -111,7 +118,10 @@ class QuickMoreOptionsSheet extends StatelessWidget {
         'color': const Color(0xFF10B981),
         'action': () {
           Navigator.pop(context);
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const DiscipleshipGrowthScreen()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => const DiscipleshipGrowthScreen()));
         },
       },
     ];
@@ -174,18 +184,21 @@ class QuickMoreOptionsSheet extends StatelessWidget {
                             children: [
                               Text(
                                 'Huduma Zote za Sayuni',
-                                style: AppTypography.titleMedium(color: AppColors.textPrimary),
+                                style: AppTypography.titleMedium(
+                                    color: AppColors.textPrimary),
                               ),
                               Text(
                                 'Fikia vitu vyote muhimu bila kusumbuka',
-                                style: AppTypography.caption(color: AppColors.textMuted),
+                                style: AppTypography.caption(
+                                    color: AppColors.textMuted),
                               ),
                             ],
                           ),
                         ],
                       ),
                       IconButton(
-                        icon: Icon(Icons.close_rounded, color: AppColors.textPrimary),
+                        icon: Icon(Icons.close_rounded,
+                            color: AppColors.textPrimary),
                         onPressed: () => Navigator.pop(context),
                       ),
                     ],
@@ -197,7 +210,8 @@ class QuickMoreOptionsSheet extends StatelessWidget {
                     child: GridView.builder(
                       shrinkWrap: true,
                       physics: const BouncingScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
                         childAspectRatio: 1.55,
                         crossAxisSpacing: 10,
@@ -236,7 +250,8 @@ class QuickMoreOptionsSheet extends StatelessWidget {
                                         padding: const EdgeInsets.all(6),
                                         decoration: BoxDecoration(
                                           color: color.withOpacity(0.14),
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                         ),
                                         child: Icon(
                                           item['icon'] as IconData,
@@ -248,7 +263,8 @@ class QuickMoreOptionsSheet extends StatelessWidget {
                                       Icon(
                                         Icons.arrow_forward_ios_rounded,
                                         size: 11,
-                                        color: AppColors.textMuted.withOpacity(0.6),
+                                        color: AppColors.textMuted
+                                            .withOpacity(0.6),
                                       ),
                                     ],
                                   ),
@@ -293,24 +309,30 @@ class QuickMoreOptionsSheet extends StatelessWidget {
                         child: OutlinedButton.icon(
                           onPressed: () {
                             AppHaptics.lightImpact();
-                            final newMode = isDark ? ThemeMode.light : ThemeMode.dark;
+                            final newMode =
+                                isDark ? ThemeMode.light : ThemeMode.dark;
                             themeService.setThemeMode(newMode);
                           },
                           icon: Icon(
-                            isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                            isDark
+                                ? Icons.light_mode_rounded
+                                : Icons.dark_mode_rounded,
                             size: 16,
                             color: AppColors.gold,
                           ),
                           label: Text(
                             isDark ? 'Hali ya Mchana' : 'Hali ya Usiku',
-                            style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                                fontSize: 11.5, fontWeight: FontWeight.bold),
                           ),
                           style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: AppColors.gold.withOpacity(0.6)),
+                            side: BorderSide(
+                                color: AppColors.gold.withOpacity(0.6)),
                             backgroundColor: AppColors.surfaceContainer,
                             foregroundColor: AppColors.textPrimary,
                             padding: const EdgeInsets.symmetric(vertical: 10),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
                       ),
@@ -319,22 +341,26 @@ class QuickMoreOptionsSheet extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: () async {
                             AppHaptics.lightImpact();
-                            final cleanPhone = ChurchProfile.pastoralHelpline.replaceAll(' ', '');
+                            final cleanPhone = ChurchProfile.pastoralHelpline
+                                .replaceAll(' ', '');
                             final uri = Uri.parse('tel:$cleanPhone');
                             if (await canLaunchUrl(uri)) {
                               await launchUrl(uri);
                             }
                           },
-                          icon: const Icon(Icons.support_agent_rounded, size: 16),
+                          icon:
+                              const Icon(Icons.support_agent_rounded, size: 16),
                           label: const Text(
                             'Wasiliana na Ofisi',
-                            style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 11.5, fontWeight: FontWeight.bold),
                           ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 10),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
                       ),

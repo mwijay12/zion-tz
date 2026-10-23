@@ -18,8 +18,10 @@ class CloudinaryMediaService {
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final activeCloudName = prefs.getString('setting_cloudinary_cloud_name') ?? cloudName;
-      final uri = Uri.parse('https://api.cloudinary.com/v1_1/$activeCloudName/$resourceType/upload');
+      final activeCloudName =
+          prefs.getString('setting_cloudinary_cloud_name') ?? cloudName;
+      final uri = Uri.parse(
+          'https://api.cloudinary.com/v1_1/$activeCloudName/$resourceType/upload');
       final request = http.MultipartRequest('POST', uri);
 
       request.fields['upload_preset'] = uploadPreset;
@@ -39,7 +41,8 @@ class CloudinaryMediaService {
         final data = jsonDecode(response.body);
         return data['secure_url'] as String?;
       } else {
-        debugPrint('Cloudinary upload warning (${response.statusCode}): ${response.body}');
+        debugPrint(
+            'Cloudinary upload warning (${response.statusCode}): ${response.body}');
         return null;
       }
     } catch (e) {

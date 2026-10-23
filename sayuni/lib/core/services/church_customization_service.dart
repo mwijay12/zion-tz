@@ -10,7 +10,9 @@ ImageProvider getChurchImageProvider(String? imagePath, String fallbackAsset) {
   if (imagePath == null || imagePath.isEmpty) {
     return AssetImage(fallbackAsset);
   }
-  if (imagePath.startsWith('http://') || imagePath.startsWith('https://') || imagePath.startsWith('blob:')) {
+  if (imagePath.startsWith('http://') ||
+      imagePath.startsWith('https://') ||
+      imagePath.startsWith('blob:')) {
     return NetworkImage(imagePath);
   }
   if (kIsWeb) {
@@ -45,34 +47,36 @@ class CustomSermonItem {
   });
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'title': title,
-    'preacher': preacher,
-    'scripture': scripture,
-    'duration': duration,
-    'mediaUrl': mediaUrl,
-    'type': type,
-    'category': category,
-    'thumbnailUrl': thumbnailUrl,
-    'isYouTube': isYouTube,
-  };
+        'id': id,
+        'title': title,
+        'preacher': preacher,
+        'scripture': scripture,
+        'duration': duration,
+        'mediaUrl': mediaUrl,
+        'type': type,
+        'category': category,
+        'thumbnailUrl': thumbnailUrl,
+        'isYouTube': isYouTube,
+      };
 
-  factory CustomSermonItem.fromJson(Map<String, dynamic> json) => CustomSermonItem(
-    id: json['id'] ?? '',
-    title: json['title'] ?? '',
-    preacher: json['preacher'] ?? '',
-    scripture: json['scripture'] ?? '',
-    duration: json['duration'] ?? '',
-    mediaUrl: json['mediaUrl'] ?? '',
-    type: json['type'] ?? 'video',
-    category: json['category'] ?? 'Mahubiri',
-    thumbnailUrl: json['thumbnailUrl'],
-    isYouTube: json['isYouTube'] == true,
-  );
+  factory CustomSermonItem.fromJson(Map<String, dynamic> json) =>
+      CustomSermonItem(
+        id: json['id'] ?? '',
+        title: json['title'] ?? '',
+        preacher: json['preacher'] ?? '',
+        scripture: json['scripture'] ?? '',
+        duration: json['duration'] ?? '',
+        mediaUrl: json['mediaUrl'] ?? '',
+        type: json['type'] ?? 'video',
+        category: json['category'] ?? 'Mahubiri',
+        thumbnailUrl: json['thumbnailUrl'],
+        isYouTube: json['isYouTube'] == true,
+      );
 }
 
 class ChurchCustomizationService extends ChangeNotifier {
-  static final ChurchCustomizationService _instance = ChurchCustomizationService._internal();
+  static final ChurchCustomizationService _instance =
+      ChurchCustomizationService._internal();
   factory ChurchCustomizationService() => _instance;
   ChurchCustomizationService._internal();
 
@@ -110,10 +114,14 @@ class ChurchCustomizationService extends ChangeNotifier {
     if (_isInitialized) return;
     try {
       final prefs = await SharedPreferences.getInstance();
-      _bishopName = prefs.getString('custom_bishop') ?? ChurchProfile.headBishop;
-      _coLeaderName = prefs.getString('custom_co_leader') ?? ChurchProfile.pastorCoLeader;
-      _assistantPastor = prefs.getString('custom_assistant') ?? ChurchProfile.assistantPastor;
-      _assistantPhone = prefs.getString('custom_assistant_phone') ?? ChurchProfile.assistantPastorPhone;
+      _bishopName =
+          prefs.getString('custom_bishop') ?? ChurchProfile.headBishop;
+      _coLeaderName =
+          prefs.getString('custom_co_leader') ?? ChurchProfile.pastorCoLeader;
+      _assistantPastor =
+          prefs.getString('custom_assistant') ?? ChurchProfile.assistantPastor;
+      _assistantPhone = prefs.getString('custom_assistant_phone') ??
+          ChurchProfile.assistantPastorPhone;
 
       _leadershipPhoto = prefs.getString('custom_leadership_photo');
       _womenPhoto = prefs.getString('custom_women_photo');
@@ -123,27 +131,30 @@ class ChurchCustomizationService extends ChangeNotifier {
 
       // Load sermons
       final rawSermons = prefs.getStringList('custom_admin_sermons_v2') ?? [];
-      _customSermons = rawSermons.map((line) {
-        final parts = line.split('||');
-        if (parts.length >= 7) {
-          final url = parts[5];
-          final isYt = isYouTubeUrl(url);
-          final thumb = isYt ? getYouTubeThumbnail(url) : null;
-          return CustomSermonItem(
-            id: parts[0],
-            title: parts[1],
-            preacher: parts[2],
-            scripture: parts[3],
-            duration: parts[4],
-            mediaUrl: parts[5],
-            type: parts[6],
-            category: parts.length > 7 ? parts[7] : 'Mahubiri',
-            isYouTube: isYt,
-            thumbnailUrl: thumb,
-          );
-        }
-        return null;
-      }).whereType<CustomSermonItem>().toList();
+      _customSermons = rawSermons
+          .map((line) {
+            final parts = line.split('||');
+            if (parts.length >= 7) {
+              final url = parts[5];
+              final isYt = isYouTubeUrl(url);
+              final thumb = isYt ? getYouTubeThumbnail(url) : null;
+              return CustomSermonItem(
+                id: parts[0],
+                title: parts[1],
+                preacher: parts[2],
+                scripture: parts[3],
+                duration: parts[4],
+                mediaUrl: parts[5],
+                type: parts[6],
+                category: parts.length > 7 ? parts[7] : 'Mahubiri',
+                isYouTube: isYt,
+                thumbnailUrl: thumb,
+              );
+            }
+            return null;
+          })
+          .whereType<CustomSermonItem>()
+          .toList();
 
       _isInitialized = true;
       notifyListeners();
@@ -183,7 +194,9 @@ class ChurchCustomizationService extends ChangeNotifier {
 
   // Update photo paths
   Future<void> updateLeadershipPhoto(String? pathOrUrl) async {
-    _leadershipPhoto = (pathOrUrl != null && pathOrUrl.trim().isNotEmpty) ? pathOrUrl.trim() : null;
+    _leadershipPhoto = (pathOrUrl != null && pathOrUrl.trim().isNotEmpty)
+        ? pathOrUrl.trim()
+        : null;
     final prefs = await SharedPreferences.getInstance();
     if (_leadershipPhoto != null) {
       await prefs.setString('custom_leadership_photo', _leadershipPhoto!);
@@ -197,7 +210,9 @@ class ChurchCustomizationService extends ChangeNotifier {
     required String fellowshipKey, // 'women' | 'youth' | 'men' | 'sundayschool'
     required String? pathOrUrl,
   }) async {
-    final value = (pathOrUrl != null && pathOrUrl.trim().isNotEmpty) ? pathOrUrl.trim() : null;
+    final value = (pathOrUrl != null && pathOrUrl.trim().isNotEmpty)
+        ? pathOrUrl.trim()
+        : null;
     final prefs = await SharedPreferences.getInstance();
 
     switch (fellowshipKey) {
@@ -260,7 +275,8 @@ class ChurchCustomizationService extends ChangeNotifier {
         if (uri.queryParameters.containsKey('v')) {
           return uri.queryParameters['v'];
         }
-        if (uri.pathSegments.contains('live') || uri.pathSegments.contains('embed')) {
+        if (uri.pathSegments.contains('live') ||
+            uri.pathSegments.contains('embed')) {
           return uri.pathSegments.last;
         }
       }
@@ -292,7 +308,10 @@ class ChurchCustomizationService extends ChangeNotifier {
   Future<void> addSermon(CustomSermonItem item) async {
     _customSermons.insert(0, item);
     final prefs = await SharedPreferences.getInstance();
-    final list = _customSermons.map((s) => '${s.id}||${s.title}||${s.preacher}||${s.scripture}||${s.duration}||${s.mediaUrl}||${s.type}||${s.category}').toList();
+    final list = _customSermons
+        .map((s) =>
+            '${s.id}||${s.title}||${s.preacher}||${s.scripture}||${s.duration}||${s.mediaUrl}||${s.type}||${s.category}')
+        .toList();
     await prefs.setStringList('custom_admin_sermons_v2', list);
     notifyListeners();
   }
@@ -300,7 +319,10 @@ class ChurchCustomizationService extends ChangeNotifier {
   Future<void> deleteSermon(String id) async {
     _customSermons.removeWhere((s) => s.id == id);
     final prefs = await SharedPreferences.getInstance();
-    final list = _customSermons.map((s) => '${s.id}||${s.title}||${s.preacher}||${s.scripture}||${s.duration}||${s.mediaUrl}||${s.type}||${s.category}').toList();
+    final list = _customSermons
+        .map((s) =>
+            '${s.id}||${s.title}||${s.preacher}||${s.scripture}||${s.duration}||${s.mediaUrl}||${s.type}||${s.category}')
+        .toList();
     await prefs.setStringList('custom_admin_sermons_v2', list);
     notifyListeners();
   }

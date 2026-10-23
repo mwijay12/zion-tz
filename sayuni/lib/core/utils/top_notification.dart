@@ -117,7 +117,8 @@ class _TopAlertWidget extends StatefulWidget {
   State<_TopAlertWidget> createState() => _TopAlertWidgetState();
 }
 
-class _TopAlertWidgetState extends State<_TopAlertWidget> with SingleTickerProviderStateMixin {
+class _TopAlertWidgetState extends State<_TopAlertWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animController;
   late Animation<double> _slideAnimation;
   late Animation<double> _fadeAnimation;
@@ -132,7 +133,8 @@ class _TopAlertWidgetState extends State<_TopAlertWidget> with SingleTickerProvi
     _slideAnimation = Tween<double>(begin: -60.0, end: 0.0).animate(
       CurvedAnimation(parent: _animController, curve: Curves.easeOutBack),
     );
-    _fadeAnimation = CurvedAnimation(parent: _animController, curve: Curves.easeIn);
+    _fadeAnimation =
+        CurvedAnimation(parent: _animController, curve: Curves.easeIn);
     _animController.forward();
   }
 
@@ -210,7 +212,8 @@ class _TopAlertWidgetState extends State<_TopAlertWidget> with SingleTickerProvi
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        if (widget.message != null && widget.message!.isNotEmpty) ...[
+                        if (widget.message != null &&
+                            widget.message!.isNotEmpty) ...[
                           const SizedBox(height: 2),
                           Text(
                             widget.message!,
@@ -234,7 +237,8 @@ class _TopAlertWidgetState extends State<_TopAlertWidget> with SingleTickerProvi
                         color: Colors.white.withOpacity(0.1),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.close_rounded, size: 16, color: Colors.white70),
+                      child: const Icon(Icons.close_rounded,
+                          size: 16, color: Colors.white70),
                     ),
                   ),
                 ],

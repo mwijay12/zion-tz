@@ -108,7 +108,8 @@ class _BookHubScreenState extends State<BookHubScreen> {
                                 boxShadow: isSelected
                                     ? [
                                         BoxShadow(
-                                          color: AppColors.primary.withOpacity(0.35),
+                                          color: AppColors.primary
+                                              .withOpacity(0.35),
                                           blurRadius: 8,
                                           offset: const Offset(0, 2),
                                         ),

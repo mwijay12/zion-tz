@@ -2,14 +2,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 import 'core/services/app_language_service.dart';
 import 'core/services/church_audio_service.dart';
 import 'core/services/church_auth_service.dart';
 import 'core/services/church_notification_service.dart';
- import 'core/services/church_sync_service.dart';
+import 'core/services/church_sync_service.dart';
 import 'core/services/database_service.dart';
 import 'core/theme/church_theme_service.dart';
 import 'features/auth/presentation/onboarding_auth_screen.dart';
@@ -21,7 +20,8 @@ void main() async {
 
   if (kIsWeb) {
     databaseFactory = databaseFactoryFfiWeb;
-  } else if (defaultTargetPlatform == TargetPlatform.windows || defaultTargetPlatform == TargetPlatform.linux) {
+  } else if (defaultTargetPlatform == TargetPlatform.windows ||
+      defaultTargetPlatform == TargetPlatform.linux) {
     databaseFactory = databaseFactoryFfi;
   }
 
@@ -68,19 +68,27 @@ void main() async {
     debugPrint('Auth service init error: $e');
   }
 
-  // Initialize Background Audio Service
-  try {
-    await ChurchAudioService.init();
-  } catch (e) {
-    debugPrint('Audio service init error: $e');
-  }
-
   // Initialize Lock Screen Notification Service & Reminders
   try {
     await ChurchNotificationService().init();
   } catch (e) {
     debugPrint('Notification init error: $e');
   }
+
+  // Media audio: one AudioService-backed handler owns the only audio player.
+  // Android 13+ needs the notification permission before the media
+  // notification (and therefore the lock-screen controls) can be shown.
+  try {
+    await ChurchAudioService.requestNotificationPermission();
+    await ChurchAudioService.init();
+    await ChurchAudioService().bind();
+  } catch (e) {
+    debugPrint('Audio service init error: $e');
+  }
+
+  // NOTE: playback is intentionally never stopped from app lifecycle events
+  // (paused/inactive) - background audio must survive home button, screen
+  // lock and app switching. See ZionAudioHandler / ChurchAudioService.
 
   // Initialize Real-time Web Portal Announcement Synchronization Bridge
   try {
@@ -127,7 +135,8 @@ class SayuniApp extends StatelessWidget {
           scrollBehavior: const MaterialScrollBehavior().copyWith(
             physics: const BouncingScrollPhysics(),
           ),
-          home: isOnboarded ? const MainScaffold() : const OnboardingAuthScreen(),
+          home:
+              isOnboarded ? const MainScaffold() : const OnboardingAuthScreen(),
         );
       },
     );

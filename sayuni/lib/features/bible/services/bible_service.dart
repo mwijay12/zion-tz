@@ -51,9 +51,11 @@ class BibleService {
         String jsonString;
         try {
           // Load full 66-book Swahili Bible
-          jsonString = await rootBundle.loadString('assets/bible/full_version.json');
+          jsonString =
+              await rootBundle.loadString('assets/bible/full_version.json');
         } catch (_) {
-          jsonString = await rootBundle.loadString('assets/bible/agano_jipya.json');
+          jsonString =
+              await rootBundle.loadString('assets/bible/agano_jipya.json');
         }
 
         final Map<String, dynamic> data = json.decode(jsonString);
@@ -71,7 +73,8 @@ class BibleService {
   Future<List<TenziHymn>> loadTenzi() async {
     if (_cachedTenzi != null) return _cachedTenzi!;
     try {
-      final jsonString = await rootBundle.loadString('assets/hymns/tenzi_za_rohoni.json');
+      final jsonString =
+          await rootBundle.loadString('assets/hymns/tenzi_za_rohoni.json');
       final List<dynamic> list = json.decode(jsonString);
       _cachedTenzi = list
           .map((h) => TenziHymn.fromJson(h as Map<String, dynamic>))

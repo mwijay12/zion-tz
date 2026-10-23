@@ -6,6 +6,7 @@ import '../../../core/theme/church_theme_service.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../core/utils/top_notification.dart';
 import '../../../core/widgets/app_card.dart';
+import '../../../core/widgets/module_decor.dart';
 
 class DiscipleshipGrowthScreen extends StatefulWidget {
   const DiscipleshipGrowthScreen({super.key});
@@ -171,12 +172,26 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          ModuleBanner(
+            eyebrow: 'Roadmap ya Uanafunzi',
+            title: 'Safari ya Kiroho',
+            subtitle: 'Fuatilia hatua zako za ukuaji kutoka Wokovu hadi Utumishi.',
+            imageAsset: 'assets/images/3d_growth_steps.png',
+            gradient: const <Color>[Color(0xFF16A34A), Color(0xFF0A2540)],
+            stats: <ModuleBannerStat>[
+              ModuleBannerStat('$completedCount/${_milestones.length}', 'Hatua'),
+              const ModuleBannerStat('7', 'Vigawanyo'),
+              const ModuleBannerStat('Biblia', 'Msingi'),
+            ],
+          ),
+          const SizedBox(height: 18),
+
           // Growth Ring Progress Card
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF0A2540), Color(0xFF031B4E)],
+                colors: [Color(0xFF0D52CD), Color(0xFF031B4E)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -202,7 +217,7 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
                         value: progress,
                         strokeWidth: 8,
                         backgroundColor: Colors.white.withOpacity(0.15),
-                        valueColor: const AlwaysStoppedAnimation<Color>(AppColors.goldLight),
+                        valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primaryLight),
                       ),
                     ),
                     Text(
@@ -222,7 +237,7 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
                     children: [
                       Text(
                         'MTI WA UANAFUNZI WA SAYUNI',
-                        style: AppTypography.caption(color: AppColors.goldLight).copyWith(
+                        style: AppTypography.caption(color: AppColors.primaryLight).copyWith(
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1.0,
                         ),
@@ -272,8 +287,8 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
                   icon: const Icon(Icons.school_rounded, size: 16),
                   label: const Text('Darasa la Msingi'),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.goldDark,
-                    side: const BorderSide(color: AppColors.gold),
+                    foregroundColor: const Color(0xFF7C3AED),
+                    side: const BorderSide(color: Color(0xFF7C3AED)),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
                 ),
@@ -284,10 +299,15 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
           const SizedBox(height: 20),
 
           // Timeline of Milestones
+          const ModuleSectionLabel(
+            label: 'Mti wa Uanafunzi',
+            color: Color(0xFF16A34A),
+          ),
+          const SizedBox(height: 8),
           Text(
             'Hatua za Safari Yako',
             style: AppTypography.titleMedium(color: AppColors.textPrimary).copyWith(
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w800,
             ),
           ),
           const SizedBox(height: 12),
@@ -296,6 +316,7 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
             final milestone = _milestones[idx];
             final isCompleted = milestone['isCompleted'] as bool;
             final isLast = idx == _milestones.length - 1;
+            final stepColor = ModuleAccents.at(idx);
 
             return Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,16 +330,16 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
                         width: 38,
                         height: 38,
                         decoration: BoxDecoration(
-                          color: isCompleted ? const Color(0xFF16A34A) : AppColors.surface,
+                          color: isCompleted ? stepColor : AppColors.surface,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: isCompleted ? const Color(0xFF16A34A) : AppColors.border,
+                            color: isCompleted ? stepColor : AppColors.border,
                             width: 2,
                           ),
                           boxShadow: [
                             if (isCompleted)
                               BoxShadow(
-                                color: const Color(0xFF16A34A).withOpacity(0.3),
+                                color: stepColor.withOpacity(0.32),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),
@@ -335,7 +356,7 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
                       Container(
                         width: 2,
                         height: 70,
-                        color: isCompleted ? const Color(0xFF16A34A).withOpacity(0.5) : AppColors.border,
+                        color: isCompleted ? stepColor.withOpacity(0.45) : AppColors.border,
                       ),
                   ],
                 ),
@@ -347,7 +368,7 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
                     padding: const EdgeInsets.only(bottom: 14),
                     child: AppCard(
                       borderColor: isCompleted
-                          ? const Color(0xFF16A34A).withOpacity(0.3)
+                          ? stepColor.withOpacity(0.38)
                           : AppColors.border,
                       padding: const EdgeInsets.all(14),
                       child: Column(
@@ -375,7 +396,7 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
                           const SizedBox(height: 2),
                           Text(
                             milestone['scripture'],
-                            style: AppTypography.caption(color: AppColors.primary).copyWith(
+                            style: AppTypography.caption(color: stepColor).copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                           ),

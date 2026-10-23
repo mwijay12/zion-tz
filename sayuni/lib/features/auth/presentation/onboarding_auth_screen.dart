@@ -326,12 +326,12 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                       decoration: BoxDecoration(
                         color: surfaceColor,
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: AppColors.gold, width: 1.2),
+                        border: Border.all(color: AppColors.primaryLight.withOpacity(0.7), width: 1.2),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.language_rounded, size: 16, color: AppColors.gold),
+                          const Icon(Icons.language_rounded, size: 16, color: AppColors.primary),
                           const SizedBox(width: 6),
                           Text(
                             _langService.isEnglish ? 'English' : 'Kiswahili',
@@ -349,7 +349,7 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
               ),
               const SizedBox(height: 12),
 
-              // Church Logo - Increased Size for Prominence
+              // Church Logo - balanced size, clean blue-toned ring
               const SizedBox(height: 12),
               TweenAnimationBuilder<double>(
                 tween: Tween<double>(begin: 0.0, end: 1.0),
@@ -362,40 +362,41 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
-                      // Animated Glow Background (Midnight Sanctuary Theme - Subtle & Modern)
+                      // Soft blue halo only (no heavy gold ring around the logo)
                       Container(
-                        width: 300,
-                        height: 300,
+                        width: 216,
+                        height: 216,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primary.withOpacity(0.2),
-                              blurRadius: 60,
-                              spreadRadius: 15,
+                              color: AppColors.primary.withOpacity(0.16),
+                              blurRadius: 38,
+                              spreadRadius: 6,
                             ),
                           ],
                         ),
                       ),
-                      // The Church Logo - Zoomed and Fitting Perfectly (No yellow edges)
+                      // The Church Logo - cropped so the gold letter-ring of the
+                      // raw asset is hidden and only the blue medallion reads.
                       Container(
-                        width: 290,
-                        height: 290,
+                        width: 168,
+                        height: 168,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.gold.withOpacity(0.7), width: 5.5),
+                          border: Border.all(color: AppColors.primary.withOpacity(0.22), width: 2.2),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.25),
-                              blurRadius: 30,
-                              offset: const Offset(0, 15),
+                              color: AppColors.primaryDark.withOpacity(0.18),
+                              blurRadius: 18,
+                              offset: const Offset(0, 8),
                             ),
                           ],
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: Transform.scale(
-                          scale: 1.15, // Zooming in to remove unwanted yellow borders from the original asset
+                          scale: 1.32,
                           child: Image.asset(
                             'assets/images/zion_logo.png',
                             fit: BoxFit.cover,
@@ -450,9 +451,10 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                         sw: 'Hekalu Kuu la Ushindi • Mbagala Kwa Matope',
                       ),
                       style: const TextStyle(
-                        color: AppColors.gold,
+                        color: AppColors.primary,
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
+                        letterSpacing: 0.2,
                       ),
                     ),
                   ],
@@ -820,20 +822,20 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(height: 1, width: 30, color: AppColors.gold.withOpacity(0.3)),
+            Container(height: 1, width: 30, color: AppColors.primary.withOpacity(0.25)),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Text(
                 _langService.t(en: 'QUICK DEMO ACCESS', sw: 'INGIA HARAKA (MAJARIBIO)'),
                 style: const TextStyle(
-                  color: AppColors.gold,
+                  color: AppColors.primary,
                   fontSize: 10,
                   fontWeight: FontWeight.w900,
                   letterSpacing: 1.0,
                 ),
               ),
             ),
-            Container(height: 1, width: 30, color: AppColors.gold.withOpacity(0.3)),
+            Container(height: 1, width: 30, color: AppColors.primary.withOpacity(0.25)),
           ],
         ),
         const SizedBox(height: 12),
@@ -845,7 +847,7 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
             _buildLeaderButton('Askofu', 'pastor', Icons.account_balance_rounded, AppColors.primary),
             _buildLeaderButton('Katibu', 'secretary', Icons.description_rounded, Colors.blue),
             _buildLeaderButton('Hazina', 'treasurer', Icons.account_balance_wallet_rounded, Colors.teal),
-            _buildLeaderButton(_langService.t(en: 'Member', sw: 'Muumini'), 'member', Icons.person_rounded, AppColors.gold),
+            _buildLeaderButton(_langService.t(en: 'Member', sw: 'Muumini'), 'member', Icons.person_rounded, AppColors.primaryLight),
           ],
         ),
       ],
@@ -864,7 +866,7 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: AppColors.gold.withOpacity(0.3), width: 1.5),
+              border: Border.all(color: AppColors.primaryLight.withOpacity(0.35), width: 1.4),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.05),
@@ -878,7 +880,11 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
           const SizedBox(height: 8),
           Text(
             label,
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.gold),
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textPrimaryLight,
+            ),
           ),
         ],
       ),

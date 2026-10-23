@@ -87,27 +87,32 @@ Ubarikiwe na Mungu wa Sayuni!
               title: Row(
               children: [
                 Container(
-                  width: 52,
-                  height: 52,
+                  width: 40,
+                  height: 40,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.gold, width: 2),
+                    border: Border.all(color: AppColors.primaryLight.withOpacity(0.45), width: 1.2),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
+                        color: AppColors.primary.withOpacity(0.22),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
                     ],
                   ),
                   clipBehavior: Clip.antiAlias,
-                  child: Image.asset(
-                    'assets/images/zion_logo.png',
-                    fit: BoxFit.contain,
+                  // Zoomed + cropped so the heavy gold letter-ring of the raw
+                  // asset no longer shows around the medallion.
+                  child: Transform.scale(
+                    scale: 1.3,
+                    child: Image.asset(
+                      'assets/images/zion_logo.png',
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 11),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -483,7 +488,7 @@ Ubarikiwe na Mungu wa Sayuni!
         final primaryColor = ChurchThemeService().primaryColor;
 
         return AppCard(
-          borderColor: AppColors.gold.withOpacity(0.5),
+          borderColor: AppColors.primary.withOpacity(0.22),
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -493,17 +498,18 @@ Ubarikiwe na Mungu wa Sayuni!
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.gold, width: 2),
+                      border: Border.all(
+                          color: AppColors.primaryLight.withOpacity(isDark ? 0.55 : 0.45), width: 1.4),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.gold.withOpacity(0.25),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
+                          color: AppColors.primary.withOpacity(0.20),
+                          blurRadius: 10,
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
                     child: CircleAvatar(
-                      radius: 28,
+                      radius: 24,
                       backgroundColor: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
                       backgroundImage: getChurchImageProvider(
                         customService.leadershipPhoto,
@@ -519,13 +525,13 @@ Ubarikiwe na Mungu wa Sayuni!
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                           decoration: BoxDecoration(
-                            color: AppColors.gold.withOpacity(0.15),
+                            color: AppColors.primary.withOpacity(0.10),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: const Text(
                             'UONGOZI WA KIROHO',
                             style: TextStyle(
-                              color: AppColors.goldDark,
+                              color: AppColors.primary,
                               fontSize: 9.5,
                               fontWeight: FontWeight.w900,
                               letterSpacing: 0.8,
@@ -655,14 +661,18 @@ Ubarikiwe na Mungu wa Sayuni!
   }
 
   Widget _buildQuickActionGrid() {
-    return GridView.count(
+    return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 12,
-      childAspectRatio: 1.4,
-      children: [
+      padding: EdgeInsets.zero,
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 288,
+        mainAxisExtent: 146,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+      ),
+      itemCount: 4,
+      itemBuilder: (context, i) => <Widget>[
         _buildActionTile(
           title: 'Biblia Takatifu',
           subtitle: 'Agano la Kale & Jipya',
@@ -674,7 +684,7 @@ Ubarikiwe na Mungu wa Sayuni!
           title: 'Sadaka & Zaka',
           subtitle: 'M-Pesa, Tigo & Benki',
           imageAsset: 'assets/images/3d_offering.png',
-          accentColor: AppColors.gold,
+          accentColor: const Color(0xFF0E9E8F),
           onTap: () {
             AppHaptics.lightImpact();
             Navigator.push(
@@ -703,24 +713,28 @@ Ubarikiwe na Mungu wa Sayuni!
           accentColor: const Color(0xFF16A34A),
           onTap: () => widget.onNavigateToTab(1), // Community tab (Jumuiya, War Room, Branches)
         ),
-      ],
+      ][i],
     );
   }
 
   Widget _buildBranchesAndMinistryHub() {
-    return GridView.count(
+    return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 12,
-      childAspectRatio: 1.32,
-      children: [
+      padding: EdgeInsets.zero,
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 288,
+        mainAxisExtent: 146,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+      ),
+      itemCount: 4,
+      itemBuilder: (context, i) => <Widget>[
         _buildActionTile(
           title: 'Matawi ya Kanisa',
           subtitle: 'Mikoa 8 & Misheni',
-          imageAsset: 'assets/images/3d_branches.png',
-          accentColor: AppColors.gold,
+          imageAsset: 'assets/images/3d_branch_network.png',
+          accentColor: const Color(0xFF0284C7),
           onTap: () {
             AppHaptics.lightImpact();
             Navigator.push(
@@ -768,7 +782,7 @@ Ubarikiwe na Mungu wa Sayuni!
             );
           },
         ),
-      ],
+      ][i],
     );
   }
 
@@ -782,23 +796,42 @@ Ubarikiwe na Mungu wa Sayuni!
   }) {
     return AppCard(
       onTap: onTap,
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.fromLTRB(13, 11, 13, 11),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: imageAsset != null ? Colors.transparent : accentColor.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(10),
+          // Icon plate is height-capped and clipped, so the 3D artwork can
+          // never spill over the card edge.
+          SizedBox(
+            height: 52,
+            child: FittedBox(
+              alignment: Alignment.centerLeft,
+              fit: BoxFit.contain,
+              child: imageAsset != null
+                  ? SizedBox(
+                      width: 52,
+                      height: 52,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 2),
+                        child: Image.asset(imageAsset, fit: BoxFit.contain),
+                      ),
+                    )
+                  : Container(
+                      width: 46,
+                      height: 46,
+                      decoration: BoxDecoration(
+                        color: accentColor.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(icon, color: accentColor, size: 22),
+                    ),
             ),
-            child: imageAsset != null
-                ? Image.asset(imageAsset, width: 64, height: 64, fit: BoxFit.contain)
-                : Icon(icon, color: accentColor, size: 22),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 title,
@@ -834,12 +867,14 @@ Ubarikiwe na Mungu wa Sayuni!
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.goldContainer,
+                      color: AppColors.primaryContainer,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       devotional.category,
-                      style: AppTypography.caption(color: AppColors.onGoldContainer),
+                      style: AppTypography.caption(color: AppColors.onPrimaryFixed).copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -921,7 +956,7 @@ Ubarikiwe na Mungu wa Sayuni!
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.church_rounded, size: 18, color: AppColors.gold),
+              const Icon(Icons.church_rounded, size: 18, color: AppColors.primary),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(

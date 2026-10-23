@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../core/widgets/app_card.dart';
+import '../../../core/widgets/module_decor.dart';
 
 class AppointmentsScreen extends StatefulWidget {
   const AppointmentsScreen({super.key});
@@ -136,19 +137,57 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          ModuleBanner(
+            eyebrow: 'Ushauri • Maombi • Ulinzi',
+            title: 'Miadi ya Kichungaji',
+            subtitle: 'Omba muda wa kuonana na mchungaji kwa siri kamili ya kichungaji.',
+            imageAsset: 'assets/images/3d_pastoral_meeting.png',
+            gradient: const <Color>[Color(0xFF0E9E8F), Color(0xFF0A2540)],
+            stats: <ModuleBannerStat>[
+              ModuleBannerStat('${_myAppointments.length}', 'Maombi Yangu'),
+              const ModuleBannerStat('24h', 'Majibu'),
+              const ModuleBannerStat('Siri', '100%'),
+            ],
+          ),
+          const SizedBox(height: 16),
+
           // Emergency Helpline Banner
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.08),
+              gradient: LinearGradient(
+                colors: [
+                  AppColors.primary.withOpacity(0.10),
+                  AppColors.primaryLight.withOpacity(0.07),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.primary.withOpacity(0.2)),
+              border: Border.all(color: AppColors.primary.withOpacity(0.22)),
             ),
             child: Column(
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.support_agent_rounded, color: AppColors.primary, size: 28),
+                    Container(
+                      width: 42,
+                      height: 42,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(13),
+                        border: Border.all(color: AppColors.primary.withOpacity(0.28)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withOpacity(0.14),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(Icons.support_agent_rounded, color: AppColors.primary, size: 22),
+                    ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
@@ -202,10 +241,44 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          ModuleSectionLabel(
+                            label: 'Fomu ya Ombi',
+                            color: AppColors.primary,
+                          ),
+                          SizedBox(height: 8),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 46,
+                      height: 42,
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: const Color(0xFF7C3AED).withOpacity(0.28),
+                        ),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: Image.asset(
+                        'assets/images/3d_counsel.png',
+                        fit: BoxFit.contain,
+                        errorBuilder: (BuildContext c, Object e, StackTrace? st) => const SizedBox(),
+                      ),
+                    ),
+                  ],
+                ),
                 Text(
                   'Omba Miadi Mpya na Mchungaji',
                   style: AppTypography.titleMedium(color: AppColors.textPrimary).copyWith(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
                 const SizedBox(height: 14),
@@ -319,13 +392,39 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
           const SizedBox(height: 24),
 
           // Submitted Appointments
-          Text(
-            'Maombi Yangu ya Miadi',
-            style: AppTypography.titleMedium(color: AppColors.textPrimary).copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+          const ModuleSectionLabel(
+            label: 'Historia ya Maombi',
+            color: Color(0xFF7C3AED),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Maombi Yangu ya Miadi',
+                  style: AppTypography.titleMedium(color: AppColors.textPrimary).copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.10),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '${_myAppointments.length}',
+                  style: const TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 11.5,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
 
           ..._myAppointments.map((app) {
             final status = app['status'] as String;
@@ -335,11 +434,12 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: AppCard(
-                borderColor: isApproved
-                    ? const Color(0xFF16A34A).withOpacity(0.3)
-                    : isPending
-                        ? Colors.orangeAccent.withOpacity(0.3)
-                        : AppColors.border,
+                borderColor: (isApproved
+                        ? const Color(0xFF16A34A)
+                        : isPending
+                            ? const Color(0xFF7C3AED)
+                            : const Color(0xFF0284C7))
+                    .withOpacity(0.34),
                 padding: const EdgeInsets.all(14),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -357,10 +457,10 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
                             color: isApproved
-                                ? const Color(0xFF16A34A).withOpacity(0.15)
+                                ? const Color(0xFFDCFCE7)
                                 : isPending
-                                    ? Colors.orangeAccent.withOpacity(0.15)
-                                    : AppColors.border.withOpacity(0.5),
+                                    ? const Color(0xFFEDE9FE)
+                                    : const Color(0xFFE0F2FE),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
@@ -373,10 +473,10 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
                               color: isApproved
-                                  ? const Color(0xFF16A34A)
+                                  ? const Color(0xFF15803D)
                                   : isPending
-                                      ? Colors.orange[800]
-                                      : AppColors.textSecondary,
+                                      ? const Color(0xFF6D28D9)
+                                      : const Color(0xFF0369A1),
                             ),
                           ),
                         ),

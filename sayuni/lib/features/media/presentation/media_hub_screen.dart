@@ -15,9 +15,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../notes/presentation/notes_screen.dart';
-import '../../choir/presentation/choir_screen.dart';
 import 'online_radio_screen.dart';
-import 'tenzi_screen.dart';
 import '../../../core/services/radio_browser_service.dart';
 
 class SermonMediaItem {
@@ -99,7 +97,6 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
     'Yote',
     'Radio za Injili',
     'Mahubiri',
-    'Tenzi za Rohoni',
     'Mafundisho',
   ];
 
@@ -1628,53 +1625,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                 ),
               ),
 
-            // Tenzi za Rohoni Entry
-            if (_selectedCategory == 'Yote' || _selectedCategory == 'Tenzi za Rohoni')
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  child: AppCard(
-                    backgroundColor: AppColors.surface,
-                    borderColor: AppColors.border,
-                    onTap: () {
-                      AppHaptics.mediumImpact();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const TenziScreen()),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: AppColors.gold.withOpacity(0.12),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.menu_book_rounded, color: AppColors.gold, size: 22),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Tenzi za Rohoni (Pentecostal)',
-                                style: AppTypography.titleSmall(color: AppColors.textPrimary).copyWith(fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                'Nyimbo za sifa na kuabudu kutoka kwa Tenzi',
-                                style: AppTypography.caption(color: AppColors.textSecondary),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Icon(Icons.arrow_forward_ios_rounded, size: 16, color: AppColors.textMuted),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+            // NOTE: "Tenzi za Rohoni" hupatikana kwenye kichupo cha Biblia
+            // (Book tab) ili kuepuka kurudia tenzi mbili kwenye application.
 
             // Sermons List
             if (sermons.isEmpty)

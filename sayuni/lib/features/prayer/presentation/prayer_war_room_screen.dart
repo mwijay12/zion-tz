@@ -10,6 +10,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../core/utils/top_notification.dart';
 import '../../../core/widgets/app_card.dart';
+import '../../../core/widgets/module_decor.dart';
 
 class PrayerWarRoomScreen extends StatefulWidget {
   const PrayerWarRoomScreen({super.key});
@@ -364,6 +365,19 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 140),
       child: Column(
         children: [
+          ModuleBanner(
+            eyebrow: 'War Room • Mfungo • Maombi',
+            title: 'Chumba cha Maombi',
+            subtitle: 'Simama pamoja na jamii katika vita vya kiroho masaa yote.',
+            imageAsset: 'assets/images/3d_intercession.png',
+            gradient: const <Color>[Color(0xFF7C3AED), Color(0xFF0A2540)],
+            stats: const <ModuleBannerStat>[
+              ModuleBannerStat('21', 'Siku za Mfungo'),
+              ModuleBannerStat('24/7', 'Maombi'),
+            ],
+          ),
+          const SizedBox(height: 18),
+
           // Hero Timer Card
           Container(
             padding: const EdgeInsets.all(24),
@@ -387,11 +401,11 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.local_fire_department_rounded, color: AppColors.goldLight, size: 20),
+                    const Icon(Icons.local_fire_department_rounded, color: AppColors.primaryLight, size: 20),
                     const SizedBox(width: 8),
                     Text(
                       'MFUNGO WA SAYUNI 2026',
-                      style: AppTypography.caption(color: AppColors.goldLight).copyWith(
+                      style: AppTypography.caption(color: AppColors.primaryLight).copyWith(
                         letterSpacing: 1.2,
                         fontWeight: FontWeight.bold,
                       ),
@@ -550,7 +564,7 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
           if (idx == 0) {
             return AppCard(
               backgroundColor: const Color(0xFF0A2540),
-              borderColor: AppColors.gold.withOpacity(0.5),
+              borderColor: AppColors.primaryLight.withOpacity(0.55),
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -560,10 +574,14 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: AppColors.gold.withOpacity(0.2),
+                          color: AppColors.primaryLight.withOpacity(0.22),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.phone_in_talk_rounded, color: AppColors.gold, size: 22),
+                        child: const Icon(
+                          Icons.phone_in_talk_rounded,
+                          color: AppColors.primaryLight,
+                          size: 22,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -581,7 +599,7 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
                             Text(
                               'Mch. Msaidizi Alex • ${ChurchProfile.assistantPastorPhone}',
                               style: const TextStyle(
-                                color: AppColors.goldLight,
+                                color: AppColors.primaryLight,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -610,8 +628,8 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen> with SingleTi
                       icon: const Icon(Icons.call_rounded, size: 18),
                       label: const Text('Piga Simu Moja kwa Moja'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.gold,
-                        foregroundColor: const Color(0xFF0A2540),
+                        backgroundColor: AppColors.primaryLight,
+                        foregroundColor: const Color(0xFF062A4E),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),

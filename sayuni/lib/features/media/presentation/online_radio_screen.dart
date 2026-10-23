@@ -6,6 +6,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../core/widgets/app_card.dart';
+import 'now_playing_screen.dart';
 
 class OnlineRadioScreen extends StatefulWidget {
   final String initialCategory;
@@ -225,6 +226,9 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
     } else {
       _audioService.playRadioBrowserStation(station);
       _radioService.registerStationClick(station.stationuuid);
+      // Open the player immediately so buffering / stream errors (with Retry)
+      // are visible instead of a silent spinner on the station row.
+      NowPlayingScreen.open(context);
     }
   }
 

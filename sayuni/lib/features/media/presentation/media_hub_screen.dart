@@ -17,6 +17,7 @@ import '../../../core/widgets/app_card.dart';
 import '../../notes/presentation/notes_screen.dart';
 import 'online_radio_screen.dart';
 import '../../../core/services/radio_browser_service.dart';
+import 'now_playing_screen.dart';
 
 class SermonMediaItem {
   final String id;
@@ -2340,6 +2341,7 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                         audio.togglePlayPause();
                       } else {
                         audio.playRadioBrowserStation(station);
+                        NowPlayingScreen.open(context);
                         RadioBrowserService()
                             .registerStationClick(station.stationuuid);
                       }

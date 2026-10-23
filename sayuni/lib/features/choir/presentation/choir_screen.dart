@@ -10,6 +10,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../core/widgets/app_card.dart';
+import '../../media/presentation/now_playing_screen.dart';
 
 class ChoirSongItem {
   final String id;
@@ -307,6 +308,7 @@ Kutoka kizazi hata kizazi!''',
     if (_audioService.currentTrack?.id == song.id) {
       _audioService.togglePlayPause();
     } else {
+      NowPlayingScreen.open(context);
       _audioService.playTrack(
         id: song.id,
         title: song.title,

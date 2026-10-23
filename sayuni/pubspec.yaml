@@ -59,6 +59,7 @@ dependencies:
   just_audio: any
   audio_session: any
   rxdart: any
+  file_picker: ^8.1.2
 
 dev_dependencies:
   flutter_test:

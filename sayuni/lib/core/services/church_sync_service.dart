@@ -283,6 +283,7 @@ class ChurchSyncService extends ChangeNotifier {
     required String category,
     required String mediaUrl,
     String? imageUrl,
+    String? description,
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -305,7 +306,9 @@ class ChurchSyncService extends ChangeNotifier {
         'duration': duration,
         'type': type,
         'category': category,
-        'description': 'Mahubiri ya nguvu yaliyowekwa na Utawala wa Kanisa.',
+        'description': (description != null && description.trim().isNotEmpty)
+            ? description.trim()
+            : 'Mahubiri ya nguvu yaliyowekwa na Utawala wa Kanisa.',
         'imageUrl': imageUrl ??
             (type == 'video'
                 ? 'assets/images/altar.jpg'

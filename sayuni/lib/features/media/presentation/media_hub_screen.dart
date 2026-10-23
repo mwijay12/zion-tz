@@ -1,20 +1,18 @@
 import 'dart:convert';
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/church_profile.dart';
 import '../../../core/services/church_audio_service.dart';
 import '../../../core/services/church_auth_service.dart';
 import '../../../core/services/church_sync_service.dart';
-import '../../../core/services/cloudinary_media_service.dart';
 import '../../../core/services/church_customization_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../notes/presentation/notes_screen.dart';
+import 'admin_media_upload_sheet.dart';
 import 'online_radio_screen.dart';
 import '../../../core/services/radio_browser_service.dart';
 import 'now_playing_screen.dart';
@@ -102,6 +100,10 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
     'Radio za Injili',
     'Mahubiri',
     'Mafundisho',
+    'Kwaya',
+    'Tenzi',
+    'Biblia',
+    'Podcasts',
   ];
 
   List<SermonMediaItem> _customSermons = [];
@@ -197,704 +199,79 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
     }).toList();
   }
 
-  Widget _buildAdminField(
-    TextEditingController controller,
-    String label,
-    IconData icon,
-    String hint, {
-    int maxLines = 1,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF162235),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.primary.withOpacity(0.35)),
-      ),
-      child: TextField(
-        controller: controller,
-        maxLines: maxLines,
-        cursorColor: AppColors.primaryLight,
-        style: const TextStyle(
-            color: Colors.white, fontSize: 13.5, fontWeight: FontWeight.w500),
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: const Color(0xFF162235),
-          labelText: label,
-          labelStyle:
-              const TextStyle(color: AppColors.primaryLight, fontSize: 12),
-          hintText: hint,
-          hintStyle:
-              TextStyle(color: Colors.white.withOpacity(0.4), fontSize: 12),
-          prefixIcon: Icon(icon, color: AppColors.primaryLight, size: 18),
-          border: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-          ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        ),
-      ),
-    );
-  }
-
+  /// Admin upload flow. The heavy lifting (picker, Cloudinary transport,
+  /// validation, error/retry UI) lives in [AdminMediaUploadSheet]; this method
+  /// only publishes the verified record into the church library.
   void _showAdminUploadVideoDialog() {
     AppHaptics.mediumImpact();
-    final titleCtrl = TextEditingController();
-    final preacherCtrl = TextEditingController(text: ChurchProfile.headBishop);
-    final scriptureCtrl = TextEditingController();
-    final urlCtrl = TextEditingController();
-    final durationCtrl = TextEditingController(text: '45 min');
-    final descCtrl = TextEditingController();
-    String mediaType = 'video';
-    String category = 'Mahubiri';
-    String sourceMode = 'gallery'; // 'gallery' | 'link'
-    XFile? pickedVideo;
-    String? pickedVideoName;
-    bool isPicking = false;
-    bool isUploading = false;
+    final messenger = ScaffoldMessenger.of(context);
 
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-              child: Container(
-                padding: EdgeInsets.fromLTRB(
-                    20, 16, 20, MediaQuery.of(ctx).viewInsets.bottom + 24),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFF0A2540), Color(0xFF0F3E7A)],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-                ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Container(
-                          width: 44,
-                          height: 5,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: AppColors.gold.withOpacity(0.2),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                                Icons.admin_panel_settings_rounded,
-                                color: AppColors.gold,
-                                size: 20),
-                          ),
-                          const SizedBox(width: 10),
-                          const Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Ongeza Video / Hubiri Jipya',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                                Text(
-                                  'Sehemu ya Administrator • Maktaba ya Simu au Kiungo',
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 11,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () => Navigator.pop(ctx),
-                            icon: const Icon(Icons.close_rounded,
-                                color: Colors.white70),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
+    AdminMediaUploadSheet.show(
+      context,
+      onPublish: (media) async {
+        final now = DateTime.now();
+        final newItem = SermonMediaItem(
+          id: media.id,
+          title: media.title,
+          preacher: media.preacher.trim().isNotEmpty
+              ? media.preacher.trim()
+              : ChurchProfile.headBishop,
+          scripture: media.scripture.trim().isNotEmpty
+              ? media.scripture.trim()
+              : 'Zaburi 121:1-8',
+          date: 'Leo, ${now.day}/${now.month}/${now.year}',
+          duration: media.duration.trim().isEmpty ? '45 min' : media.duration,
+          type: media.type,
+          category: media.category,
+          description: media.description.trim().isNotEmpty
+              ? media.description.trim()
+              : 'Ujumbe wa kiroho uliowekwa na Utawala wa Sayuni.',
+          imageUrl: 'assets/images/church_front.jpg',
+          audioUrl: media.type == 'audio'
+              ? media.url
+              : 'https://stream.zeno.fm/4v4e91y9sm8uv',
+          videoUrl: media.type == 'video' ? media.url : '',
+          isAdminUpload: true,
+        );
 
-                      // Media Type Selector (Video vs Audio)
-                      Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () =>
-                                  setModalState(() => mediaType = 'video'),
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                decoration: BoxDecoration(
-                                  color: mediaType == 'video'
-                                      ? AppColors.primary
-                                      : Colors.white.withOpacity(0.08),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: mediaType == 'video'
-                                        ? Colors.white
-                                        : Colors.white24,
-                                  ),
-                                ),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.videocam_rounded,
-                                        color: Colors.white, size: 18),
-                                    SizedBox(width: 6),
-                                    Text('Video ya Hubiri',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12)),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () =>
-                                  setModalState(() => mediaType = 'audio'),
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 10),
-                                decoration: BoxDecoration(
-                                  color: mediaType == 'audio'
-                                      ? AppColors.gold
-                                      : Colors.white.withOpacity(0.08),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: mediaType == 'audio'
-                                        ? Colors.white
-                                        : Colors.white24,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.audiotrack_rounded,
-                                        color: mediaType == 'audio'
-                                            ? const Color(0xFF0A2540)
-                                            : Colors.white,
-                                        size: 18),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      'Sauti / Audio',
-                                      style: TextStyle(
-                                        color: mediaType == 'audio'
-                                            ? const Color(0xFF0A2540)
-                                            : Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 14),
-
-                      // Dual Source Selector: Gallery / Device Library vs Online Link
-                      Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.25),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: Colors.white12),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () =>
-                                    setModalState(() => sourceMode = 'gallery'),
-                                child: Container(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8),
-                                  decoration: BoxDecoration(
-                                    color: sourceMode == 'gallery'
-                                        ? AppColors.primary
-                                        : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.video_library_rounded,
-                                        size: 16,
-                                        color: sourceMode == 'gallery'
-                                            ? Colors.white
-                                            : Colors.white70,
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        'Kutoka Maktaba (Library)',
-                                        style: TextStyle(
-                                          fontSize: 11.5,
-                                          fontWeight: sourceMode == 'gallery'
-                                              ? FontWeight.bold
-                                              : FontWeight.normal,
-                                          color: sourceMode == 'gallery'
-                                              ? Colors.white
-                                              : Colors.white70,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () =>
-                                    setModalState(() => sourceMode = 'link'),
-                                child: Container(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8),
-                                  decoration: BoxDecoration(
-                                    color: sourceMode == 'link'
-                                        ? AppColors.primary
-                                        : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.link_rounded,
-                                        size: 16,
-                                        color: sourceMode == 'link'
-                                            ? Colors.white
-                                            : Colors.white70,
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        'Kiungo cha Mtandaoni (Link)',
-                                        style: TextStyle(
-                                          fontSize: 11.5,
-                                          fontWeight: sourceMode == 'link'
-                                              ? FontWeight.bold
-                                              : FontWeight.normal,
-                                          color: sourceMode == 'link'
-                                              ? Colors.white
-                                              : Colors.white70,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-
-                      // Device Library Upload Picker Card
-                      if (sourceMode == 'gallery')
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF162235),
-                            borderRadius: BorderRadius.circular(14),
-                            border: Border.all(
-                              color: pickedVideo != null
-                                  ? AppColors.gold
-                                  : AppColors.primary.withOpacity(0.35),
-                              width: 1.2,
-                            ),
-                          ),
-                          child: Column(
-                            children: [
-                              if (pickedVideo == null) ...[
-                                const Icon(Icons.cloud_upload_rounded,
-                                    color: AppColors.gold, size: 36),
-                                const SizedBox(height: 8),
-                                const Text(
-                                  'Chagua Video Kutoka Maktaba ya Simu yako',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13),
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 4),
-                                const Text(
-                                  'Inasaidia faili za MP4, MOV au WebM kutoka gallery',
-                                  style: TextStyle(
-                                      color: Colors.white70, fontSize: 11),
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(height: 10),
-                                ElevatedButton.icon(
-                                  onPressed: isPicking
-                                      ? null
-                                      : () async {
-                                          AppHaptics.lightImpact();
-                                          setModalState(() => isPicking = true);
-                                          try {
-                                            final picker = ImagePicker();
-                                            final XFile? file =
-                                                await picker.pickVideo(
-                                              source: ImageSource.gallery,
-                                            );
-                                            if (file != null) {
-                                              setModalState(() {
-                                                pickedVideo = file;
-                                                pickedVideoName = file.name;
-                                                urlCtrl.text = file.path;
-                                              });
-                                            }
-                                          } catch (e) {
-                                            debugPrint('Video pick error: $e');
-                                          } finally {
-                                            setModalState(
-                                                () => isPicking = false);
-                                          }
-                                        },
-                                  icon: isPicking
-                                      ? const SizedBox(
-                                          width: 16,
-                                          height: 16,
-                                          child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                              color: Colors.white),
-                                        )
-                                      : const Icon(
-                                          Icons.video_collection_rounded,
-                                          size: 18),
-                                  label: Text(isPicking
-                                      ? 'Inafungua Maktaba...'
-                                      : 'Fungua Maktaba ya Kifaa'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.primary,
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 10),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                  ),
-                                ),
-                              ] else ...[
-                                Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFF16A34A)
-                                            .withOpacity(0.2),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: const Icon(
-                                          Icons.check_circle_rounded,
-                                          color: Color(0xFF22C55E),
-                                          size: 24),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            'Video Imechaguliwa Kutoka Maktaba!',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 12.5,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 2),
-                                          Text(
-                                            pickedVideoName ?? 'video.mp4',
-                                            style: const TextStyle(
-                                              color: AppColors.gold,
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () async {
-                                        AppHaptics.lightImpact();
-                                        try {
-                                          final picker = ImagePicker();
-                                          final XFile? file =
-                                              await picker.pickVideo(
-                                            source: ImageSource.gallery,
-                                          );
-                                          if (file != null) {
-                                            setModalState(() {
-                                              pickedVideo = file;
-                                              pickedVideoName = file.name;
-                                              urlCtrl.text = file.path;
-                                            });
-                                          }
-                                        } catch (_) {}
-                                      },
-                                      child: const Text('Badili',
-                                          style: TextStyle(
-                                              color: AppColors.primaryLight,
-                                              fontSize: 12)),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ],
-                          ),
-                        )
-                      else
-                        _buildAdminField(
-                          urlCtrl,
-                          'URL ya Video / Audio (YouTube / Cloudinary / MP4)',
-                          Icons.link_rounded,
-                          'https://www.youtube.com/watch?v=... au https://res.cloudinary.com/...',
-                        ),
-
-                      const SizedBox(height: 10),
-
-                      // Input Fields
-                      _buildAdminField(titleCtrl, 'Kichwa cha Hubiri / Somo',
-                          Icons.title_rounded, 'Mf. Nuru ya Sayuni Inang\'aa'),
-                      const SizedBox(height: 10),
-                      _buildAdminField(preacherCtrl, 'Mhubiri / Mtumishi',
-                          Icons.person_rounded, 'Askofu Messi Mgala'),
-                      const SizedBox(height: 10),
-                      _buildAdminField(scriptureCtrl, 'Mstari wa Biblia',
-                          Icons.menu_book_rounded, 'Isaya 60:1-3'),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildAdminField(durationCtrl, 'Muda',
-                                Icons.timer_rounded, '45 min'),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.08),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                    color: AppColors.gold.withOpacity(0.35)),
-                              ),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: category,
-                                  dropdownColor: const Color(0xFF0F2644),
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold),
-                                  isExpanded: true,
-                                  items: [
-                                    'Mahubiri',
-                                    'Mafundisho',
-                                    'Kwaya',
-                                    'Podcasts'
-                                  ].map((c) {
-                                    return DropdownMenuItem(
-                                        value: c, child: Text(c));
-                                  }).toList(),
-                                  onChanged: (val) {
-                                    if (val != null)
-                                      setModalState(() => category = val);
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      _buildAdminField(
-                          descCtrl,
-                          'Maelezo ya Hubiri',
-                          Icons.description_rounded,
-                          'Ujumbe wa ukombozi kutoka Sayuni...',
-                          maxLines: 2),
-                      const SizedBox(height: 18),
-
-                      // Submit Button
-                      SizedBox(
-                        width: double.infinity,
-                        height: 48,
-                        child: ElevatedButton.icon(
-                          onPressed: () async {
-                            final messenger = ScaffoldMessenger.of(context);
-                            final title = titleCtrl.text.trim();
-                            final url = urlCtrl.text.trim();
-                            if (title.isEmpty) {
-                              messenger.showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'Tafadhali weka Kichwa cha Hubiri')),
-                              );
-                              return;
-                            }
-                            if (sourceMode == 'gallery' &&
-                                pickedVideo == null &&
-                                url.isEmpty) {
-                              messenger.showSnackBar(
-                                const SnackBar(
-                                    content: Text(
-                                        'Tafadhali chagua video kutoka kwenye maktaba ya simu yako')),
-                              );
-                              return;
-                            }
-
-                            String finalVideoUrl = url;
-                            if (sourceMode == 'gallery' &&
-                                pickedVideo != null) {
-                              setModalState(() => isUploading = true);
-                              try {
-                                final bytes = await pickedVideo!.readAsBytes();
-                                final uploadedUrl = await CloudinaryMediaService
-                                    .uploadMediaBytes(
-                                  bytes: bytes,
-                                  filename: pickedVideo!.name,
-                                  resourceType:
-                                      mediaType == 'video' ? 'video' : 'auto',
-                                );
-                                if (uploadedUrl != null &&
-                                    uploadedUrl.isNotEmpty) {
-                                  finalVideoUrl = uploadedUrl;
-                                } else {
-                                  finalVideoUrl = pickedVideo!.path;
-                                }
-                              } catch (e) {
-                                debugPrint('Cloudinary upload error: $e');
-                                finalVideoUrl = pickedVideo!.path;
-                              } finally {
-                                setModalState(() => isUploading = false);
-                              }
-                            }
-
-                            final newItem = SermonMediaItem(
-                              id: 'admin-${DateTime.now().millisecondsSinceEpoch}',
-                              title: title,
-                              preacher: preacherCtrl.text.trim().isNotEmpty
-                                  ? preacherCtrl.text.trim()
-                                  : ChurchProfile.headBishop,
-                              scripture: scriptureCtrl.text.trim().isNotEmpty
-                                  ? scriptureCtrl.text.trim()
-                                  : 'Zaburi 121:1-8',
-                              date:
-                                  'Leo, ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
-                              duration: durationCtrl.text.trim().isNotEmpty
-                                  ? durationCtrl.text.trim()
-                                  : '45 min',
-                              type: mediaType,
-                              category: category,
-                              description: descCtrl.text.trim().isNotEmpty
-                                  ? descCtrl.text.trim()
-                                  : 'Ujumbe wa kiroho uliowekwa na Utawala wa Sayuni.',
-                              imageUrl: 'assets/images/church_front.jpg',
-                              audioUrl: mediaType == 'audio'
-                                  ? finalVideoUrl
-                                  : 'https://stream.zeno.fm/4v4e91y9sm8uv',
-                              videoUrl:
-                                  mediaType == 'video' ? finalVideoUrl : '',
-                              isAdminUpload: true,
-                            );
-
-                            setState(() {
-                              _customSermons.insert(0, newItem);
-                            });
-                            await _saveCustomSermons();
-
-                            // Synchronize with Web Admin Portal & Supabase
-                            await ChurchSyncService().syncNewSermon(
-                              id: newItem.id,
-                              title: newItem.title,
-                              preacher: newItem.preacher,
-                              scripture: newItem.scripture,
-                              duration: newItem.duration,
-                              type: newItem.type,
-                              category: newItem.category,
-                              mediaUrl: finalVideoUrl,
-                            );
-
-                            if (ctx.mounted) Navigator.pop(ctx);
-                            if (mounted) {
-                              messenger.showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                      '✅ Hubiri limepakiwa kikamilifu na linapatikana kwa waumini wote!'),
-                                  backgroundColor: Color(0xFF16A34A),
-                                ),
-                              );
-                            }
-                          },
-                          icon: isUploading
-                              ? const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                      strokeWidth: 2, color: Colors.white),
-                                )
-                              : const Icon(Icons.cloud_upload_rounded,
-                                  color: Colors.white),
-                          label: Text(
-                            isUploading
-                                ? 'Inapakia kwenye Cloudinary...'
-                                : 'Hifadhi & Chapisha Video',
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13.5),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14)),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
+        setState(() => _customSermons.insert(0, newItem));
+        // Throws back into the sheet if storage fails, so nothing is lost.
+        await _saveCustomSermons();
+        await ChurchSyncService().syncNewSermon(
+          id: newItem.id,
+          title: newItem.title,
+          preacher: newItem.preacher,
+          scripture: newItem.scripture,
+          duration: newItem.duration,
+          type: newItem.type,
+          category: newItem.category,
+          mediaUrl: media.url,
+          description: media.description,
         );
       },
-    );
+    ).then((media) {
+      if (media == null || !mounted) return;
+      messenger.showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 6),
+          backgroundColor: const Color(0xFF16A34A),
+          content: Text(
+            'Limepakiwa: "${media.title}". Linaonekana kwa waumini wote.',
+          ),
+          action: SnackBarAction(
+            label: 'Cheza',
+            textColor: Colors.white,
+            onPressed: () {
+              final item = _customSermons.firstWhere(
+                (e) => e.id == media.id,
+                orElse: () => _customSermons.first,
+              );
+              _openMediaPlayer(item);
+            },
+          ),
+        ),
+      );
+    });
   }
 
   void _openMediaPlayer(SermonMediaItem item) {

@@ -1,52 +1,41 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../services/cloudinary_media_service.dart';
 import 'media_models.dart';
 
 /// Upload plumbing for choir songs, hymns, sermons and other church audio.
 ///
-/// The app has Firebase configured (`firebase_core`, `firebase_auth`,
-/// `cloud_firestore`) but **no** `firebase_storage` dependency and no verified
-/// storage bucket, so this file deliberately stops short of pretending uploads
-/// work. It provides:
-///
-/// * [MediaUploadService] — the contract the admin UI will call;
-/// * [StorageProvider] — the contract for the byte-storage backend;
-/// * [LocalDraftMediaUploadService] — a working *local* implementation that
-///   records metadata drafts on the device so the catalogue and player already
-///   understand uploaded content;
-/// * [UnconfiguredStorageProvider] — fails loudly with instructions instead of
-///   silently dropping files.
+/// Bytes are stored in **Cloudinary** through [CloudinaryStorageProvider]
+/// (unsigned preset, same cloud as the Sayuni web portal). A upload returns a
+/// real `https://res.cloudinary.com/...` URL or it throws a
+/// [CloudinaryUploadException] with a Swahili reason — it never pretends to have
+/// succeeded, because a local file path would play for the admin and be dead
+/// audio for every other member.
 ///
 /// ---------------------------------------------------------------------------
-/// HOW TO FINISH THE BACKEND (pick ONE, then delete this note)
+/// UPLOAD PATHS IN THIS FILE
 ///
-/// A. Firebase Storage + Firestore
-///   1. `flutter pub add firebase_storage`
-///   2. Console → Storage → create a bucket (the configured bucket is
-///      `zion-mbagala-church.firebasestorage.app`); Firestore collection
-///      `media_tracks`.
-///   3. Implement [StorageProvider.upload] as
-///      `FirebaseStorage.ref('media/$categoryId/${file.name}').putFile(file)`,
-///      return `await ref.getDownloadURL()`, then write the metadata map from
-///      [MediaUploadRequest.toMetadataMap] to
-///      `FirebaseFirestore.instance.collection('media_tracks').doc(id)`.
-///   4. Replace [UnconfiguredStorageProvider] with that class inside
-///      `MediaUploadService.local()` and make
-///      `SayuniMediaRepository.tracksIn()` read `media_tracks` (it already
-///      merges the portal bridge, so nothing else has to change).
-///   5. Rules: allow `read` for signed-in users, `write` only when
-///      `request.auth.token.email in ['<pastor email>']` or a custom claim
-///      `admin == true`. The app gates the UI with `ChurchAuthService().isAdmin`,
-///      which is **not** a security boundary by itself.
+/// * [MediaUploadService.cloudinary] — the production path used by the admin
+///   upload sheet: pick file → upload bytes to Cloudinary → publish metadata.
+/// * [MediaUploadService.local] — metadata-only drafts (device storage) used
+///   when Cloudinary is not configured, so nothing typed by the admin is lost.
 ///
-/// B. Supabase Storage + Postgres
-///   1. `flutter pub add supabase_flutter`
-///   2. `supabase.storage.from('church-audio').upload(path, file)` →
-///      `getPublicUrl(path)`, then insert the same metadata map into the
-///      `media_tracks` table with the app's RLS policy for admins.
+/// Metadata is published into the `zion_admin_uploaded_media` record set (see
+/// `ChurchSyncService.syncNewSermon`), which [SayuniMediaRepository] already
+/// merges into the player sections and the web portal already reads.
+///
+/// ---------------------------------------------------------------------------
+/// HARDENING TODO (production, tracked in PLAN.md)
+///   1. Replace the unsigned preset with a signed upload route
+///      (`media_assets` collection + Cloud Function) so writes can be gated by
+///      the admin role; `ChurchAuthService().isAdmin` is UI gating only.
+///   2. Optionally add `firebase_storage` + Firestore `media_tracks` and make
+///      [SayuniMediaRepository.tracksIn] read the collection instead of the
+///      local/portal bridge.
 /// ---------------------------------------------------------------------------
 
 /// Formats the player can decode. `wav` is accepted for archival but is large;
@@ -56,6 +45,14 @@ const List<String> kSupportedAudioExtensions = <String>[
   'm4a',
   'aac',
   'wav'
+];
+
+/// Video the admin may attach to a sermon entry.
+const List<String> kSupportedVideoExtensions = <String>[
+  'mp4',
+  'mov',
+  'webm',
+  'm4v'
 ];
 
 /// Everything the admin fills in on the upload form.
@@ -69,6 +66,8 @@ class MediaUploadRequest {
     this.artworkPath,
     this.duration,
     this.tags = const <String>[],
+    this.bytes,
+    this.isVideo = false,
   });
 
   final String title;
@@ -80,9 +79,18 @@ class MediaUploadRequest {
   final Duration? duration;
   final List<String> tags;
 
+  /// File content when it came from the device/browser picker. Cloudinary needs
+  /// bytes (a device path is meaningless on another device and on web).
+  final Uint8List? bytes;
+
+  /// true for sermon video, false for audio (default).
+  final bool isVideo;
+
   bool get hasValidExtension {
     final lower = filePath.toLowerCase();
-    return kSupportedAudioExtensions.any((ext) => lower.endsWith('.$ext'));
+    final allowed =
+        isVideo ? kSupportedVideoExtensions : kSupportedAudioExtensions;
+    return allowed.any((ext) => lower.endsWith('.$ext'));
   }
 
   String get fileName {
@@ -132,17 +140,53 @@ class MediaUploadResult {
   bool get isSuccess => track != null;
 }
 
-/// Byte storage backend (Firebase Storage, Supabase Storage, S3, ...).
+/// Byte storage backend (Cloudinary today; Firebase/Supabase can be added).
 abstract class StorageProvider {
   const StorageProvider();
 
-  /// Returns a publicly playable URL for [localPath].
+  /// Returns a publicly playable `https://` URL for the file.
+  ///
+  /// [bytes] is what the picker read from the device. Providers that cannot
+  /// work without it (everything remote) must throw rather than invent a URL.
   Future<String> upload({
     required String localPath,
     required String categoryId,
     required String fileName,
+    Uint8List? bytes,
+    bool isVideo = false,
     void Function(double progress)? onProgress,
   });
+}
+
+/// Real backend: unsigned Cloudinary upload (preset `zion_unsigned`).
+class CloudinaryStorageProvider extends StorageProvider {
+  const CloudinaryStorageProvider();
+
+  @override
+  Future<String> upload({
+    required String localPath,
+    required String categoryId,
+    required String fileName,
+    Uint8List? bytes,
+    bool isVideo = false,
+    void Function(double progress)? onProgress,
+  }) async {
+    final data = bytes;
+    if (data == null || data.isEmpty) {
+      throw const CloudinaryUploadException(
+        CloudinaryFailureKind.unreadable,
+        'Kifaa hakilitoe faili hili (0 bytes). Chagua faili tena.',
+      );
+    }
+    final outcome = await CloudinaryMediaService.uploadBytes(
+      bytes: data,
+      filename: fileName,
+      kind: isVideo ? CloudinaryMediaKind.video : CloudinaryMediaKind.audio,
+      folder: CloudinaryMediaService.folderFor(categoryId),
+    );
+    onProgress?.call(1);
+    return outcome.url;
+  }
 }
 
 /// Placeholder that refuses to upload and explains exactly what to add.
@@ -154,12 +198,14 @@ class UnconfiguredStorageProvider extends StorageProvider {
     required String localPath,
     required String categoryId,
     required String fileName,
+    Uint8List? bytes,
+    bool isVideo = false,
     void Function(double progress)? onProgress,
   }) async {
-    throw UnsupportedError(
-      'Hakuna storage iliyowekwa. Ongeza `firebase_storage` (au supabase_flutter) '
-      'kwenye pubspec.yaml, panga bucket, kisha weka FirebaseStorageProvider '
-      'kbdala ya UnconfiguredStorageProvider katika MediaUploadService.',
+    throw const CloudinaryUploadException(
+      CloudinaryFailureKind.notConfigured,
+      'Hakuna storage iliyowekwa. Chagua Cloudinary (Mipangilio ya Upakiaji) '
+      'au ongeza Firebase Storage kwenye MediaUploadService.',
     );
   }
 }
@@ -168,11 +214,14 @@ class UnconfiguredStorageProvider extends StorageProvider {
 abstract class MediaUploadService {
   const MediaUploadService();
 
-  /// Local-only implementation with no fake cloud calls. Swap the provider to
-  /// enable real uploads (see the header of this file).
+  /// Local-only implementation with no fake cloud calls.
   factory MediaUploadService.local({StorageProvider? storage}) =>
       LocalDraftMediaUploadService(
           storage: storage ?? const UnconfiguredStorageProvider());
+
+  /// Production path: bytes go to Cloudinary, metadata to the shared library.
+  factory MediaUploadService.cloudinary() =>
+      const LocalDraftMediaUploadService(storage: CloudinaryStorageProvider());
 
   Future<MediaUploadResult> submit(MediaUploadRequest request);
 
@@ -198,25 +247,38 @@ class LocalDraftMediaUploadService extends MediaUploadService {
   @override
   Future<MediaUploadResult> submit(MediaUploadRequest request) async {
     if (!request.hasValidExtension) {
-      return const MediaUploadResult.failure(
-          'Faili hili halijumiwi. Tafadhali mp3, m4a, au aac.');
+      return MediaUploadResult.failure(
+        request.isVideo
+            ? 'Faili hili halikubaliki. Tafadhali mp4, mov au webm.'
+            : 'Faili hili halikubaliki. Tafadhali mp3, m4a, aac au wav.',
+      );
     }
     if (request.title.trim().isEmpty) {
       return const MediaUploadResult.failure('Weka jina la rekodi.');
     }
 
-    final id = 'draft-${DateTime.now().millisecondsSinceEpoch}';
+    final cloudinary = storage is CloudinaryStorageProvider;
+    final id = cloudinary
+        ? 'admin-${DateTime.now().millisecondsSinceEpoch}'
+        : 'draft-${DateTime.now().millisecondsSinceEpoch}';
     try {
       final url = await storage.upload(
         localPath: request.filePath,
         categoryId: request.category.id,
         fileName: request.fileName,
+        bytes: request.bytes,
+        isVideo: request.isVideo,
       );
       final track = AudioTrack.fromMap(request.toMetadataMap(url, id));
       return MediaUploadResult.success(track);
-    } on UnsupportedError catch (e) {
-      // Expected until a storage provider is configured: keep the metadata so
-      // the admin can finish the upload later, and say so honestly.
+    } on CloudinaryUploadException catch (e) {
+      if (e.kind != CloudinaryFailureKind.notConfigured) {
+        // A real failure: report it verbatim. Never store a dead local path as
+        // though the file had reached the members' devices.
+        return MediaUploadResult.failure(e.toString());
+      }
+      // Nothing configured yet: keep the metadata so the admin can finish the
+      // upload later, and say so honestly.
       final track = AudioTrack.fromMap(request.toMetadataMap('', id));
       await _remember(track);
       return MediaUploadResult.draft(

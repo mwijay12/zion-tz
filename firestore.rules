@@ -42,15 +42,29 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     // --- Helper Functions ---
+    //
+    // ROLE SOURCE OF TRUTH
+    // `request.auth.token` is signed by Firebase Auth, so a client cannot forge
+    // or edit it. It is the ONLY place a role is read from in this file. A
+    // document field such as `profiles/<uid>.role` is deliberately never
+    // trusted: those documents are client-writable and would be a self-granting
+    // hole. Roles are assigned server-side by `functions/setUserRole`
+    // (admin.auth().setCustomUserClaims) — see docs/FIREBASE_SETUP_OWNER.md.
+    // The strings below must stay identical to ChurchRole.wireName in
+    // sayuni/lib/core/services/church_role_policy.dart.
 
     function isSignedIn() {
       return request.auth != null;
     }
 
+    /// True when the account has actually been assigned a church role.
+    /// Signed-in-but-unassigned accounts are 'guest' for authorisation purposes.
+    function hasRoleClaim() {
+      return isSignedIn() && request.auth.token.role != null;
+    }
+
     function getUserRole() {
-      return isSignedIn() && request.auth.token.role != null
-        ? request.auth.token.role
-        : 'guest';
+      return hasRoleClaim() ? request.auth.token.role : 'guest';
     }
 
     function isAdmin() {
@@ -186,6 +200,28 @@ service cloud.firestore {
         (isSignedIn() && request.auth.uid == userId &&
          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'isVerifiedMember']));
       allow delete: if isAdmin();
+    }
+
+    // 10. Role grants — audit trail of who assigned which role to whom.
+    // The Admin SDK used by Cloud Functions bypasses these rules, so
+    // `allow write: if false` means exactly "functions and console only".
+    match /role_grants/{grantId} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // 11. Append-only audit log of privileged actions (roles, money, deletes).
+    match /audit_logs/{logId} {
+      allow read: if isAdmin() || isSecretary();
+      allow write: if false;
+    }
+
+    // 12. Mirror of the auth claims, written by setUserRole / onMemberCreate
+    // for reporting. Authorisation always reads the token, never this document.
+    match /members/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || isSecretary());
+      allow list: if isSecretary();
+      allow write: if false;
     }
 
     // Default deny for all other paths

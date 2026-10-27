@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import '../../../core/services/app_language_service.dart';
 import '../../../core/services/church_auth_service.dart';
 import '../../../core/theme/app_colors.dart';
@@ -22,8 +21,9 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
   final ChurchAuthService _authService = ChurchAuthService();
   final AppLanguageService _langService = AppLanguageService();
 
-  final bool _isDemo = kDebugMode ||
-      const bool.fromEnvironment('DEMO_MODE', defaultValue: false);
+  /// Demo entry follows the auth service, so the screen and the service can
+  /// never disagree about whether a self-granted role is allowed.
+  bool get _isDemo => _authService.demoAccessAllowed;
 
   int _selectedMode = 0; // 0 = Member, 1 = Guest, 2 = Admin
 
@@ -948,6 +948,7 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
           : () async {
               setState(() => _isSubmitting = true);
               AppHaptics.heavyImpact();
+              bool granted;
               if (role == 'member') {
                 await _authService.loginAsMember(
                   name: 'Muumini wa Sayuni',
@@ -955,13 +956,29 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                   memberId: 'ZION-DEMO1',
                   jumuiya: 'Mbagala Kijichi',
                 );
+                granted = true;
               } else {
-                await _authService.loginAsLeader(role);
+                granted = await _authService.loginAsLeader(role);
               }
-              if (mounted) {
-                setState(() => _isSubmitting = false);
-                _finishAuth();
+              if (!mounted) return;
+              setState(() => _isSubmitting = false);
+              if (!granted) {
+                // Never pretend a refused entry worked.
+                AppTopAlert.show(
+                  context,
+                  title: _langService.t(en: 'Not available', sw: 'Haipatikani'),
+                  message: _langService.t(
+                    en: 'Demo entry only works in test builds. Please sign in '
+                        "with that leader's Firebase account.",
+                    sw: 'Kuingia kwa onyesho kunapatikana katika programu ya '
+                        'majaribio tu. Tafadhali ingia kwa akaunti ya Firebase '
+                        'ya kiongozi huyo.',
+                  ),
+                  type: TopAlertType.warning,
+                );
+                return;
               }
+              _finishAuth();
             },
       borderRadius: BorderRadius.circular(15),
       child: Container(

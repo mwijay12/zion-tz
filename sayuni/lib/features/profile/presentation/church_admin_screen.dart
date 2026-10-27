@@ -438,8 +438,12 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 14),
 
+              // Trust-source banner: says out loud whether the authority on this
+              // device came from Firebase claims or only from a local cache.
+              _buildTrustSourceBanner(),
+              const SizedBox(height: 10),
               // ================= SECTION 1: LEADERSHIP PHOTO & INFO =================
               _buildSectionTitle('1. PICHA NA TAARIFA ZA UONGOZI WA KANISA'),
               AppCard(
@@ -774,7 +778,10 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                     fontWeight: FontWeight.bold, fontSize: 13),
                               ),
                               Text(
-                                'Mpe mtumiaji hadhi ya Admin kupitia barua pepe yake ya Google / Email.',
+                                'Orodha hii ni ya kifaa hiki pekee (majaribio). '
+                                'Mamlaka ya kweli hutolewa na Firebase '
+                                'functions/setUserRole — ona docs/'
+                                'FIREBASE_SETUP_OWNER.md.',
                                 style: TextStyle(
                                     fontSize: 11,
                                     color: AppColors.textSecondary),
@@ -825,13 +832,17 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                             size: 18),
                                         onPressed: () async {
                                           AppHaptics.lightImpact();
-                                          await auth.revokeAdminEmail(email);
+                                          final revoked =
+                                              await auth.revokeRole(email);
                                           if (context.mounted) {
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(
                                               SnackBar(
-                                                  content: Text(
-                                                      'Uongozi wa $email umeondolewa')),
+                                                duration:
+                                                    const Duration(seconds: 7),
+                                                content: Text(
+                                                    '$email — ${revoked.message}'),
+                                              ),
                                             );
                                           }
                                         },
@@ -904,22 +915,31 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                         ElevatedButton(
                                           onPressed: () async {
                                             final em = newEmailCtrl.text.trim();
-                                            if (em.contains('@')) {
-                                              await auth.grantAdminEmail(em);
-                                              if (!ctx.mounted) return;
-                                              Navigator.pop(ctx);
-                                              if (context.mounted) {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  SnackBar(
-                                                    content: Text(
-                                                        '✓ $em sasa amepewa mamlaka ya Admin!'),
-                                                    backgroundColor:
-                                                        const Color(0xFF16A34A),
-                                                  ),
-                                                );
-                                              }
-                                            }
+                                            if (!em.contains('@')) return;
+                                            final outcome =
+                                                await auth.grantRole(em);
+                                            if (!ctx.mounted) return;
+                                            Navigator.pop(ctx);
+                                            if (!context.mounted) return;
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                duration:
+                                                    const Duration(seconds: 9),
+                                                content: Text(
+                                                  outcome.success
+                                                      ? '${outcome.viaCloud ? '✔' : '⚠'} $em — ${outcome.message}'
+                                                      : '✕ $em — ${outcome.message}',
+                                                ),
+                                                backgroundColor: outcome.success
+                                                    ? (outcome.viaCloud
+                                                        ? const Color(
+                                                            0xFF16A34A)
+                                                        : const Color(
+                                                            0xFFB45309))
+                                                    : const Color(0xFFB91C1C),
+                                              ),
+                                            );
                                           },
                                           style: ElevatedButton.styleFrom(
                                               backgroundColor:
@@ -1490,6 +1510,89 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  /// Live "where did my authority come from" banner.
+  ///
+  /// Firestore only honours `request.auth.token.role`, so a role cached on this
+  /// device is a convenience — never access. This widget states that in plain
+  /// Swahili and updates itself the moment the cloud claims land.
+  Widget _buildTrustSourceBanner() {
+    return AnimatedBuilder(
+      animation: ChurchAuthService(),
+      builder: (context, _) {
+        final auth = ChurchAuthService();
+        final (Color tint, Color accent, IconData icon, String hint) =
+            switch (auth.roleSource) {
+          RoleSource.cloud => (
+              const Color(0xFFECFDF5),
+              const Color(0xFF047857),
+              Icons.verified_user_rounded,
+              'Server ndiyo imekupa mamlaka haya. Mabadiliko unaoyafanya hapa '
+                  'yanaandikwa Firebase na yanaonekana kwenye vifaa vyote.'
+            ),
+          RoleSource.demo => (
+              const Color(0xFFFFFBEB),
+              const Color(0xFFB45309),
+              Icons.science_rounded,
+              'Hii ni build ya majaribio. Role hii haipo kwenye Firebase, kwa '
+                  'hivyo Firestore itakatakuza maandiko yoyote.'
+            ),
+          RoleSource.device => (
+              const Color(0xFFFFF7ED),
+              const Color(0xFFB45309),
+              Icons.phonelink_lock_rounded,
+              'Role hii iko kwenye kifaa hiki pekee (cache). Ili iwe ya kweli: '
+                  'ingia kwa barua pepe ya Firebase kisha ufuatue '
+                  'docs/FIREBASE_SETUP_OWNER.md — hadi hapo, server haikubali '
+                  'maandiko yako.'
+            ),
+          RoleSource.none => (
+              const Color(0xFFFEF2F2),
+              const Color(0xFFB91C1C),
+              Icons.gpp_maybe_rounded,
+              'Hakuna role iliyowekwa. Ingia kwanza ili upate mamlaka.'
+            ),
+        };
+        return Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: tint,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: accent.withOpacity(0.45)),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, color: accent, size: 20),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${auth.roleBadge} · ${auth.roleSourceLabel}',
+                      style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w800,
+                          color: accent),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      hint,
+                      style: TextStyle(
+                          fontSize: 11.5,
+                          color: AppColors.textSecondary,
+                          height: 1.35),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 

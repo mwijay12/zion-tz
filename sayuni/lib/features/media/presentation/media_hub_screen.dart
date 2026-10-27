@@ -829,7 +829,7 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                         ],
                       ),
                     ),
-                    if (_auth.isAdmin)
+                    if (_auth.canUi(ChurchPermission.uploadSermonMedia))
                       Padding(
                         padding: const EdgeInsets.only(left: 8),
                         child: InkWell(

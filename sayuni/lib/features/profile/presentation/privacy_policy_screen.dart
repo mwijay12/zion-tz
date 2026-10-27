@@ -5,6 +5,7 @@ import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/church_theme_service.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../core/widgets/app_card.dart';
+import '../../../core/services/pdpa_service.dart';
 
 /// Dedicated Bilingual Privacy Policy Screen for Sayuni Jerusalem Church.
 /// Complies with:
@@ -211,8 +212,8 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
           const SizedBox(height: 8),
           Text(
             _isSwahili
-                ? 'Toleo: Septemba 2026 • Linatumika mara moja'
-                : 'Version: September 2026 • Effective immediately',
+                ? 'Toleo 2026.2 • Oktoba 2026 • Linatumika mara moja'
+                : 'Version 2026.2 • October 2026 • Effective immediately',
             style: const TextStyle(
               color: AppColors.goldLight,
               fontSize: 11,
@@ -222,6 +223,24 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
         ],
       ),
     );
+  }
+
+  /// Renders the processor register that the PDPA service actually uses, so the
+  /// privacy text can never drift away from the services the code contacts.
+  String _processorsText(bool sw) {
+    final b = StringBuffer();
+    for (final p in PdpaService.dataInventory) {
+      String v(String k) {
+        final key = sw ? k : '${k}En';
+        return (p[key] ?? p[k] ?? '').toString();
+      }
+
+      b.write('• ${v('who')}\n');
+      b.write('    ${sw ? 'Anashikilia' : 'Holds'}: ${v('what')}\n');
+      b.write('    ${sw ? 'Kwa nini' : 'Purpose'}: ${v('why')}\n');
+      b.write('    ${sw ? 'Mahali' : 'Where'}: ${v('where')}\n');
+    }
+    return b.toString().trimRight();
   }
 
   List<Widget> _buildSwahiliContent(bool isDark, Color primaryColor) {
@@ -275,22 +294,38 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
         title: '5. Miundombinu ya Seva & Usalama (Security & Infrastructure)',
         content:
             '• Taarifa za kanisa zinalindwa kwa njia fiche ya kiwango cha juu (TLS/HTTPS Encryption).\n'
-            '• Hifadhi ya data inatumia Supabase PostgreSQL iliyo na ulinzi thabiti wa kimtandao (Row Level Security).\n'
-            '• Kumbukumbu za nje ya mtandao (Offline notes, cached audio, na vipengele vya Biblia) huhifadhiwa ndani ya simu yako pekee.',
+            '• Kuingia na kuthibitisha mtu: Google Firebase Authentication. Hifadhi ya data: Cloud Firestore.\n'
+            '• Ufikiaji wa data unadhibitiwa na kanuni za `firestore.rules` zilizoandikwa wazi: kila cheo (Msimamizi, Mchungaji, Katibu, Shemasha, Kiongozi) kinaona na kubadilisha kile tu ambacho kinahitaji kwa huduma yake; uundaji wa majukumu hauwezi kufanyika na programu mwenyewe.\n'
+            '• Nyenzo nzito (sauti za mahubiri, video na picha) huhifadhiwa kwenye Cloudinary; orodha ya vituo vya redio hutoka radio-browser.info (orodha pekee — hakuna taarifa yako inayohusika).\n'
+            '• Muhtasari wa mahubiri unaotengenezwa na Google Gemini unatumika kwenye portal ya wasimamizi tu, si kwenye simu yako.\n'
+            '• Kumbukumbu za nje ya mtandao (maandishi ya mahubiri, sura zilizohifadhiwa, alama za kusoma) huhifadhiwa ndani ya simu yako pekee.',
         isDark: isDark,
         primaryColor: primaryColor,
       ),
       _buildSection(
         icon: Icons.delete_forever_rounded,
-        title: '6. Haki za Mtumiaji & Kufuta Akaunti (Data Erasure Rights)',
+        title: '6. Haki Zako Chini ya PDPA 2022 (Access, Withdrawal, Erasure)',
         content:
             'Chini ya Sheria ya Ulinzi wa Taarifa Binafsi (PDPA 2022) na Miongozo ya Google Play / Apple App Store:\n'
-            '• Una haki ya kuona, kusahihisha au kubadili taarifa zako wakati wowote kupitia ukurasa wa Wasifu.\n'
-            '• Una haki isiyo na kizuizi ya KUFUTA AKAUNTI YAKO KABISA (In-App Permanent Account Deletion) moja kwa moja ndani ya programu chini ya sehemu ya Mipangilio.\n'
-            '• Unapofuta akaunti, taarifa zote za utambulisho, kumbukumbu za maombi, na data za simu zinafutwa mara moja bila kubaki.',
+            '• Kila matumizi ya taarifa zako yana msingi wa kisheria unaodhibitishwa na rekodi ya idhini. Unapobadilisha maazimo, rekodi mpya huongezwa — rekodi za zamani hazirekebishwi ili kanisa liweze kuonyesha ulichokubaliwa kwa tarehe fulani.\n'
+            '• Haki ya KUFIKIA data yako: Wasifu → "Haki zangu za PDPA" → "Tengeneza nakala" ili kupata JSON kamili ya kile kilichohifadhiwa kwenye kifaa hiki na, ikiwa Firebase iko, kile kilicho kwenye wingu.\n'
+            '• Haki ya KUONDOA IDHINI: unaweza kuondoa matumizi yasiyo ya lazima wakati wowote; matumizi ya uanachama na ya fedha hubaki kwa sababu yake ya kisheria.\n'
+            '• Haki ya KUFUTA: "Futa akaunti" hufuta akaunti yako ya Firebase pamoja na rekodi zako za utambulisho na maombi — kwenye wingu na kwenye kifaa hiki.\n'
+            '• HAKIFUTWI: rekodi za fedha (aseli, michango, mapato na matumizi) — sheria ya mapato na ukaguzi wa kanisa lazimu zihifadhiwe; pia nakala za dharura (backups) za wingu zinaweza kuchukua muda kabla ya kupita.\n'
+            '• Maombi ya haki hizi hushughulikiwa ndani ya siku 30. Wasiliana privacy@zionjerusalem.org.',
         isDark: isDark,
         primaryColor: primaryColor,
         isHighlight: true,
+      ),
+      _buildSection(
+        icon: Icons.share_rounded,
+        title: '7. Washirika wa Data — Nani Anayeshikilia Taarifa Zako',
+        content:
+            'Kanisa ndilo mmiliki wa taarifa hizi (data controller). Wahudumiaji ambao taarifa zinapita kwao ni hawa:\n'
+            '${_processorsText(true)}\n'
+            '• Hakuna taarifa yako inayouzwa au inayopewa mtu yeyote kwa masoko ya biashara.',
+        isDark: isDark,
+        primaryColor: primaryColor,
       ),
     ];
   }
@@ -346,22 +381,38 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
         title: '5. Security & Infrastructure',
         content:
             '• Church data transmissions are secured with industry-standard TLS/HTTPS encryption.\n'
-            '• Cloud database services utilize Supabase PostgreSQL with strict Row Level Security (RLS).\n'
+            '• Sign-in and identity verification run on Google Firebase Authentication; records are stored in Cloud Firestore.\n'
+            '• Access is enforced by written security rules (`firestore.rules`): each office (Administrator, Pastor, Secretary, Deacon, Leader) can read and change only what its service requires, and no client app can grant itself a role.\n'
+            '• Heavy media (sermon audio, video, department photos) is hosted on Cloudinary; the radio station list comes from radio-browser.info (lists only — none of your personal data).\n'
+            '• Sermon summaries produced with Google Gemini run in the admin portal only, never from your phone.\n'
             '• Offline sermon notes, cached chapters, and devotional bookmarks remain stored strictly on your local device.',
         isDark: isDark,
         primaryColor: primaryColor,
       ),
       _buildSection(
         icon: Icons.delete_forever_rounded,
-        title: '6. User Rights & In-App Account Deletion',
+        title: '6. Your Rights Under PDPA 2022 (Access, Withdrawal, Erasure)',
         content:
             'Under Tanzania PDPA 2022 and Google Play / Apple App Store Guidelines:\n'
-            '• You have the right to access, inspect, and modify your personal profile at any time.\n'
-            '• You possess the unconditional right to permanently delete your account directly inside the app under Profile Settings.\n'
-            '• Permanent deletion immediately wipes all identity records, local cache, session keys, and pastoral records.',
+            '• Every use of your data rests on a lawful basis evidenced by a consent register. Changing your choices appends a new record — earlier records are never edited, so the church can still prove what was agreed on a given date.\n'
+            '• RIGHT OF ACCESS: Profile → "My PDPA rights" → "Prepare a copy of my data" produces a complete JSON export of what this device holds and, when Firebase is connected, what the cloud holds.\n'
+            '• RIGHT TO WITHDRAW: you can switch off any optional purpose at any time; membership and financial purposes remain because the law requires them.\n'
+            '• RIGHT TO ERASURE: "Delete account" removes your Firebase account together with your identity and prayer records — in the cloud and on this device.\n'
+            '• WHAT IS NOT ERASED: financial records (tithes, offerings, income and expenditure) are retained because church bookkeeping and audit law require it; cloud disaster-recovery backups may also take time to roll off.\n'
+            '• Requests of this kind are handled within 30 days. Contact privacy@zionjerusalem.org.',
         isDark: isDark,
         primaryColor: primaryColor,
         isHighlight: true,
+      ),
+      _buildSection(
+        icon: Icons.share_rounded,
+        title: '7. Data Processors — Who Holds Your Information',
+        content:
+            'The church is the data controller for this information. The processors your data passes through are:\n'
+            '${_processorsText(false)}\n'
+            '• Nothing you share is sold or handed to anyone for commercial marketing.',
+        isDark: isDark,
+        primaryColor: primaryColor,
       ),
     ];
   }

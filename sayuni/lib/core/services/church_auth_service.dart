@@ -707,6 +707,26 @@ class ChurchAuthService extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// PDPA 2022 erasure, done honestly: **cloud first**, then this device.
+  ///
+  /// The returned result describes only what really happened server-side; the
+  /// device wipe always runs because the member asked for it and holding their
+  /// data back would be its own breach. A server refusal (root account,
+  /// phone-verified account, function not deployed) is surfaced verbatim.
+  Future<RoleGrantResult> eraseAccount() async {
+    RoleGrantResult cloud;
+    if (hasCloudSession) {
+      cloud = await ChurchRoleGrantService.deleteMyData();
+    } else {
+      cloud = const RoleGrantResult.fail(
+        'Hakuna akaunti ya Firebase iliyowashwa kwenye kifaa hiki, kwa hivyo '
+        'hakuna data ya kwenye wingu ya kufuta — zimefutwa ni za kifaa hiki pekee.',
+      );
+    }
+    await deleteAccount();
+    return cloud;
+  }
+
   /// Leadership fast-entry for demos and local development.
   ///
   /// This is a **UI preview only**, unavailable in a normal release build. It

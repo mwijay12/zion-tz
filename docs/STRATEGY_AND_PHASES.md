@@ -103,6 +103,27 @@ kitengo cha public.
 (au kazi ya mmiliki imeorodheshwa); maandishi ya faragha yanalingana na `rg` ya services.
 **Kazi zako:** kubali kuwa Cloudinary/Firebase processor + kuweka namba ya simu ya Data Protection Officer.
 
+**✅ IMEKAMILIKA (2026-10-27):**
+- `core/services/pdpa_service.dart` — register ya idhini (append-only, kwenye kifaa), purposes 5:
+  `membership`, `contact`, `prayer`, `giving`, `media` (lazima: membership + giving), `withdrawAll()`,
+  `exportJson()` (DSAR), `dataInventory` (SW + EN) na `mirrorActiveToCloud()` → Firestore `consent_records`.
+- `features/profile/presentation/pdpa_rights_screen.dart` — kituo kimoja cha haki: **Idhini · Kufikia ·
+  Washirika · Kufuta**; hujitokeza kwenye onboarding (`maybeAsk`) na kwenye Wasifu; hakuna kitu kilichojazwa
+  peke yake (rekodi huandikwa tu mtu akibofya).
+- `privacy_policy_screen.dart` toleo **2026.2**: Supabase/RLS uongo umeondolewa; §6 inasema ukweli wa kufuta
+  (rekodi za fedha hazifutwi — sheria ya mapato); §7 (washirika) inazalishwa na `dataInventory` yenyewe.
+- `firestore.rules` (270 mistari): `consent_records` append-only + `isValidConsent`; wageni wanahitaji
+  `consent == true`; `prayer_requests` haionekani tena ulimwengoni; `isValidPrayerRequest` imeimarika
+  (`.size()` kwenye field isipo ilikataza kuandika).
+- `functions/index.js`: `exportMyData` (PDPA access) na `deleteMyData` (PDPA erasure, audit `pdpa.access` /
+  `pdpa.erasure`, hauruhusu kujifuta wenyewe kwa role kuu).
+- Stub ya Supabase imefutwa (`supabase_database_service.dart`) — haukufanyia mtandao kamwe.
+- **Ushahada:** `dart analyze lib` = 0 errors / 0 warnings · build mpya ya `web/release` · HTTP 200 kwenye `/`
+  na `/main.dart.js` · md5 ya faili iliyohudumishwa = md5 ya faili ya ndani.
+
+**Bado kwa mmiliki:** `firebase deploy --only functions,firestore:rules` · kukubali Cloudinary/Firebase/Gemini/
+radio-browser kama washirika · kuweka namba halisi ya DPO · (`consent_records` haihitaji index — ni create-only).
+
 ---
 
 ### PHASE 3 — Siri, usafirishaji na mipaka ya build (secrets & transport)

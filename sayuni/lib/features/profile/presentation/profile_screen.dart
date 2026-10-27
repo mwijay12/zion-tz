@@ -14,6 +14,7 @@ import '../../auth/presentation/onboarding_auth_screen.dart';
 import '../../giving/presentation/giving_screen.dart';
 import '../../jumuiya/presentation/connect_card_screen.dart';
 import 'church_admin_screen.dart';
+import 'pdpa_rights_screen.dart';
 import 'privacy_policy_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -360,10 +361,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildDeletionPoint(
-                      'Taarifa zote za usajili wa muumini na Member ID zitafutwa.'),
+                      'Akaunti yako ya Firebase (email/UID) na profile yako '
+                      'zitafutwa kwenye wingu.'),
                   const SizedBox(height: 4),
                   _buildDeletionPoint(
-                      'Kumbukumbu za maombi binafsi na madokezo zitafutwa kwenye kifaa.'),
+                      'Kumbukumbu za maombi binafsi na madokezo zitafutwa kwenye kifaa hiki.'),
+                  const SizedBox(height: 4),
+                  _buildDeletionPoint(
+                      'Rekodi za fedha (aseli/michango) HAZIFUTWI — sheria ya '
+                      'mapato na ukaguzi wa kanisa lazimu zihifadhiwe.'),
                   const SizedBox(height: 4),
                   _buildDeletionPoint(
                       'Utarudishwa mara moja kwenye hadhi ya Mgeni wa kawaida.'),
@@ -372,7 +378,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             const SizedBox(height: 10),
             Text(
-              'Je, una uhakika unataka kufuta akaunti yako kabisa kwenye simu hii?',
+              'Je, una uhakika unataka kufuta akaunti yako kabisa — kwenye wingu na kwenye kifaa hiki?',
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
@@ -397,14 +403,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () async {
               Navigator.pop(dialogCtx);
               AppHaptics.heavyImpact();
-              await _auth.deleteAccount();
+              final outcome = await _auth.eraseAccount();
               await _loadPreferences();
               if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                        'Akaunti yako na taarifa zote zimefutwa kikamilifu.'),
-                    backgroundColor: Color(0xFFDC2626),
+                  SnackBar(
+                    content: Text(outcome.viaCloud
+                        ? 'Akaunti yako ya wingu na data za kifaa hiki zimefutwa.'
+                        : 'Data za kifaa hiki zimefutwa. ${outcome.message}'),
+                    backgroundColor: outcome.viaCloud
+                        ? const Color(0xFFDC2626)
+                        : const Color(0xFFD97706),
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
@@ -1422,6 +1431,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       trailing:
                           const Icon(Icons.arrow_forward_ios_rounded, size: 14),
                       onTap: () => PrivacyPolicyScreen.show(context),
+                    ),
+                    Divider(
+                        height: 1,
+                        color: isDark
+                            ? const Color(0xFF26354A)
+                            : AppColors.borderLight),
+                    ListTile(
+                      leading: const Icon(Icons.fact_check_outlined,
+                          color: AppColors.success),
+                      title: Text(
+                        'Haki zangu za PDPA (Consent & Data)',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: isDark
+                              ? Colors.white
+                              : AppColors.textPrimaryLight,
+                        ),
+                      ),
+                      subtitle: Text(
+                        'Idhini yangu · Pakia nakala ya data yangu · Futa data yangu',
+                        style: TextStyle(
+                          color: isDark
+                              ? const Color(0xFF94A3B8)
+                              : AppColors.textSecondaryLight,
+                          fontSize: 12,
+                        ),
+                      ),
+                      trailing:
+                          const Icon(Icons.arrow_forward_ios_rounded, size: 14),
+                      onTap: () => PdpaRightsScreen.push(context),
                     ),
                     Divider(
                         height: 1,

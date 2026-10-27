@@ -432,9 +432,155 @@ const mirrorMemberDocumentIntoClaims = onDocumentCreated(
   },
 );
 
+/**
+ * PDPA 2022 — data subject rights, executed with Admin privileges.
+ *
+ * Both functions act **only** on the caller's own uid taken from the verified
+ * ID token; there is no target parameter, so no one can read or erase anyone
+ * else's record through them.
+ */
+const SUBJECT_COLLECTIONS = [
+  { path: 'members', docIdIsUid: true },
+  { path: 'profiles', docIdIsUid: true },
+  { path: 'consent_records', uidField: 'uid' },
+  { path: 'prayer_requests', uidField: 'userId' },
+];
+
+async function collectSubjectData(uid) {
+  const out = {};
+  for (const spec of SUBJECT_COLLECTIONS) {
+    try {
+      if (spec.docIdIsUid) {
+        const snap = await db.collection(spec.path).doc(uid).get();
+        out[spec.path] = snap.exists ? [{ id: snap.id, ...snap.data() }] : [];
+      } else {
+        const snap = await db
+          .collection(spec.path)
+          .where(spec.uidField, '==', uid)
+          .limit(300)
+          .get();
+        out[spec.path] = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      }
+    } catch (e) {
+      out[spec.path] = { error: String((e && e.message) || e) };
+    }
+  }
+  return out;
+}
+
+/** "Pakia nakala ya data yangu" — right of access (section 26 PDPA). */
+const exportMyData = onCall(async (request) => {
+  const uid = request.auth && request.auth.uid;
+  if (!uid) {
+    throw new HttpsError(
+      'unauthenticated',
+      'Lazima uwe umeingia kwenye akaunti yako ili kupata nakala ya data yako.',
+    );
+  }
+  const user = await admin.auth().getUser(uid).catch(() => null);
+  const cloudData = await collectSubjectData(uid);
+  await writeAudit({
+    fn: 'exportMyData',
+    action: 'pdpa.access',
+    actorUid: uid,
+    targetUid: uid,
+    before: null,
+    after: { collections: Object.keys(cloudData) },
+    reason: 'Ombi la mtu binafsi la kupata nakala ya data (DSAR).',
+  });
+  return {
+    generatedAt: new Date().toISOString(),
+    law: 'Tanzania Personal Data Protection Act, 2022',
+    uid,
+    email: (user && user.email) || null,
+    claims: (user && user.customClaims) || {},
+    cloudData,
+  };
+});
+
+/** "Futa akaunti yangu" — right to erasure (section 27 PDPA). */
+const deleteMyData = onCall(async (request) => {
+  const uid = request.auth && request.auth.uid;
+  if (!uid) throw new HttpsError('unauthenticated', 'Lazima uwe umeingia kwanza.');
+  if (!request.data || request.data.confirm !== true) {
+    throw new HttpsError(
+      'failed-precondition',
+      'Ombi lazima libe confirm:true — hatua hii hairudishwi nyuma.',
+    );
+  }
+  const user = await admin.auth().getUser(uid).catch(() => null);
+  const role = (user && user.customClaims && user.customClaims.role) || null;
+  if (ROOT_ROLES.includes(role)) {
+    throw new HttpsError(
+      'failed-precondition',
+      'Akaunti hii ina mamlaka ya msimamizi. Ili kufutwa, mmiliki mwingine au ' +
+        'wewe kupitia Firebase Console kwanza uondoe role, kisha jaribu tena.',
+    );
+  }
+  if (
+    user &&
+    Array.isArray(user.providerData) &&
+    user.providerData.some((p) => p.providerId === 'phone')
+  ) {
+    throw new HttpsError(
+      'failed-precondition',
+      'Akaunti hii imethibitishwa kwa namba ya simu. Wasiliana na Katibu ' +
+        '(privacy@zionjerusalem.org) ili kufutwa kwa mkono.',
+    );
+  }
+
+  const snapshot = await collectSubjectData(uid);
+  const counts = {};
+  for (const spec of SUBJECT_COLLECTIONS) {
+    counts[spec.path] = Array.isArray(snapshot[spec.path])
+      ? snapshot[spec.path].length
+      : 0;
+  }
+
+  // The erasure receipt is written BEFORE the data goes, and it holds only
+  // counts — no personal values — so the audit trail does not defeat erasure.
+  await writeAudit({
+    fn: 'deleteMyData',
+    action: 'pdpa.erasure',
+    actorUid: uid,
+    targetUid: uid,
+    targetEmail: (user && user.email) || null,
+    before: { counts },
+    after: null,
+    reason: 'Ombi la mtu binafsi la kufutwa kwa taarifa zake (right to erasure).',
+  });
+
+  const removed = {};
+  for (const spec of SUBJECT_COLLECTIONS) {
+    const rows = Array.isArray(snapshot[spec.path]) ? snapshot[spec.path] : [];
+    let n = 0;
+    for (const row of rows) {
+      try {
+        await db.collection(spec.path).doc(row.id).delete();
+        n += 1;
+      } catch (e) {
+        console.error('deleteMyData doc failed', spec.path, row.id, e);
+      }
+    }
+    removed[spec.path] = n;
+  }
+
+  let authDeleted = false;
+  try {
+    await admin.auth().deleteUser(uid);
+    authDeleted = true;
+  } catch (e) {
+    console.error('deleteMyData auth user not deleted', uid, e);
+  }
+
+  return { uid, removed, authDeleted, receipt: 'audit_logs/pdpa.erasure' };
+});
+
 module.exports = {
   setUserRole,
   revokeUserRole,
   myClaims,
+  exportMyData,
+  deleteMyData,
   mirrorMemberDocumentIntoClaims,
 };

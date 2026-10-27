@@ -9,7 +9,6 @@ import '../../features/notifications/services/notifications_data_service.dart';
 import '../utils/haptics.dart';
 import 'church_auth_service.dart';
 import 'church_notification_service.dart';
-import 'supabase_database_service.dart';
 
 /// Central real-time and offline-first Synchronization Bridge between
 /// Zion Jerusalem Mobile Application and the Church Web Administration Portal.
@@ -24,7 +23,6 @@ class ChurchSyncService extends ChangeNotifier {
   factory ChurchSyncService() => _instance;
   ChurchSyncService._internal();
 
-  final SupabaseDatabaseService _supabase = SupabaseDatabaseService();
   bool _isInitialized = false;
   Timer? _syncTimer;
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
@@ -272,7 +270,7 @@ class ChurchSyncService extends ChangeNotifier {
     currentInAppNotice.value = null;
   }
 
-  /// Broadcast a newly uploaded sermon from Mobile to Web and Supabase
+  /// Broadcast a newly uploaded sermon from Mobile to the local Web portal
   Future<void> syncNewSermon({
     required String id,
     required String title,
@@ -344,18 +342,6 @@ class ChurchSyncService extends ChangeNotifier {
               .catchError((_) => http.Response('', 500));
         }
       } catch (_) {}
-
-      // 3. Also push to Supabase if connected
-      await _supabase.insertSermon(
-        title: title,
-        preacher: preacher,
-        scripture: scripture,
-        duration: duration,
-        type: type,
-        category: category,
-        mediaUrl: mediaUrl,
-        imageUrl: imageUrl,
-      );
 
       notifyListeners();
     } catch (e) {

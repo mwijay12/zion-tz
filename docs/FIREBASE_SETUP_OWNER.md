@@ -177,7 +177,7 @@ static const Set<String> _bootstrapOwnerEmails = <String>{};
 | Sura | Hali |
 |---|---|
 | `firebase_options.dart:41` — `ios.appId` ni appId ya **Android** | ⚠ sahihisha Console (iOS app) unapoweza; web/Android hazihudumii |
-| `visitors_registry` / `prayer_requests` `allow create` bila login | Phase 2 (PDPA) — lazima consent + rate limit kwanza |
+| `visitors_registry` / `prayer_requests` `allow create` bila login | ✅ Phase 2: consent ya wageni inahitajika; maombi ya sala hayabebwi kwenye `userId` ya mtu mwingine; maombi hayasomwi na umma |
 | App Check | Phase 3 (lina weka usalama dhidi ya abuse ya functions) |
 | `firebase hosting` ya `sayuni-portal` | Portal bado ina localStorage; Phase 9 |
 | GitHub PAT | Phase 3 — zisha token jipya (hii ilivuja kwenye git remote) |
@@ -191,4 +191,37 @@ static const Set<String> _bootstrapOwnerEmails = <String>{};
 - `members/<uid>` ina `sourceOfTruth: 'firebase_auth_custom_claims'` — inaeleza kwamba
   document hii ni nakili ya ripoti, si chanzo cha mamlaka.
 - Kuondoa mtumiaji: `revokeUserRole` (role → `member`) ; kisha Console → Delete account.
-  Cloud-side erasure ya data zote = Phase 2.
+  Cloud-side erasure ya data zote = `functions/deleteMyData` (angalia §8).
+
+---
+
+## 8. PDPA (Phase 2) — unachotakiwa kufanya mwenyewe
+
+### 8.1 Pakia kanuni + functions
+```bash
+firebase deploy --only firestore:rules,functions
+```
+Bila hatua hii programu bado inafanya kazi zake, lakini:
+- idhini hajibikani kwenye `consent_records` (inakaa kwenye kifaa peke yake);
+- "Pakia nakala ya data yangu" hatolei data ya wingu (inasema wazi "functions bado hazijapakiwa");
+- "Futa akaunti" hufuta kifaa peke yake na inakuambia ukweli huo.
+
+### 8.2 uthibitisho (baada ya deploy)
+1. Ingia kama mwenye akaunti ya mgeni → Wasifu → *Haki zangu za PDPA* → chagua → **Nakubali idhini hii**
+   (snackbar inatakiwa kusema "rekodi imetumwa kwenye wingu").
+2. Console → Firestore → `consent_records` → lazima uone document yenye `uid`, `version: "2026.2"`,
+   `purposes[]`, `acceptedAt`, `method`. Jaribu kufuta document hiyo kwenye app — kanuni zinakataa
+   (`update, delete: if false`).
+3. *Tengeneza nakala ya data* → JSON ina `dataController`, `consentRecords`, `deviceData`, `cloudData`,
+   `processors`. Nakili inakopiwa kwenye clipboard (hakuna faili kwenye web).
+4. *Futa akaunti* → Console → Authentication → user haipo tena; `audit_logs` ina `pdpa.erasure`.
+
+### 8.3 Maamuzi ya kanisa (record-keeping)
+- **Washirika (processors)** ambao lazima ukubali: Google (Firebase Auth + Firestore), Cloudinary,
+  radio-browser.info (orodha za redio peke yake), Google Gemini (portal ya wasimamizi), na
+  Lipa Namba (Vodacom/MiGAi/Airtel/CRDB). Orodha hii ndiyo inayoonekana kwa waumini (§7 ya faragha).
+- **DPO / simu ya faragha**: weka namba halisi kwenye `ChurchProfile` na ukurasa wa faragha
+  (sasa kuna `privacy@zionjerusalem.org` peke yake).
+- **Usihifadhi PIN**: malipo yanakwenda moja kwa moja kwa Lipa Namba; hakuna kitu kwenye Firestore.
+- **Utunzaji (retention)**: rekodi za fedha (aseli/michango/mapato/matumizi) hazifutwi na `deleteMyData`
+  — sheria ya mapato na ukaguzi wa kanisa. Mtumiaji anaelekezwa hivyo kabla ya kuthibitisha.

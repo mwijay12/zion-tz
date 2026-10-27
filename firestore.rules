@@ -108,13 +108,33 @@ service cloud.firestore {
     }
 
     function isValidVisitor(data) {
+      // PDPA 2022: a visitor's name and phone number are personal data. The
+      // card is only accepted when the reception team has recorded that the
+      // person agreed to be registered (verbal consent ticked by the deacon).
       return (data.fullName is string || data.full_name is string) &&
-             (data.phone is string && data.phone.size() >= 7);
+             (data.phone is string && data.phone.size() >= 7) &&
+             (data.consent == true || data.consentGiven == true);
+    }
+
+    /// Consent decisions are written by the member themselves and are never
+    /// edited afterwards — withdrawal is a NEW record, so the church can still
+    /// prove what was agreed on a given date.
+    function isValidConsent(data) {
+      return data.uid is string &&
+             data.version is string &&
+             data.purposes is list &&
+             (data.acceptedAt != null);
     }
 
     function isValidPrayerRequest(data) {
-      return (data.requestText is string || data.content is string || data.message is string) &&
-             (data.requestText.size() <= 3000 || data.content.size() <= 3000 || data.message.size() <= 3000);
+      // Each branch must test the type before calling .size(): a missing field
+      // makes `data.x.size()` throw, which denies the whole write.
+      return ((data.requestText is string && data.requestText.size() <= 3000) ||
+              (data.content is string && data.content.size() <= 3000) ||
+              (data.message is string && data.message.size() <= 3000)) &&
+             // A signed-in member cannot file a request as somebody else.
+             (request.auth == null || data.userId == null ||
+              data.userId == request.auth.uid);
     }
 
     function isValidJumuiyaReport(data) {
@@ -164,11 +184,14 @@ service cloud.firestore {
     match /prayer_requests/{requestId} {
       // Anyone in need of prayer can submit their request
       allow create: if isValidPrayerRequest(request.resource.data);
-      // Read allowed only for the author OR pastors/admins
+      // Only the author or the pastoral desk. There used to be an extra branch
+      // `resource.data.isPrivate == false` which made a prayer request readable
+      // by the whole world — under PDPA 2022 a prayer request is personal data
+      // and there is no lawful basis for publishing it. Public testimonies must
+      // go through `announcements` without any identifying detail.
       allow read: if (
         (isSignedIn() && isPastor()) ||
-        (isSignedIn() && resource.data.userId == request.auth.uid) ||
-        (resource.data.isPrivate == false)
+        (isSignedIn() && resource.data.userId == request.auth.uid)
       );
       allow update: if (
         (isSignedIn() && isPastor()) ||
@@ -200,6 +223,22 @@ service cloud.firestore {
         (isSignedIn() && request.auth.uid == userId &&
          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'isVerifiedMember']));
       allow delete: if isAdmin();
+    }
+
+    // 9b. Consent register (PDPA 2022 — proof of lawful basis).
+    // The member writes their own decisions; the secretary reads them because
+    // the church must be able to prove what was agreed and when. Nobody — not
+    // even an admin — may edit or delete a consent record from a client: a
+    // register you can quietly rewrite is not evidence. Server-side erasure
+    // (`functions/deleteMyData`) removes them through the Admin SDK.
+    match /consent_records/{consentId} {
+      allow get: if (isSignedIn() && request.auth.uid == resource.data.uid) ||
+                    isAdmin() || isSecretary();
+      allow list: if isAdmin() || isSecretary();
+      allow create: if isSignedIn() &&
+                      request.auth.uid == request.resource.data.uid &&
+                      isValidConsent(request.resource.data);
+      allow update, delete: if false;
     }
 
     // 10. Role grants — audit trail of who assigned which role to whom.

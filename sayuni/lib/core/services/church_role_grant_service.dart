@@ -215,4 +215,84 @@ class ChurchRoleGrantService {
     if (kDebugMode) debugPrint('ChurchRoleGrantService.$fn → $message');
     return RoleGrantResult.fail(message);
   }
+
+  /// `exportMyData` — right of access. Returns the caller's own cloud records,
+  /// or null when there is no session / the function is not deployed yet.
+  static Future<Map<String, dynamic>?> exportMyData() async {
+    final token = await _idToken();
+    if (token == null) return null;
+    try {
+      final res = await http
+          .post(Uri.parse(endpoint('exportMyData')),
+              headers: _headers(token), body: jsonEncode({'data': {}}))
+          .timeout(_timeout);
+      if (res.statusCode != 200) return null;
+      final body = jsonDecode(res.body) as Map<String, dynamic>;
+      return (body['result'] as Map?)?.cast<String, dynamic>();
+    } catch (e) {
+      debugPrint('ChurchRoleGrantService.exportMyData failed: $e');
+      return null;
+    }
+  }
+
+  /// `deleteMyData` — right to erasure. Irreversible: it deletes the Firebase
+  /// auth user and every document keyed to it. A refusal is returned verbatim,
+  /// never converted into a local success.
+  static Future<RoleGrantResult> deleteMyData() async {
+    final token = await _idToken();
+    if (token == null) {
+      return const RoleGrantResult.fail(
+        'Hakuna akaunti ya Firebase kwenye kifaa hiki, kwa hivyo hakuna data ya '
+        'kwenye wingu ya kufuta. Kile ulichoona hapa ni data ya kifaa pekee.',
+      );
+    }
+    http.Response res;
+    try {
+      res = await http
+          .post(
+            Uri.parse(endpoint('deleteMyData')),
+            headers: _headers(token),
+            body: jsonEncode({
+              'data': {'confirm': true}
+            }),
+          )
+          .timeout(_timeout);
+    } on TimeoutException {
+      return RoleGrantResult.fail(
+        'Server haijajibu ndani ya sekunde ${_timeout.inSeconds} — hakuna kitu '
+        'kilichofutwa. Jaribu tena.',
+      );
+    } catch (e) {
+      return RoleGrantResult.fail('Imeshindikana kufikia functions/deleteMyData: $e');
+    }
+
+    Map<String, dynamic>? body;
+    try {
+      body = (jsonDecode(res.body) as Map).cast<String, dynamic>();
+    } catch (_) {
+      body = null;
+    }
+
+    if (res.statusCode == 200 && body?['result'] is Map) {
+      final r = (body!['result'] as Map).cast<String, dynamic>();
+      final removed = (r['removed'] as Map?)?.cast<String, dynamic>() ?? const {};
+      final parts = removed.entries.map((e) => '${e.key}: ${e.value}').join(', ');
+      return RoleGrantResult.ok(
+        viaCloud: r['authDeleted'] == true,
+        message: 'Data yako kwenye Firebase imefutwa ($parts). '
+            'Rekodi ya kufutwa imebaki kwenye audit_logs kama kanisa linavyohitaji.',
+      );
+    }
+
+    String message = '';
+    if (body?['error'] is Map) {
+      final err = (body!['error'] as Map).cast<String, dynamic>();
+      message = (err['message'] ?? err['status'] ?? '').toString();
+    }
+    if (message.isEmpty) {
+      message = 'HTTP ${res.statusCode}: '
+          '${res.body.length > 200 ? '${res.body.substring(0, 200)}…' : res.body}';
+    }
+    return RoleGrantResult.fail(message);
+  }
 }

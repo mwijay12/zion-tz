@@ -990,7 +990,7 @@ class _MediaLibrarySheetState extends State<_MediaLibrarySheet> {
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 32),
                             child: Text(
-                              'Hakuna sauti zilizopakiwa katika sehemu hii bado. Pakia kwenye Firebase/Supabase ili zionekane hapa.',
+                              'Hakuna sauti zilizopakiwa katika sehemu hii bado. Pakia faili ya sauti (mp3/m4a) kutoka ukurasa wa Usimamizi ili ionekane hapa.',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Color(0xFF9FB6D4),

@@ -6,6 +6,7 @@ import '../../../core/utils/haptics.dart';
 import '../../../core/utils/top_notification.dart';
 import '../../../core/widgets/glass_card.dart';
 import '../../navigation/presentation/main_scaffold.dart';
+import '../../profile/presentation/pdpa_rights_screen.dart';
 import '../../profile/presentation/privacy_policy_screen.dart';
 
 class OnboardingAuthScreen extends StatefulWidget {
@@ -163,6 +164,12 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
             'ZION-${name.hashCode.abs().toString().padLeft(6, '0').substring(0, 5)}',
         jumuiya: 'Mbagala Kijichi',
       );
+
+      // PDPA 2022: a new member must be told, once per policy version, what the
+      // church will do with their data — and must record their own answer.
+      // Nothing is written unless they actually press the button, so an ignored
+      // prompt leaves the optional purposes switched off (compliant by default).
+      if (mounted) await PdpaRightsScreen.maybeAsk(context);
     } else {
       // Guest login
       await _authService.loginAsGuest(

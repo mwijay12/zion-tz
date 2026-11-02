@@ -114,7 +114,7 @@ class ChurchThemeService extends ChangeNotifier {
         labelMedium: TextStyle(color: AppColors.textSecondaryLight),
         labelSmall: TextStyle(color: AppColors.textMutedLight),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.surfaceLight,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
@@ -205,7 +205,7 @@ class ChurchThemeService extends ChangeNotifier {
         side: const BorderSide(color: AppColors.borderLight),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: AppColors.surfaceLight,
         surfaceTintColor: Colors.transparent,
         titleTextStyle:
@@ -221,7 +221,7 @@ class ChurchThemeService extends ChangeNotifier {
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
       ),
-      tabBarTheme: const TabBarTheme(
+      tabBarTheme: const TabBarThemeData(
         labelColor: AppColors.primary,
         unselectedLabelColor: AppColors.textMutedLight,
         indicatorColor: AppColors.primary,
@@ -309,7 +309,7 @@ class ChurchThemeService extends ChangeNotifier {
         labelMedium: TextStyle(color: AppColors.textSecondaryDark),
         labelSmall: TextStyle(color: AppColors.textMutedDark),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: surface,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
@@ -402,7 +402,7 @@ class ChurchThemeService extends ChangeNotifier {
         side: const BorderSide(color: border),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
-      dialogTheme: DialogTheme(
+      dialogTheme: DialogThemeData(
         backgroundColor: surface,
         surfaceTintColor: Colors.transparent,
         titleTextStyle: const TextStyle(
@@ -418,7 +418,7 @@ class ChurchThemeService extends ChangeNotifier {
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
       ),
-      tabBarTheme: const TabBarTheme(
+      tabBarTheme: const TabBarThemeData(
         labelColor: Colors.white,
         unselectedLabelColor: AppColors.textMutedDark,
         indicatorColor: AppColors.primaryLight,

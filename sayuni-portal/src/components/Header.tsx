@@ -23,14 +23,12 @@ import {
   LogOut,
   LogIn
 } from 'lucide-react';
-import type { UserRole, Language } from '../types';
-import type { PortalUser } from '../services/authService';
+import type { Language } from '../types';
+import { AuthService, type PortalUser } from '../services/authService';
 
 interface HeaderProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  userRole: UserRole;
-  setUserRole: (role: UserRole) => void;
   language: Language;
   setLanguage: (lang: Language) => void;
   isDarkMode: boolean;
@@ -101,8 +99,6 @@ const INITIAL_NOTIFICATIONS: ChurchNotification[] = [
 export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
-  userRole,
-  setUserRole,
   language,
   setLanguage,
   isDarkMode,
@@ -136,25 +132,13 @@ export const Header: React.FC<HeaderProps> = ({
     };
   }, []);
 
-  const handleRoleChange = (role: UserRole) => {
-    setUserRole(role);
-    if (role === 'pastor') setActiveTab('pastor_portal');
-    else if (role === 'secretary') setActiveTab('secretary_portal');
-    else if (role === 'elder') setActiveTab('elders_portal');
-    else if (role === 'deacon') setActiveTab('deacons_portal');
-    else if (role === 'choir_leader') setActiveTab('choir_portal');
-    else if (role === 'departments' || role === 'children_teacher') setActiveTab('departments_portal');
-    else if (role === 'treasurer') setActiveTab('finance');
-    else if (role === 'cell_leader') setActiveTab('jumuiya');
-  };
-
   const markAllAsRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   };
 
   const handleNotificationClick = (notif: ChurchNotification) => {
     setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, read: true } : n));
-    if (notif.targetTab) {
+    if (notif.targetTab && AuthService.canAccessTab(currentUser, notif.targetTab)) {
       setActiveTab(notif.targetTab);
     }
     setNotificationsOpen(false);
@@ -166,7 +150,9 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'dashboard', label: isSw ? 'Dashibodi Kuu' : 'Dashboard', icon: Church },
     { id: 'pastor_portal', label: isSw ? 'Pastoral Studio' : 'Pastoral Studio', icon: ShieldCheck },
     { id: 'secretary_portal', label: isSw ? 'Ofisi ya Katibu' : 'Secretary Office', icon: Megaphone },
+    { id: 'members', label: isSw ? 'Daftari la Waumini' : 'Members Registry', icon: Users },
     { id: 'deacons_portal', label: isSw ? 'Mashemasi & Wageni' : 'Deacons & Visitors', icon: UserCheck },
+    { id: 'elders_portal', label: isSw ? 'Baraza la Wazee' : 'Elders Board', icon: ShieldCheck },
     { id: 'choir_portal', label: isSw ? 'Kwaya & Muziki' : 'Choirs & Music', icon: Music },
     { id: 'finance', label: isSw ? 'Fedha na Sadaka' : 'Finances & Tithes', icon: Wallet },
     { id: 'departments_portal', label: isSw ? 'Idara za Kanisa' : 'Departments', icon: Heart },
@@ -174,6 +160,8 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'bible', label: isSw ? 'Biblia & Daftari' : 'Bible & Notes', icon: BookOpen },
     { id: 'certificates', label: isSw ? 'Vyeti Studio' : 'Certificates', icon: Award },
   ];
+
+  const visibleNavItems = navItems.filter((item) => AuthService.canAccessTab(currentUser, item.id));
 
   const getNotifIcon = (type: ChurchNotification['type']) => {
     switch(type) {
@@ -237,7 +225,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Navigation Links */}
           <nav className="portal-nav-list" aria-label="Main Navigation">
-            {navItems.map((item) => {
+            {visibleNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
               return (
@@ -321,38 +309,6 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Top bar Right Actions */}
         <div className="portal-topbar-actions">
-          {/* Fast Role Switcher Segmented Pills */}
-          <div className="role-switcher-segmented">
-            <button
-              onClick={() => handleRoleChange('pastor')}
-              className={`role-btn-pill ${userRole === 'pastor' ? 'active' : ''}`}
-              title={isSw ? 'Mtazamo wa Mchungaji' : 'Pastor View'}
-            >
-              {isSw ? 'Mchungaji' : 'Pastor'}
-            </button>
-            <button
-              onClick={() => handleRoleChange('secretary')}
-              className={`role-btn-pill ${userRole === 'secretary' ? 'active' : ''}`}
-              title={isSw ? 'Mtazamo wa Katibu' : 'Secretary View'}
-            >
-              {isSw ? 'Katibu' : 'Secretary'}
-            </button>
-            <button
-              onClick={() => handleRoleChange('deacon')}
-              className={`role-btn-pill ${userRole === 'deacon' ? 'active' : ''}`}
-              title={isSw ? 'Mtazamo wa Mashemasi' : 'Deacons View'}
-            >
-              {isSw ? 'Mashemasi' : 'Deacons'}
-            </button>
-            <button
-              onClick={() => handleRoleChange('choir_leader')}
-              className={`role-btn-pill ${userRole === 'choir_leader' ? 'active' : ''}`}
-              title={isSw ? 'Mtazamo wa Kwaya' : 'Choir View'}
-            >
-              {isSw ? 'Kwaya' : 'Choir'}
-            </button>
-          </div>
-
           {/* Language Toggle */}
           <button
             onClick={() => setLanguage(language === 'sw' ? 'en' : 'sw')}
@@ -550,9 +506,9 @@ export const Header: React.FC<HeaderProps> = ({
                   <span style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: 'var(--on-surface)', lineHeight: 1.2 }}>
                     {currentUser.name}
                   </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.65rem', color: currentUser.isSuperAdmin ? '#b45309' : 'var(--on-surface-variant)', fontWeight: currentUser.isSuperAdmin ? 700 : 500 }}>
-                    {currentUser.isSuperAdmin && <ShieldCheck size={11} style={{ color: '#d97706' }} />}
-                    <span>{currentUser.isSuperAdmin ? 'Super Admin' : currentUser.titleSw}</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.65rem', color: currentUser.isRoot ? '#b45309' : 'var(--on-surface-variant)', fontWeight: currentUser.isRoot ? 700 : 500 }}>
+                    {currentUser.isRoot && <ShieldCheck size={11} style={{ color: '#d97706' }} />}
+                    <span>{currentUser.role === 'super_admin' ? 'Super Admin' : currentUser.titleSw}</span>
                   </span>
                 </div>
               </button>
@@ -585,88 +541,9 @@ export const Header: React.FC<HeaderProps> = ({
                       {currentUser.email}
                     </div>
                     <div style={{ marginTop: '0.35rem' }}>
-                      <span className={`badge ${currentUser.isSuperAdmin ? 'badge-gold' : 'badge-purple'}`} style={{ fontSize: '0.65rem' }}>
-                        {currentUser.isSuperAdmin ? '👑 Super Administrator' : currentUser.titleSw}
+                      <span className={`badge ${currentUser.isRoot ? 'badge-gold' : 'badge-purple'}`} style={{ fontSize: '0.65rem' }}>
+                        {currentUser.role === 'super_admin' ? '👑 Super Administrator' : currentUser.titleSw}
                       </span>
-                    </div>
-                  </div>
-
-                  <div style={{ height: '1px', background: 'var(--border-subtle)' }} />
-
-                  {/* Fast Switch Role shortcuts */}
-                  <div>
-                    <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.4rem', fontWeight: 700 }}>
-                      {isSw ? 'Wadhifa Unaotumika' : 'Active Role View'}
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                      <button
-                        onClick={() => {
-                          handleRoleChange('pastor');
-                          setUserMenuOpen(false);
-                        }}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.5rem',
-                          padding: '0.4rem 0.6rem',
-                          borderRadius: '8px',
-                          border: 'none',
-                          background: userRole === 'pastor' ? 'var(--surface-container)' : 'transparent',
-                          color: 'var(--text-headline)',
-                          fontSize: '0.78rem',
-                          cursor: 'pointer',
-                          fontWeight: userRole === 'pastor' ? 700 : 500
-                        }}
-                      >
-                        <ShieldCheck size={14} style={{ color: 'var(--primary)' }} />
-                        <span>Mchungaji (Pastor)</span>
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          handleRoleChange('secretary');
-                          setUserMenuOpen(false);
-                        }}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.5rem',
-                          padding: '0.4rem 0.6rem',
-                          borderRadius: '8px',
-                          border: 'none',
-                          background: userRole === 'secretary' ? 'var(--surface-container)' : 'transparent',
-                          color: 'var(--text-headline)',
-                          fontSize: '0.78rem',
-                          cursor: 'pointer',
-                          fontWeight: userRole === 'secretary' ? 700 : 500
-                        }}
-                      >
-                        <UserCheck size={14} style={{ color: 'var(--primary)' }} />
-                        <span>Katibu (Secretary)</span>
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          handleRoleChange('choir_leader');
-                          setUserMenuOpen(false);
-                        }}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.5rem',
-                          padding: '0.4rem 0.6rem',
-                          borderRadius: '8px',
-                          border: 'none',
-                          background: userRole === 'choir_leader' ? 'var(--surface-container)' : 'transparent',
-                          color: 'var(--text-headline)',
-                          fontSize: '0.78rem',
-                          cursor: 'pointer',
-                          fontWeight: userRole === 'choir_leader' ? 700 : 500
-                        }}
-                      >
-                        <Music size={14} style={{ color: 'var(--primary)' }} />
-                        <span>Kiongozi Kwaya (Choir)</span>
-                      </button>
                     </div>
                   </div>
 

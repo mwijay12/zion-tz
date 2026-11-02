@@ -1,12 +1,7 @@
-import React from 'react';
-import { 
-  ShieldCheck, 
-  UserCheck, 
-  Music, 
-  Wallet
-} from 'lucide-react';
+import React, { useState } from 'react';
+import { AlertCircle, Lock, LogIn, Mail } from 'lucide-react';
 import { AuthService, type PortalUser } from '../services/authService';
-import type { Language, UserRole } from '../types';
+import type { Language } from '../types';
 
 interface AuthModalProps {
   language: Language;
@@ -14,16 +9,59 @@ interface AuthModalProps {
   onClose?: () => void;
 }
 
+const inputStyle: React.CSSProperties = {
+  width: '100%',
+  padding: '0.72rem 0.85rem 0.72rem 2.35rem',
+  borderRadius: '10px',
+  border: '1.5px solid var(--border-subtle)',
+  background: 'var(--surface-container)',
+  color: 'var(--on-surface)',
+  fontSize: '0.88rem',
+  outline: 'none',
+  boxSizing: 'border-box',
+};
+
 export const AuthModal: React.FC<AuthModalProps> = ({
   language,
   onLoginSuccess,
   onClose
 }) => {
   const isSw = language === 'sw';
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleRoleQuickLogin = (role: UserRole) => {
-    const user = AuthService.loginAsRole(role);
-    onLoginSuccess(user);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const user = await AuthService.login(email.trim(), password);
+      onLoginSuccess(user);
+    } catch (err) {
+      const code = (err as { code?: string })?.code;
+      const message = (err as Error)?.message;
+
+      if (message?.includes('wadhifa')) {
+        setError(message);
+      } else if (
+        code === 'auth/invalid-credential' ||
+        code === 'auth/wrong-password' ||
+        code === 'auth/user-not-found'
+      ) {
+        setError(isSw ? 'Barua pepe au neno la siri si sahihi.' : 'Incorrect email or password.');
+      } else if (code === 'auth/too-many-requests') {
+        setError(isSw ? 'Majaribio mengi. Subiri kidogo kisha ujaribu tena.' : 'Too many attempts. Wait a moment and try again.');
+      } else if (code === 'auth/invalid-email') {
+        setError(isSw ? 'Barua pepe si sahihi.' : 'Invalid email address.');
+      } else {
+        setError(isSw ? 'Imeshindikana kuingia. Jaribu tena.' : 'Sign-in failed. Please try again.');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -51,7 +89,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           position: 'relative'
         }}
       >
-        {/* Header Seal */}
         <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
           <div style={{
             width: '64px',
@@ -66,8 +103,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               src="/zion_logo.png" 
               alt="Zion Jerusalem Logo" 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
+              onError={(event) => {
+                event.currentTarget.style.display = 'none';
               }}
             />
           </div>
@@ -90,54 +127,95 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           lineHeight: 1.5
         }}>
           {isSw
-            ? 'Hali ya majaribio: ingia kwa wadhifa ili kuona mfumo. Uthibitishaji halisi wa Firebase utawekwa kabla ya matumizi rasmi.'
-            : 'Prototype access: choose a role to explore the portal. Real Firebase Authentication is required before production use.'}
+            ? 'Ingia kwa akaunti ya kiongozi iliyothibitishwa na kanisa. Wadhifa wako unatoka kwenye custom claims za Firebase.'
+            : 'Sign in with a church-verified leader account. Your role comes from Firebase custom claims.'}
         </div>
 
-        <div style={{ marginBottom: '1.25rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-            <div style={{ flex: 1, height: '1px', background: 'var(--border-subtle)' }} />
-            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.8px', fontWeight: 700 }}>
-              {isSw ? 'Chagua Wadhifa wa Kanisa' : 'Choose a Church Role'}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
+          <label style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+            <span style={{ fontSize: '0.76rem', fontWeight: 700, color: 'var(--text-headline)' }}>
+              {isSw ? 'Barua Pepe' : 'Email'}
             </span>
-            <div style={{ flex: 1, height: '1px', background: 'var(--border-subtle)' }} />
-          </div>
+            <span style={{ position: 'relative', display: 'block' }}>
+              <Mail size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              <input
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+                autoComplete="email"
+                placeholder="kiongozi@zionjerusalem.org"
+                style={inputStyle}
+              />
+            </span>
+          </label>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-            <button
-              onClick={() => handleRoleQuickLogin('pastor')}
-              className="role-btn-pill"
-              style={{ justifyContent: 'center', padding: '0.5rem' }}
-            >
-              <ShieldCheck size={14} />
-              <span>{isSw ? 'Mchungaji' : 'Pastor'}</span>
-            </button>
-            <button
-              onClick={() => handleRoleQuickLogin('secretary')}
-              className="role-btn-pill"
-              style={{ justifyContent: 'center', padding: '0.5rem' }}
-            >
-              <UserCheck size={14} />
-              <span>{isSw ? 'Katibu' : 'Secretary'}</span>
-            </button>
-            <button
-              onClick={() => handleRoleQuickLogin('treasurer')}
-              className="role-btn-pill"
-              style={{ justifyContent: 'center', padding: '0.5rem' }}
-            >
-              <Wallet size={14} />
-              <span>{isSw ? 'Mweka Hazina' : 'Treasurer'}</span>
-            </button>
-            <button
-              onClick={() => handleRoleQuickLogin('choir_leader')}
-              className="role-btn-pill"
-              style={{ justifyContent: 'center', padding: '0.5rem' }}
-            >
-              <Music size={14} />
-              <span>{isSw ? 'Kiongozi Kwaya' : 'Choir Leader'}</span>
-            </button>
-          </div>
-        </div>
+          <label style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+            <span style={{ fontSize: '0.76rem', fontWeight: 700, color: 'var(--text-headline)' }}>
+              {isSw ? 'Neno la Siri' : 'Password'}
+            </span>
+            <span style={{ position: 'relative', display: 'block' }}>
+              <Lock size={16} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              <input
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                required
+                autoComplete="current-password"
+                placeholder="••••••••"
+                style={inputStyle}
+              />
+            </span>
+          </label>
+
+          {error && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '0.45rem',
+              padding: '0.65rem 0.75rem',
+              borderRadius: '10px',
+              backgroundColor: 'rgba(220, 38, 38, 0.08)',
+              border: '1px solid rgba(220, 38, 38, 0.25)',
+              color: '#b91c1c',
+              fontSize: '0.78rem',
+              lineHeight: 1.4
+            }}>
+              <AlertCircle size={15} style={{ flexShrink: 0, marginTop: '1px' }} />
+              <span>{error}</span>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              width: '100%',
+              padding: '0.75rem',
+              borderRadius: '10px',
+              border: 'none',
+              background: 'var(--primary-gold)',
+              color: '#1a1a1a',
+              fontSize: '0.9rem',
+              fontWeight: 800,
+              cursor: loading ? 'wait' : 'pointer',
+              opacity: loading ? 0.7 : 1
+            }}
+          >
+            <LogIn size={16} />
+            <span>{loading ? (isSw ? 'Inaingia...' : 'Signing in...') : (isSw ? 'Ingia Portal' : 'Sign In')}</span>
+          </button>
+        </form>
+
+        <p style={{ margin: '1rem 0 0 0', fontSize: '0.74rem', color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.5 }}>
+          {isSw
+            ? 'Huna akaunti? Wasiliana na msimamizi wa kanisa ili upewe wadhifa.'
+            : 'No account? Contact the church administrator to be assigned a role.'}
+        </p>
 
         {onClose && (
           <button

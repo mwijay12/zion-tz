@@ -3,7 +3,13 @@
 Phase 1 ya `docs/STRATEGY_AND_PHASES.md`: **mamlaka ya kweli inatoka Firebase Auth, si kwenye simu.**
 Faili zote za upande wa server zimo hapa tayari; unabaki na hatua hizi za console/CLI.
 
-Update ya mwisho: 2026-10-27 · Project: `zion-mbagala-church` (`.firebaserc`)
+Update ya mwisho: 2026-11-01 · Project: `zion-mbagala-church` (`.firebaserc`)
+
+> **Hali ya sasa (2026-11-01):** Firebase Auth (Email/Password) imewashwa; Firestore rules
+> na indexes zimepandishwa; super_admin wa kwanza `mwijaydavie@gmail.com`
+> (UID `299b1c648f76361f3c223c1c`) ameundwa na claims `role=super_admin`,
+> `branch=Mbagala Kwa Matope (HQ)`. Cloud Functions bado hazijapanda — project iko
+> Spark; Blaze inahitajika. Bootstrap email allowlist imefungwa.
 
 ---
 
@@ -67,21 +73,25 @@ firebase projects:list | grep zion
 
 ### 1) Auth providers
 Console → **Build → Authentication → Get started → Sign-in method**:
-- **Email/Password** → Enabled
-- **Google** → Enabled (chagua email ya kanisa kama support email)
+- **Email/Password** → Enabled (tayari imewashwa kupitia `firebase.json`)
+- **Google** → imecheleweshwa; kitufe cha Google kwenye app kimefichwa hadi OAuth halisi (Phase 3)
 
-### 2) Kuunda akaunti ya kwanza ya admin
-Console → Authentication → **Add user**:
-- email: `admin@zionjerusalem.org` (au email yako ya kweli)
-- password: 14+ chars, tofauti na ile ya demo
+### 2) Akaunti ya kwanza ya admin
+Tayari imeundwa: `mwijaydavie@gmail.com` (UID `299b1c648f76361f3c223c1c`) na claims
+`role=super_admin`, `branch=Mbagala Kwa Matope (HQ)`. Badilisha password ya muda mara moja:
+Console → Authentication → Users → **Reset password**.
 
 ### 3) Deploy rules
 ```bash
 cd <repo>
-firebase deploy --only firestore:rules
+firebase deploy --only firestore:rules,firestore:indexes
 ```
+Tayari imepandishwa; rudia kila unapobadilisha `firestore.rules`.
 
 ### 4) Deploy functions
+**Bado imezuiwa:** project iko Spark. Upgrade hadi Blaze kwanza:
+https://console.firebase.google.com/project/zion-mbagala-church/usage/details
+Kisha:
 ```bash
 cd functions && npm install && cp .env.example .env && cd ..
 firebase deploy --only functions
@@ -93,40 +103,28 @@ Kosa la region (`africa-south1` haipatikani kwenye project yako)?
 3. `firebase deploy --only functions`
 
 ### 5) Bootstrap: admin wa kwanza (`super_admin`)
-Hakuna admin bado, kwa hivyo `setUserRole` haiwezi kuitwa. Chagua **moja**:
+Tayari imefanyika kwa `firebase auth:import` + `customAttributes` (haitegemei functions).
+Kumbuka: `STANDARD_SCRYPT` inahitaji `--mem-cost=16384` (si `14`).
 
-**A) Njia rahisi — Console + trigger (inayopendekezwa)**
-1. Console → Firestore → Start database (**production mode**, region `eur3` au `us-central1`)
-2. Unda collection `members`, document ID = **UID** ya admin (UID unaipata kwenye Authentication → Users → UID)
-3. Fields: `role` (string) = `super_admin`, `branch` = `Mbagala Kwa Matope (HQ)`
-4. Trigger `mirrorMemberDocumentIntoClaims` itaenda ndani ya sekunde ~20: itaweka claims, kuandika `audit_logs`, na kuandika `previousRole` kwenye document.
-
-**B) Njia ya CLI (hakikisha)**
-```bash
-node -e "const admin=require('firebase-admin');admin.initializeApp();admin.auth().setCustomUserClaims(process.argv[2],JSON.parse(process.argv[1])).then(()=>console.log('claims OK'))" '{"role":"super_admin","branch":"Mbagala Kwa Matope (HQ)"}' <UID>
-```
-(Hii inahitaji `GOOGLE_APPLICATION_CREDENTIALS` au `gcloud auth application-default login`.)
-
-**C) Emulator ( bila mtandao)**
-```bash
-firebase emulators:start --only functions,firestore,auth
-```
+Kwa akaunti nyingine baada ya Blaze, tumia `functions/setUserRole`; kwa dharura unaweza
+kurudia `auth:import` na `customAttributes` ya `role` + `branch`.
 
 ### 6) Thibitisha
-1. Fungua programu → login na email hiyo → Profile → **Admin Dashboard**.
+1. Fungua programu → login na `mwijaydavie@gmail.com` → Profile → **Admin Dashboard**.
 2. Juu unaona: `Mamlaka imethibitishwa na Firebase` ✅ (si `Mamlaka ya kifaa hiki`).
-3. Terminal:
+3. Hakikisha claims:
 ```bash
-curl -s -X POST "https://africa-south1-zion-mbagala-church.cloudfunctions.net/myClaims" -H "Content-Type: application/json" -H "Authorization: Bearer <ID_TOKEN>" -d '{"data":{}}'
+firebase auth:export users.json --project zion-mbagala-church
 ```
-Unatarajia `{"result":{"role":"super_admin", ...}}`.
-4. Firestore → `role_grants` na `audit_logs` lazima ziwe na rows.
+Angalia `customAttributes` ya user: `{"role":"super_admin","branch":"Mbagala Kwa Matope (HQ)"}`.
+4. `role_grants` na `audit_logs` hazitakuwa na rows bado — functions hazijapanda (Blaze).
 
 ### 7) Kila siku (baada ya admin 1 kuwepo)
 Admin Dashboard → **Ongeza Barua Pepe ya Admin (Grant Role)**:
-- programu inapiga `setUserRole` kwanza → snackbar **kijani `✔`** = role iko kwenye Firebase.
+- programu inapiga `setUserRole` → snackbar **kijani `✔`** = role iko kwenye Firebase.
 - snackbar **manjano `⚠`** = build ya majaribio, imehifadhiwa kwenye kifaa peke.
 - snackbar **nyekundu `✕`** = server imekataa; hakuna kitu kilicho wekwa. (Hakuna "fake success".)
+- **Sasa:** `setUserRole` haipatikani hadi Blaze; grant role itashindikana kwa `⚠`/`✕`.
 
 ---
 
@@ -152,23 +150,16 @@ Tatu lazima zibaki zinazo endana: `church_role_policy.dart` · `firestore.rules`
 
 ---
 
-## 5. Bootstrap allowance — na jinsi ya ku izima
+## 5. Bootstrap allowance — imefungwa
 
-Kwa sasa `church_auth_service.dart` ina:
+`church_auth_service.dart` sasa ina:
 
-```dart
-static const Set<String> _bootstrapOwnerEmails = {'admin@zionjerusalem.org'};
-```
-
-Sababu: kabla ya functions kudeploy, kungoja claims tu kungefanya **preview yote isifanye kazi**
-(na kila refresh ingemtoa nje). Account iliyo orodha hii hupewa role ya device **na**
-lebo `roleSourceLabel` ina onyesha `Mamlaka ya kifaa hiki — haijathibitishwa`.
-
-**Ukisha maliza hatua 5–6 za juu, ifunge:**
 ```dart
 static const Set<String> _bootstrapOwnerEmails = <String>{};
 ```
-`dart analyze` → build mpya. Kisha kila mamlaka itatoka claims peke yake.
+
+Hakuna email inayopewa role ya kifaa. Kila mamlaka inatoka `request.auth.token.role`.
+Akaunti ya kwanza iliumbwa kwa `auth:import` + `customAttributes` (tazama §3.5).
 
 ---
 
@@ -179,7 +170,7 @@ static const Set<String> _bootstrapOwnerEmails = <String>{};
 | `firebase_options.dart:41` — `ios.appId` ni appId ya **Android** | ⚠ sahihisha Console (iOS app) unapoweza; web/Android hazihudumii |
 | `visitors_registry` / `prayer_requests` `allow create` bila login | ✅ Phase 2: consent ya wageni inahitajika; maombi ya sala hayabebwi kwenye `userId` ya mtu mwingine; maombi hayasomwi na umma |
 | App Check | Phase 3 (lina weka usalama dhidi ya abuse ya functions) |
-| `firebase hosting` ya `sayuni-portal` | Portal bado ina localStorage; Phase 9 |
+| `firebase hosting` ya `sayuni-portal` | Sasa inasoma custom claims; role switcher ya majaribio imeondolewa; iko live |
 | GitHub PAT | Phase 3 — zisha token jipya (hii ilivuja kwenye git remote) |
 
 ---
@@ -187,6 +178,7 @@ static const Set<String> _bootstrapOwnerEmails = <String>{};
 ## 7. PDPA/audit uthibitisho (hadi sasa)
 
 - `role_grants` + `audit_logs` hazirishi client kuandika (`functions` tu) → hakuna kufuta alama.
+  **Bado hazina rows** kwa sababu functions hazijapanda (Blaze).
 - Kila grant ina `grantedBy`, `previousRole`, `newRole`, `reason`, `at`.
 - `members/<uid>` ina `sourceOfTruth: 'firebase_auth_custom_claims'` — inaeleza kwamba
   document hii ni nakili ya ripoti, si chanzo cha mamlaka.
@@ -198,10 +190,13 @@ static const Set<String> _bootstrapOwnerEmails = <String>{};
 ## 8. PDPA (Phase 2) — unachotakiwa kufanya mwenyewe
 
 ### 8.1 Pakia kanuni + functions
+Rules tayari zimepandishwa. Functions bado zinahitaji Blaze:
 ```bash
-firebase deploy --only firestore:rules,functions
+firebase deploy --only firestore:rules
+# baada ya Blaze:
+firebase deploy --only functions
 ```
-Bila hatua hii programu bado inafanya kazi zake, lakini:
+Bila functions, programu bado inafanya kazi zake, lakini:
 - idhini hajibikani kwenye `consent_records` (inakaa kwenye kifaa peke yake);
 - "Pakia nakala ya data yangu" hatolei data ya wingu (inasema wazi "functions bado hazijapakiwa");
 - "Futa akaunti" hufuta kifaa peke yake na inakuambia ukweli huo.

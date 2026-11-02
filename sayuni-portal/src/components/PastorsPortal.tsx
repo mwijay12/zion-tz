@@ -21,6 +21,8 @@ import {
 import type { Language, SermonItem, PastoralPoster, JumuiyaReport } from '../types';
 import { CHURCH_PROFILE, INITIAL_POSTERS } from '../data/mockData';
 import { churchSync, type WarRoomPrayerRequest } from '../services/churchSyncService';
+import { createId } from '../utils/id';
+import { loadStored, saveStored, STORAGE_KEYS } from '../utils/storage';
 import leadershipImg from '../assets/pastoral_leadership.jpg';
 
 interface PastorsPortalProps {
@@ -48,13 +50,17 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
   const [category, setCategory] = useState<'Imani' | 'Uponyaji' | 'Familia' | 'Uongozi' | 'Kusifu'>('Imani');
 
   // Posters state
-  const [posters, setPosters] = useState<PastoralPoster[]>(INITIAL_POSTERS);
+  const [posters, setPosters] = useState<PastoralPoster[]>(() => loadStored(STORAGE_KEYS.pastoralPosters, INITIAL_POSTERS));
   const [showPosterModal, setShowPosterModal] = useState(false);
   const [posterTitle, setPosterTitle] = useState('');
   const [eventDate, setEventDate] = useState('');
   const [posterDesc, setPosterDesc] = useState('');
   const [eventLocation, setEventLocation] = useState('Kwa Matope, Mbagala');
   const [posterSpeaker, setPosterSpeaker] = useState(CHURCH_PROFILE.headPastor);
+
+  useEffect(() => {
+    saveStored(STORAGE_KEYS.pastoralPosters, posters);
+  }, [posters]);
 
   // Synchronize with mobile app updates in real-time
   useEffect(() => {
@@ -77,7 +83,7 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
     if (!sermonTitle || !scripture) return;
 
     const newSermon: SermonItem = {
-      id: `sermon-${Date.now()}`,
+      id: createId('sermon'),
       title: sermonTitle,
       date: new Date().toISOString().split('T')[0],
       preacher,
@@ -105,7 +111,7 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
     if (!posterTitle || !eventDate) return;
 
     const newPoster: PastoralPoster = {
-      id: `poster-${Date.now()}`,
+      id: createId('poster'),
       title: posterTitle,
       eventDate,
       location: eventLocation,

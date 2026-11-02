@@ -8,6 +8,7 @@ import {
   INITIAL_MEMBERS
 } from '../data/mockData';
 import { churchSync } from './churchSyncService';
+import { loadStored, STORAGE_KEYS } from '../utils/storage';
 
 export interface ChurchDataSnapshot {
   timestamp: string;
@@ -43,14 +44,14 @@ export class ChurchDataBackupService {
       timestamp: new Date().toISOString(),
       churchProfile: CHURCH_PROFILE,
       finances: {
-        records: INITIAL_FINANCES,
-        projects: INITIAL_PROJECTS,
-        expenses: INITIAL_EXPENSES
+        records: loadStored(STORAGE_KEYS.finances, INITIAL_FINANCES),
+        projects: loadStored(STORAGE_KEYS.projects, INITIAL_PROJECTS),
+        expenses: loadStored(STORAGE_KEYS.expenses, INITIAL_EXPENSES)
       },
-      members: INITIAL_MEMBERS,
+      members: loadStored(STORAGE_KEYS.members, INITIAL_MEMBERS),
       jumuiya: {
         groups: INITIAL_JUMUIYA_GROUPS,
-        reports: INITIAL_JUMUIYA_REPORTS
+        reports: loadStored(STORAGE_KEYS.jumuiyaReports, INITIAL_JUMUIYA_REPORTS)
       },
       sermons,
       notices,
@@ -133,7 +134,8 @@ export class ChurchDataBackupService {
    */
   public static downloadMembersCsv(): void {
     const headers = ['ID', 'Jina Kamili', 'Namba ya Simu', 'Jumuiya ID', 'Nafasi', 'Ubatizo'];
-    const rows = INITIAL_MEMBERS.map(m => [
+    const members = loadStored(STORAGE_KEYS.members, INITIAL_MEMBERS);
+    const rows = members.map(m => [
       m.id,
       `"${m.fullName}"`,
       `"${m.phone}"`,

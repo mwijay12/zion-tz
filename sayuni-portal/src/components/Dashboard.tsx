@@ -24,6 +24,7 @@ import {
   INITIAL_BULLETIN_NOTICES 
 } from '../data/mockData';
 
+import { AuthService } from '../services/authService';
 import leadershipImg from '../assets/pastoral_leadership.jpg';
 import choirImg from '../assets/zion_worship_choir.jpg';
 import fellowshipImg from '../assets/jumuiya_fellowship.jpg';
@@ -39,19 +40,33 @@ interface DashboardProps {
 
 export const Dashboard: React.FC<DashboardProps> = ({
   language,
+  userRole,
   setActiveTab,
   projects,
   recentReports,
   totalIncome
 }) => {
   const isSw = language === 'sw';
+  const canJumuiya = AuthService.canRoleAccessTab(userRole, 'jumuiya');
+  const canFinance = AuthService.canRoleAccessTab(userRole, 'finance');
+  const canCertificates = AuthService.canRoleAccessTab(userRole, 'certificates');
   const [copiedTill, setCopiedTill] = useState(false);
   const [copiedBank, setCopiedBank] = useState(false);
   const [showBulletinModal, setShowBulletinModal] = useState(false);
 
-  const mainProject = projects[0];
-  const projectPercent = mainProject 
-    ? Math.round((mainProject.currentAmount / mainProject.targetAmount) * 100) 
+  const mainProject: FinancialProject = projects[0] ?? {
+    id: 'none',
+    title: isSw ? 'Hakuna Mradi Unaendelea' : 'No Active Project',
+    titleEn: 'No Active Project',
+    description: '',
+    targetAmount: 0,
+    currentAmount: 0,
+    startDate: '',
+    targetDate: '-',
+    status: 'planning'
+  };
+  const projectPercent = mainProject.targetAmount > 0
+    ? Math.round((mainProject.currentAmount / mainProject.targetAmount) * 100)
     : 0;
 
   const copyToClip = (text: string, type: 'till' | 'bank') => {
@@ -426,6 +441,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
               : 'No more crumpled paper notes torn from school notebooks that get lost! Leaders record directly on phone even offline, and the system generates clean printable PDFs for hardcopy backup.'}
           </p>
 
+          {canJumuiya && (
+            <>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
             {recentReports.map((report) => (
               <div 
@@ -467,6 +484,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <HeartHandshake size={16} />
             <span>{isSw ? '+ Wasilisha Ripoti ya Kikundi' : '+ Submit Home Cell Report'}</span>
           </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -627,12 +646,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
-            <button onClick={() => setActiveTab('finance')} className="btn-primary" style={{ flex: 1, padding: '0.6rem' }}>
-              <Wallet size={16} />
-              <span>{isSw ? 'Fungua Daftari la Fedha' : 'Open Financial Ledger'}</span>
-            </button>
-          </div>
+          {canFinance && (
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <button onClick={() => setActiveTab('finance')} className="btn-primary" style={{ flex: 1, padding: '0.6rem' }}>
+                <Wallet size={16} />
+                <span>{isSw ? 'Fungua Daftari la Fedha' : 'Open Financial Ledger'}</span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Right Column: Certificate Studio & Secure Backups */}
@@ -673,10 +694,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
 
-          <button onClick={() => setActiveTab('certificates')} className="btn-primary" style={{ width: '100%', marginTop: 'auto' }}>
-            <Award size={16} />
-            <span>{isSw ? 'Fungua Studio ya Vyeti (Print PDF)' : 'Open Certificate Studio'}</span>
-          </button>
+          {canCertificates && (
+            <button onClick={() => setActiveTab('certificates')} className="btn-primary" style={{ width: '100%', marginTop: 'auto' }}>
+              <Award size={16} />
+              <span>{isSw ? 'Fungua Studio ya Vyeti (Print PDF)' : 'Open Certificate Studio'}</span>
+            </button>
+          )}
         </div>
       </div>
 

@@ -16,6 +16,7 @@ import { CHURCH_PROFILE } from '../data/mockData';
 import { churchSync } from '../services/churchSyncService';
 import { ChurchDataBackupService } from '../services/churchDataBackupService';
 import { FirebaseChurchService } from '../services/firebaseChurchService';
+import { createId } from '../utils/id';
 
 import { PrintableOfficialReport } from './PrintableOfficialReport';
 import type { VisitorRecord } from '../types';
@@ -63,7 +64,7 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
     const unsubscribeFirestore = FirebaseChurchService.subscribeToAnnouncements((firestoreItems) => {
       if (firestoreItems && firestoreItems.length > 0) {
         const mapped: BulletinNotice[] = firestoreItems.map(item => ({
-          id: item.id || `doc-${Date.now()}`,
+          id: item.id || createId('doc'),
           title: item.title,
           category: (item.category as any) || 'Taarifa Kuu',
           content: item.body || item.content || '',
@@ -103,7 +104,7 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
     setFeedback(null);
 
     const newNotice: BulletinNotice = {
-      id: `bul-${Date.now().toString().slice(-4)}`,
+      id: createId('bul'),
       title: title.trim(),
       category,
       content: content.trim(),
@@ -136,11 +137,12 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
         setTargetAudience('all');
       }, 1400);
     } catch (err: any) {
+      setNotices(churchSync.getNotices());
       setFeedback({
         type: 'error',
         message: isSw
-          ? `Hitilafu ya Firestore: ${err?.message || 'Kagua muunganisho wa internet au sheria za usalama (Firestore security rules).'}`
-          : `Firestore error: ${err?.message || 'Check network connection or Firestore security rules.'}`
+          ? `Tangazo limehifadhiwa kwenye kifaa hiki, lakini halijasawazishwa na Cloud Firestore: ${err?.message || 'Kagua muunganisho wa internet au sheria za usalama.'}`
+          : `The notice was saved on this device but not synced to Cloud Firestore: ${err?.message || 'Check network connection or Firestore security rules.'}`
       });
     } finally {
       setIsSubmitting(false);

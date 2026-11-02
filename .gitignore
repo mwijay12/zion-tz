@@ -21,6 +21,7 @@ Thumbs.db
 .agents/
 .kilo/
 .kilocode/
+.tools/
 skills-lock.json
 
 # Node / Vite

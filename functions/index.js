@@ -381,7 +381,12 @@ const myClaims = onCall(async (request) => {
  * everyday grants go through `setUserRole`.
  */
 const mirrorMemberDocumentIntoClaims = onDocumentCreated(
-  'members/{userId}',
+  {
+    document: 'members/{userId}',
+    // Firestore is in the `nam5` multi-region, so its triggers must run in
+    // us-central1. Callable functions stay in ZION_REGION (africa-south1).
+    region: 'us-central1',
+  },
   async (event) => {
     const snap = event.data;
     if (!snap) return { skipped: 'no-document' };

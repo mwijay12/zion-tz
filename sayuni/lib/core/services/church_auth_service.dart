@@ -32,16 +32,9 @@ class ChurchAuthService extends ChangeNotifier {
       bool.fromEnvironment('DEMO_MODE', defaultValue: false);
   bool get demoAccessAllowed => kDebugMode || _demoDefineFlag;
 
-  /// Transitional bootstrap allowance — **not** a security boundary.
-  ///
-  /// Until `functions/setUserRole` has written a real `role` claim for the
-  /// owner's account (see `docs/FIREBASE_SETUP_OWNER.md`), this single seed
-  /// address keeps its cached admin role on its own device so the owner is not
-  /// locked out of the app he is still configuring. As soon as a claim exists
-  /// the claim wins and this list is irrelevant; it is deleted in Phase 10.
-  static const Set<String> _bootstrapOwnerEmails = {
-    'admin@zionjerusalem.org',
-  };
+  /// Bootstrap allowlist is intentionally empty. Privileged roles must come
+  /// from Firebase custom claims written by `functions/setUserRole`.
+  static const Set<String> _bootstrapOwnerEmails = <String>{};
 
   bool get isBootstrapOwnerAccount =>
       _bootstrapOwnerEmails.contains(_email.trim().toLowerCase());
@@ -222,10 +215,9 @@ class ChurchAuthService extends ChangeNotifier {
     _memberId = prefs.getString('user_member_id') ?? 'ZJC-2026-8894';
     _isBaptized = prefs.getBool('user_baptized') ?? true;
 
-    // A privileged role is only carried over the cache when it is the seed
-    // owner account (transitional bootstrap, see [_bootstrapOwnerEmails]) or a
-    // demo build. Everything else goes back to member until a real claim
-    // exists — a local flag alone can no longer be authority.
+    // A privileged role is only carried over the cache in a demo build.
+    // Everything else goes back to member until a real claim exists — a local
+    // flag alone can no longer be authority.
     if (ChurchRolePolicy.isPrivileged(_role) &&
         (!_isOnboarded || !_bootstrapTrustAllowed)) {
       _role = ChurchRole.member;
@@ -384,9 +376,7 @@ class ChurchAuthService extends ChangeNotifier {
   /// Device-side bootstrap allowlist. **This grants nothing in the cloud.**
   /// Real role assignment is `functions/setUserRole` → ID-token claims, which
   /// is the only thing `firestore.rules` will honour.
-  final Set<String> _grantedAdminEmails = {
-    'admin@zionjerusalem.org',
-  };
+  final Set<String> _grantedAdminEmails = <String>{};
 
   Set<String> get grantedAdminEmails => Set.unmodifiable(_grantedAdminEmails);
 
@@ -561,19 +551,17 @@ class ChurchAuthService extends ChangeNotifier {
   /// Administrator sign-in.
   ///
   /// Firebase Auth verifies the password; the **role** is whatever the
-  /// ID-token claims say. A correct password without a `role` claim only yields
-  /// a transitional device-scoped admin (clearly labelled by [roleSourceLabel])
-  /// for a bootstrap-allowlisted account — never a cloud-verified one.
+  /// ID-token claims say. A correct password without a `role` claim does not
+  /// grant admin access.
   Future<bool> loginAsAdmin({
     required String emailOrUser,
     required String password,
   }) async {
     final cleanUser = emailOrUser.trim().toLowerCase();
     final cleanPass = password.trim();
-    final String email =
-        cleanUser.contains('@') ? cleanUser : 'admin@zionjerusalem.org';
-    final bool allowlisted =
-        _grantedAdminEmails.contains(cleanUser) || cleanUser == 'admin';
+    if (!cleanUser.contains('@')) return false;
+    final String email = cleanUser;
+    final bool allowlisted = _grantedAdminEmails.contains(email);
 
     final auth = _auth;
     if (auth != null) {
@@ -584,9 +572,7 @@ class ChurchAuthService extends ChangeNotifier {
         );
         if (userCredential.user != null) {
           _isOnboarded = true;
-          _name = cleanUser == 'admin'
-              ? 'Msimamizi Mkuu'
-              : cleanUser.split('@').first;
+          _name = cleanUser.split('@').first;
           _email = email;
           _phone = '+255 754 000 001';
           _department = 'Utawala wa Kanisa & Tehama';
@@ -598,13 +584,6 @@ class ChurchAuthService extends ChangeNotifier {
           // account — see docs/FIREBASE_SETUP_OWNER.md.
           await _resolveFromFirebase();
 
-          if (_source != RoleSource.cloud &&
-              !ChurchRolePolicy.isPrivileged(_role) &&
-              (allowlisted || demoAccessAllowed)) {
-            _role = ChurchRole.admin;
-            _source = RoleSource.device;
-            await _persist();
-          }
           notifyListeners();
           return _role.rank >= ChurchRole.admin.rank &&
               _source != RoleSource.none;
@@ -626,9 +605,8 @@ class ChurchAuthService extends ChangeNotifier {
     _role = ChurchRole.admin;
     _source = RoleSource.demo;
     _isOnboarded = true;
-    _name =
-        cleanUser == 'admin' ? 'Msimamizi Mkuu' : cleanUser.split('@').first;
-    _email = cleanUser.contains('@') ? cleanUser : 'admin@zionjerusalem.org';
+    _name = cleanUser.split('@').first;
+    _email = cleanUser;
     _phone = '+255 754 000 001';
     _department = 'Utawala wa Kanisa & Tehama';
     _jumuiya = 'Hekalu Kuu Sayuni';

@@ -1,13 +1,13 @@
 export type UserRole = 
+  | 'super_admin'
+  | 'admin'
   | 'pastor' 
   | 'secretary' 
   | 'deacon'
-  | 'elder' 
+  | 'treasurer'
+  | 'jumuiya_leader'
   | 'choir_leader' 
   | 'children_teacher'
-  | 'departments' 
-  | 'treasurer' 
-  | 'cell_leader' 
   | 'member'
   | 'guest';
 

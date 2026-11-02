@@ -12,9 +12,10 @@ import {
   Loader2
 } from 'lucide-react';
 import type { Language, ChoirSong } from '../types';
-import type { PortalUser } from '../services/authService';
+import { AuthService, type PortalUser } from '../services/authService';
 import { CHURCH_CHOIRS, INITIAL_CHOIR_SONGS } from '../data/mockData';
 import { uploadToCloudinary, CLOUDINARY_CONFIG } from '../services/cloudinaryService';
+import { createId } from '../utils/id';
 import choirImg from '../assets/zion_worship_choir.jpg';
 
 interface ChoirPortalProps {
@@ -67,6 +68,7 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
   };
 
   const handleOpenNew = () => {
+    if (!AuthService.canEditSongs(currentUser)) return;
     setEditingSongId(null);
     setSongTitle('');
     setChoirName('Kwaya ya Galilaya');
@@ -80,6 +82,7 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
   };
 
   const handleOpenEdit = (song: ChoirSong) => {
+    if (!AuthService.canEditSongs(currentUser)) return;
     setEditingSongId(song.id);
     setSongTitle(song.title);
     setChoirName(song.choirName);
@@ -93,6 +96,7 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
   };
 
   const handleDeleteSong = (id: string) => {
+    if (!AuthService.canEditSongs(currentUser)) return;
     const songToDelete = songs.find(s => s.id === id);
     const confirmText = isSw 
       ? `Je, una uhakika unataka kufuta wimbo "${songToDelete?.title}"?`
@@ -105,6 +109,7 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
 
   const handleSaveSong = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!AuthService.canEditSongs(currentUser)) return;
     if (!songTitle.trim()) return;
 
     if (editingSongId) {
@@ -128,7 +133,7 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
     } else {
       // Create new song
       const newSong: ChoirSong = {
-        id: `song-${Date.now().toString().slice(-4)}`,
+        id: createId('song'),
         title: songTitle.trim(),
         choirName,
         key: songKey.trim(),
@@ -184,9 +189,9 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
                 <span>Cloudinary Vault: Active ({CLOUDINARY_CONFIG.uploadPreset})</span>
               </span>
 
-              {currentUser?.isSuperAdmin && (
+              {AuthService.canEditSongs(currentUser) && (
                 <span className="badge badge-gold" style={{ fontSize: '0.72rem' }}>
-                  👑 Super Admin Uploads Enabled
+                  {isSw ? 'Uwasilishaji Umewezeshwa' : 'Uploads Enabled'}
                 </span>
               )}
             </div>
@@ -202,14 +207,16 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
             </p>
           </div>
 
-          <button 
-            onClick={handleOpenNew}
-            className="btn-primary"
-            style={{ padding: '0.65rem 1.35rem', background: '#0D52CD', color: '#ffffff' }}
-          >
-            <Plus size={16} />
-            <span>{isSw ? '+ Sajili / Pakia Wimbo Mpya' : '+ Add / Upload New Song'}</span>
-          </button>
+          {AuthService.canEditSongs(currentUser) && (
+            <button
+              onClick={handleOpenNew}
+              className="btn-primary"
+              style={{ padding: '0.65rem 1.35rem', background: '#0D52CD', color: '#ffffff' }}
+            >
+              <Plus size={16} />
+              <span>{isSw ? '+ Sajili / Pakia Wimbo Mpya' : '+ Add / Upload New Song'}</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -335,6 +342,7 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
                   <span>{isSw ? 'Maneno (Lyrics)' : 'Lyrics'}</span>
                 </button>
 
+                {AuthService.canEditSongs(currentUser) && (
                 <div style={{ display: 'flex', gap: '0.4rem' }}>
                   <button
                     onClick={() => handleOpenEdit(song)}
@@ -366,6 +374,7 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
                     <span>{isSw ? 'Futa' : 'Delete'}</span>
                   </button>
                 </div>
+                )}
               </div>
             </div>
           ))}

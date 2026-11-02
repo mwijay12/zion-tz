@@ -1,5 +1,6 @@
 import type { SermonItem, BulletinNotice, VisitorRecord } from '../types';
 import { INITIAL_SERMONS, INITIAL_BULLETIN_NOTICES, CHURCH_PROFILE } from '../data/mockData';
+import { createId } from '../utils/id';
 
 export interface WarRoomPrayerRequest {
   id: string;
@@ -172,7 +173,7 @@ class ChurchSyncService {
         const parsed = JSON.parse(raw);
         if (Array.isArray(parsed) && parsed.length > 0) {
           const mapped: SermonItem[] = parsed.map((item: any) => ({
-            id: item.id || `sermon-${Date.now()}`,
+            id: item.id || createId('sermon'),
             title: item.title || 'Mahubiri ya Sayuni',
             preacher: item.preacher || CHURCH_PROFILE.headPastor,
             date: item.date || 'Hivi karibuni',
@@ -393,7 +394,7 @@ class ChurchSyncService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(prayer)
       }).catch(() => {});
-    } catch (_) {}
+    } catch {}
 
     this.broadcast('PRAYER_ADDED', prayer);
   }
@@ -444,17 +445,23 @@ class ChurchSyncService {
     return [];
   }
 
-  public addVisitor(visitor: VisitorRecord): void {
-    const current = this.getVisitors();
-    const updated = [visitor, ...current.filter(v => v.id !== visitor.id)];
-    const jsonString = JSON.stringify(updated);
+  public saveVisitors(visitors: VisitorRecord[]): void {
+    const jsonString = JSON.stringify(visitors);
 
     try {
       localStorage.setItem('zion_portal_visitors', jsonString);
       localStorage.setItem('flutter.zion_portal_visitors', jsonString);
     } catch (e) {
-      console.warn('Error saving visitor:', e);
+      console.warn('Error saving visitors:', e);
     }
+
+    this.broadcast('VISITORS_UPDATED', visitors);
+  }
+
+  public addVisitor(visitor: VisitorRecord): void {
+    const current = this.getVisitors();
+    const updated = [visitor, ...current.filter(v => v.id !== visitor.id)];
+    this.saveVisitors(updated);
 
     // Push to Vite Sync API
     try {
@@ -463,24 +470,14 @@ class ChurchSyncService {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(visitor)
       }).catch(() => {});
-    } catch (_) {}
+    } catch {}
 
     this.broadcast('VISITOR_ADDED', visitor);
   }
 
   public updateVisitorStatus(id: string, status: VisitorRecord['followUpStatus']): void {
-    const current = this.getVisitors();
-    const updated = current.map(v => v.id === id ? { ...v, followUpStatus: status } : v);
-    const jsonString = JSON.stringify(updated);
-
-    try {
-      localStorage.setItem('zion_portal_visitors', jsonString);
-      localStorage.setItem('flutter.zion_portal_visitors', jsonString);
-    } catch (e) {
-      console.warn('Error updating visitor status:', e);
-    }
-
-    this.broadcast('VISITORS_UPDATED', updated);
+    const updated = this.getVisitors().map(v => v.id === id ? { ...v, followUpStatus: status } : v);
+    this.saveVisitors(updated);
   }
 }
 

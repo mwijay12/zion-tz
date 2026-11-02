@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   UserPlus, 
   Search, 
@@ -11,6 +11,8 @@ import {
 } from 'lucide-react';
 import type { Language, UserRole, ChurchMember } from '../types';
 import { INITIAL_MEMBERS, INITIAL_JUMUIYA_GROUPS } from '../data/mockData';
+import { createId } from '../utils/id';
+import { loadStored, saveStored, STORAGE_KEYS } from '../utils/storage';
 
 interface MembersModuleProps {
   language: Language;
@@ -22,7 +24,7 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
   userRole
 }) => {
   const isSw = language === 'sw';
-  const [members, setMembers] = useState<ChurchMember[]>(INITIAL_MEMBERS);
+  const [members, setMembers] = useState<ChurchMember[]>(() => loadStored(STORAGE_KEYS.members, INITIAL_MEMBERS));
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedJumuiya, setSelectedJumuiya] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
@@ -36,12 +38,16 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
   const [roleTitle, setRoleTitle] = useState('');
   const [baptized, setBaptized] = useState(true);
 
+  useEffect(() => {
+    saveStored(STORAGE_KEYS.members, members);
+  }, [members]);
+
   const handleAddMember = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name) return;
 
     const newM: ChurchMember = {
-      id: `mem-${Date.now().toString().slice(-4)}`,
+      id: createId('mem'),
       fullName: name,
       phone: phone || '+255 700 000 000',
       gender: gender,
@@ -52,7 +58,7 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
       joinedDate: new Date().toISOString().split('T')[0]
     };
 
-    setMembers([newM, ...members]);
+    setMembers(prev => [newM, ...prev]);
     setName('');
     setPhone('');
     setRoleTitle('');
@@ -79,7 +85,7 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
           </h2>
         </div>
 
-        {(userRole === 'pastor' || userRole === 'cell_leader' || userRole === 'treasurer') && (
+        {(userRole === 'pastor' || userRole === 'secretary' || userRole === 'admin' || userRole === 'super_admin') && (
           <button 
             onClick={() => setShowAddModal(true)} 
             className="btn-primary"

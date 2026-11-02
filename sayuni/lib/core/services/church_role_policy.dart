@@ -86,7 +86,19 @@ class ChurchRolePolicy {
   static const String branchKey = 'branch';
   static const String memberIdKey = 'memberId';
 
-  static const Set<ChurchRole> _everyone = {ChurchRole.guest};
+  static const Set<ChurchRole> _allRoles = {
+    ChurchRole.guest,
+    ChurchRole.member,
+    ChurchRole.jumuiyaLeader,
+    ChurchRole.choirLeader,
+    ChurchRole.childrenTeacher,
+    ChurchRole.treasurer,
+    ChurchRole.deacon,
+    ChurchRole.secretary,
+    ChurchRole.pastor,
+    ChurchRole.admin,
+    ChurchRole.superAdmin,
+  };
   static const Set<ChurchRole> _registered = {
     ChurchRole.member,
     ChurchRole.jumuiyaLeader,
@@ -110,9 +122,15 @@ class ChurchRolePolicy {
     ChurchRole.admin,
     ChurchRole.superAdmin,
   };
-  static const Set<ChurchRole> _administration = {
-    ChurchRole.treasurer,
+  static const Set<ChurchRole> _visitorRegistry = {
     ChurchRole.deacon,
+    ChurchRole.secretary,
+    ChurchRole.pastor,
+    ChurchRole.admin,
+    ChurchRole.superAdmin,
+  };
+  static const Set<ChurchRole> _jumuiyaReports = {
+    ChurchRole.jumuiyaLeader,
     ChurchRole.secretary,
     ChurchRole.pastor,
     ChurchRole.admin,
@@ -133,14 +151,12 @@ class ChurchRolePolicy {
     ChurchRole.admin,
     ChurchRole.superAdmin,
   };
-  static const Set<ChurchRole> _moneyIn = {
-    ChurchRole.treasurer,
-    ChurchRole.secretary,
-    ChurchRole.pastor,
+  static const Set<ChurchRole> _choirMedia = {
+    ChurchRole.choirLeader,
     ChurchRole.admin,
     ChurchRole.superAdmin,
   };
-  static const Set<ChurchRole> _moneyRead = {
+  static const Set<ChurchRole> _money = {
     ChurchRole.treasurer,
     ChurchRole.secretary,
     ChurchRole.pastor,
@@ -149,20 +165,20 @@ class ChurchRolePolicy {
   };
 
   static const Map<ChurchPermission, Set<ChurchRole>> _matrix = {
-    ChurchPermission.useMemberFeatures: _everyone,
-    ChurchPermission.submitPrayerRequest: _everyone,
+    ChurchPermission.useMemberFeatures: _allRoles,
+    ChurchPermission.submitPrayerRequest: _allRoles,
     ChurchPermission.registerVisitor: _leadership,
     ChurchPermission.viewOwnGiving: _registered,
     ChurchPermission.uploadSermonMedia: _pastoral,
-    ChurchPermission.uploadChoirMedia: _pastoral,
+    ChurchPermission.uploadChoirMedia: _choirMedia,
     ChurchPermission.manageAnnouncements: _secretariat,
-    ChurchPermission.viewVisitorRegistry: _administration,
+    ChurchPermission.viewVisitorRegistry: _visitorRegistry,
     ChurchPermission.viewPastoralPrayers: _pastoral,
-    ChurchPermission.manageJumuiyaReports: _administration,
+    ChurchPermission.manageJumuiyaReports: _jumuiyaReports,
     ChurchPermission.manageMembers: _secretariat,
-    ChurchPermission.recordFinance: _moneyIn,
+    ChurchPermission.recordFinance: _money,
     ChurchPermission.approveExpense: _pastoral,
-    ChurchPermission.viewFinancialReports: _moneyRead,
+    ChurchPermission.viewFinancialReports: _money,
     ChurchPermission.manageAssets: _secretariat,
     ChurchPermission.manageMinutes: _secretariat,
     ChurchPermission.manageChurchSettings: _root,
@@ -170,14 +186,11 @@ class ChurchRolePolicy {
   };
 
   static bool can(ChurchRole role, ChurchPermission permission) {
-    final allowed = _matrix[permission];
-    if (allowed == null) return false;
-    if (allowed.contains(role)) return true;
-    // Ranks above an allowed role inherit it (super_admin ⊃ admin ⊃ pastor …).
-    for (final candidate in allowed) {
-      if (role.rank > candidate.rank) return true;
-    }
-    return false;
+    // Explicit sets only. Rank is never used to widen a permission: a Mzee
+    // (deacon) outranks a Mehani (treasurer) but must not record money, and a
+    // Katibu must not approve payments. Every set above has a matching rule in
+    // firestore.rules.
+    return _matrix[permission]?.contains(role) ?? false;
   }
 
   static bool isPrivileged(ChurchRole role) =>

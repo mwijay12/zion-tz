@@ -17,6 +17,7 @@ import { DeaconsPortal } from './components/DeaconsPortal';
 
 import type { UserRole, Language, FinancialRecord, FinancialProject, ChurchExpense, JumuiyaReport, JumuiyaGroup } from './types';
 import { AuthService, type PortalUser } from './services/authService';
+import { loadStored, saveStored, STORAGE_KEYS } from './utils/storage';
 import { AuthModal } from './components/AuthModal';
 import { 
   CHURCH_PROFILE, 
@@ -28,19 +29,32 @@ import {
 } from './data/mockData';
 
 export function App() {
-  const [currentUser, setCurrentUser] = useState<PortalUser | null>(() => AuthService.getCurrentUser());
-  const [showAuthModal, setShowAuthModal] = useState<boolean>(() => !AuthService.getCurrentUser());
+  const [currentUser, setCurrentUser] = useState<PortalUser | null>(null);
+  const [authReady, setAuthReady] = useState<boolean>(false);
+  const [showAuthModal, setShowAuthModal] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<string>('dashboard');
-  const [userRole, setUserRole] = useState<UserRole>(() => AuthService.getCurrentUser()?.role || 'member');
+  const [userRole, setUserRole] = useState<UserRole>('guest');
   const [language, setLanguage] = useState<Language>('sw');
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const isSw = language === 'sw';
+
+  useEffect(() => {
+    const unsubscribe = AuthService.onAuthChange((user) => {
+      setCurrentUser(user);
+      setUserRole(user?.role || 'guest');
+      if (user) setShowAuthModal(false);
+      setAuthReady(true);
+    });
+
+    return unsubscribe;
+  }, []);
 
   // Shared Application State
-  const [finances, setFinances] = useState<FinancialRecord[]>(INITIAL_FINANCES);
-  const [projects, setProjects] = useState<FinancialProject[]>(INITIAL_PROJECTS);
-  const [expenses, setExpenses] = useState<ChurchExpense[]>(INITIAL_EXPENSES);
+  const [finances, setFinances] = useState<FinancialRecord[]>(() => loadStored(STORAGE_KEYS.finances, INITIAL_FINANCES));
+  const [projects, setProjects] = useState<FinancialProject[]>(() => loadStored(STORAGE_KEYS.projects, INITIAL_PROJECTS));
+  const [expenses, setExpenses] = useState<ChurchExpense[]>(() => loadStored(STORAGE_KEYS.expenses, INITIAL_EXPENSES));
   const [groups] = useState<JumuiyaGroup[]>(INITIAL_JUMUIYA_GROUPS);
-  const [reports, setReports] = useState<JumuiyaReport[]>(INITIAL_JUMUIYA_REPORTS);
+  const [reports, setReports] = useState<JumuiyaReport[]>(() => loadStored(STORAGE_KEYS.jumuiyaReports, INITIAL_JUMUIYA_REPORTS));
 
   // Dark Mode & Automatic Church Vault Backup
   useEffect(() => {
@@ -56,21 +70,28 @@ export function App() {
     }).catch(() => {});
   }, [isDarkMode]);
 
+  useEffect(() => {
+    saveStored(STORAGE_KEYS.finances, finances);
+  }, [finances]);
+
+  useEffect(() => {
+    saveStored(STORAGE_KEYS.projects, projects);
+  }, [projects]);
+
+  useEffect(() => {
+    saveStored(STORAGE_KEYS.expenses, expenses);
+  }, [expenses]);
+
+  useEffect(() => {
+    saveStored(STORAGE_KEYS.jumuiyaReports, reports);
+  }, [reports]);
+
   const totalIncome = finances.reduce((acc, curr) => acc + curr.amount, 0);
 
-  const handleRoleChange = (newRole: UserRole) => {
-    setUserRole(newRole);
-    if (currentUser) {
-      const updated: PortalUser = { ...currentUser, role: newRole };
-      setCurrentUser(updated);
-      AuthService.setCurrentUser(updated);
-    }
-  };
-
   const handleLogout = () => {
-    AuthService.logout();
+    void AuthService.logout();
     setCurrentUser(null);
-    setUserRole('member');
+    setUserRole('guest');
     setShowAuthModal(true);
   };
 
@@ -80,9 +101,28 @@ export function App() {
     setShowAuthModal(false);
   };
 
+  if (!authReady) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'var(--surface)',
+        color: 'var(--text-muted)',
+        fontFamily: 'var(--font-cinzel)',
+        fontSize: '0.95rem'
+      }}>
+        Zion Jerusalem Portal...
+      </div>
+    );
+  }
+
   if (!currentUser) {
     return <AuthModal language={language} onLoginSuccess={handleLoginSuccess} />;
   }
+
+  const canViewActiveTab = AuthService.canAccessTab(currentUser, activeTab);
 
   return (
     <div className="portal-root">
@@ -90,8 +130,6 @@ export function App() {
       <Header
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        userRole={userRole}
-        setUserRole={handleRoleChange}
         language={language}
         setLanguage={setLanguage}
         isDarkMode={isDarkMode}
@@ -104,6 +142,8 @@ export function App() {
       {/* Main Workspace Canvas */}
       <div className="portal-content-wrap">
         <main className="portal-main-area">
+        {canViewActiveTab ? (
+          <>
         {activeTab === 'dashboard' && (
           <Dashboard
             language={language}
@@ -207,6 +247,22 @@ export function App() {
             userRole={userRole}
           />
         )}
+          </>
+        ) : (
+          <div className="church-card" style={{ padding: '2.5rem', textAlign: 'center', maxWidth: '620px', margin: '2rem auto' }}>
+            <h2 style={{ fontFamily: 'var(--font-cinzel)', fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-headline)', marginBottom: '0.6rem' }}>
+              {isSw ? 'Huna Ruhusa ya Kufikia Sehemu Hii' : 'Access Denied'}
+            </h2>
+            <p style={{ color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+              {isSw
+                ? 'Wadhifa wako hauruhusu kufungua moduli hii. Wasiliana na msimamizi wa mfumo kama unahitaji ruhusa.'
+                : 'Your role does not allow access to this module. Contact the system administrator if you need access.'}
+            </p>
+            <button onClick={() => setActiveTab('dashboard')} className="btn-primary">
+              {isSw ? 'Rudi Dashibodi' : 'Back to Dashboard'}
+            </button>
+          </div>
+        )}
         </main>
 
         {/* Ultra-Premium Minimalist Footer */}
@@ -234,6 +290,7 @@ export function App() {
         setActiveTab={setActiveTab}
         language={language}
         userRole={userRole}
+        currentUser={currentUser}
       />
 
       {/* Liturgical Authentication Modal */}

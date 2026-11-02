@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CHURCH_PROFILE } from '../data/mockData';
 import type { VisitorRecord, JumuiyaReport } from '../types';
 import { Printer, X } from 'lucide-react';
@@ -21,11 +21,16 @@ export const PrintableOfficialReport: React.FC<PrintableOfficialReportProps> = (
   reports = [],
   onClose,
 }) => {
-  const currentDate = new Date().toLocaleDateString('sw-TZ', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+  const [currentDate] = useState(() =>
+    new Date().toLocaleDateString('sw-TZ', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    })
+  );
+  const [reportReference] = useState(
+    () => `ZFC/RIP/${Date.now().toString().slice(-6)}`
+  );
 
   const handlePrint = () => {
     window.print();
@@ -91,7 +96,7 @@ export const PrintableOfficialReport: React.FC<PrintableOfficialReportProps> = (
           <div className="report-reference-box">
             <div><strong>Tarehe:</strong> {currentDate}</div>
             <div><strong>Ofisi:</strong> Sekretarieti Kuu ya Kanisa</div>
-            <div><strong>Namba ya Rejea:</strong> ZFC/RIP/{Date.now().toString().slice(-6)}</div>
+            <div><strong>Namba ya Rejea:</strong> {reportReference}</div>
           </div>
         </div>
 

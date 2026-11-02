@@ -31,7 +31,7 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _adminEmailController =
-      TextEditingController(text: 'admin@zionjerusalem.org');
+      TextEditingController();
   final TextEditingController _adminPasswordController =
       TextEditingController();
 
@@ -194,95 +194,6 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
         type: TopAlertType.success,
       );
       _finishAuth();
-    }
-  }
-
-  Future<void> _handleGoogleSignIn() async {
-    AppHaptics.mediumImpact();
-    setState(() => _isSubmitting = true);
-
-    // Quick selection dialog
-    final chosenAccount = await showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppColors.surfaceOf(context),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: const Color(0xFF4285F4).withOpacity(0.15),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.account_circle_rounded,
-                  color: Color(0xFF4285F4), size: 24),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                _langService.t(
-                    en: 'Choose Google Account',
-                    sw: 'Chagua Akaunti ya Google'),
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimaryOf(context),
-                ),
-              ),
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const CircleAvatar(
-                backgroundColor: Color(0xFF4285F4),
-                child: Text('M',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold)),
-              ),
-              title: const Text('Muumini wa Sayuni',
-                  style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5)),
-              subtitle: const Text('muumini@zionjerusalem.org',
-                  style: TextStyle(fontSize: 12)),
-              onTap: () => Navigator.pop(ctx, 'muumini@zionjerusalem.org'),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, null),
-            child: Text(_langService.t(en: 'Cancel', sw: 'Ghairi')),
-          ),
-        ],
-      ),
-    );
-
-    if (chosenAccount != null && chosenAccount.isNotEmpty) {
-      final namePart = chosenAccount.split('@').first.replaceAll('.', ' ');
-      await _authService.signInWithGoogle(
-        googleEmail: chosenAccount,
-        displayName: _nameController.text.trim().isNotEmpty
-            ? _nameController.text.trim()
-            : namePart,
-      );
-
-      if (!mounted) return;
-      setState(() => _isSubmitting = false);
-
-      AppTopAlert.show(
-        context,
-        title: _langService.t(
-            en: 'Signed in with Google', sw: 'Umeingia na Google'),
-        message: chosenAccount,
-        type: TopAlertType.success,
-      );
-      _finishAuth();
-    } else {
-      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 
@@ -563,7 +474,7 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                         controller: _adminEmailController,
                         label: _langService.t(
                             en: 'Admin Email', sw: 'Barua Pepe ya Msimamizi'),
-                        hint: 'admin@zionjerusalem.org',
+                        hint: 'barua.pepe@zionjerusalem.org',
                         icon: Icons.alternate_email_rounded,
                         keyboardType: TextInputType.emailAddress,
                       ),
@@ -650,76 +561,6 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
                                 style: const TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.w800),
                               ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    // Divider OR
-                    Row(
-                      children: [
-                        Expanded(
-                            child: Divider(
-                                color: isDark
-                                    ? const Color(0xFF334155)
-                                    : const Color(0xFFCBD5E1))),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Text(
-                            _langService.t(en: 'OR', sw: 'AU'),
-                            style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                color: textMuted),
-                          ),
-                        ),
-                        Expanded(
-                            child: Divider(
-                                color: isDark
-                                    ? const Color(0xFF334155)
-                                    : const Color(0xFFCBD5E1))),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-
-                    // Sign in with Google Button
-                    SizedBox(
-                      width: double.infinity,
-                      height: 46,
-                      child: OutlinedButton.icon(
-                        onPressed: _isSubmitting ? null : _handleGoogleSignIn,
-                        icon: Container(
-                          width: 24,
-                          height: 24,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Color(0xFF4285F4),
-                          ),
-                          alignment: Alignment.center,
-                          child: const Text('G',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 14)),
-                        ),
-                        label: Text(
-                          _langService.t(
-                              en: 'Sign in with Google',
-                              sw: 'Ingia kwa Google'),
-                          style: TextStyle(
-                            color: textColor,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 13,
-                          ),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(
-                              color: isDark
-                                  ? const Color(0xFF334155)
-                                  : const Color(0xFFCBD5E1),
-                              width: 1.2),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(14)),
-                        ),
                       ),
                     ),
                   ],

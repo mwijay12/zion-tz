@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Users, 
   Heart, 
@@ -10,6 +10,8 @@ import {
 } from 'lucide-react';
 import type { Language, ElderCounselingCase } from '../types';
 import { CHURCH_PROFILE, INITIAL_ELDER_CASES } from '../data/mockData';
+import { createId } from '../utils/id';
+import { loadStored, saveStored, STORAGE_KEYS } from '../utils/storage';
 
 interface EldersPortalProps {
   language: Language;
@@ -17,7 +19,7 @@ interface EldersPortalProps {
 
 export const EldersPortal: React.FC<EldersPortalProps> = ({ language }) => {
   const isSw = language === 'sw';
-  const [cases, setCases] = useState<ElderCounselingCase[]>(INITIAL_ELDER_CASES);
+  const [cases, setCases] = useState<ElderCounselingCase[]>(() => loadStored(STORAGE_KEYS.elderCases, INITIAL_ELDER_CASES));
   const [showCaseModal, setShowCaseModal] = useState(false);
   const [caseTitle, setCaseTitle] = useState('');
   const [familyOrMember, setFamilyOrMember] = useState('');
@@ -26,12 +28,16 @@ export const EldersPortal: React.FC<EldersPortalProps> = ({ language }) => {
   const [notes, setNotes] = useState('');
   const [filterCategory, setFilterCategory] = useState<string>('all');
 
+  useEffect(() => {
+    saveStored(STORAGE_KEYS.elderCases, cases);
+  }, [cases]);
+
   const handleCreateCase = (e: React.FormEvent) => {
     e.preventDefault();
     if (!caseTitle || !familyOrMember) return;
 
     const newCase: ElderCounselingCase = {
-      id: `case-${Date.now()}`,
+      id: createId('case'),
       title: caseTitle,
       memberOrFamily: familyOrMember,
       elderInCharge,
@@ -41,7 +47,7 @@ export const EldersPortal: React.FC<EldersPortalProps> = ({ language }) => {
       notes
     };
 
-    setCases([newCase, ...cases]);
+    setCases(prev => [newCase, ...prev]);
     setShowCaseModal(false);
     setCaseTitle('');
     setFamilyOrMember('');
@@ -49,7 +55,7 @@ export const EldersPortal: React.FC<EldersPortalProps> = ({ language }) => {
   };
 
   const handleStatusToggle = (id: string) => {
-    setCases(cases.map(c => {
+    setCases(prev => prev.map(c => {
       if (c.id === id) {
         return {
           ...c,

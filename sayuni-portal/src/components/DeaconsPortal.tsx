@@ -15,6 +15,7 @@ import {
 import type { Language, VisitorRecord } from '../types';
 import { PrintableOfficialReport } from './PrintableOfficialReport';
 import { churchSync } from '../services/churchSyncService';
+import { createId } from '../utils/id';
 
 interface DeaconsPortalProps {
   language: Language;
@@ -77,6 +78,16 @@ export const DeaconsPortal: React.FC<DeaconsPortalProps> = ({ language }) => {
   });
 
   useEffect(() => {
+    const seedKey = 'zion_portal_visitors_seeded';
+    if (!localStorage.getItem(seedKey)) {
+      if (churchSync.getVisitors().length === 0) {
+        churchSync.saveVisitors(INITIAL_VISITORS);
+      }
+      localStorage.setItem(seedKey, '1');
+    }
+  }, []);
+
+  useEffect(() => {
     const unsubscribe = churchSync.subscribe((msg) => {
       if (msg.type === 'VISITOR_ADDED' || msg.type === 'VISITORS_UPDATED') {
         const synced = churchSync.getVisitors();
@@ -107,7 +118,7 @@ export const DeaconsPortal: React.FC<DeaconsPortalProps> = ({ language }) => {
     if (!fullName.trim() || !phone.trim()) return;
 
     const newRecord: VisitorRecord = {
-      id: `vis-${Date.now()}`,
+      id: createId('vis'),
       fullName: fullName.trim(),
       phone: phone.trim(),
       residence: residence.trim() || 'Mbagala',

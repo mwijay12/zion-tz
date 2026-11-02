@@ -83,10 +83,6 @@ service cloud.firestore {
       return isSecretary() || getUserRole() == 'deacon';
     }
 
-    function isLeader() {
-      return isDeacon() || getUserRole() in ['choir_leader', 'children_teacher', 'treasurer', 'jumuiya_leader'];
-    }
-
     // --- Data Validation Functions ---
 
     function isValidAnnouncement(data) {
@@ -208,21 +204,24 @@ service cloud.firestore {
     }
 
     // 8. Church Leadership & System Settings (Public Read, Admin Write)
+    // Settings change who the church is and how it behaves; only admin and
+    // super_admin may touch them. A pastor can preach, not rewrite the system.
     match /church_settings/{settingId} {
       allow read: if true;
-      allow write: if isAdmin() || isPastor();
+      allow write: if isAdmin();
     }
 
-    // 9. Member & Staff Profiles (Self-access or Admin)
+    // 9. Member & Staff Profiles (Self-access or Secretariat)
+    // The secretariat (Katibu, Mchungaji, Admin) maintains member profiles.
+    // `role` and `isVerifiedMember` are never client-writable by anyone: the
+    // real role is the Auth claim and `members/<uid>` is written by functions.
     match /profiles/{userId} {
       allow read: if isSignedIn() && (request.auth.uid == userId || isSecretary());
-      allow create: if isAdmin() ||
-        (isSignedIn() && request.auth.uid == userId &&
-         !request.resource.data.keys().hasAny(['role', 'isVerifiedMember']));
-      allow update: if isAdmin() ||
-        (isSignedIn() && request.auth.uid == userId &&
-         !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'isVerifiedMember']));
-      allow delete: if isAdmin();
+      allow create: if ((isSignedIn() && request.auth.uid == userId) || isSecretary()) &&
+        !request.resource.data.keys().hasAny(['role', 'isVerifiedMember']);
+      allow update: if ((isSignedIn() && request.auth.uid == userId) || isSecretary()) &&
+        !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'isVerifiedMember']);
+      allow delete: if isSecretary();
     }
 
     // 9b. Consent register (PDPA 2022 — proof of lawful basis).

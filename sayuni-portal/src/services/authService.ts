@@ -1,7 +1,8 @@
 import { 
   signInWithEmailAndPassword, 
   signOut as firebaseSignOut, 
-  onAuthStateChanged
+  onAuthStateChanged,
+  type User
 } from "firebase/auth";
 import { auth } from "./firebaseChurchService";
 import type { UserRole } from '../types';
@@ -11,127 +12,143 @@ export interface PortalUser {
   name: string;
   email: string;
   role: UserRole;
-  isSuperAdmin: boolean;
+  isRoot: boolean;
+  branch?: string;
   avatarUrl?: string;
   titleSw: string;
 }
 
-const STORAGE_KEY_USER = 'zion_portal_current_user_v2';
+const ROLE_TITLES: Record<UserRole, string> = {
+  super_admin: 'Msimamizi wa Mfumo',
+  admin: 'Msimamizi Mkuu',
+  pastor: 'Mchungaji',
+  secretary: 'Katibu wa Kanisa',
+  deacon: 'Mzee wa Kanisa',
+  treasurer: 'Mehani wa Kanisa',
+  jumuiya_leader: 'Kiongozi wa Jumuiya',
+  choir_leader: 'Kiongozi wa Kwaya',
+  children_teacher: 'Mwalimu wa Watoto',
+  member: 'Muumini wa Sayuni',
+  guest: 'Mgeni wa Heshima',
+};
+
+const PORTAL_ROLES = new Set<UserRole>([
+  'super_admin',
+  'admin',
+  'pastor',
+  'secretary',
+  'deacon',
+  'treasurer',
+  'jumuiya_leader',
+  'choir_leader',
+  'children_teacher',
+]);
+
+function isPortalRole(value: unknown): value is UserRole {
+  return typeof value === 'string' && PORTAL_ROLES.has(value as UserRole);
+}
 
 export class AuthService {
   static async login(email: string, password: string): Promise<PortalUser> {
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const firebaseUser = userCredential.user;
-      
-      // Map Firebase user to PortalUser
-      // In a real production app, role and isSuperAdmin would come from custom claims or a 'users' collection
-      const user: PortalUser = {
-        id: firebaseUser.uid,
-        name: firebaseUser.displayName || email.split('@')[0],
-        email: firebaseUser.email || email,
-        role: this.inferRoleFromEmail(email),
-        isSuperAdmin: email.includes('admin') || email.includes('pastor'),
-        titleSw: 'Kiongozi wa Kanisa'
-      };
-      
-      this.setCurrentUser(user);
-      return user;
-    } catch (error) {
-      console.error("Login error:", error);
-      throw error;
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = await this.toPortalUser(userCredential.user);
+
+    if (!user) {
+      await firebaseSignOut(auth);
+      throw new Error('Akaunti hii haina wadhifa wa kanisa. Wasiliana na msimamizi.');
     }
-  }
 
-  private static inferRoleFromEmail(email: string): UserRole {
-    if (email.includes('pastor')) return 'pastor';
-    if (email.includes('katibu') || email.includes('secretary')) return 'secretary';
-    if (email.includes('hazina') || email.includes('treasurer')) return 'treasurer';
-    if (email.includes('choir') || email.includes('kwaya')) return 'choir_leader';
-    return 'deacon';
-  }
-
-  static getCurrentUser(): PortalUser | null {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY_USER);
-      if (saved && saved !== 'LOGGED_OUT') return JSON.parse(saved);
-    } catch (_) {}
-    return null;
-  }
-
-  static setCurrentUser(user: PortalUser | null): void {
-    try {
-      if (user) {
-        localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(user));
-      } else {
-        localStorage.setItem(STORAGE_KEY_USER, 'LOGGED_OUT');
-      }
-    } catch (_) {}
+    return user;
   }
 
   static async logout(): Promise<void> {
     await firebaseSignOut(auth);
-    this.setCurrentUser(null);
   }
 
   static onAuthChange(callback: (user: PortalUser | null) => void) {
-    return onAuthStateChanged(auth, (firebaseUser) => {
-      if (firebaseUser) {
-        const currentUser = this.getCurrentUser();
-        if (currentUser && currentUser.id === firebaseUser.uid) {
-          callback(currentUser);
-        } else {
-          // Fallback or fetch from Firestore
-          const newUser: PortalUser = {
-            id: firebaseUser.uid,
-            name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
-            email: firebaseUser.email || '',
-            role: this.inferRoleFromEmail(firebaseUser.email || ''),
-            isSuperAdmin: firebaseUser.email?.includes('admin') || false,
-            titleSw: 'Kiongozi'
-          };
-          this.setCurrentUser(newUser);
-          callback(newUser);
+    return onAuthStateChanged(auth, async (firebaseUser) => {
+      if (!firebaseUser) {
+        callback(null);
+        return;
+      }
+
+      try {
+        const user = await this.toPortalUser(firebaseUser);
+        if (!user) {
+          await firebaseSignOut(auth);
+          callback(null);
+          return;
         }
-      } else {
-        this.setCurrentUser(null);
+        callback(user);
+      } catch (error) {
+        console.error("Auth state error:", error);
         callback(null);
       }
     });
   }
 
-  // RBAC Permission Gates
-  static canEditSongs(user: PortalUser | null): boolean {
-    if (!user) return false;
-    return user.isSuperAdmin || user.role === 'choir_leader' || user.role === 'pastor';
-  }
+  private static async toPortalUser(firebaseUser: User): Promise<PortalUser | null> {
+    const token = await firebaseUser.getIdTokenResult(true);
+    const claims = token.claims as Record<string, unknown>;
+    const role = claims.role;
 
-  static canManageFinances(user: PortalUser | null): boolean {
-    if (!user) return false;
-    return user.isSuperAdmin || user.role === 'treasurer' || user.role === 'pastor';
-  }
+    if (!isPortalRole(role)) return null;
 
-  static canIssueCertificates(user: PortalUser | null): boolean {
-    if (!user) return false;
-    return user.isSuperAdmin || user.role === 'secretary' || user.role === 'pastor';
-  }
-
-  static canGrantRoles(user: PortalUser | null): boolean {
-    if (!user) return false;
-    return user.isSuperAdmin;
-  }
-
-  // Quick Login for Testing
-  static loginAsRole(role: UserRole): PortalUser {
-    const mockUser: PortalUser = {
-      id: `test-${role}`,
-      name: `Test ${role.charAt(0).toUpperCase() + role.slice(1)}`,
-      email: `${role}@zion-test.com`,
-      role: role,
-      isSuperAdmin: role === 'pastor',
-      titleSw: `Kiongozi (${role})`
+    return {
+      id: firebaseUser.uid,
+      name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Kiongozi',
+      email: firebaseUser.email || '',
+      role,
+      isRoot: role === 'admin' || role === 'super_admin',
+      branch: typeof claims.branch === 'string' ? claims.branch : undefined,
+      titleSw: ROLE_TITLES[role],
     };
-    this.setCurrentUser(mockUser);
-    return mockUser;
+  }
+
+  private static hasAnyRole(user: PortalUser | null | undefined, roles: UserRole[]): boolean {
+    return !!user && roles.includes(user.role);
+  }
+
+  // RBAC Permission Gates
+  static canEditSongs(user: PortalUser | null | undefined): boolean {
+    return this.hasAnyRole(user, ['choir_leader', 'admin', 'super_admin']);
+  }
+
+  static canManageFinances(user: PortalUser | null | undefined): boolean {
+    return this.hasAnyRole(user, ['treasurer', 'secretary', 'pastor', 'admin', 'super_admin']);
+  }
+
+  static canIssueCertificates(user: PortalUser | null | undefined): boolean {
+    return this.hasAnyRole(user, ['secretary', 'pastor', 'admin', 'super_admin']);
+  }
+
+  static canGrantRoles(user: PortalUser | null | undefined): boolean {
+    return this.hasAnyRole(user, ['admin', 'super_admin']);
+  }
+
+  private static readonly TAB_ROLES: Record<string, UserRole[] | 'all'> = {
+    dashboard: 'all',
+    pastor_portal: ['pastor', 'admin', 'super_admin'],
+    secretary_portal: ['secretary', 'pastor', 'admin', 'super_admin'],
+    deacons_portal: ['deacon', 'secretary', 'pastor', 'admin', 'super_admin'],
+    elders_portal: ['deacon', 'pastor', 'admin', 'super_admin'],
+    choir_portal: 'all',
+    departments_portal: 'all',
+    finance: ['treasurer', 'secretary', 'pastor', 'admin', 'super_admin'],
+    jumuiya: ['jumuiya_leader', 'secretary', 'pastor', 'admin', 'super_admin'],
+    members: ['secretary', 'pastor', 'admin', 'super_admin'],
+    certificates: ['secretary', 'pastor', 'admin', 'super_admin'],
+    bible: 'all',
+    devotional: 'all',
+  };
+
+  static canRoleAccessTab(role: UserRole, tab: string): boolean {
+    const allowed = this.TAB_ROLES[tab];
+    if (!allowed) return false;
+    return allowed === 'all' || allowed.includes(role);
+  }
+
+  static canAccessTab(user: PortalUser | null | undefined, tab: string): boolean {
+    return !!user && this.canRoleAccessTab(user.role, tab);
   }
 }

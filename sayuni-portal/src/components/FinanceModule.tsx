@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import type { Language, UserRole, FinancialRecord, FinancialProject, ChurchExpense } from '../types';
 import { CHURCH_PROFILE } from '../data/mockData';
+import { createId } from '../utils/id';
 
 interface FinanceModuleProps {
   language: Language;
@@ -34,6 +35,14 @@ export const FinanceModule: React.FC<FinanceModuleProps> = ({
   setExpenses
 }) => {
   const isSw = language === 'sw';
+  const canRecordFinance =
+    userRole === 'treasurer' ||
+    userRole === 'secretary' ||
+    userRole === 'pastor' ||
+    userRole === 'admin' ||
+    userRole === 'super_admin';
+  const canApproveExpense =
+    userRole === 'pastor' || userRole === 'admin' || userRole === 'super_admin';
   const [activeSubTab, setActiveSubTab] = useState<'income' | 'expenses' | 'projects' | 'report'>('income');
   const [showAddIncomeModal, setShowAddIncomeModal] = useState(false);
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
@@ -60,7 +69,7 @@ export const FinanceModule: React.FC<FinanceModuleProps> = ({
     if (!newAmount || Number(newAmount) <= 0) return;
 
     const record: FinancialRecord = {
-      id: `fin-${Date.now().toString().slice(-4)}`,
+      id: createId('fin'),
       date: new Date().toISOString().split('T')[0],
       type: newType,
       category: newType === 'tithe' ? 'Fungu la Kumi' : newType === 'offering' ? 'Sadaka ya Ibada' : newType === 'project' ? 'Mchango wa Mradi' : 'Msaada / Jumuiya',
@@ -71,11 +80,11 @@ export const FinanceModule: React.FC<FinanceModuleProps> = ({
       notes: newNotes
     };
 
-    setFinances([record, ...finances]);
+    setFinances(prev => [record, ...prev]);
 
     // If it's for a project, update the active project
     if (newType === 'project' && projects.length > 0) {
-      setProjects(projects.map(p => p.id === projects[0].id ? { ...p, currentAmount: p.currentAmount + Number(newAmount) } : p));
+      setProjects(prev => prev.map(p => p.id === projects[0].id ? { ...p, currentAmount: p.currentAmount + Number(newAmount) } : p));
     }
 
     setNewAmount('');
@@ -90,23 +99,28 @@ export const FinanceModule: React.FC<FinanceModuleProps> = ({
     if (!expAmount || Number(expAmount) <= 0 || !expTitle) return;
 
     const newExp: ChurchExpense = {
-      id: `exp-${Date.now().toString().slice(-4)}`,
+      id: createId('exp'),
       date: new Date().toISOString().split('T')[0],
       title: expTitle,
       category: expCategory,
       amount: Number(expAmount),
-      approvedBy: userRole === 'pastor' ? CHURCH_PROFILE.headPastor : (isSw ? 'Inasubiri Uhakiki' : 'Pending Approval'),
-      isApproved: userRole === 'pastor'
+      approvedBy: canApproveExpense
+        ? (userRole === 'pastor' ? CHURCH_PROFILE.headPastor : (isSw ? 'Msimamizi' : 'Administrator'))
+        : (isSw ? 'Inasubiri Uhakiki' : 'Pending Approval'),
+      isApproved: canApproveExpense
     };
 
-    setExpenses([newExp, ...expenses]);
+    setExpenses(prev => [newExp, ...prev]);
     setExpTitle('');
     setExpAmount('');
     setShowAddExpenseModal(false);
   };
 
   const handleApproveExpense = (id: string) => {
-    setExpenses(expenses.map(e => e.id === id ? { ...e, isApproved: true, approvedBy: CHURCH_PROFILE.headPastor } : e));
+    const approvedBy = userRole === 'pastor'
+      ? CHURCH_PROFILE.headPastor
+      : (isSw ? 'Msimamizi' : 'Administrator');
+    setExpenses(prev => prev.map(e => e.id === id ? { ...e, isApproved: true, approvedBy } : e));
   };
 
   return (
@@ -124,7 +138,7 @@ export const FinanceModule: React.FC<FinanceModuleProps> = ({
         </div>
 
         <div style={{ display: 'flex', gap: '0.65rem' }}>
-          {(userRole === 'pastor' || userRole === 'treasurer') && (
+          {canRecordFinance && (
             <>
               <button 
                 onClick={() => setShowAddIncomeModal(true)} 
@@ -290,7 +304,7 @@ export const FinanceModule: React.FC<FinanceModuleProps> = ({
                   <th style={{ padding: '0.75rem 0.5rem' }}>{isSw ? 'Idara' : 'Category'}</th>
                   <th style={{ padding: '0.75rem 0.5rem' }}>{isSw ? 'Kiasi (Tsh)' : 'Amount'}</th>
                   <th style={{ padding: '0.75rem 0.5rem' }}>{isSw ? 'Hali ya Idhini' : 'Approval Status'}</th>
-                  {userRole === 'pastor' && <th style={{ padding: '0.75rem 0.5rem' }}>{isSw ? 'Kitendo' : 'Action'}</th>}
+                  {canApproveExpense && <th style={{ padding: '0.75rem 0.5rem' }}>{isSw ? 'Kitendo' : 'Action'}</th>}
                 </tr>
               </thead>
               <tbody>
@@ -317,7 +331,7 @@ export const FinanceModule: React.FC<FinanceModuleProps> = ({
                         </span>
                       )}
                     </td>
-                    {userRole === 'pastor' && (
+                    {canApproveExpense && (
                       <td style={{ padding: '0.75rem 0.5rem' }}>
                         {!exp.isApproved && (
                           <button

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Calendar, 
   Briefcase, 
@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import type { Language, DepartmentInfo } from '../types';
 import { INITIAL_DEPARTMENTS } from '../data/mockData';
+import { loadStored, saveStored, STORAGE_KEYS } from '../utils/storage';
 
 interface DepartmentsPortalProps {
   language: Language;
@@ -18,11 +19,15 @@ interface DepartmentsPortalProps {
 
 export const DepartmentsPortal: React.FC<DepartmentsPortalProps> = ({ language }) => {
   const isSw = language === 'sw';
-  const [departments, setDepartments] = useState<DepartmentInfo[]>(INITIAL_DEPARTMENTS);
+  const [departments, setDepartments] = useState<DepartmentInfo[]>(() => loadStored(STORAGE_KEYS.departments, INITIAL_DEPARTMENTS));
   const [activeDeptId, setActiveDeptId] = useState<string>(departments[0]?.id || 'dept-wamama');
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [updateText, setUpdateText] = useState('');
   const [newEventTitle, setNewEventTitle] = useState('');
+
+  useEffect(() => {
+    saveStored(STORAGE_KEYS.departments, departments);
+  }, [departments]);
 
   const activeDept = departments.find(d => d.id === activeDeptId) || departments[0];
 
@@ -30,7 +35,7 @@ export const DepartmentsPortal: React.FC<DepartmentsPortalProps> = ({ language }
     e.preventDefault();
     if (!newEventTitle && !updateText) return;
 
-    setDepartments(departments.map(d => {
+    setDepartments(prev => prev.map(d => {
       if (d.id === activeDeptId) {
         return {
           ...d,

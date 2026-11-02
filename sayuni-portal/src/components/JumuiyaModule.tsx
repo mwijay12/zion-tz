@@ -12,6 +12,7 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import type { Language, UserRole, JumuiyaGroup, JumuiyaReport, FinancialRecord } from '../types';
+import { createId } from '../utils/id';
 
 interface JumuiyaModuleProps {
   language: Language;
@@ -57,7 +58,7 @@ export const JumuiyaModule: React.FC<JumuiyaModuleProps> = ({
     const jumName = grp ? grp.name : 'Jumuiya';
 
     const newRep: JumuiyaReport = {
-      id: `rep-${Date.now().toString().slice(-4)}`,
+      id: createId('rep'),
       jumuiyaId: selectedJumuiyaId,
       jumuiyaName: jumName,
       reportDate: reportDate,
@@ -75,12 +76,12 @@ export const JumuiyaModule: React.FC<JumuiyaModuleProps> = ({
       submittedAt: new Date().toLocaleString()
     };
 
-    setReports([newRep, ...reports]);
+    setReports(prev => [newRep, ...prev]);
 
     // Automatically record offering in finances
     if (Number(offering) > 0) {
       const finEntry: FinancialRecord = {
-        id: `fin-jum-${Date.now().toString().slice(-4)}`,
+        id: createId('fin-jum'),
         date: reportDate,
         type: 'jumuiya',
         category: `Sadaka ya ${jumName}`,

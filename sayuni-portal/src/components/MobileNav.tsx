@@ -12,19 +12,22 @@ import {
   UserCheck
 } from 'lucide-react';
 import type { Language, UserRole } from '../types';
+import { AuthService, type PortalUser } from '../services/authService';
 
 interface MobileNavProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   language: Language;
   userRole?: UserRole;
+  currentUser?: PortalUser | null;
 }
 
 export const MobileNav: React.FC<MobileNavProps> = ({
   activeTab,
   setActiveTab,
   language,
-  userRole = 'pastor'
+  userRole = 'guest',
+  currentUser
 }) => {
   const isSw = language === 'sw';
 
@@ -35,19 +38,18 @@ export const MobileNav: React.FC<MobileNavProps> = ({
         return { tab: 'pastor_portal', tooltip: isSw ? 'Pastoral Studio' : 'Pastoral Studio', icon: ShieldCheck };
       case 'secretary':
         return { tab: 'secretary_portal', tooltip: isSw ? 'Ofisi ya Katibu' : 'Secretary Office', icon: Megaphone };
-      case 'elder':
-        return { tab: 'elders_portal', tooltip: isSw ? 'Baraza la Wazee' : 'Elders Council', icon: ShieldCheck };
       case 'deacon':
         return { tab: 'deacons_portal', tooltip: isSw ? 'Mashemasi & Wageni' : 'Deacons & Visitors', icon: UserCheck };
       case 'choir_leader':
         return { tab: 'choir_portal', tooltip: isSw ? 'Kwaya & Muziki' : 'Choir & Music', icon: Music };
-      case 'departments':
       case 'children_teacher':
         return { tab: 'departments_portal', tooltip: isSw ? 'Idara za Kanisa' : 'Church Departments', icon: Users };
       case 'treasurer':
         return { tab: 'finance', tooltip: isSw ? 'Hazina & Sadaka' : 'Treasury & Giving', icon: Wallet };
+      case 'jumuiya_leader':
+        return { tab: 'jumuiya', tooltip: isSw ? 'Jumuiya' : 'Home Cells', icon: Users };
       default:
-        return { tab: 'pastor_portal', tooltip: isSw ? 'Pastoral Studio' : 'Pastoral Studio', icon: ShieldCheck };
+        return { tab: 'dashboard', tooltip: isSw ? 'Dashibodi Kuu' : 'Dashboard', icon: Church };
     }
   };
 
@@ -63,10 +65,12 @@ export const MobileNav: React.FC<MobileNavProps> = ({
     { id: roleTab.tab, icon: RoleIcon, tooltip: roleTab.tooltip },
   ];
 
+  const visibleNavItems = navItems.filter((item) => AuthService.canAccessTab(currentUser, item.id));
+
   return (
     <nav className="mobile-dock-wrapper no-print" aria-label="Mobile Navigation Dock">
       <div className="mobile-dock-container">
-        {navItems.map((item) => {
+        {visibleNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
           return (

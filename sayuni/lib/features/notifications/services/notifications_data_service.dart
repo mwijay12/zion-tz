@@ -72,7 +72,7 @@ class NotificationsDataService extends ChangeNotifier {
       fullDetails:
           'Wamama na Wababa wa Sayuni pamoja na vijana wanakaribishwa katika semina ya wazi ya ujenzi wa ndoa imara na kulea watoto katika njia ya Bwana. '
           'Kutakuwa na chakula cha jioni cha pamoja na nafasi ya maswali na ushauri wa kichungaji kwa siri.',
-      preacherOrLeader: 'Mama Mch. Sarah Mgala & Wachungaji Washauri',
+      preacherOrLeader: 'Mama Mch. Sarah Mgalla & Wachungaji Washauri',
       isHighPriority: false,
     ),
     ChurchAnnouncement(

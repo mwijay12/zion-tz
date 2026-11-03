@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { 
   Music, 
   Plus, 
@@ -16,6 +16,7 @@ import { AuthService, type PortalUser } from '../services/authService';
 import { CHURCH_CHOIRS, INITIAL_CHOIR_SONGS } from '../data/mockData';
 import { uploadToCloudinary, CLOUDINARY_CONFIG } from '../services/cloudinaryService';
 import { createId } from '../utils/id';
+import { PrivacyAnalyticsService } from '../services/privacyAnalyticsService';
 import choirImg from '../assets/zion_worship_choir.jpg';
 
 interface ChoirPortalProps {
@@ -38,6 +39,7 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
   const [editingSongId, setEditingSongId] = useState<string | null>(null);
   const [selectedChoirFilter, setSelectedChoirFilter] = useState<string>('all');
   const [selectedSongForLyrics, setSelectedSongForLyrics] = useState<ChoirSong | null>(null);
+  const playedSongsRef = useRef<Set<string>>(new Set());
 
   // Form states
   const [songTitle, setSongTitle] = useState('');
@@ -327,6 +329,14 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
                     src={song.audioDemoUrl} 
                     style={{ width: '100%', height: '32px', borderRadius: '6px' }}
                     preload="none"
+                    onPlay={() => {
+                      if (playedSongsRef.current.has(song.id)) return;
+                      playedSongsRef.current.add(song.id);
+                      PrivacyAnalyticsService.recordEvent('hymn_play', {
+                        id: song.id,
+                        title: song.title
+                      });
+                    }}
                   />
                 </div>
               )}

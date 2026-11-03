@@ -5,6 +5,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../core/widgets/app_card.dart';
+import '../../auth/presentation/onboarding_auth_screen.dart';
 import '../models/member_directory_model.dart';
 import '../services/member_directory_service.dart';
 
@@ -32,7 +33,57 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
     'Biashara',
   ];
 
+  void _showPrivacyAuthPrompt() {
+    AppHaptics.mediumImpact();
+    showDialog(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Row(
+          children: [
+            Icon(Icons.shield_rounded, color: AppColors.gold, size: 22),
+            SizedBox(width: 8),
+            Text('Ulinzi wa Faragha (PDPA)',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          ],
+        ),
+        content: const Text(
+          'Ili kulinda taarifa na kuzuia usumbufu kwa watoa huduma wetu kwa mujibu wa Sheria ya Faragha (PDPA 2022), namba kamili za simu na WhatsApp zinaonekana kwa washirika walioidhinishwa wa Sayuni pekee.\n\nJe, ungependa kuingia au kuthibitisha uanachama wako sasa?',
+          style: TextStyle(fontSize: 13, height: 1.45),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx),
+            child: Text('Baadaye', style: TextStyle(color: AppColors.textMuted)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(dialogCtx);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const OnboardingAuthScreen(),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+            child: const Text('Ingia / Thibitisha'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _callMember(String phone) async {
+    final auth = ChurchAuthService();
+    if (!auth.isMember && !auth.isAdmin && !auth.isLeader) {
+      _showPrivacyAuthPrompt();
+      return;
+    }
     AppHaptics.lightImpact();
     final cleanPhone = phone.replaceAll(' ', '').replaceAll('-', '');
     final uri = Uri.parse('tel:$cleanPhone');
@@ -48,6 +99,11 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
   }
 
   void _openWhatsApp(String phone, String name) async {
+    final auth = ChurchAuthService();
+    if (!auth.isMember && !auth.isAdmin && !auth.isLeader) {
+      _showPrivacyAuthPrompt();
+      return;
+    }
     AppHaptics.lightImpact();
     final cleanPhone =
         phone.replaceAll('+', '').replaceAll(' ', '').replaceAll('-', '');
@@ -116,12 +172,14 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                         ),
                         const SizedBox(height: 14),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              'Tangaza Ujuzi / Biashara Yako',
-                              style: AppTypography.headlineMedium(
-                                  color: AppColors.textPrimary),
+                            Expanded(
+                              child: Text(
+                                'Tangaza Ujuzi / Biashara Yako',
+                                style: AppTypography.headlineMedium(
+                                        color: AppColors.textPrimary)
+                                    .copyWith(fontSize: 17),
+                              ),
                             ),
                             IconButton(
                               icon: const Icon(Icons.close_rounded),
@@ -171,29 +229,47 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: phoneCtrl,
-                                keyboardType: TextInputType.phone,
-                                decoration: const InputDecoration(
-                                  labelText: 'Namba ya Simu *',
-                                  hintText: '+255...',
+                        TextField(
+                          controller: phoneCtrl,
+                          keyboardType: TextInputType.phone,
+                          decoration: const InputDecoration(
+                            labelText: 'Namba ya Simu *',
+                            hintText: '+255 7XX XXX XXX',
+                            prefixIcon: Icon(Icons.phone_outlined, size: 20),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        TextField(
+                          controller: locationCtrl,
+                          decoration: const InputDecoration(
+                            labelText: 'Eneo Unaloishi (Mtaa / Tawi)',
+                            hintText: 'Mf. Mbagala Charambe',
+                            prefixIcon: Icon(Icons.location_on_outlined, size: 20),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: AppColors.surfaceContainer,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppColors.border),
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Icon(Icons.shield_outlined,
+                                  size: 18, color: AppColors.gold),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  'Taarifa na namba yako zitalindwa kwa mujibu wa Sheria ya Faragha (PDPA 2022) na zitaonekana tu kwa washirika walioidhinishwa wa Sayuni.',
+                                  style: AppTypography.caption(
+                                      color: AppColors.textSecondary),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: TextField(
-                                controller: locationCtrl,
-                                decoration: const InputDecoration(
-                                  labelText: 'Eneo Unaloishi',
-                                  hintText: 'Mf. Charambe',
-                                ),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 20),
                         SizedBox(
@@ -247,7 +323,7 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                                 );
                               }
                             },
-                            child: const Text('Wasilisha Kwenye Saraka'),
+                            child: const Text('Wasilisha Ujuzi Wako'),
                           ),
                         ),
                       ],
@@ -264,7 +340,7 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomInset = 36.0 + MediaQuery.of(context).padding.bottom;
+    final bottomInset = 110.0 + MediaQuery.of(context).padding.bottom;
 
     final content = ListenableBuilder(
       listenable: _service,
@@ -291,7 +367,7 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                 padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
                 child: AppCard(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   child: Row(
                     children: [
                       Container(
@@ -303,7 +379,7 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                         child: const Icon(Icons.handshake_rounded,
                             color: AppColors.gold, size: 20),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -315,6 +391,7 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                                   fontSize: 13,
                                   color: AppColors.textPrimary),
                             ),
+                            const SizedBox(height: 2),
                             Text(
                               'Fursa na huduma za waumini Sayuni',
                               style: AppTypography.caption(
@@ -323,17 +400,24 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                           ],
                         ),
                       ),
+                      const SizedBox(width: 10),
                       ElevatedButton.icon(
                         onPressed: _showAddSkillDialog,
                         icon: const Icon(Icons.add_rounded, size: 15),
-                        label: const Text('Jiunge'),
+                        label: const Text('Tangaza Ujuzi'),
                         style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 6),
+                              horizontal: 12, vertical: 8),
                           minimumSize: Size.zero,
+                          elevation: 0,
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
                           textStyle: const TextStyle(
-                              fontSize: 11, fontWeight: FontWeight.bold),
+                              fontSize: 11.5, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ],
@@ -534,49 +618,86 @@ class _MemberDirectoryScreenState extends State<MemberDirectoryScreen> {
                               const Divider(height: 1),
                               const SizedBox(height: 10),
 
-                              // Actions: Call & WhatsApp
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: ElevatedButton.icon(
-                                      onPressed: () => _callMember(p.phone),
-                                      icon: const Icon(Icons.call_rounded,
-                                          size: 16),
-                                      label: const Text('Piga Simu'),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            AppColors.surfaceContainer,
-                                        foregroundColor: AppColors.primary,
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10),
-                                        shape: RoundedRectangleBorder(
+                              // Actions: Call & WhatsApp gated by Church Membership (PDPA 2022)
+                              Builder(
+                                builder: (ctx) {
+                                  final auth = ChurchAuthService();
+                                  final isVerifiedViewer =
+                                      auth.isMember || auth.isAdmin || auth.isLeader;
+
+                                  if (!isVerifiedViewer) {
+                                    return SizedBox(
+                                      width: double.infinity,
+                                      child: OutlinedButton.icon(
+                                        onPressed: _showPrivacyAuthPrompt,
+                                        icon: const Icon(Icons.shield_outlined,
+                                            size: 15, color: AppColors.gold),
+                                        label: const Text(
+                                          'Thibitisha Uanachama Kuona Namba',
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        style: OutlinedButton.styleFrom(
+                                          foregroundColor: AppColors.textPrimary,
+                                          side: BorderSide(
+                                              color: AppColors.gold.withOpacity(0.5)),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 10),
+                                          shape: RoundedRectangleBorder(
                                             borderRadius:
-                                                BorderRadius.circular(10)),
+                                                BorderRadius.circular(10),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: ElevatedButton.icon(
-                                      onPressed: () =>
-                                          _openWhatsApp(p.phone, p.fullName),
-                                      icon: const Icon(Icons.chat_rounded,
-                                          size: 16),
-                                      label: const Text('WhatsApp'),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF25D366)
-                                            .withOpacity(0.15),
-                                        foregroundColor:
-                                            const Color(0xFF0F5132),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 10),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
+                                    );
+                                  }
+
+                                  return Row(
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton.icon(
+                                          onPressed: () => _callMember(p.phone),
+                                          icon: const Icon(Icons.call_rounded,
+                                              size: 16),
+                                          label: const Text('Piga Simu'),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                AppColors.surfaceContainer,
+                                            foregroundColor: AppColors.primary,
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ],
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: ElevatedButton.icon(
+                                          onPressed: () =>
+                                              _openWhatsApp(p.phone, p.fullName),
+                                          icon: const Icon(Icons.chat_rounded,
+                                              size: 16),
+                                          label: const Text('WhatsApp'),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                const Color(0xFF25D366)
+                                                    .withOpacity(0.15),
+                                            foregroundColor:
+                                                const Color(0xFF0F5132),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
                               ),
                             ],
                           ),

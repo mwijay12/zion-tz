@@ -21,10 +21,19 @@ import {
   Clock,
   UserCheck,
   LogOut,
-  LogIn
+  LogIn,
+  BarChart3,
+  Sparkles,
+  Download,
+  Smartphone
 } from 'lucide-react';
 import type { Language } from '../types';
 import { AuthService, type PortalUser } from '../services/authService';
+
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
 
 interface HeaderProps {
   activeTab: string;
@@ -88,7 +97,7 @@ const INITIAL_NOTIFICATIONS: ChurchNotification[] = [
   {
     id: 'notif-5',
     title: 'Nukuu ya Mahubiri ya Askofu',
-    description: 'Askofu Messi Mgala ameweka mistari na mada ya somo la Jumapili: "Kutembea Katika Imani".',
+    description: 'Askofu Mercy Mgalla ameweka mistari na mada ya somo la Jumapili: "Kutembea Katika Imani".',
     time: 'Jana',
     read: true,
     type: 'pastoral',
@@ -111,10 +120,50 @@ export const Header: React.FC<HeaderProps> = ({
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState<ChurchNotification[]>(INITIAL_NOTIFICATIONS);
+  const [isTopbarHidden, setIsTopbarHidden] = useState(false);
+  const [deferredInstallPrompt, setDeferredInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [showPwaGuide, setShowPwaGuide] = useState(false);
   
   const notifDropdownRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const isSw = language === 'sw';
+
+  // Scroll-aware topbar hiding on mobile devices to maximize viewport
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const delta = currentScrollY - lastScrollY;
+      if (currentScrollY > 56 && delta > 7 && !mobileMenuOpen && !notificationsOpen && !userMenuOpen) {
+        setIsTopbarHidden(true);
+      } else if (delta < -6 || currentScrollY <= 24) {
+        setIsTopbarHidden(false);
+      }
+      lastScrollY = currentScrollY;
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [mobileMenuOpen, notificationsOpen, userMenuOpen]);
+
+  // Capture PWA beforeinstallprompt event
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredInstallPrompt(e as BeforeInstallPromptEvent);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallPwaClick = async () => {
+    if (deferredInstallPrompt) {
+      await deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      setDeferredInstallPrompt(null);
+    } else {
+      setShowPwaGuide(true);
+    }
+  };
 
   // Click outside to close dropdowns
   useEffect(() => {
@@ -146,22 +195,28 @@ export const Header: React.FC<HeaderProps> = ({
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  const navItems = [
-    { id: 'dashboard', label: isSw ? 'Dashibodi Kuu' : 'Dashboard', icon: Church },
-    { id: 'pastor_portal', label: isSw ? 'Pastoral Studio' : 'Pastoral Studio', icon: ShieldCheck },
-    { id: 'secretary_portal', label: isSw ? 'Ofisi ya Katibu' : 'Secretary Office', icon: Megaphone },
+  const adminOfficeItems = [
+    { id: 'dashboard', label: isSw ? 'Dashibodi ya Utawala' : 'Admin Dashboard', icon: Church },
+    { id: 'analytics', label: isSw ? 'Afya & Takwimu za Kanisa' : 'Church Health & Analytics', icon: BarChart3 },
+    { id: 'pastor_portal', label: isSw ? 'Ofisi ya Askofu & Mchungaji' : 'Pastoral Studio', icon: ShieldCheck },
+    { id: 'secretary_portal', label: isSw ? 'Ofisi ya Katibu Mkuu' : 'Secretary Office', icon: Megaphone },
     { id: 'members', label: isSw ? 'Daftari la Waumini' : 'Members Registry', icon: Users },
     { id: 'deacons_portal', label: isSw ? 'Mashemasi & Wageni' : 'Deacons & Visitors', icon: UserCheck },
     { id: 'elders_portal', label: isSw ? 'Baraza la Wazee' : 'Elders Board', icon: ShieldCheck },
-    { id: 'choir_portal', label: isSw ? 'Kwaya & Muziki' : 'Choirs & Music', icon: Music },
-    { id: 'finance', label: isSw ? 'Fedha na Sadaka' : 'Finances & Tithes', icon: Wallet },
-    { id: 'departments_portal', label: isSw ? 'Idara za Kanisa' : 'Departments', icon: Heart },
-    { id: 'jumuiya', label: isSw ? 'Home Cells / Vikundi' : 'Home Cells', icon: Users },
-    { id: 'bible', label: isSw ? 'Biblia & Daftari' : 'Bible & Notes', icon: BookOpen },
-    { id: 'certificates', label: isSw ? 'Vyeti Studio' : 'Certificates', icon: Award },
+    { id: 'finance', label: isSw ? 'Hazina & Sadaka' : 'Finances & Tithes', icon: Wallet },
+    { id: 'certificates', label: isSw ? 'Vyeti & Nyaraka' : 'Certificates Studio', icon: Award },
   ];
 
-  const visibleNavItems = navItems.filter((item) => AuthService.canAccessTab(currentUser, item.id));
+  const memberAppSyncItems = [
+    { id: 'media_studio', label: isSw ? 'Studio ya App Sync (Media)' : 'Mobile App Sync Studio', icon: Sparkles },
+    { id: 'jumuiya', label: isSw ? 'Jumuiya za Nyumbani' : 'Home Cells', icon: Users },
+    { id: 'choir_portal', label: isSw ? 'Kwaya & Sifa' : 'Choirs & Music', icon: Music },
+    { id: 'departments_portal', label: isSw ? 'Idara & Shule ya Jumapili' : 'Departments', icon: Heart },
+    { id: 'bible', label: isSw ? 'Biblia & Madokezo' : 'Bible & Notes', icon: BookOpen },
+  ];
+
+  const visibleAdminItems = adminOfficeItems.filter((item) => AuthService.canAccessTab(currentUser, item.id));
+  const visibleSyncItems = memberAppSyncItems.filter((item) => AuthService.canAccessTab(currentUser, item.id));
 
   const getNotifIcon = (type: ChurchNotification['type']) => {
     switch(type) {
@@ -186,7 +241,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Stitch Left Sidebar (Fixed on Desktop, Drawer on Mobile) */}
       <aside className={`portal-sidebar ${mobileMenuOpen ? 'open' : ''}`}>
-        <div className="portal-sidebar-top">
+        <div className="portal-sidebar-top" style={{ overflowY: 'auto', flex: 1 }}>
           {/* Brand Header */}
           <div className="portal-sidebar-brand">
             <img 
@@ -197,8 +252,8 @@ export const Header: React.FC<HeaderProps> = ({
               }} 
             />
             <div className="brand-text">
-              <span className="brand-title">Zion Fellowship</span>
-              <span className="brand-subtitle">{isSw ? 'Dar es Salaam • Mbagala' : 'Dar es Salaam • Mbagala'}</span>
+              <span className="brand-title">Sayuni Admin</span>
+              <span className="brand-subtitle">{isSw ? 'Mfumo wa Viongozi • PWA' : 'Leadership Portal • PWA'}</span>
             </div>
             {mobileMenuOpen && (
               <button 
@@ -216,43 +271,100 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="portal-leadership-card">
             <div className="portal-leadership-box">
               <div>
-                <span className="label-sub">{isSw ? 'UONGOZI MKUU' : 'LEADERSHIP'}</span>
+                <span className="label-sub">{isSw ? 'UTAWALA WA VIONGOZI PEKEE' : 'LEADERS ONLY PORTAL'}</span>
                 <span className="name-sub">Bishop Mercy &amp; Pst James</span>
               </div>
               <CheckCircle2 size={18} style={{ color: 'var(--primary)' }} />
             </div>
           </div>
 
-          {/* Navigation Links */}
+          {/* Grouped Navigation Links: Clear separation between Admin Offices & Member App Sync */}
           <nav className="portal-nav-list" aria-label="Main Navigation">
-            {visibleNavItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = activeTab === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    setActiveTab(item.id);
-                    setMobileMenuOpen(false);
-                  }}
-                  className={`portal-nav-item ${isActive ? 'active' : ''}`}
-                >
-                  <Icon size={18} />
-                  <span>{item.label}</span>
-                </button>
-              );
-            })}
+            {visibleAdminItems.length > 0 && (
+              <>
+                <div className="portal-nav-section-label">
+                  <ShieldCheck size={12} />
+                  <span>{isSw ? 'Ofisi za Viongozi (Admin)' : 'Leadership Offices'}</span>
+                </div>
+                {visibleAdminItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = activeTab === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setActiveTab(item.id);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`portal-nav-item ${isActive ? 'active' : ''}`}
+                    >
+                      <Icon size={18} />
+                      <span>{item.label}</span>
+                    </button>
+                  );
+                })}
+              </>
+            )}
+
+            {visibleSyncItems.length > 0 && (
+              <>
+                <div className="portal-nav-section-label" style={{ marginTop: '0.45rem' }}>
+                  <Smartphone size={12} />
+                  <span>{isSw ? 'Usawazishaji wa App ya Waumini' : 'Member Mobile App Sync'}</span>
+                </div>
+                {visibleSyncItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = activeTab === item.id;
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => {
+                        setActiveTab(item.id);
+                        setMobileMenuOpen(false);
+                      }}
+                      className={`portal-nav-item ${isActive ? 'active' : ''}`}
+                    >
+                      <Icon size={18} />
+                      <span>{item.label}</span>
+                    </button>
+                  );
+                })}
+              </>
+            )}
           </nav>
         </div>
 
         {/* Sidebar Footer */}
-        <div className="portal-sidebar-footer" style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+        <div className="portal-sidebar-footer" style={{ display: 'flex', flexDirection: 'column', gap: '0.55rem' }}>
+          <button
+            onClick={handleInstallPwaClick}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.45rem',
+              width: '100%',
+              padding: '0.48rem',
+              borderRadius: '8px',
+              border: '1px solid rgba(13, 82, 205, 0.28)',
+              backgroundColor: 'rgba(13, 82, 205, 0.08)',
+              color: 'var(--primary)',
+              fontSize: '0.76rem',
+              fontWeight: 700,
+              cursor: 'pointer'
+            }}
+            title={isSw ? 'Sakinisha Mfumo wa Viongozi kwenye Simu (PWA)' : 'Install Admin Portal PWA'}
+          >
+            <Download size={13} />
+            <span>{isSw ? 'Sakinisha App ya Viongozi (PWA)' : 'Install Admin PWA'}</span>
+          </button>
+
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.78rem', color: 'var(--on-surface-variant)' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.75rem', color: 'var(--on-surface-variant)' }}>
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981', display: 'inline-block', boxShadow: '0 0 6px rgba(16, 185, 129, 0.6)' }} />
-              <span>{isSw ? 'Mtandaoni (Live Sync)' : 'Connected'}</span>
+              <span>{isSw ? 'Firebase Sync Active' : 'Firebase Sync Active'}</span>
             </span>
-            <span style={{ fontWeight: 700, color: 'var(--primary)', fontSize: '0.74rem' }}>Kwa Matope HQ</span>
+            <span style={{ fontWeight: 700, color: 'var(--primary)', fontSize: '0.72rem' }}>Kwa Matope HQ</span>
           </div>
 
           {currentUser && (
@@ -283,15 +395,15 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
       </aside>
 
-      {/* Stitch Fixed Top Bar */}
-      <header className="portal-topbar">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1, maxWidth: '520px' }}>
+      {/* Stitch Fixed Top Bar (Auto-hides on scroll down on mobile to expand viewport) */}
+      <header className={`portal-topbar ${isTopbarHidden ? 'topbar-hidden-mobile' : ''}`}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flex: 1, maxWidth: '520px' }}>
           {/* Mobile hamburger button: ONLY visible on screens < 1025px */}
           <button 
             className="icon-btn portal-hamburger-btn"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle Navigation Menu"
-            title={isSw ? 'Fungua Menyu ya Pembeni' : 'Open Navigation Menu'}
+            title={isSw ? 'Fungua Menyu ya Viongozi' : 'Open Leadership Menu'}
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -302,13 +414,24 @@ export const Header: React.FC<HeaderProps> = ({
             <input 
               type="text" 
               className="portal-search-input"
-              placeholder={isSw ? 'Tafuta waumini, mahubiri, vikao, matangazo...' : 'Search members, sermons, notices...'}
+              placeholder={isSw ? 'Tafuta waumini, mahubiri, matangazo...' : 'Search members, sermons, notices...'}
             />
           </div>
         </div>
 
         {/* Top bar Right Actions */}
         <div className="portal-topbar-actions">
+          {/* PWA Install Quick Action */}
+          <button
+            onClick={handleInstallPwaClick}
+            className="icon-btn"
+            title={isSw ? 'Sakinisha Sayuni Admin PWA kwenye Simu' : 'Install Sayuni Admin PWA'}
+            aria-label="Install Admin PWA"
+            style={{ color: 'var(--primary)' }}
+          >
+            <Download size={17} />
+          </button>
+
           {/* Language Toggle */}
           <button
             onClick={() => setLanguage(language === 'sw' ? 'en' : 'sw')}
@@ -542,7 +665,8 @@ export const Header: React.FC<HeaderProps> = ({
                     </div>
                     <div style={{ marginTop: '0.35rem' }}>
                       <span className={`badge ${currentUser.isRoot ? 'badge-gold' : 'badge-purple'}`} style={{ fontSize: '0.65rem' }}>
-                        {currentUser.role === 'super_admin' ? '👑 Super Administrator' : currentUser.titleSw}
+                        <ShieldCheck size={11} />
+                        <span>{currentUser.role === 'super_admin' ? 'Super Administrator' : currentUser.titleSw}</span>
                       </span>
                     </div>
                   </div>
@@ -600,8 +724,69 @@ export const Header: React.FC<HeaderProps> = ({
           )}
         </div>
       </header>
+
+      {/* PWA Installation Guide Modal for Mobile Leaders */}
+      {showPwaGuide && (
+        <div
+          className="portal-modal-overlay"
+          onClick={() => setShowPwaGuide(false)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="portal-modal-box"
+            style={{ maxWidth: '430px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="portal-modal-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                <Smartphone size={20} style={{ color: 'var(--primary)' }} />
+                <h3>{isSw ? 'Sakinisha Sayuni Admin (PWA)' : 'Install Sayuni Admin (PWA)'}</h3>
+              </div>
+              <button className="close-btn" onClick={() => setShowPwaGuide(false)} aria-label="Close">
+                <X size={18} />
+              </button>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', fontSize: '0.85rem', color: 'var(--text-body)' }}>
+              <p style={{ margin: 0 }}>
+                {isSw
+                  ? 'Huu ni Mfumo Maalum wa Viongozi wa Sayuni (tofauti na App ya Waumini). Unaweza kuusakinisha kwenye simu yako kama App kamili:'
+                  : 'This is the dedicated Sayuni Leadership Portal (separate from the Member App). Install it on your phone home screen:'}
+              </p>
+              <div className="stitch-card-low" style={{ padding: '0.85rem', borderRadius: '12px' }}>
+                <strong style={{ display: 'block', marginBottom: '0.25rem', color: 'var(--text-headline)' }}>
+                  Android (Chrome / Edge):
+                </strong>
+                <span>
+                  {isSw
+                    ? 'Bonyeza vitufe vitatu (⋮) juu kulia kwenye browser kisha chagua "Install app" au "Add to Home screen".'
+                    : 'Tap the browser menu (⋮) and select "Install app" or "Add to Home screen".'}
+                </span>
+              </div>
+              <div className="stitch-card-low" style={{ padding: '0.85rem', borderRadius: '12px' }}>
+                <strong style={{ display: 'block', marginBottom: '0.25rem', color: 'var(--text-headline)' }}>
+                  iPhone / iPad (Safari):
+                </strong>
+                <span>
+                  {isSw
+                    ? 'Bonyeza kitufe cha Share chini kisha chagua "Add to Home Screen".'
+                    : 'Tap the Share button at the bottom and choose "Add to Home Screen".'}
+                </span>
+              </div>
+              <button
+                className="btn-primary"
+                onClick={() => setShowPwaGuide(false)}
+                style={{ width: '100%', marginTop: '0.25rem' }}
+              >
+                {isSw ? 'Nimeelewa, Sawa' : 'Got It'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
 
 export default Header;
+

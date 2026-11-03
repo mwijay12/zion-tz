@@ -339,7 +339,7 @@ class _MainScaffoldState extends State<MainScaffold> {
         _showExitConfirmationDialog();
       },
       child: Scaffold(
-        extendBody: false,
+        extendBody: true,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: Stack(
           children: [

@@ -81,10 +81,11 @@ class ChurchAuthService extends ChangeNotifier {
   String _name = 'Muumini wa Sayuni';
   String _phone = '+255 754 000 123';
   String _email = 'muumini@zionjerusalem.org';
-  String _jumuiya = 'Mbagala Kijichi (Mt. Petro)';
+  String _jumuiya = 'Mbagala Kijichi';
   String _department = 'Kwaya ya Galilaya';
   String _memberId = 'ZJC-2026-8894';
   bool _isBaptized = true;
+  String? _photoUrl;
 
   bool get isInitialized => _isInitialized;
   bool get isOnboarded => _isOnboarded;
@@ -126,20 +127,14 @@ class ChurchAuthService extends ChangeNotifier {
   String get department => _department;
   String get memberId => _memberId;
   bool get isBaptized => _isBaptized;
+  String? get photoUrl => _photoUrl;
 
   String get roleTitle => _role.titleSw;
 
-  /// Role title plus a mark showing *where* the authority came from, so a
-  /// device-cached or demo role is never mistaken for a cloud-granted one.
+  /// Role title without confusing parentheses or English labels.
   String get roleBadge {
-    final mark = switch (_source) {
-      RoleSource.cloud => ' ✅',
-      RoleSource.demo => ' (Onyesho)',
-      RoleSource.device => ' 🛡️',
-      RoleSource.none => '',
-    };
     if (_source == RoleSource.none) return 'Hakuna mamlaka iliyowekwa';
-    return '${_role.titleSw}$mark';
+    return _role.titleSw;
   }
 
   /// One-line explanation of the trust level of the current role. Shown in the
@@ -210,10 +205,11 @@ class ChurchAuthService extends ChangeNotifier {
     _name = prefs.getString('user_name') ?? defaultNameForRole();
     _phone = prefs.getString('user_phone') ?? '+255 754 000 123';
     _email = prefs.getString('user_email') ?? 'muumini@zionjerusalem.org';
-    _jumuiya = prefs.getString('user_jumuiya') ?? 'Mbagala Kijichi (Mt. Petro)';
+    _jumuiya = prefs.getString('user_jumuiya') ?? 'Mbagala Kijichi';
     _department = prefs.getString('user_dept') ?? 'Kwaya ya Galilaya';
     _memberId = prefs.getString('user_member_id') ?? 'ZJC-2026-8894';
     _isBaptized = prefs.getBool('user_baptized') ?? true;
+    _photoUrl = prefs.getString('user_photo');
 
     // A privileged role is only carried over the cache in a demo build.
     // Everything else goes back to member until a real claim exists — a local
@@ -360,6 +356,7 @@ class ChurchAuthService extends ChangeNotifier {
     String? jumuiya,
     String? department,
     bool? isBaptized,
+    String? photoUrl,
   }) async {
     if (name != null && name.trim().isNotEmpty) _name = name.trim();
     if (phone != null && phone.trim().isNotEmpty) _phone = phone.trim();
@@ -368,6 +365,9 @@ class ChurchAuthService extends ChangeNotifier {
     if (department != null && department.trim().isNotEmpty)
       _department = department.trim();
     if (isBaptized != null) _isBaptized = isBaptized;
+    if (photoUrl != null) {
+      _photoUrl = photoUrl.trim().isNotEmpty ? photoUrl.trim() : null;
+    }
 
     await _persist();
     notifyListeners();
@@ -653,6 +653,7 @@ class ChurchAuthService extends ChangeNotifier {
     _department = 'Mgeni wa Ibada';
     _memberId = '';
     _isBaptized = false;
+    _photoUrl = null;
 
     try {
       await _auth?.signOut();
@@ -674,6 +675,7 @@ class ChurchAuthService extends ChangeNotifier {
       await prefs.remove('user_dept');
       await prefs.remove('user_member_id');
       await prefs.remove('user_baptized');
+      await prefs.remove('user_photo');
       await prefs.setBool('auth_is_onboarded', false);
       await prefs.setString('auth_user_role', 'guest');
       await prefs.setString('auth_role_v2', ChurchRole.guest.wireName);
@@ -726,19 +728,19 @@ class ChurchAuthService extends ChangeNotifier {
 
     switch (role) {
       case 'pastor':
-        _name = 'Askofu Messi Mgala';
+        _name = 'Askofu Mercy Mgalla';
         _email = 'pastor@zionjerusalem.org';
-        _department = 'Uongozi Mkuu (Askofu)';
+        _department = 'Uongozi Mkuu wa Askofu';
         _memberId = 'ZJC-LEAD-01';
       case 'secretary':
         _name = 'Katibu Mkuu Sayuni';
         _email = 'katibu@zionjerusalem.org';
-        _department = 'Ofisi ya Katibu (Utawala)';
+        _department = 'Ofisi ya Katibu Mkuu';
         _memberId = 'ZJC-LEAD-02';
       case 'treasurer':
         _name = 'Hazina Mkuu';
         _email = 'hazina@zionjerusalem.org';
-        _department = 'Ofisi ya Hazina (Fedha)';
+        _department = 'Ofisi ya Hazina na Fedha';
         _memberId = 'ZJC-LEAD-03';
       default:
         _department = mapped.titleSw;
@@ -770,6 +772,11 @@ class ChurchAuthService extends ChangeNotifier {
       await prefs.setString('user_dept', _department);
       await prefs.setString('user_member_id', _memberId);
       await prefs.setBool('user_baptized', _isBaptized);
+      if (_photoUrl != null && _photoUrl!.isNotEmpty) {
+        await prefs.setString('user_photo', _photoUrl!);
+      } else {
+        await prefs.remove('user_photo');
+      }
     } catch (e) {
       debugPrint('Error persisting auth: $e');
     }

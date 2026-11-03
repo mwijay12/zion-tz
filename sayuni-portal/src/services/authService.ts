@@ -62,13 +62,47 @@ export class AuthService {
   }
 
   static async logout(): Promise<void> {
+    try {
+      sessionStorage.removeItem('zion_demo_user');
+    } catch {}
     await firebaseSignOut(auth);
   }
 
+  static getStoredDemoUser(): PortalUser | null {
+    try {
+      const raw = sessionStorage.getItem('zion_demo_user');
+      if (raw) return JSON.parse(raw);
+    } catch {}
+    return null;
+  }
+
+  static async loginAsDemo(role: UserRole = 'super_admin'): Promise<PortalUser> {
+    const demoUser: PortalUser = {
+      id: `demo-${role}`,
+      name: role === 'pastor' ? 'Mchungaji Askofu Mercy Mgalla' : (role === 'secretary' ? 'Katibu Mkuu' : 'Super Admin Zion'),
+      email: `${role}@zionjerusalem.org`,
+      role,
+      isRoot: role === 'admin' || role === 'super_admin',
+      branch: 'Mbagala Kwa Matope (HQ)',
+      titleSw: ROLE_TITLES[role] || 'Kiongozi wa Kanisa'
+    };
+    try {
+      sessionStorage.setItem('zion_demo_user', JSON.stringify(demoUser));
+    } catch {}
+    return demoUser;
+  }
+
   static onAuthChange(callback: (user: PortalUser | null) => void) {
+    const storedDemo = this.getStoredDemoUser();
+    if (storedDemo) {
+      callback(storedDemo);
+    }
+
     return onAuthStateChanged(auth, async (firebaseUser) => {
       if (!firebaseUser) {
-        callback(null);
+        if (!this.getStoredDemoUser()) {
+          callback(null);
+        }
         return;
       }
 
@@ -128,6 +162,8 @@ export class AuthService {
 
   private static readonly TAB_ROLES: Record<string, UserRole[] | 'all'> = {
     dashboard: 'all',
+    analytics: ['pastor', 'secretary', 'treasurer', 'deacon', 'admin', 'super_admin'],
+    media_studio: 'all',
     pastor_portal: ['pastor', 'admin', 'super_admin'],
     secretary_portal: ['secretary', 'pastor', 'admin', 'super_admin'],
     deacons_portal: ['deacon', 'secretary', 'pastor', 'admin', 'super_admin'],

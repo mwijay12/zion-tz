@@ -233,7 +233,23 @@ class _ChurchBranchesScreenState extends State<ChurchBranchesScreen> {
                         const SizedBox(height: 14),
                     itemBuilder: (context, index) {
                       final branch = filteredBranches[index];
-                      return _buildBranchCard(branch, index);
+                      final delay = (index * 50).clamp(0, 300);
+                      return TweenAnimationBuilder<double>(
+                        key: ValueKey(branch.name),
+                        tween: Tween<double>(begin: 0.0, end: 1.0),
+                        duration: Duration(milliseconds: 320 + delay),
+                        curve: Curves.easeOutCubic,
+                        builder: (context, val, child) {
+                          return Transform.translate(
+                            offset: Offset(0, 20 * (1.0 - val)),
+                            child: Opacity(
+                              opacity: val,
+                              child: child,
+                            ),
+                          );
+                        },
+                        child: _buildBranchCard(branch, index),
+                      );
                     },
                   ),
           ),

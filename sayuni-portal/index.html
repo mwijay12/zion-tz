@@ -5,15 +5,21 @@
     <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="theme-color" content="#6E39C4" />
-    <meta name="description" content="Sayuni Jerusalem Church Management System, Financial Tracking, Home Cell Fellowships, Certificate Generation, and Bilingual Swahili-English Bible." />
-    <title>Sayuni Jerusalem Church | Mfumo wa Kanisa & Biblia</title>
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+    <meta name="theme-color" content="#0A2540" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#070D1E" media="(prefers-color-scheme: dark)" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Sayuni Admin" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="description" content="Sayuni Admin Portal (PWA) — Mfumo wa Viongozi wa Kanisa la Sayuni Yerusalemu, Usimamizi wa Fedha, Jumuiya, Vyeti na Usawazishaji wa App ya Waumini." />
+    <title>Sayuni Admin Portal | Mfumo wa Viongozi (PWA)</title>
     
-    <!-- Google Fonts: Inter (Modern Clean Sans) & Material Symbols Outlined -->
+    <!-- Google Fonts: Inter, Cinzel (Royal Serif) & Great Vibes (Signature Calligraphy) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800;900&family=Great+Vibes&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
   </head>
   <body>
@@ -21,5 +27,19 @@
     <!-- Puter.js Cloud AI Access (Zero-backend TTS) -->
     <script src="https://js.puter.com/v2/"></script>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('caches' in window) {
+        caches.keys().then((keys) => {
+          keys.forEach((k) => {
+            if (k !== 'sayuni-admin-pwa-v3') caches.delete(k);
+          });
+        });
+      }
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').then((reg) => reg.update()).catch(() => {});
+        });
+      }
+    </script>
   </body>
 </html>

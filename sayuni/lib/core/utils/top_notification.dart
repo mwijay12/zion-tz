@@ -122,19 +122,34 @@ class _TopAlertWidgetState extends State<_TopAlertWidget>
   late AnimationController _animController;
   late Animation<double> _slideAnimation;
   late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
 
   @override
   void initState() {
     super.initState();
     _animController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 320),
+      duration: const Duration(milliseconds: 380),
     );
-    _slideAnimation = Tween<double>(begin: -60.0, end: 0.0).animate(
-      CurvedAnimation(parent: _animController, curve: Curves.easeOutBack),
+    // Smooth deceleration curve mimicking iOS / Sonner physics
+    _slideAnimation = Tween<double>(begin: -48.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _animController,
+        curve: const Cubic(0.23, 1.0, 0.32, 1.0),
+      ),
     );
-    _fadeAnimation =
-        CurvedAnimation(parent: _animController, curve: Curves.easeIn);
+    _scaleAnimation = Tween<double>(begin: 0.95, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animController,
+        curve: const Cubic(0.23, 1.0, 0.32, 1.0),
+      ),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animController,
+        curve: Curves.easeOut,
+      ),
+    );
     _animController.forward();
   }
 
@@ -150,98 +165,135 @@ class _TopAlertWidgetState extends State<_TopAlertWidget>
 
     return Positioned(
       top: topPadding + 10,
-      left: 16,
-      right: 16,
+      left: 14,
+      right: 14,
       child: AnimatedBuilder(
         animation: _animController,
         builder: (context, child) {
           return Transform.translate(
             offset: Offset(0, _slideAnimation.value),
-            child: Opacity(
-              opacity: _fadeAnimation.value,
-              child: child,
+            child: Transform.scale(
+              scale: _scaleAnimation.value,
+              alignment: Alignment.topCenter,
+              child: Opacity(
+                opacity: _fadeAnimation.value,
+                child: child,
+              ),
             ),
           );
         },
-        child: Material(
-          color: Colors.transparent,
-          child: GestureDetector(
-            onTap: widget.onTap,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [widget.bgStart, widget.bgEnd],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: widget.borderColor, width: 1.4),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.35),
-                    blurRadius: 18,
-                    offset: const Offset(0, 8),
+        child: Dismissible(
+          key: const Key('top_toast_dismissible'),
+          direction: DismissDirection.up,
+          onDismissed: (_) {
+            AppHaptics.lightImpact();
+            widget.onDismiss();
+          },
+          child: Material(
+            color: Colors.transparent,
+            child: GestureDetector(
+              onTap: () {
+                AppHaptics.selectionClick();
+                widget.onTap();
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      widget.bgStart.withOpacity(0.96),
+                      widget.bgEnd.withOpacity(0.92)
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 38,
-                    height: 38,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.15),
-                      shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(
+                    color: widget.borderColor.withOpacity(0.85),
+                    width: 1.4,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.35),
+                      blurRadius: 24,
+                      offset: const Offset(0, 8),
+                      spreadRadius: -2,
                     ),
-                    child: Icon(widget.icon, color: Colors.white, size: 22),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          widget.title,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                    BoxShadow(
+                      color: widget.borderColor.withOpacity(0.20),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.18),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.25),
+                          width: 1,
                         ),
-                        if (widget.message != null &&
-                            widget.message!.isNotEmpty) ...[
-                          const SizedBox(height: 2),
+                      ),
+                      child: Icon(widget.icon, color: Colors.white, size: 22),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
                           Text(
-                            widget.message!,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.9),
-                              fontSize: 11.5,
+                            widget.title,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 13.5,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.2,
                             ),
-                            maxLines: 2,
+                            maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
+                          if (widget.message != null &&
+                              widget.message!.isNotEmpty) ...[
+                            const SizedBox(height: 3),
+                            Text(
+                              widget.message!,
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.92),
+                                fontSize: 11.5,
+                                height: 1.3,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         ],
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: widget.onDismiss,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
-                        shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.close_rounded,
-                          size: 16, color: Colors.white70),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () {
+                        AppHaptics.lightImpact();
+                        widget.onDismiss();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.12),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.close_rounded,
+                            size: 16, color: Colors.white70),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

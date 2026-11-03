@@ -14,7 +14,8 @@ import {
   Megaphone, 
   ShieldCheck, 
   X,
-  Church
+  Church,
+  Download
 } from 'lucide-react';
 import type { Language, UserRole, FinancialProject, JumuiyaReport } from '../types';
 import { 
@@ -23,9 +24,10 @@ import {
   SUNDAY_SCHEDULE, 
   INITIAL_BULLETIN_NOTICES 
 } from '../data/mockData';
+import { generateBulletinPdf } from '../services/officialPdfService';
 
 import { AuthService } from '../services/authService';
-import leadershipImg from '../assets/pastoral_leadership.jpg';
+import { PrivacyAnalyticsService } from '../services/privacyAnalyticsService';
 import choirImg from '../assets/zion_worship_choir.jpg';
 import fellowshipImg from '../assets/jumuiya_fellowship.jpg';
 
@@ -54,6 +56,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const [copiedBank, setCopiedBank] = useState(false);
   const [showBulletinModal, setShowBulletinModal] = useState(false);
 
+  const openBulletin = () => {
+    setShowBulletinModal(true);
+    PrivacyAnalyticsService.recordEvent('bulletin_view');
+  };
+
   const mainProject: FinancialProject = projects[0] ?? {
     id: 'none',
     title: isSw ? 'Hakuna Mradi Unaendelea' : 'No Active Project',
@@ -80,19 +87,36 @@ export const Dashboard: React.FC<DashboardProps> = ({
     }
   };
 
-  const handlePrint = () => {
-    window.print();
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
+  const handlePrint = async (mode: 'open' | 'download' = 'open') => {
+    setIsGeneratingPdf(true);
+    try {
+      await generateBulletinPdf(INITIAL_BULLETIN_NOTICES, {
+        includeSchedule: true,
+        finance: {
+          monthIncome: totalIncome,
+          projectTitle: projects[0]?.title,
+          projectPercent: projects[0] ? Math.round((projects[0].currentAmount / projects[0].targetAmount) * 100) : undefined
+        },
+        mode
+      });
+    } catch (err) {
+      console.error('Failed to generate bulletin PDF:', err);
+    } finally {
+      setIsGeneratingPdf(false);
+    }
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
-      {/* Sanctuary Hero Banner - Sanctuary Navy & Electric Blue */}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.35rem' }}>
+      {/* Viongozi Admin Command Center Hero Banner */}
       <div 
-        className="dark-hero"
+        className="dark-hero dashboard-hero-banner"
         style={{
           background: 'linear-gradient(135deg, #0A2540 0%, #082F70 55%, #0D52CD 100%)',
           color: '#ffffff',
-          padding: '2.5rem 2rem',
+          padding: '1.65rem 1.5rem',
           borderRadius: 'var(--radius-lg)',
           position: 'relative',
           overflow: 'hidden',
@@ -100,142 +124,77 @@ export const Dashboard: React.FC<DashboardProps> = ({
           border: '1px solid rgba(13, 82, 205, 0.35)'
         }}
       >
-        <div style={{
-          position: 'absolute',
-          right: '-20px',
-          top: '-20px',
-          width: '280px',
-          height: '280px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(223, 183, 255, 0.25) 0%, rgba(223, 183, 255, 0) 70%)',
-          pointerEvents: 'none'
-        }} />
-
-        <div style={{ maxWidth: '900px', position: 'relative', zIndex: 2 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '0.85rem', flexWrap: 'wrap' }}>
-            <span className="badge" style={{ background: 'rgba(241, 218, 255, 0.22)', color: '#f1daff', border: '1px solid rgba(241, 218, 255, 0.45)' }}>
-              <Church size={13} />
-              {isSw ? 'Makao Makuu ya Ibada' : 'Sanctuary Headquarters'}
+        <div style={{ maxWidth: '980px', position: 'relative', zIndex: 2 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', marginBottom: '0.65rem', flexWrap: 'wrap' }}>
+            <span className="badge" style={{ background: 'rgba(197, 155, 39, 0.24)', color: '#fef08a', border: '1px solid rgba(254, 240, 138, 0.45)' }}>
+              <ShieldCheck size={13} />
+              {isSw ? 'MFUMO WA VIONGOZI PEKEE • ADMIN PWA' : 'LEADERS ONLY • ADMIN PWA'}
             </span>
-            <span style={{ fontSize: '0.85rem', color: '#dee1ff', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-              <MapPin size={14} style={{ color: '#dfb7ff' }} />
+            <span className="badge" style={{ background: 'rgba(16, 185, 129, 0.22)', color: '#a7f3d0', border: '1px solid rgba(167, 243, 208, 0.4)' }}>
+              <Check size={12} />
+              {isSw ? 'Live Sync na App ya Waumini' : 'Live Sync with Member App'}
+            </span>
+            <span style={{ fontSize: '0.8rem', color: '#dee1ff', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              <MapPin size={13} style={{ color: '#93c5fd' }} />
               {CHURCH_PROFILE.location}
             </span>
           </div>
 
-          <h2 style={{ fontSize: '2.1rem', fontWeight: 800, marginBottom: '0.6rem', lineHeight: 1.25, letterSpacing: '-0.02em', color: '#ffffff' }}>
+          <h2 className="dashboard-hero-title" style={{ fontSize: '1.65rem', fontWeight: 800, marginBottom: '0.45rem', lineHeight: 1.25, letterSpacing: '-0.02em', color: '#ffffff' }}>
             {isSw 
-              ? 'Karibu Kanisa la Zion Fellowship' 
-              : 'Welcome to Zion Fellowship Church'}
+              ? 'Kituo cha Utawala wa Viongozi & Usawazishaji (Sayuni Admin)' 
+              : 'Sayuni Leadership Command Center & Mobile App Sync'}
           </h2>
 
-          <p style={{ fontSize: '1.02rem', color: '#dee1ff', fontStyle: 'italic', marginBottom: '1.35rem', lineHeight: 1.6 }}>
+          <p style={{ fontSize: '0.88rem', color: '#dee1ff', marginBottom: '1.1rem', lineHeight: 1.5 }}>
             {isSw 
-              ? '"Kwa kuwa Bwana ameichagua Sayuni; Ameitamani akae ndani yake. Hapa ndipo patakapokuwa pumziko langu milele..." — Zaburi 132:13-14'
-              : '"For the Lord hath chosen Zion; he hath desired it for his habitation. This is my rest for ever..." — Psalm 132:13-14'}
+              ? 'Mfumo huu umetengwa maalum kwa Viongozi wa Kanisa (Askofu, Mchungaji, Katibu, Mhasibu, Mashemasi na Wazee). Kila tangazo, mahubiri au ripoti unayoweka hapa inasawazishwa moja kwa moja kwenda kwenye App ya Simu ya Waumini.'
+              : 'Dedicated administration portal for Church Leaders. Every announcement, sermon, or notice published here syncs directly to the Sayuni Member Mobile App.'}
           </p>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.85rem', alignItems: 'center' }}>
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '0.5rem', 
-              background: 'rgba(255, 255, 255, 0.14)', 
-              padding: '0.55rem 1.15rem', 
-              borderRadius: 'var(--radius-full)',
-              backdropFilter: 'blur(10px)',
-              fontSize: '0.88rem',
-              border: '1px solid rgba(255, 255, 255, 0.25)',
-              color: '#ffffff'
-            }}>
-              <ShieldCheck size={16} style={{ color: '#dfb7ff' }} />
-              <span><strong>{CHURCH_PROFILE.headPastor}</strong> &amp; <strong>{CHURCH_PROFILE.bishopHusband}</strong></span>
-            </div>
-
+          {/* 5 Quick Leadership Command Actions (Responsive Grid) */}
+          <div className="viongozi-quick-actions-grid">
             <button
-              onClick={() => setShowBulletinModal(true)}
-              className="btn-primary"
-              style={{ background: '#0D52CD', color: '#ffffff', border: '1px solid rgba(255, 255, 255, 0.3)', padding: '0.55rem 1.2rem', fontSize: '0.88rem' }}
+              onClick={() => setActiveTab('secretary_portal')}
+              className="viongozi-quick-action-btn"
             >
-              <Megaphone size={16} />
-              <span>{isSw ? 'Matangazo ya Wiki & Bulletin ya Ubaoni' : 'Weekly Announcements & Bulletin'}</span>
+              <Megaphone size={16} style={{ color: '#fbbf24' }} />
+              <span>{isSw ? 'Tuma Tangazo (App)' : 'Post Notice'}</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('media_studio')}
+              className="viongozi-quick-action-btn"
+            >
+              <Music size={16} style={{ color: '#60a5fa' }} />
+              <span>{isSw ? 'Pakia Mahubiri / Live' : 'Upload Sermon'}</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('pastor_portal')}
+              className="viongozi-quick-action-btn"
+            >
+              <ShieldCheck size={16} style={{ color: '#c084fc' }} />
+              <span>{isSw ? 'Ofisi ya Askofu' : 'Pastor Office'}</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('finance')}
+              className="viongozi-quick-action-btn"
+            >
+              <Wallet size={16} style={{ color: '#34d399' }} />
+              <span>{isSw ? 'Rekodi Sadaka' : 'Record Tithes'}</span>
+            </button>
+            <button
+              onClick={openBulletin}
+              className="viongozi-quick-action-btn"
+            >
+              <Printer size={16} style={{ color: '#f87171' }} />
+              <span>{isSw ? 'Bulletin ya Wiki' : 'Weekly Bulletin'}</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Leadership & Identity Hero Feature */}
-      <div 
-        className="church-card"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '1.5rem',
-          alignItems: 'center',
-          background: 'var(--bg-surface)',
-          padding: '1.5rem'
-        }}
-      >
-        <div style={{ position: 'relative', borderRadius: 'var(--radius-md)', overflow: 'hidden', maxHeight: '340px' }}>
-          <img 
-            src={leadershipImg} 
-            alt="Mchungaji Askofu Messi Mgala na James Robert" 
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-          />
-          <div style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            background: 'linear-gradient(to top, rgba(15, 23, 42, 0.9) 0%, transparent 100%)',
-            padding: '1.25rem',
-            color: '#ffffff'
-          }}>
-            <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1px', color: '#fbbf24', fontWeight: 700 }}>
-              {isSw ? 'UONGOZI WA KIROHO NA UTUME' : 'SPIRITUAL & APOSTOLIC OVERSIGHT'}
-            </span>
-            <div style={{ fontSize: '1.15rem', fontWeight: 800 }}>
-              {CHURCH_PROFILE.headPastor}
-            </div>
-            <div style={{ fontSize: '0.88rem', color: '#cbd5e1' }}>
-              {isSw ? 'Akiwa na Mume wake:' : 'With her husband:'} <strong>{CHURCH_PROFILE.bishopHusband}</strong>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
-          <span className="badge badge-purple" style={{ alignSelf: 'flex-start' }}>
-            <ShieldCheck size={13} />
-            {isSw ? 'Huduma ya Kichungaji na Maono' : 'Pastoral Ministry & Vision'}
-          </span>
-          <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-headline)', lineHeight: 1.3 }}>
-            {isSw ? 'Kujenga Kanisa Imara Katika Kristo & Mfumo wa Uwazi' : 'Building a Strong Church in Christ & Transparent Stewardship'}
-          </h3>
-          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
-            {isSw 
-              ? 'Chini ya uongozi wa Mchungaji Askofu Messi Mgala na Ndg. James Robert, kanisa la Zion Jerusalem lililopo Kwa Matope - Mbagala Dar es Salaam linawakaribisha katika utaratibu mzuri wa kidijitali. Tunalinda kumbukumbu za kanisa, ripoti za vikundi vya maombi majumbani, na matoleo yote ya waumini kwa uadilifu mkuu.'
-              : 'Under the spiritual oversight of Bishop Messi Mgala and Mr. James Robert, Sayuni Jerusalem Church at Kwa Matope, Mbagala Dar es Salaam embraces modern transparency and digital record-keeping for every home prayer cell, ministry choir, and sacred offering.'}
-          </p>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginTop: '0.3rem' }}>
-            <div style={{ padding: '0.75rem', background: 'var(--bg-app)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
-              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{isSw ? 'Mamlaka ya Usimamizi' : 'Governance'}</div>
-              <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--primary-800)' }}>{CHURCH_PROFILE.eldersBoard}</div>
-            </div>
-            <div style={{ padding: '0.75rem', background: 'var(--bg-app)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-subtle)' }}>
-              <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{isSw ? 'Makatibu & Hazina' : 'Secretariat & Treasury'}</div>
-              <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--gold-700)' }}>{CHURCH_PROFILE.churchTreasurer}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* KPI Cards */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-        gap: '1.25rem'
-      }}>
+      {/* KPI Cards (2x2 Grid on Mobile, 4-Column on Desktop) */}
+      <div className="dashboard-kpi-grid">
         {/* Total Members */}
         <div className="church-card" style={{ display: 'flex', alignItems: 'center', gap: '1.15rem' }}>
           <div style={{
@@ -346,11 +305,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       </div>
 
       {/* Choir Showcase & Home Fellowship Highlights */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-        gap: '1.5rem'
-      }}>
+      <div className="dashboard-split-grid">
         {/* Choirs & Praise Ministry Showcase */}
         <div className="church-card" style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
           <div style={{ position: 'relative', borderRadius: 'var(--radius-md)', overflow: 'hidden', height: '180px' }}>
@@ -514,7 +469,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
 
           <button 
-            onClick={() => setShowBulletinModal(true)}
+            onClick={openBulletin}
             className="btn-primary"
             style={{ padding: '0.6rem 1.1rem' }}
           >
@@ -548,7 +503,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 color: index === 3 ? 'var(--gold-700)' : 'var(--primary-700)',
                 letterSpacing: '0.5px'
               }}>
-                ⏰ {item.time}
+                {item.time}
               </div>
               <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-headline)' }}>
                 {item.title}
@@ -562,11 +517,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       </div>
 
       {/* Two Column Layout: Project Highlight + Giving */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-        gap: '1.5rem'
-      }}>
+      <div className="dashboard-split-grid">
         {/* Left Column: Building Project & Financial Stewardship */}
         <div className="church-card gold-border" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -665,7 +616,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 {isSw ? 'Studio ya Vyeti Rasmi vya Kanisa' : 'Official Certificate Studio'}
               </h4>
               <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                {isSw ? 'Vilivyosainiwa na Askofu Messi Mgala' : 'Endorsed by Bishop Messi Mgala'}
+                {isSw ? 'Vilivyosainiwa na Askofu Mercy Mgalla' : 'Endorsed by Bishop Mercy Mgalla'}
               </span>
             </div>
           </div>
@@ -839,7 +790,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
 
               {/* Action Bar */}
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem', flexWrap: 'wrap' }}>
                 <button 
                   onClick={() => setShowBulletinModal(false)}
                   style={{
@@ -854,22 +805,45 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   Funga
                 </button>
                 <button 
-                  onClick={handlePrint}
+                  onClick={() => handlePrint('download')}
+                  disabled={isGeneratingPdf}
+                  style={{
+                    padding: '0.6rem 1.1rem',
+                    borderRadius: '6px',
+                    border: '1px solid #0D52CD',
+                    background: '#f0f7ff',
+                    color: '#0D52CD',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    cursor: isGeneratingPdf ? 'wait' : 'pointer',
+                    fontWeight: 700,
+                    opacity: isGeneratingPdf ? 0.7 : 1
+                  }}
+                >
+                  <Download size={16} />
+                  <span>Pakua PDF</span>
+                </button>
+                <button 
+                  onClick={() => handlePrint('open')}
+                  disabled={isGeneratingPdf}
                   style={{
                     padding: '0.6rem 1.25rem',
                     borderRadius: '6px',
                     border: 'none',
-                    background: '#1e3a8a',
+                    background: '#0D52CD',
                     color: '#ffffff',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.5rem',
-                    cursor: 'pointer',
-                    fontWeight: 700
+                    cursor: isGeneratingPdf ? 'wait' : 'pointer',
+                    fontWeight: 700,
+                    boxShadow: '0 2px 8px rgba(13,82,205,0.25)',
+                    opacity: isGeneratingPdf ? 0.7 : 1
                   }}
                 >
                   <Printer size={16} />
-                  <span>Print Bulletin (Ubao wa Kanisa)</span>
+                  <span>{isGeneratingPdf ? 'Inatayarisha PDF...' : 'Fungua & Print PDF'}</span>
                 </button>
               </div>
             </div>

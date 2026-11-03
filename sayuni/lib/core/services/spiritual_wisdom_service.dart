@@ -157,7 +157,7 @@ class SpiritualWisdomService {
     );
 
     final prompt = '''
-Wewe ni Mshauri wa Kiroho na Mtumishi wa Kanisa la Sayuni Jerusalem Church (Mbagala Kwa Matope, Dar es Salaam; linaloongozwa na Askofu Messi Mgala).
+Wewe ni Mshauri wa Kiroho na Mtumishi wa Kanisa la Sayuni Jerusalem Church (Mbagala Kwa Matope, Dar es Salaam; linaloongozwa na Askofu Mercy Mgalla).
 Muumini ameleta haja/hali ifuatayo ya kiroho: "$input".
 
 Toa mwongozo wa kichungaji wenye hekima ya kibiblia, faraja na nguvu ya ushindi.

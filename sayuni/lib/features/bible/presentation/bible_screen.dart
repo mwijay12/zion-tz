@@ -15,6 +15,7 @@ import '../models/tenzi_model.dart';
 import '../services/bible_service.dart';
 import '../../notes/models/sermon_note.dart';
 import '../../notes/services/notes_service.dart';
+import '../../../core/services/anonymous_telemetry_service.dart';
 
 class BibleScreen extends StatefulWidget {
   final int initialModuleIndex;
@@ -684,6 +685,11 @@ class _BibleScreenState extends State<BibleScreen> {
                                         ? book.chapters.first
                                         : null;
                                   });
+                                  if (_currentChapter != null) {
+                                    AnonymousTelemetryService.instance.recordScriptureRead(
+                                      reference: '${book.bookName} ${_currentChapter!.chapterNumber}',
+                                    );
+                                  }
                                   Navigator.pop(ctx);
                                 },
                                 borderRadius: BorderRadius.circular(10),
@@ -785,6 +791,9 @@ class _BibleScreenState extends State<BibleScreen> {
                         AppHaptics.lightImpact();
                         _stopAudio();
                         setState(() => _currentChapter = chap);
+                        AnonymousTelemetryService.instance.recordScriptureRead(
+                          reference: '${_currentBook?.bookName} ${chap.chapterNumber}',
+                        );
                         Navigator.pop(ctx);
                       },
                       borderRadius: BorderRadius.circular(8),
@@ -916,6 +925,9 @@ class _BibleScreenState extends State<BibleScreen> {
                             AppHaptics.lightImpact();
                             _stopAudio();
                             setState(() => _selectedTenzi = hymn);
+                            AnonymousTelemetryService.instance.recordHymnPlay(
+                              songTitle: '${hymn.number}. ${hymn.title}',
+                            );
                             Navigator.pop(ctx);
                           },
                         );

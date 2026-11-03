@@ -36,6 +36,7 @@ import {
   deleteChapterAudio 
 } from '../services/offlineAudioStorage';
 import { synthesizePuterSpeech } from '../services/puterTtsService';
+import { PrivacyAnalyticsService } from '../services/privacyAnalyticsService';
 
 interface BibleIndexItem {
   number: number;
@@ -102,6 +103,7 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
   const playbackSessionRef = useRef<number>(0);
   const isPlayingRef = useRef<boolean>(false);
   const isPausedRef = useRef<boolean>(false);
+  const lastRecordedChapterRef = useRef<string>('');
 
   // Offline Chapter Audio Download States
   const [isDownloadingChapter, setIsDownloadingChapter] = useState<boolean>(false);
@@ -167,6 +169,19 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
   const currentSwChapter = swBook?.CHAPTER.find(c => c.chapter_number === selectedChapterNumber) || swBook?.CHAPTER[0];
   const currentEnChapter = enBook?.CHAPTER.find(c => c.chapter_number === selectedChapterNumber) || enBook?.CHAPTER[0];
   const activeBookMeta = bibleIndex.find(b => b.number === selectedBookNumber);
+
+  useEffect(() => {
+    if (isLoading || !currentSwChapter) return;
+
+    const chapterKey = `${selectedBookNumber}:${selectedChapterNumber}`;
+    if (lastRecordedChapterRef.current === chapterKey) return;
+
+    lastRecordedChapterRef.current = chapterKey;
+    const bookName = activeBookMeta?.swahili_name || activeBookMeta?.english_name || `Book ${selectedBookNumber}`;
+    PrivacyAnalyticsService.recordEvent('scripture_read', {
+      reference: `${bookName} ${selectedChapterNumber}`
+    });
+  }, [activeBookMeta, currentSwChapter, isLoading, selectedBookNumber, selectedChapterNumber]);
 
   // Refresh offline audio status for current chapter
   const refreshChapterOfflineStatus = () => {

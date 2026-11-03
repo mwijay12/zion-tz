@@ -9,7 +9,7 @@ class NotesService {
     SermonNote(
       id: 'note-1',
       title: 'Kusimama Imara Katika Maombi na Tabia ya Uadilifu',
-      preacher: 'Mchungaji Askofu Messi Mgala',
+      preacher: 'Mchungaji Askofu Mercy Mgalla',
       scripture: 'Waefeso 6:10-18',
       content:
           'Askofu alisisitiza umuhimu wa kujiandaa kiroho kila asubuhi kabla ya kuanza shughuli za siku. Silaha za Mungu zinalinda moyo na mawazo yetu dhidi ya mashaka.',

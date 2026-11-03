@@ -283,3 +283,30 @@ export interface DepartmentInfo {
   upcomingEvent: string;
   description: string;
 }
+
+export interface ChurchFastingCampaign {
+  id: string;
+  title: string;
+  themeVerse: string;
+  startDate: string;
+  endDate: string;
+  fastType: string;
+  guidelines: string;
+  isActive: boolean;
+  participantsCount: number;
+}
+
+export interface MemberSkillListing {
+  id: string;
+  fullName: string;
+  profession: string;
+  category: string;
+  description: string;
+  phone: string;
+  location: string;
+  jumuiya: string;
+  experienceYears: string;
+  isApproved: boolean;
+  isVerifiedMember: boolean;
+  createdAt: string;
+}

@@ -147,7 +147,7 @@ class PDFService {
                     textAlign: pw.TextAlign.center),
                 pw.Spacer(),
                 pw.Divider(),
-                pw.Text('Askofu Messi Mgala',
+                pw.Text('Askofu Mercy Mgalla',
                     style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                 pw.Text('Kiongozi Mkuu wa Kiroho'),
                 pw.SizedBox(height: 20),

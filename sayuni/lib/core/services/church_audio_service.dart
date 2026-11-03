@@ -10,6 +10,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../media/default_artwork.dart';
 import '../media/media_models.dart';
+import 'anonymous_telemetry_service.dart';
 import 'audio_handler.dart';
 import 'radio_browser_service.dart';
 
@@ -335,6 +336,20 @@ class ChurchAudioService extends ChangeNotifier {
     _queueIndex = startIndex.clamp(0, playable.length - 1);
     _currentTrack = playable[_queueIndex];
     _notify();
+
+    final cur = _currentTrack;
+    if (cur != null) {
+      if (cur.type == MediaType.hymn ||
+          cur.type == MediaType.choir ||
+          cur.type == MediaType.worshipSong) {
+        AnonymousTelemetryService.instance.recordHymnPlay(songTitle: cur.title);
+      } else if (cur.type == MediaType.sermon) {
+        AnonymousTelemetryService.instance.recordSermonListen(sermonTitle: cur.title);
+      } else if (cur.type == MediaType.bibleAudio) {
+        AnonymousTelemetryService.instance.recordScriptureRead(reference: cur.title);
+      }
+    }
+
     final handler = _handler;
     if (handler == null) return;
     await handler.playQueue(

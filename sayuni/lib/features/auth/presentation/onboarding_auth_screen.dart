@@ -219,7 +219,6 @@ class _OnboardingAuthScreenState extends State<OnboardingAuthScreen> {
     final canvasColor = AppColors.canvasOf(context);
     final surfaceColor = AppColors.surfaceOf(context);
     final textColor = AppColors.textPrimaryOf(context);
-    final textMuted = AppColors.textMutedOf(context);
 
     return Scaffold(
       backgroundColor: canvasColor,

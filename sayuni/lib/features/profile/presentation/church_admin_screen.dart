@@ -554,7 +554,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                 onPressed: _pickLeadershipFromGallery,
                                 icon: const Icon(Icons.photo_library_rounded,
                                     size: 16),
-                                label: const Text('Simu (Gallery)'),
+                                label: const Text('Simu'),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFF0A2540),
                                   foregroundColor: Colors.white,
@@ -587,7 +587,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                               OutlinedButton.icon(
                                 onPressed: _showLeadershipUrlDialog,
                                 icon: const Icon(Icons.link_rounded, size: 16),
-                                label: Text('Link (URL)'),
+                                label: const Text('Kiungo'),
                                 style: OutlinedButton.styleFrom(
                                   foregroundColor: AppColors.primary,
                                   side: const BorderSide(
@@ -659,7 +659,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                             : const Icon(Icons.save_rounded, size: 20),
                         label: Text(_isSavingLeadership
                             ? 'Inahifadhi...'
-                            : 'Hifadhi Mabadiliko ya Viongozi'),
+                            : 'Hifadhi'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF0A2540),
                           foregroundColor: Colors.white,
@@ -676,7 +676,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
 
               // ================= SECTION: LOCAL DATA BACKUP & SOVEREIGNTY =================
               _buildSectionTitle(
-                  'HIFADHI NAKALA YA DATA (DATA VAULT & BACKUP)'),
+                  'HIFADHI NAKALA YA DATA'),
               AppCard(
                 backgroundColor: AppColors.surface,
                 borderColor: AppColors.border,
@@ -733,7 +733,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                         icon:
                             const Icon(Icons.cloud_download_rounded, size: 18),
                         label: const Text(
-                            'Thibitisha Data Ziko Salama (Audit Snapshot)'),
+                            'Thibitisha Data'),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xFF10B981),
                           side: const BorderSide(
@@ -749,7 +749,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
               ),
               // ================= SECTION: GRANT ADMIN ROLES BY EMAIL =================
               _buildSectionTitle(
-                  'GAWA MAMLAKA YA USIMAMIZI (GRANT ADMIN BY EMAIL)'),
+                  'GAWA MAMLAKA YA USIMAMIZI'),
               AppCard(
                 backgroundColor: AppColors.surface,
                 borderColor: AppColors.border,
@@ -945,8 +945,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                               backgroundColor:
                                                   const Color(0xFF0F52BA),
                                               foregroundColor: Colors.white),
-                                          child: const Text(
-                                              'Gawa Mamlaka (Grant)'),
+                                           child: const Text('Gawa Mamlaka'),
                                         ),
                                       ],
                                     ),
@@ -954,8 +953,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                                 },
                                 icon: const Icon(Icons.person_add_alt_1_rounded,
                                     size: 18),
-                                label: const Text(
-                                    'Ongeza Barua Pepe ya Admin (Grant Role)'),
+                                label: const Text('Ongeza Admin'),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFF0A2540),
                                   foregroundColor: Colors.white,
@@ -987,7 +985,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
 
               _buildFellowshipPhotoCard(
                 keyName: 'women',
-                title: 'Umoja wa Wanawake (Wamama)',
+                title: 'Umoja wa Wanawake',
                 subtitle: 'Idara ya Wanawake wa Sayuni',
                 currentPhoto: _customService.womenPhoto,
                 fallbackAsset: 'assets/images/church_women_fellowship.jpg',
@@ -996,7 +994,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
 
               _buildFellowshipPhotoCard(
                 keyName: 'youth',
-                title: 'Umoja wa Vijana (Youth Fellowship)',
+                title: 'Umoja wa Vijana',
                 subtitle: 'Vijana wa Sayuni & Kwaya ya Vijana',
                 currentPhoto: _customService.youthPhoto,
                 fallbackAsset: 'assets/images/church_youth_fellowship.jpg',
@@ -1023,7 +1021,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
 
               // ================= SECTION 3: YOUTUBE & MEDIA HUB =================
               _buildSectionTitle(
-                  '3. PAKIA VIDEO ZA YOUTUBE & MAHUBIRI (MEDIA HUB)'),
+                  '3. PAKIA VIDEO ZA YOUTUBE NA MAHUBIRI'),
               AppCard(
                 backgroundColor: AppColors.surface,
                 borderColor: AppColors.border,
@@ -1074,7 +1072,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
 
                     // Media URL Input
                     _buildField(
-                      label: 'URL ya YouTube / Cloudinary / Video / Audio',
+                      label: 'Kiungo cha Video au YouTube',
                       controller: _sermonMediaUrlController,
                       icon: Icons.link_rounded,
                       hint:
@@ -1157,27 +1155,27 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                     const SizedBox(height: 14),
 
                     _buildField(
-                      label: 'Kichwa cha Somo (Title)',
+                      label: 'Kichwa cha Somo',
                       controller: _sermonTitleController,
                       icon: Icons.title_rounded,
                       hint: 'Mfano: Nguvu ya Damu ya Yesu',
                     ),
                     const SizedBox(height: 14),
                     _buildField(
-                      label: 'Mhubiri (Preacher)',
+                      label: 'Mhubiri',
                       controller: _sermonPreacherController,
                       icon: Icons.mic_rounded,
                     ),
                     const SizedBox(height: 14),
                     _buildField(
-                      label: 'Maandiko (Scripture)',
+                      label: 'Maandiko',
                       controller: _sermonScriptureController,
                       icon: Icons.menu_book_rounded,
                       hint: 'Mfano: Waebrania 11:1-6',
                     ),
                     const SizedBox(height: 14),
                     _buildField(
-                      label: 'Muda wa Somo (Duration)',
+                      label: 'Muda wa Somo',
                       controller: _sermonDurationController,
                       icon: Icons.timer_rounded,
                       hint: 'Mfano: 45 min',
@@ -1188,6 +1186,7 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                         Expanded(
                           child: DropdownButtonFormField<String>(
                             value: _sermonType,
+                            isExpanded: true,
                             decoration: InputDecoration(
                               labelText: 'Aina ya Media',
                               border: OutlineInputBorder(
@@ -1198,13 +1197,17 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                             items: const [
                               DropdownMenuItem(
                                   value: 'video',
-                                  child: Text('Video (YouTube/MP4)')),
+                                  child: Text('Video',
+                                      overflow: TextOverflow.ellipsis)),
                               DropdownMenuItem(
-                                  value: 'audio', child: Text('Audio (Sauti)')),
+                                  value: 'audio',
+                                  child: Text('Audio',
+                                      overflow: TextOverflow.ellipsis)),
                             ],
                             onChanged: (val) {
-                              if (val != null)
+                              if (val != null) {
                                 setState(() => _sermonType = val);
+                              }
                             },
                           ),
                         ),
@@ -1212,8 +1215,9 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                         Expanded(
                           child: DropdownButtonFormField<String>(
                             value: _sermonCategory,
+                            isExpanded: true,
                             decoration: InputDecoration(
-                              labelText: 'Kundi (Category)',
+                              labelText: 'Kundi',
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12)),
                               contentPadding: const EdgeInsets.symmetric(
@@ -1221,18 +1225,26 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                             ),
                             items: const [
                               DropdownMenuItem(
-                                  value: 'Mahubiri', child: Text('Mahubiri')),
+                                  value: 'Mahubiri',
+                                  child: Text('Mahubiri',
+                                      overflow: TextOverflow.ellipsis)),
                               DropdownMenuItem(
                                   value: 'Mafundisho',
-                                  child: Text('Mafundisho')),
+                                  child: Text('Mafundisho',
+                                      overflow: TextOverflow.ellipsis)),
                               DropdownMenuItem(
-                                  value: 'Kwaya & Sifa', child: Text('Kwaya')),
+                                  value: 'Kwaya & Sifa',
+                                  child: Text('Kwaya',
+                                      overflow: TextOverflow.ellipsis)),
                               DropdownMenuItem(
-                                  value: 'Podcasts', child: Text('Podcasts')),
+                                  value: 'Podcasts',
+                                  child: Text('Podcasts',
+                                      overflow: TextOverflow.ellipsis)),
                             ],
                             onChanged: (val) {
-                              if (val != null)
+                              if (val != null) {
                                 setState(() => _sermonCategory = val);
+                              }
                             },
                           ),
                         ),
@@ -1245,8 +1257,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
                         onPressed: _isPublishingSermon ? null : _publishSermon,
                         icon: const Icon(Icons.publish_rounded, size: 20),
                         label: Text(_isPublishingSermon
-                            ? 'Inachapisha...'
-                            : 'Chapisha Somo Kwenye Media Hub'),
+                            ? 'Inapakia...'
+                            : 'Chapisha'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.gold,
                           foregroundColor: const Color(0xFF0A2540),

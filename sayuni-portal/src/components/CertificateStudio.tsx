@@ -1,12 +1,23 @@
 import React, { useState } from 'react';
-import { 
-  Award, 
-  Printer, 
-  FileEdit
+import {
+  AlertCircle,
+  Award,
+  Download,
+  FileEdit,
+  Loader2
 } from 'lucide-react';
-import confetti from 'canvas-confetti';
 import type { Language, UserRole, CertificateType } from '../types';
 import { CHURCH_PROFILE } from '../data/mockData';
+import {
+  CERTIFICATE_DEFINITIONS,
+  CERTIFICATE_TYPE_ORDER,
+  certificateBody,
+  certificateTitle
+} from '../data/certificateContent';
+import {
+  createCertificateSerial,
+  downloadCertificatePdf
+} from '../services/certificatePdfService';
 
 interface CertificateStudioProps {
   language: Language;
@@ -24,61 +35,67 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
   const [spouseName, setSpouseName] = useState('');
   const [parentNames, setParentNames] = useState('');
   const [eventDate, setEventDate] = useState('2026-08-16');
-  const [minister, setMinister] = useState(CHURCH_PROFILE.headPastor);
-  const [secretary, setSecretary] = useState(CHURCH_PROFILE.churchSecretary);
-  const [scripture, setScripture] = useState(
-    'Matendo ya Mitume 2:38 - "Tubuni mkabatizwe kila mmoja kwa jina lake Yesu Kristo mpate ondoleo la dhambi zenu"'
-  );
+  const [scripture, setScripture] = useState(CERTIFICATE_DEFINITIONS.baptism.defaultVerse);
   const [notes, setNotes] = useState('Ubatizo wa maji tele katika Mto Ruvu.');
-
-  const certTypeTitles: Record<CertificateType, { sw: string; en: string; defaultVerse: string }> = {
-    baptism: {
-      sw: 'CHETI CHA UBATIZO WA MAJI TELE',
-      en: 'CERTIFICATE OF HOLY BAPTISM',
-      defaultVerse: 'Warumi 6:4 - "Basi tulizikwa pamoja naye kwa njia ya ubatizo katika mauti yake..."'
-    },
-    dedication: {
-      sw: 'CHETI CHA WAKFU WA MTOTO',
-      en: 'CERTIFICATE OF CHILD DEDICATION',
-      defaultVerse: '1 Samweli 1:27-28 - "Naliomba mtoto huyu; Bwana akanipa dua yangu niliyomwomba..."'
-    },
-    marriage: {
-      sw: 'CHETI CHA NDOA TAKATIFU',
-      en: 'CERTIFICATE OF HOLY MATRIMONY',
-      defaultVerse: 'Mathayo 19:6 - "Hata wamekuwa si wawili tena bali mwili mmoja. Basi alichokiunganisha Mungu, mwanadamu asikitenganishe."'
-    },
-    membership: {
-      sw: 'CHETI CHA USHIRIKA KAMILI WA KANISA',
-      en: 'CERTIFICATE OF FULL CHURCH MEMBERSHIP',
-      defaultVerse: 'Waefeso 2:19 - "Basi tangu sasa ninyi si wageni wala wapitaji, bali ninyi ni wenyeji pamoja na watakatifu..."'
-    },
-    service: {
-      sw: 'CHETI CHA SHUKRANI NA UTUMISHI MWEMA',
-      en: 'CERTIFICATE OF APPRECIATION & SERVICE',
-      defaultVerse: '1 Wakorintho 15:58 - "Basi, ndugu zangu wapendwa, mwimarike, msitikisike, mkizidi sana kutenda kazi ya Bwana sikuzote..."'
-    }
-  };
+  const [certificateSerial, setCertificateSerial] = useState(() => createCertificateSerial('baptism'));
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const handleTypeChange = (type: CertificateType) => {
     setSelectedType(type);
-    setScripture(certTypeTitles[type].defaultVerse);
+    setScripture(CERTIFICATE_DEFINITIONS[type].defaultVerse);
+    setCertificateSerial(createCertificateSerial(type));
+    setFormError(null);
   };
 
-  const handlePrint = () => {
-    // Explicitly remove any active celebration canvas particles before print dialog
-    document.querySelectorAll('canvas').forEach((c) => c.remove());
-    window.print();
-  };
+  const handleDownload = async () => {
+    const missingFields: string[] = [];
 
-  const handleCelebrate = () => {
-    confetti({
-      particleCount: 90,
-      spread: 75,
-      origin: { y: 0.6 }
-    });
-  };
+    if (!recipientName.trim()) {
+      missingFields.push(isSw ? 'jina la mpokeaji' : 'recipient name');
+    }
+    if (!eventDate) {
+      missingFields.push(isSw ? 'tarehe ya tukio' : 'event date');
+    }
+    if (selectedType === 'marriage' && !spouseName.trim()) {
+      missingFields.push(isSw ? 'jina la mwanandoa' : 'spouse name');
+    }
+    if (selectedType === 'dedication' && !parentNames.trim()) {
+      missingFields.push(isSw ? 'majina ya wazazi' : 'parents names');
+    }
 
-  const currentSerial = `ZJ-${selectedType.slice(0, 3).toUpperCase()}-2026-0089`;
+    if (missingFields.length > 0) {
+      setFormError(
+        `${isSw ? 'Tafadhali jaza' : 'Please fill in'} ${missingFields.join(', ')}.`
+      );
+      return;
+    }
+
+    setFormError(null);
+    setIsGenerating(true);
+
+    try {
+      await downloadCertificatePdf({
+        type: selectedType,
+        recipientName: recipientName.trim(),
+        spouseName: spouseName.trim(),
+        parentNames: parentNames.trim(),
+        eventDate,
+        scripture: scripture.trim(),
+        notes: notes.trim(),
+        serialNumber: certificateSerial,
+        language
+      });
+    } catch {
+      setFormError(
+        isSw
+          ? 'Imeshindikana kutengeneza PDF. Tafadhali jaribu tena.'
+          : 'Unable to generate the PDF. Please try again.'
+      );
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -94,31 +111,31 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
           </h2>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-          <button 
-            type="button"
-            onClick={handleCelebrate}
-            className="btn-secondary"
-            title={isSw ? 'Onyesha Sherehekea kwenye Skrini' : 'Celebrate on Screen'}
-            style={{ padding: '0.65rem 1rem' }}
-          >
-            🎉 {isSw ? 'Sherehekea' : 'Celebrate'}
-          </button>
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <span className="badge badge-gold" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+            {isSw ? 'PDF ya Vekta â€¢ A4 Landscape' : 'Vector PDF â€¢ A4 Landscape'}
+          </span>
 
-          <button 
-            onClick={handlePrint}
+          <button
+            type="button"
+            onClick={handleDownload}
             className="btn-primary"
+            disabled={isGenerating}
             style={{ padding: '0.65rem 1.4rem' }}
           >
-            <Printer size={18} />
-            <span>{isSw ? 'Chapisha Cheti (A4 Landscape / PDF)' : 'Print / Save as PDF'}</span>
+            {isGenerating ? <Loader2 size={18} /> : <Download size={18} />}
+            <span>
+              {isGenerating
+                ? (isSw ? 'Inatengeneza PDF...' : 'Generating PDF...')
+                : (isSw ? 'Pakua Cheti (PDF)' : 'Download Certificate (PDF)')}
+            </span>
           </button>
         </div>
       </div>
 
       {/* Type Selector Tabs */}
       <div className="no-print" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem' }}>
-        {(['baptism', 'dedication', 'marriage', 'membership', 'service'] as CertificateType[]).map((type) => (
+        {CERTIFICATE_TYPE_ORDER.map((type) => (
           <button
             key={type}
             onClick={() => handleTypeChange(type)}
@@ -126,7 +143,11 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
             style={{ padding: '0.5rem 1.1rem', fontSize: '0.86rem' }}
           >
             <Award size={15} />
-            <span>{isSw ? certTypeTitles[type].sw.replace('CHETI CHA ', '') : certTypeTitles[type].en.replace('CERTIFICATE OF ', '')}</span>
+            <span>
+              {isSw
+                ? CERTIFICATE_DEFINITIONS[type].titleSw.replace('CHETI CHA ', '')
+                : CERTIFICATE_DEFINITIONS[type].titleEn.replace('CERTIFICATE OF ', '')}
+            </span>
           </button>
         ))}
       </div>
@@ -140,6 +161,26 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
             <span>{isSw ? 'Taarifa za Cheti' : 'Certificate Details'}</span>
           </h3>
 
+          {formError && (
+            <div
+              role="alert"
+              style={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '0.5rem',
+                padding: '0.7rem 0.8rem',
+                borderRadius: '8px',
+                background: 'var(--error-container)',
+                color: 'var(--error)',
+                fontSize: '0.8rem',
+                lineHeight: 1.45
+              }}
+            >
+              <AlertCircle size={16} style={{ flexShrink: 0, marginTop: '1px' }} />
+              <span>{formError}</span>
+            </div>
+          )}
+
           <div className="form-group">
             <label className="form-label">{isSw ? 'Jina Kamili la Mpokeaji' : 'Recipient Full Name'}</label>
             <input 
@@ -148,6 +189,7 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
               value={recipientName}
               onChange={(e) => setRecipientName(e.target.value)}
               placeholder="Mfano: Neema J. Mwakyusa"
+              maxLength={80}
             />
           </div>
 
@@ -160,6 +202,7 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
                 value={spouseName}
                 onChange={(e) => setSpouseName(e.target.value)}
                 placeholder="Mfano: Sarah Kavishe"
+                maxLength={80}
               />
             </div>
           )}
@@ -173,6 +216,7 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
                 value={parentNames}
                 onChange={(e) => setParentNames(e.target.value)}
                 placeholder="Mfano: Mzee Peter & Mama Mary"
+                maxLength={120}
               />
             </div>
           )}
@@ -188,32 +232,13 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
           </div>
 
           <div className="form-group">
-            <label className="form-label">{isSw ? 'Mchungaji Kiongozi' : 'Officiating Minister'}</label>
-            <input 
-              type="text" 
-              className="form-input"
-              value={minister}
-              onChange={(e) => setMinister(e.target.value)}
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label">{isSw ? 'Katibu wa Kanisa' : 'Church Secretary'}</label>
-            <input 
-              type="text" 
-              className="form-input"
-              value={secretary}
-              onChange={(e) => setSecretary(e.target.value)}
-            />
-          </div>
-
-          <div className="form-group">
             <label className="form-label">{isSw ? 'Fungu la Biblia' : 'Scripture Verse'}</label>
             <textarea 
               className="form-textarea"
               rows={3}
               value={scripture}
               onChange={(e) => setScripture(e.target.value)}
+              maxLength={320}
             />
           </div>
 
@@ -224,17 +249,28 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
               className="form-input"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
+              maxLength={140}
             />
           </div>
 
-          <button 
-            onClick={handlePrint}
-            className="btn-gold" 
+          <button
+            onClick={handleDownload}
+            className="btn-gold"
+            disabled={isGenerating}
             style={{ width: '100%', marginTop: '0.5rem' }}
           >
-            <Printer size={16} />
-            <span>{isSw ? 'Chapisha Cheti Sasa' : 'Print Certificate Now'}</span>
+            {isGenerating ? <Loader2 size={16} /> : <Download size={16} />}
+            <span>
+              {isGenerating
+                ? (isSw ? 'Inatengeneza PDF...' : 'Generating PDF...')
+                : (isSw ? 'Pakua Cheti Sasa (PDF)' : 'Download Certificate Now (PDF)')}
+            </span>
           </button>
+          <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.45, textAlign: 'center', margin: 0 }}>
+            {isSw
+              ? 'PDF halisi ya vekta (A4 landscape), si picha ya skrini.'
+              : 'True vector PDF (A4 landscape), not a screen capture.'}
+          </p>
         </div>
 
         {/* Right Live Preview: Majestic Ornate Certificate */}
@@ -339,7 +375,7 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
                   color: '#64748b',
                   marginBottom: '10px'
                 }}>
-                  {CHURCH_PROFILE.location} • {CHURCH_PROFILE.phone}
+                  {CHURCH_PROFILE.location} â€¢ {CHURCH_PROFILE.phone}
                 </div>
 
                 {/* Ribbon Title */}
@@ -359,7 +395,7 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
                     letterSpacing: '1.5px',
                     color: '#fef3c7'
                   }}>
-                    {isSw ? certTypeTitles[selectedType].sw : certTypeTitles[selectedType].en}
+                    {certificateTitle(selectedType, language)}
                   </span>
                 </div>
               </div>
@@ -406,32 +442,14 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
                   lineHeight: '1.5',
                   color: '#334155'
                 }}>
-                  {selectedType === 'baptism' && (
-                    isSw 
-                      ? 'Amepokea ubatizo wa maji tele kulingana na agizo la Bwana wetu Yesu Kristo na mafundisho ya Maandiko Matakatifu.'
-                      : 'Has received holy water baptism in obedience to our Lord Jesus Christ and the teachings of the Holy Scriptures.'
-                  )}
-                  {selectedType === 'dedication' && (
-                    isSw 
-                      ? 'Amewekwa wakfu mbele za Bwana Mungu na kusanyiko la watakatifu, kwa maombi na baraka za kiuchungaji.'
-                      : 'Has been dedicated unto the Lord God before the congregation, through prayer and pastoral blessings.'
-                  )}
-                  {selectedType === 'marriage' && (
-                    isSw 
-                      ? 'Wameunganishwa katika Ndoa Takatifu mbele za Mungu na mashahidi wengi kwa mujibu wa Neno la Mungu.'
-                      : 'Have been united in Holy Matrimony before God and witnesses in accordance with the Word of God.'
-                  )}
-                  {selectedType === 'membership' && (
-                    isSw 
-                      ? 'Ametambuliwa rasmi kama mshirika kamili wa Kanisa la Sayuni Yerusalemu mwenye haki na wajibu wote wa kiroho.'
-                      : 'Has been recognized as a full registered member of Sayuni Jerusalem Church with all spiritual fellowship privileges.'
-                  )}
-                  {selectedType === 'service' && (
-                    isSw 
-                      ? 'Kwa kutambua utumishi wake mwema, uaminifu, na kujitolea kwa dhati katika ujenzi wa ufalme wa Mungu.'
-                      : 'In grateful recognition of faithful service, dedication, and steadfast contribution to the kingdom of God.'
-                  )}
+                  {certificateBody(selectedType, language)}
                 </p>
+
+                {notes.trim() && (
+                  <div style={{ fontSize: '0.72rem', color: '#64748b', marginBottom: '8px' }}>
+                    <strong>{isSw ? 'Mahali / Maelezo' : 'Location / Notes'}:</strong> {notes}
+                  </div>
+                )}
 
                 {/* Scripture Reference Quote */}
                 <div style={{
@@ -460,52 +478,71 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
                 zIndex: 2
               }}>
                 {/* Pastor Signature */}
-                <div style={{ textAlign: 'center', width: '180px' }}>
-                  <div style={{ fontFamily: 'var(--font-scripture)', fontStyle: 'italic', color: '#1e3a8a', fontSize: '0.9rem', marginBottom: '4px' }}>
-                    {minister}
+                <div style={{ textAlign: 'center', width: '220px' }}>
+                  <div style={{
+                    fontFamily: "'Great Vibes', 'Dancing Script', cursive",
+                    fontSize: '1.55rem',
+                    color: '#0A2540',
+                    height: '34px',
+                    lineHeight: '34px',
+                    marginBottom: '2px',
+                    textShadow: '0 1px 1px rgba(0,0,0,0.08)'
+                  }}>
+                    Askofu Mercy Mgalla
                   </div>
                   <div style={{ borderBottom: '1.5px solid #0f172a', width: '100%', marginBottom: '4px' }} />
-                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#1e3a8a', textTransform: 'uppercase' }}>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#1e3a8a', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                     {isSw ? 'Mchungaji Kiongozi' : 'Senior Pastor'}
                   </div>
                 </div>
 
-                {/* Golden Seal of Zion Jerusalem */}
+                {/* Official Church Seal */}
                 <div style={{ textAlign: 'center' }}>
                   <div style={{
-                    width: '66px',
-                    height: '66px',
+                    width: '84px',
+                    height: '84px',
                     borderRadius: '50%',
-                    border: '3px dashed #d97706',
-                    background: 'radial-gradient(circle, #fef3c7 0%, #fde68a 100%)',
+                    border: '2.5px solid #c59b27',
+                    background: 'radial-gradient(circle, #fffbf0 30%, #fef3c7 100%)',
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    boxShadow: '0 0 12px rgba(217, 119, 6, 0.3)',
-                    margin: '0 auto 4px auto'
+                    gap: '2px',
+                    margin: '0 auto 4px auto',
+                    boxShadow: '0 4px 12px rgba(197, 155, 39, 0.25), inset 0 0 0 2px rgba(197, 155, 39, 0.3)'
                   }}>
-                    <Award size={22} style={{ color: '#b45309' }} />
-                    <span style={{ fontSize: '0.48rem', fontWeight: 800, color: '#78350f', letterSpacing: '0.5px' }}>
+                    <span style={{ fontFamily: 'var(--font-cinzel)', fontSize: '0.92rem', fontWeight: 900, color: '#92400e', letterSpacing: '1px' }}>
+                      ZJ
+                    </span>
+                    <span style={{ fontSize: '0.44rem', fontWeight: 800, color: '#b45309', letterSpacing: '0.6px', textTransform: 'uppercase', textAlign: 'center', lineHeight: 1.1 }}>
                       OFFICIAL SEAL
                     </span>
                   </div>
-                  <div style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: '#64748b' }}>
-                    {currentSerial}
+                  <div style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: '#64748b', fontWeight: 600 }}>
+                    {certificateSerial}
                   </div>
                 </div>
 
                 {/* Secretary Signature & Date */}
-                <div style={{ textAlign: 'center', width: '180px' }}>
-                  <div style={{ fontFamily: 'var(--font-scripture)', fontStyle: 'italic', color: '#1e3a8a', fontSize: '0.9rem', marginBottom: '4px' }}>
-                    {secretary}
+                <div style={{ textAlign: 'center', width: '220px' }}>
+                  <div style={{
+                    fontFamily: "'Great Vibes', 'Dancing Script', cursive",
+                    fontSize: '1.55rem',
+                    color: '#0A2540',
+                    height: '34px',
+                    lineHeight: '34px',
+                    marginBottom: '2px',
+                    textShadow: '0 1px 1px rgba(0,0,0,0.08)'
+                  }}>
+                    Sekretarieti ya Kanisa
                   </div>
                   <div style={{ borderBottom: '1.5px solid #0f172a', width: '100%', marginBottom: '4px' }} />
-                  <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#1e3a8a', textTransform: 'uppercase' }}>
+                  <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#1e3a8a', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                     {isSw ? 'Katibu wa Kanisa' : 'Church Secretary'}
                   </div>
                   <div style={{ fontSize: '0.68rem', color: '#64748b', marginTop: '2px' }}>
-                    {isSw ? 'Tarehe:' : 'Date:'} {eventDate}
+                    {isSw ? 'Tarehe ya Tukio:' : 'Event Date:'} {eventDate}
                   </div>
                 </div>
               </div>

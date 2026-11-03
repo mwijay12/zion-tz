@@ -65,8 +65,8 @@ class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
       appBar: AppBar(
         title: Text(
           _isSwahili
-              ? 'Sera ya Faragha (PDPA 2022)'
-              : 'Privacy Policy (PDPA 2022)',
+              ? 'Sera ya Faragha'
+              : 'Privacy Policy',
           style: AppTypography.titleMedium(
             color: isDark ? Colors.white : AppColors.textPrimaryLight,
           ),

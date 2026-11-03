@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { CHURCH_PROFILE } from '../data/mockData';
 import type { VisitorRecord, JumuiyaReport } from '../types';
-import { Printer, X } from 'lucide-react';
+import { Printer, X, Download } from 'lucide-react';
+import {
+  generateVisitorsReportPdf,
+  generateGroupsReportPdf,
+  generateBulletinPdf,
+  type PdfMode
+} from '../services/officialPdfService';
 
 interface PrintableOfficialReportProps {
   reportType: 'visitors_monthly' | 'groups_consolidated' | 'weekly_bulletin';
@@ -19,6 +25,7 @@ export const PrintableOfficialReport: React.FC<PrintableOfficialReportProps> = (
   subtitle,
   visitors = [],
   reports = [],
+  notices = [],
   onClose,
 }) => {
   const [currentDate] = useState(() =>
@@ -32,8 +39,23 @@ export const PrintableOfficialReport: React.FC<PrintableOfficialReportProps> = (
     () => `ZFC/RIP/${Date.now().toString().slice(-6)}`
   );
 
-  const handlePrint = () => {
-    window.print();
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  // Generates a real A4 PDF document (vector text) — never prints the web page.
+  const handlePrint = async (mode: PdfMode = 'open') => {
+    if (isGenerating) return;
+    setIsGenerating(true);
+    try {
+      if (reportType === 'visitors_monthly') {
+        await generateVisitorsReportPdf(visitors, { title, subtitle, mode });
+      } else if (reportType === 'groups_consolidated') {
+        await generateGroupsReportPdf(reports, { title, subtitle, mode });
+      } else {
+        await generateBulletinPdf(notices, { title, subtitle, mode });
+      }
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const totalAttendees = reports.reduce(
@@ -49,10 +71,25 @@ export const PrintableOfficialReport: React.FC<PrintableOfficialReportProps> = (
           <span className="badge badge-blue">Hakikisho Rasmi la Kuchapisha (Print Preview)</span>
           <span className="text-muted">A4 Portrait • Saini Rasmi ya Katibu & Askofu</span>
         </div>
-        <div className="actions-right">
-          <button onClick={handlePrint} className="btn-primary" style={{ padding: '0.6rem 1.4rem' }}>
+        <div className="actions-right" style={{ display: 'flex', gap: '0.65rem' }}>
+          <button 
+            onClick={() => handlePrint('open')} 
+            className="btn-primary" 
+            style={{ padding: '0.6rem 1.4rem' }}
+            disabled={isGenerating}
+          >
             <Printer size={16} />
-            <span>Chapa Ripoti Hii (Print / PDF)</span>
+            <span>{isGenerating ? 'Inatengeneza PDF...' : 'Fungua / Chapa PDF Halisi'}</span>
+          </button>
+          <button 
+            onClick={() => handlePrint('download')} 
+            className="btn-secondary" 
+            style={{ padding: '0.6rem 1.2rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+            disabled={isGenerating}
+            title="Pakua faili la PDF moja kwa moja"
+          >
+            <Download size={16} />
+            <span>Pakua PDF</span>
           </button>
           <button onClick={onClose} className="btn-secondary" style={{ padding: '0.6rem 1.2rem' }}>
             <X size={16} />
@@ -226,6 +263,60 @@ export const PrintableOfficialReport: React.FC<PrintableOfficialReportProps> = (
           </div>
         )}
 
+        {reportType === 'weekly_bulletin' && (
+          <div className="report-content-body">
+            <div className="report-summary-cards">
+              <div className="summary-box">
+                <span className="summary-title">Jumla ya Matangazo</span>
+                <strong className="summary-num">{(notices || []).length}</strong>
+              </div>
+              <div className="summary-box">
+                <span className="summary-title">Wigo wa Wasomaji</span>
+                <strong className="summary-num">Waumini Wote (Sayuni HQ)</strong>
+              </div>
+              <div className="summary-box">
+                <span className="summary-title">Msimamizi wa Kijarida</span>
+                <strong className="summary-num">Ofisi ya Katibu Mkuu</strong>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem', marginTop: '1rem' }}>
+              {(notices || []).map((n, i) => (
+                <div 
+                  key={n.id || i} 
+                  style={{ 
+                    border: '1px solid #cbd5e1', 
+                    borderLeft: n.isUrgent ? '4px solid #ba1a1a' : '4px solid #0D52CD',
+                    borderRadius: '6px',
+                    padding: '0.8rem 1rem',
+                    background: '#f8fafc'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.3rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span style={{ 
+                        fontSize: '0.72rem', 
+                        fontWeight: 700, 
+                        padding: '0.15rem 0.5rem', 
+                        borderRadius: '4px',
+                        background: n.isUrgent ? '#fee2e2' : '#dbeafe',
+                        color: n.isUrgent ? '#991b1b' : '#1e40af'
+                      }}>
+                        {n.category || 'Taarifa Kuu'}
+                      </span>
+                      <strong style={{ fontSize: '0.98rem', color: '#0f172a' }}>{n.title}</strong>
+                    </div>
+                    <span style={{ fontSize: '0.75rem', color: '#64748b' }}>{n.date}</span>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.86rem', color: '#334155', lineHeight: 1.5 }}>
+                    {n.content}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Official Signatures and Seals Section */}
         <footer className="report-sign-footer">
           <div className="sign-col">
@@ -249,7 +340,7 @@ export const PrintableOfficialReport: React.FC<PrintableOfficialReportProps> = (
           <div className="sign-col">
             <div className="sign-label">Imeridhiwa na Kuidhinishwa:</div>
             <div className="sign-space" />
-            <div className="sign-name">Askofu Messi Mgala</div>
+            <div className="sign-name">Askofu Mercy Mgalla</div>
             <div className="sign-title">Mchungaji Askofu Kiongozi — Sayuni Yerusalemu</div>
             <div className="sign-date">Tarehe: {currentDate}</div>
           </div>

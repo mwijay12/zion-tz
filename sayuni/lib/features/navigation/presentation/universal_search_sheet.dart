@@ -79,7 +79,7 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
     {'label': '📖 Zaburi 23', 'query': 'Zaburi 23'},
     {'label': '🎵 Tenzi #130', 'query': 'Tenzi 130'},
     {'label': '🧱 Ujenzi wa Hekalu', 'query': 'Ujenzi'},
-    {'label': '🕊️ Askofu Messi Mgala', 'query': 'Messi Mgala'},
+    {'label': '🕊️ Askofu Mercy Mgalla', 'query': 'Mercy Mgalla'},
     {'label': '🙏 Uponyaji & Faraja', 'query': 'Uponyaji'},
   ];
 
@@ -658,6 +658,7 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
                 ),
                 child: TextField(
                   controller: _controller,
+                  maxLines: 1,
                   autofocus: false,
                   cursorColor: AppColors.primary,
                   style: TextStyle(

@@ -7,11 +7,11 @@ class ChurchProfile {
   static const String location = 'Kwa Matope, Mbagala, Dar es Salaam, Tanzania';
 
   // Pastoral Leadership
-  static const String headBishop = 'Mchungaji Askofu Messi Mgala';
+  static const String headBishop = 'Mchungaji Askofu Mercy Mgalla';
   static const String assistantPastor = 'Mchungaji Msaidizi Alex';
   static const String pastorCoLeader = 'Ndg. James Robert';
   static const String pastoralLeadership =
-      'Askofu Messi Mgala, Mch. Msaidizi Alex & Ndg. James Robert';
+      'Askofu Mercy Mgalla, Mch. Msaidizi Alex & Ndg. James Robert';
   static const String churchSecretary = 'Mwl. Peter Mwita';
   static const String leadElder = 'Mzee Boniface Mlay';
 

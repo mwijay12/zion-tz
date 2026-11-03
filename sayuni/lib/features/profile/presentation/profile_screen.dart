@@ -1,10 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/church_profile.dart';
 import '../../../core/services/church_auth_service.dart';
+import '../../../core/services/church_customization_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/theme/church_theme_service.dart';
@@ -31,18 +31,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String _name = 'Muumini wa Sayuni';
   String _phone = '+255 754 000 123';
   String _email = 'muumini@zionjerusalem.org';
-  String _jumuiya = 'Mbagala Kijichi (Mt. Petro)';
+  String _jumuiya = 'Mbagala Kijichi';
   String _department = 'Kwaya ya Galilaya';
   String _memberId = 'ZJC-2026-8894';
   bool _isBaptized = true;
+  String? _photoUrl;
 
   // Settings State
   bool _sundayReminder = true;
   bool _morningPrayerAlert = true;
   bool _fastingReminder = true;
-  String _preferredBible = 'SUV (Union Version)';
-  double _speechRate = 1.0;
-  int _downloadedCount = 0;
 
   @override
   void initState() {
@@ -61,16 +59,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _department = _auth.department;
       _memberId = _auth.memberId;
       _isBaptized = _auth.isBaptized;
+      _photoUrl = _auth.photoUrl ?? prefs.getString('user_photo');
 
       _sundayReminder = prefs.getBool('setting_sunday_reminder') ?? true;
       _morningPrayerAlert = prefs.getBool('setting_morning_prayer') ?? true;
       _fastingReminder = prefs.getBool('setting_fasting_reminder') ?? true;
-      _preferredBible =
-          prefs.getString('setting_bible') ?? 'SUV (Union Version)';
-      _speechRate = prefs.getDouble('setting_speech_rate') ?? 1.0;
-      final offlineChapters =
-          prefs.getStringList('offline_audio_chapters') ?? [];
-      _downloadedCount = offlineChapters.length;
     });
   }
 
@@ -83,25 +76,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await prefs.setString('user_dept', _department);
     await prefs.setString('user_member_id', _memberId);
     await prefs.setBool('user_baptized', _isBaptized);
+    if (_photoUrl != null && _photoUrl!.isNotEmpty) {
+      await prefs.setString('user_photo', _photoUrl!);
+    } else {
+      await prefs.remove('user_photo');
+    }
 
     await prefs.setBool('setting_sunday_reminder', _sundayReminder);
     await prefs.setBool('setting_morning_prayer', _morningPrayerAlert);
     await prefs.setBool('setting_fasting_reminder', _fastingReminder);
-    await prefs.setString('setting_bible', _preferredBible);
-    await prefs.setDouble('setting_speech_rate', _speechRate);
-  }
-
-  final FlutterTts _tts = FlutterTts();
-
-  Future<void> _testSpeech() async {
-    try {
-      AppHaptics.mediumImpact();
-      await _tts.stop();
-      await _tts.setSpeechRate(_speechRate * 0.5);
-      await _tts.setPitch(1.0);
-      await _tts.speak(
-          'Bwana ndiye mchungaji wangu, sitapungukiwa na kitu. Neno la Sayuni.');
-    } catch (_) {}
   }
 
   void _showEditProfileDialog() {
@@ -111,130 +94,518 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final emailCtrl = TextEditingController(text: _email);
     final jumuiyaCtrl = TextEditingController(text: _jumuiya);
     final deptCtrl = TextEditingController(text: _department);
+    String? tempPhotoUrl = _photoUrl;
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) {
-        return BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
-              left: 20,
-              right: 20,
-              top: 20,
-            ),
-            decoration: BoxDecoration(
-              color: const Color(0xFF0A2540),
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(32)),
-              border: Border.all(
-                  color: AppColors.gold.withOpacity(0.5), width: 1.5),
-            ),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 44,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
+        final isDark = ChurchThemeService().isDarkMode;
+
+        return StatefulBuilder(
+          builder: (modalCtx, setModalState) {
+            return BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+              child: Container(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(modalCtx).viewInsets.bottom +
+                      MediaQuery.of(modalCtx).padding.bottom +
+                      20,
+                  left: 20,
+                  right: 20,
+                  top: 16,
+                ),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF0F172A) : Colors.white,
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(28)),
+                  border: Border.all(
+                    color: isDark
+                        ? AppColors.gold.withOpacity(0.35)
+                        : AppColors.borderLight,
+                    width: 1.5,
                   ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Hariri Wasifu wa Ushirika',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(isDark ? 0.45 : 0.12),
+                      blurRadius: 24,
+                      offset: const Offset(0, -6),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildInputField(
-                      'Jina Kamili', nameCtrl, Icons.person_rounded),
-                  const SizedBox(height: 12),
-                  _buildInputField(
-                      'Namba ya Simu', phoneCtrl, Icons.phone_rounded),
-                  const SizedBox(height: 12),
-                  _buildInputField(
-                      'Barua Pepe (Email)', emailCtrl, Icons.email_rounded),
-                  const SizedBox(height: 12),
-                  _buildInputField(
-                      'Jumuiya ya Nyumbani', jumuiyaCtrl, Icons.groups_rounded),
-                  const SizedBox(height: 12),
-                  _buildInputField('Idara / Huduma', deptCtrl,
-                      Icons.volunteer_activism_rounded),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () => Navigator.pop(ctx),
-                          child: const Text('Ghairi',
-                              style: TextStyle(color: Colors.white70)),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              _name = nameCtrl.text.trim().isNotEmpty
-                                  ? nameCtrl.text.trim()
-                                  : _name;
-                              _phone = phoneCtrl.text.trim().isNotEmpty
-                                  ? phoneCtrl.text.trim()
-                                  : _phone;
-                              _email = emailCtrl.text.trim().isNotEmpty
-                                  ? emailCtrl.text.trim()
-                                  : _email;
-                              _jumuiya = jumuiyaCtrl.text.trim().isNotEmpty
-                                  ? jumuiyaCtrl.text.trim()
-                                  : _jumuiya;
-                              _department = deptCtrl.text.trim().isNotEmpty
-                                  ? deptCtrl.text.trim()
-                                  : _department;
-                            });
-                            _auth.updateProfile(
-                              name: _name,
-                              phone: _phone,
-                              email: _email,
-                              jumuiya: _jumuiya,
-                              department: _department,
-                            );
-                            _savePreferences();
-                            Navigator.pop(ctx);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content:
-                                      Text('Wasifu umehifadhiwa kikamilifu!')),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.gold,
-                            foregroundColor: const Color(0xFF0A2540),
-                            padding: const EdgeInsets.symmetric(vertical: 13),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14)),
-                          ),
-                          child: const Text(
-                            'Hifadhi',
-                            style: TextStyle(fontWeight: FontWeight.w800),
+                  ],
+                ),
+                child: SafeArea(
+                  top: false,
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Center(
+                          child: Container(
+                            width: 44,
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? Colors.white.withOpacity(0.3)
+                                  : Colors.black.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 14),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Hariri Wasifu wa Ushirika',
+                              style: TextStyle(
+                                color: isDark
+                                    ? Colors.white
+                                    : AppColors.textPrimaryLight,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.close_rounded,
+                                size: 20,
+                                color: isDark
+                                    ? Colors.white60
+                                    : AppColors.textSecondaryLight,
+                              ),
+                              onPressed: () => Navigator.pop(ctx),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+
+                        // --- Profile Picture Selector ---
+                        Center(
+                          child: Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () => _showPhotoSourceSheet(
+                                  modalCtx,
+                                  (newPhoto) {
+                                    setModalState(() {
+                                      tempPhotoUrl = newPhoto;
+                                    });
+                                  },
+                                  tempPhotoUrl,
+                                ),
+                                child: Stack(
+                                  clipBehavior: Clip.none,
+                                  alignment: Alignment.bottomRight,
+                                  children: [
+                                    Container(
+                                      width: 84,
+                                      height: 84,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                          color: AppColors.gold,
+                                          width: 2.5,
+                                        ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: AppColors.gold
+                                                .withOpacity(0.25),
+                                            blurRadius: 10,
+                                            offset: const Offset(0, 3),
+                                          ),
+                                        ],
+                                        image: (tempPhotoUrl != null &&
+                                                tempPhotoUrl!.isNotEmpty)
+                                            ? DecorationImage(
+                                                image: getChurchImageProvider(
+                                                  tempPhotoUrl,
+                                                  'assets/images/pastoral_leadership_1788577468703.jpg',
+                                                ),
+                                                fit: BoxFit.cover,
+                                              )
+                                            : null,
+                                        gradient: (tempPhotoUrl == null ||
+                                                tempPhotoUrl!.isEmpty)
+                                            ? LinearGradient(
+                                                colors: _auth.isAdmin
+                                                    ? [
+                                                        const Color(0xFF38BDF8),
+                                                        const Color(0xFF0D52CD)
+                                                      ]
+                                                    : [
+                                                        const Color(0xFFFFD54F),
+                                                        const Color(0xFFC59B27)
+                                                      ],
+                                              )
+                                            : null,
+                                      ),
+                                      child: (tempPhotoUrl == null ||
+                                              tempPhotoUrl!.isEmpty)
+                                          ? Center(
+                                              child: Text(
+                                                nameCtrl.text.trim().isNotEmpty
+                                                    ? nameCtrl.text
+                                                        .trim()
+                                                        .split(' ')
+                                                        .map((s) => s.isNotEmpty
+                                                            ? s[0]
+                                                            : '')
+                                                        .take(2)
+                                                        .join()
+                                                    : 'Z',
+                                                style: TextStyle(
+                                                  color: _auth.isAdmin
+                                                      ? Colors.white
+                                                      : const Color(0xFF0A2540),
+                                                  fontSize: 26,
+                                                  fontWeight: FontWeight.w900,
+                                                ),
+                                              ),
+                                            )
+                                          : null,
+                                    ),
+                                    Positioned(
+                                      bottom: 0,
+                                      right: 0,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(6),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.gold,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: isDark
+                                                ? const Color(0xFF0F172A)
+                                                : Colors.white,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        child: const Icon(
+                                          Icons.camera_alt_rounded,
+                                          size: 15,
+                                          color: Color(0xFF0A2540),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              TextButton.icon(
+                                onPressed: () => _showPhotoSourceSheet(
+                                  modalCtx,
+                                  (newPhoto) {
+                                    setModalState(() {
+                                      tempPhotoUrl = newPhoto;
+                                    });
+                                  },
+                                  tempPhotoUrl,
+                                ),
+                                icon: const Icon(Icons.photo_camera_rounded,
+                                    size: 14, color: AppColors.goldDark),
+                                label: const Text(
+                                  'Badilisha Picha',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColors.goldDark,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+
+                        _buildInputField('Jina Kamili', nameCtrl,
+                            Icons.person_rounded, isDark),
+                        const SizedBox(height: 12),
+                        _buildInputField('Namba ya Simu', phoneCtrl,
+                            Icons.phone_rounded, isDark),
+                        const SizedBox(height: 12),
+                        _buildInputField(
+                            'Email', emailCtrl, Icons.email_rounded, isDark),
+                        const SizedBox(height: 12),
+                        _buildInputField('Jumuiya ya Nyumbani', jumuiyaCtrl,
+                            Icons.groups_rounded, isDark),
+                        const SizedBox(height: 12),
+                        _buildInputField('Idara / Huduma', deptCtrl,
+                            Icons.volunteer_activism_rounded, isDark),
+                        const SizedBox(height: 20),
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextButton(
+                                onPressed: () => Navigator.pop(ctx),
+                                style: TextButton.styleFrom(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 13),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14)),
+                                ),
+                                child: Text(
+                                  'Ghairi',
+                                  style: TextStyle(
+                                    color: isDark
+                                        ? Colors.white70
+                                        : AppColors.textSecondaryLight,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _name = nameCtrl.text.trim().isNotEmpty
+                                        ? nameCtrl.text.trim()
+                                        : _name;
+                                    _phone = phoneCtrl.text.trim().isNotEmpty
+                                        ? phoneCtrl.text.trim()
+                                        : _phone;
+                                    _email = emailCtrl.text.trim().isNotEmpty
+                                        ? emailCtrl.text.trim()
+                                        : _email;
+                                    _jumuiya =
+                                        jumuiyaCtrl.text.trim().isNotEmpty
+                                            ? jumuiyaCtrl.text.trim()
+                                            : _jumuiya;
+                                    _department =
+                                        deptCtrl.text.trim().isNotEmpty
+                                            ? deptCtrl.text.trim()
+                                            : _department;
+                                    _photoUrl = tempPhotoUrl;
+                                  });
+                                  _auth.updateProfile(
+                                    name: _name,
+                                    phone: _phone,
+                                    email: _email,
+                                    jumuiya: _jumuiya,
+                                    department: _department,
+                                    photoUrl: _photoUrl,
+                                  );
+                                  _savePreferences();
+                                  Navigator.pop(ctx);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content:
+                                          Text('Wasifu umehifadhiwa kikamilifu!'),
+                                      backgroundColor: AppColors.success,
+                                      behavior: SnackBarBehavior.floating,
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.gold,
+                                  foregroundColor: const Color(0xFF0A2540),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 13),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14)),
+                                ),
+                                child: const Text(
+                                  'Hifadhi',
+                                  style: TextStyle(fontWeight: FontWeight.w800),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ],
+                ),
               ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showPhotoSourceSheet(
+    BuildContext parentContext,
+    Function(String?) onPhotoSelected,
+    String? currentPhoto,
+  ) {
+    AppHaptics.selectionClick();
+    final isDark = ChurchThemeService().isDarkMode;
+    showModalBottomSheet(
+      context: parentContext,
+      backgroundColor: isDark ? const Color(0xFF161F30) : Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (bottomSheetCtx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 36,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.white24 : Colors.black12,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                Text(
+                  'Chagua Picha ya Wasifu',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                ListTile(
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0A2540).withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.photo_library_rounded,
+                        color: Color(0xFF0A2540)),
+                  ),
+                  title: Text(
+                    'Kutoka Simuni (Gallery)',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                    ),
+                  ),
+                  onTap: () async {
+                    Navigator.pop(bottomSheetCtx);
+                    final p =
+                        await ChurchCustomizationService().pickImageFromGallery();
+                    if (p != null) {
+                      onPhotoSelected(p);
+                    }
+                  },
+                ),
+                ListTile(
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF0F52BA).withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.camera_alt_rounded,
+                        color: Color(0xFF0F52BA)),
+                  ),
+                  title: Text(
+                    'Piga Picha (Kamera)',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                    ),
+                  ),
+                  onTap: () async {
+                    Navigator.pop(bottomSheetCtx);
+                    final p =
+                        await ChurchCustomizationService().pickImageFromCamera();
+                    if (p != null) {
+                      onPhotoSelected(p);
+                    }
+                  },
+                ),
+                ListTile(
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.gold.withOpacity(0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.link_rounded,
+                        color: AppColors.goldDark),
+                  ),
+                  title: Text(
+                    'Weka Kiungo cha Mtandao (URL)',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: isDark ? Colors.white : AppColors.textPrimaryLight,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(bottomSheetCtx);
+                    final urlCtrl =
+                        TextEditingController(text: currentPhoto ?? '');
+                    showDialog(
+                      context: parentContext,
+                      builder: (dlgCtx) => AlertDialog(
+                        backgroundColor:
+                            isDark ? const Color(0xFF1E293B) : Colors.white,
+                        title: Text(
+                          'Kiungo cha Picha',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: isDark
+                                ? Colors.white
+                                : AppColors.textPrimaryLight,
+                          ),
+                        ),
+                        content: TextField(
+                          controller: urlCtrl,
+                          decoration: const InputDecoration(
+                            hintText: 'https://...',
+                            prefixIcon: Icon(Icons.link_rounded),
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(dlgCtx),
+                            child: const Text('Ghairi'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              final text = urlCtrl.text.trim();
+                              Navigator.pop(dlgCtx);
+                              if (text.isNotEmpty) {
+                                onPhotoSelected(text);
+                              }
+                            },
+                            child: const Text('Weka'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                if (currentPhoto != null && currentPhoto.isNotEmpty)
+                  ListTile(
+                    leading: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.error.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.delete_outline_rounded,
+                          color: AppColors.error),
+                    ),
+                    title: const Text(
+                      'Ondoa Picha (Tumia Herufi za Jina)',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.error,
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(bottomSheetCtx);
+                      onPhotoSelected('');
+                    },
+                  ),
+              ],
             ),
           ),
         );
@@ -243,27 +614,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildInputField(
-      String label, TextEditingController ctrl, IconData icon) {
+      String label, TextEditingController ctrl, IconData icon, bool isDark) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF0F2644),
+        color: isDark ? const Color(0xFF1E293B) : AppColors.surfaceLowLight,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.gold.withOpacity(0.4), width: 1.2),
+        border: Border.all(
+          color: isDark
+              ? AppColors.gold.withOpacity(0.35)
+              : AppColors.borderLight,
+          width: 1.2,
+        ),
       ),
       child: TextField(
         controller: ctrl,
         cursorColor: AppColors.gold,
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: isDark ? Colors.white : AppColors.textPrimaryLight,
           fontSize: 14,
           fontWeight: FontWeight.w600,
         ),
         decoration: InputDecoration(
           filled: true,
-          fillColor: const Color(0xFF0F2644),
+          fillColor:
+              isDark ? const Color(0xFF1E293B) : AppColors.surfaceLowLight,
           labelText: label,
-          labelStyle: const TextStyle(
-            color: Color(0xFF94A3B8),
+          labelStyle: TextStyle(
+            color: isDark
+                ? const Color(0xFF94A3B8)
+                : AppColors.textSecondaryLight,
             fontSize: 13,
             fontWeight: FontWeight.w500,
           ),
@@ -281,20 +660,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
-  }
-
-  void _clearOfflineCache() async {
-    AppHaptics.lightImpact();
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('offline_audio_chapters');
-    setState(() => _downloadedCount = 0);
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content:
-                Text('Sura zote za nje ya mtandao zimefutwa kwenye simu.')),
-      );
-    }
   }
 
   void _openWhatsApp() async {
@@ -391,7 +756,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx),
             child: Text(
-              'Ghairi (Baki)',
+              'Ghairi',
               style: TextStyle(
                 color:
                     isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
@@ -516,8 +881,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             Text(
                               isDark
-                                  ? 'Giza (Dark Mode)'
-                                  : 'Mwanga (Nyeupe) — maandishi yasomeka wazi',
+                                  ? 'Hali ya Giza'
+                                  : 'Hali ya Mwanga — maandishi yasomeka wazi',
                               style: AppTypography.caption(
                                 color: isDark
                                     ? const Color(0xFF94A3B8)
@@ -731,7 +1096,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ? const Color(0xFF26354A)
                             : AppColors.borderLight),
                     _buildInfoRow(
-                        Icons.email_rounded, 'Barua Pepe (Email)', _email),
+                        Icons.email_rounded, 'Email', _email),
                     Divider(
                         height: 1,
                         color: isDark
@@ -754,9 +1119,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     _buildInfoRow(
                       Icons.verified_rounded,
                       'Hadhi ya Ubatizo',
-                      _isBaptized
-                          ? 'Alibatizwa (Maji Mengi)'
-                          : 'Bado Hajabatizwa',
+                      _isBaptized ? 'Alibatizwa' : 'Bado Hajabatizwa',
                       accentColor: const Color(0xFF16A34A),
                     ),
                     if (_auth.isAdmin) ...[
@@ -768,7 +1131,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       _buildInfoRow(
                         Icons.admin_panel_settings_rounded,
                         'Mamlaka ya Mfumo',
-                        'Usimamizi Mkuu (Admin Root)',
+                        'Usimamizi Mkuu',
                         accentColor: primaryColor,
                       ),
                     ],
@@ -777,298 +1140,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 24),
 
-              // 3. Spiritual & Liturgical Settings (Biblia & Sauti)
-              _buildSectionHeader('MIPANGILIO YA BIBLIA & SAUTI'),
-              AppCard(
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: primaryColor.withOpacity(0.12),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(Icons.menu_book_rounded,
-                            color: primaryColor, size: 20),
-                      ),
-                      title: Text(
-                        'Tafsiri ya Biblia',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: isDark
-                              ? Colors.white
-                              : AppColors.textPrimaryLight,
-                        ),
-                      ),
-                      subtitle: Text(
-                        _preferredBible,
-                        style: AppTypography.caption(
-                          color: isDark
-                              ? const Color(0xFF94A3B8)
-                              : AppColors.textSecondaryLight,
-                        ),
-                      ),
-                      trailing: DropdownButton<String>(
-                        value: _preferredBible,
-                        dropdownColor:
-                            isDark ? AppColors.surfaceDark : Colors.white,
-                        underline: const SizedBox(),
-                        items: [
-                          DropdownMenuItem(
-                            value: 'SUV (Union Version)',
-                            child: Text(
-                              'SUV',
-                              style: TextStyle(
-                                  color: isDark
-                                      ? Colors.white
-                                      : AppColors.textPrimaryLight),
-                            ),
-                          ),
-                          DropdownMenuItem(
-                            value: 'KJV (King James)',
-                            child: Text(
-                              'KJV',
-                              style: TextStyle(
-                                  color: isDark
-                                      ? Colors.white
-                                      : AppColors.textPrimaryLight),
-                            ),
-                          ),
-                        ],
-                        onChanged: (val) {
-                          if (val != null) {
-                            setState(() => _preferredBible = val);
-                            _savePreferences();
-                          }
-                        },
-                      ),
-                    ),
-                    Divider(
-                        height: 1,
-                        color: isDark
-                            ? const Color(0xFF26354A)
-                            : AppColors.borderLight),
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: primaryColor.withOpacity(0.12),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(Icons.speed_rounded,
-                                    color: primaryColor, size: 20),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Kasi ya Usomaji wa Sauti (TTS)',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 13.5,
-                                        color: isDark
-                                            ? Colors.white
-                                            : AppColors.textPrimaryLight,
-                                      ),
-                                    ),
-                                    Text(
-                                      _speechRate == 0.8
-                                          ? 'Polepole (0.8x)'
-                                          : _speechRate == 1.2
-                                              ? 'Haraka (1.2x)'
-                                              : _speechRate == 1.5
-                                                  ? 'Kasi Zaidi (1.5x)'
-                                                  : 'Kawaida (1.0x)',
-                                      style: AppTypography.caption(
-                                        color: isDark
-                                            ? const Color(0xFF94A3B8)
-                                            : AppColors.textSecondaryLight,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              OutlinedButton.icon(
-                                onPressed: _testSpeech,
-                                icon: const Icon(Icons.volume_up_rounded,
-                                    size: 16),
-                                label: const Text('Jaribu Sauti'),
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: primaryColor,
-                                  side: BorderSide(color: primaryColor),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 6),
-                                  minimumSize: Size.zero,
-                                  tapTargetSize:
-                                      MaterialTapTargetSize.shrinkWrap,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          Wrap(
-                            spacing: 8,
-                            children: [0.8, 1.0, 1.2, 1.5].map((rate) {
-                              final isSelected = _speechRate == rate;
-                              final label = rate == 0.8
-                                  ? '0.8x Polepole'
-                                  : rate == 1.0
-                                      ? '1.0x Kawaida'
-                                      : rate == 1.2
-                                          ? '1.2x Haraka'
-                                          : '1.5x Kasi';
-                              return ChoiceChip(
-                                label: Text(
-                                  label,
-                                  style: TextStyle(
-                                    fontSize: 11.5,
-                                    fontWeight: isSelected
-                                        ? FontWeight.bold
-                                        : FontWeight.w500,
-                                  ),
-                                ),
-                                selected: isSelected,
-                                selectedColor: primaryColor,
-                                backgroundColor: isDark
-                                    ? const Color(0xFF1E293B)
-                                    : AppColors.surfaceLowLight,
-                                side: BorderSide(
-                                  color: isSelected
-                                      ? primaryColor
-                                      : (isDark
-                                          ? const Color(0xFF334155)
-                                          : AppColors.borderLight),
-                                ),
-                                labelStyle: TextStyle(
-                                  color: isSelected
-                                      ? Colors.white
-                                      : (isDark
-                                          ? Colors.white70
-                                          : AppColors.textPrimaryLight),
-                                ),
-                                onSelected: (_) {
-                                  AppHaptics.selectionClick();
-                                  setState(() => _speechRate = rate);
-                                  _savePreferences();
-                                },
-                              );
-                            }).toList(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Divider(
-                        height: 1,
-                        color: isDark
-                            ? const Color(0xFF26354A)
-                            : AppColors.borderLight),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 11),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(7),
-                            decoration: BoxDecoration(
-                              color: AppColors.gold.withOpacity(0.15),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(Icons.offline_pin_rounded,
-                                color: AppColors.gold, size: 18),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Hifadhi ya Sura za Offline',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w700,
-                                    color: isDark
-                                        ? Colors.white
-                                        : AppColors.textPrimaryLight,
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  '$_downloadedCount Sura zimehifadhiwa',
-                                  style: TextStyle(
-                                    fontSize: 11.5,
-                                    color: isDark
-                                        ? const Color(0xFF94A3B8)
-                                        : AppColors.textSecondaryLight,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (_downloadedCount > 0)
-                            InkWell(
-                              onTap: _clearOfflineCache,
-                              borderRadius: BorderRadius.circular(8),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 5),
-                                decoration: BoxDecoration(
-                                  color:
-                                      const Color(0xFFDC2626).withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      color: const Color(0xFFDC2626)
-                                          .withOpacity(0.3)),
-                                ),
-                                child: const Text(
-                                  'Futa',
-                                  style: TextStyle(
-                                    color: Color(0xFFDC2626),
-                                    fontSize: 11.5,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            )
-                          else
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: isDark
-                                    ? const Color(0xFF1E293B)
-                                    : Colors.black.withOpacity(0.04),
-                                borderRadius: BorderRadius.circular(6),
-                              ),
-                              child: Text(
-                                'Hakuna',
-                                style: TextStyle(
-                                  color: isDark
-                                      ? const Color(0xFF64748B)
-                                      : AppColors.textMutedLight,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // 4. Notifications & Reminders
+              // 3. Notifications & Reminders
               _buildSectionHeader('ARIFA & UKUMBUSHO WA KIPANDE CHA SAYUNI'),
               AppCard(
                 child: Column(
@@ -1115,7 +1187,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       subtitle: Text(
-                        'Hupokea arifa Saa 12:00 Asubuhi (Kusoma Zaburi)',
+                        'Hupokea arifa Saa 12:00 Asubuhi ya kusoma Zaburi',
                         style: TextStyle(
                           color: isDark
                               ? const Color(0xFF94A3B8)
@@ -1261,8 +1333,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 24),
 
-              // Utawala wa Kanisa (Church Admin Portal)
-              _buildSectionHeader('UTAWALA WA KANISA (CHURCH ADMIN)'),
+              // Utawala wa Kanisa
+              _buildSectionHeader('UTAWALA WA KANISA'),
               AppCard(
                 borderColor: AppColors.gold.withOpacity(0.5),
                 onTap: () {
@@ -1289,17 +1361,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: 6,
+                            runSpacing: 4,
                             children: [
                               Text(
-                                'Mfumo wa Utawala (Admin)',
+                                'Mfumo wa Utawala',
                                 style: AppTypography.titleSmall(
                                   color: isDark
                                       ? Colors.white
                                       : AppColors.textPrimaryLight,
                                 ),
                               ),
-                              const SizedBox(width: 6),
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 6, vertical: 2),
@@ -1411,7 +1485,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       leading: const Icon(Icons.privacy_tip_outlined,
                           color: AppColors.gold),
                       title: Text(
-                        'Sera ya Faragha (Privacy Policy)',
+                        'Sera ya Faragha',
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           color: isDark
@@ -1441,7 +1515,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       leading: const Icon(Icons.fact_check_outlined,
                           color: AppColors.success),
                       title: Text(
-                        'Haki zangu za PDPA (Consent & Data)',
+                        'Haki Zangu za Faragha',
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           color: isDark
@@ -1484,7 +1558,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       subtitle: Text(
-                        'v1.0.0 (Sayuni Liturgical Edition)',
+                        'Toleo 1.0.0',
                         style: TextStyle(
                           color: isDark
                               ? const Color(0xFF94A3B8)
@@ -1498,59 +1572,91 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 24),
 
-              // 7. Account Management & Permanent Deletion (Google Play & Apple Guidelines)
+              // 7. Account Management & Permanent Deletion
               _buildSectionHeader(
-                  'USALAMA WA AKAUNTI & DATA (ACCOUNT MANAGEMENT)'),
+                  'USALAMA WA AKAUNTI NA TAARIFA'),
               AppCard(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 borderColor: const Color(0xFFDC2626).withOpacity(0.35),
                 child: Column(
                   children: [
-                    ListTile(
-                      leading: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: isDark
-                              ? const Color(0xFF1E293B)
-                              : const Color(0xFFF1F5F9),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.logout_rounded,
-                          color: isDark
-                              ? const Color(0xFF94A3B8)
-                              : const Color(0xFF475569),
-                          size: 20,
-                        ),
-                      ),
-                      title: Text(
-                        'Toka Kwenye Akaunti',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13.5,
-                          color: isDark
-                              ? Colors.white
-                              : AppColors.textPrimaryLight,
-                        ),
-                      ),
-                      subtitle: Text(
-                        'Badili mtumiaji au ingia kama mgeni',
-                        style: AppTypography.caption(
-                          color: isDark
-                              ? const Color(0xFF94A3B8)
-                              : AppColors.textSecondaryLight,
-                        ),
-                      ),
-                      trailing: OutlinedButton(
-                        onPressed: _handleLogout,
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        child: const Text('Ondoka',
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.bold)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: isDark
+                                  ? const Color(0xFF1E293B)
+                                  : const Color(0xFFF1F5F9),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.logout_rounded,
+                              color: isDark
+                                  ? const Color(0xFF94A3B8)
+                                  : const Color(0xFF475569),
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Toka Kwenye Akaunti',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14,
+                                    color: isDark
+                                        ? Colors.white
+                                        : AppColors.textPrimaryLight,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  'Badili mtumiaji au ingia kama mgeni',
+                                  style: AppTypography.caption(
+                                    color: isDark
+                                        ? const Color(0xFF94A3B8)
+                                        : AppColors.textSecondaryLight,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          OutlinedButton.icon(
+                            onPressed: _handleLogout,
+                            icon: const Icon(Icons.logout_rounded, size: 15),
+                            label: const Text(
+                              'Ondoka',
+                              style: TextStyle(
+                                  fontSize: 12.5, fontWeight: FontWeight.w800),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: isDark
+                                  ? Colors.white
+                                  : const Color(0xFF0A2540),
+                              side: BorderSide(
+                                color: isDark
+                                    ? const Color(0xFF475569)
+                                    : const Color(0xFFCBD5E1),
+                                width: 1.2,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 10),
+                              minimumSize: const Size(98, 40),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Divider(
@@ -1558,48 +1664,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         color: isDark
                             ? const Color(0xFF26354A)
                             : AppColors.borderLight),
-                    ListTile(
-                      leading: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFDC2626).withOpacity(0.12),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.delete_forever_rounded,
-                          color: Color(0xFFDC2626),
-                          size: 20,
-                        ),
-                      ),
-                      title: const Text(
-                        'Futa Akaunti Kabisa (Delete Account)',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 13.5,
-                          color: Color(0xFFDC2626),
-                        ),
-                      ),
-                      subtitle: Text(
-                        'Futa taarifa zote za usajili kisheria (PDPA 2022)',
-                        style: AppTypography.caption(
-                          color: isDark
-                              ? const Color(0xFFF87171)
-                              : const Color(0xFFDC2626),
-                        ),
-                      ),
-                      trailing: ElevatedButton(
-                        onPressed: _showDeleteAccountDialog,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFDC2626),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 6),
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        child: const Text('Futa',
-                            style: TextStyle(
-                                fontSize: 12, fontWeight: FontWeight.bold)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFDC2626).withOpacity(0.12),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.delete_forever_rounded,
+                              color: Color(0xFFDC2626),
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Futa Akaunti Kabisa',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 14,
+                                    color: Color(0xFFDC2626),
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  'Futa taarifa za usajili kisheria (PDPA 2022)',
+                                  style: AppTypography.caption(
+                                    color: isDark
+                                        ? const Color(0xFFF87171)
+                                        : const Color(0xFFDC2626),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          ElevatedButton.icon(
+                            onPressed: _showDeleteAccountDialog,
+                            icon: const Icon(Icons.delete_outline_rounded,
+                                size: 16),
+                            label: const Text(
+                              'Futa',
+                              style: TextStyle(
+                                  fontSize: 12.5, fontWeight: FontWeight.w800),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFDC2626),
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 10),
+                              minimumSize: const Size(98, 40),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -1662,7 +1791,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               value,
               textAlign: TextAlign.end,
               overflow: TextOverflow.ellipsis,
-              maxLines: 2,
+              maxLines: 1,
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
@@ -1692,84 +1821,171 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     final String title = _auth.roleBadge;
     final String subtitle = isAdmin
-        ? 'Ufikiaji Kamili wa Utawala (Admin & Web Sync)'
+        ? 'Kiongozi wa Sayuni • Sawazisha na Tovuti ya Viongozi'
         : (isMember
-            ? 'Umeunganishwa na Ushirika wa Sayuni'
-            : 'Unatumia mfumo kama Mgeni wa Heshima');
+            ? 'Programu ya Waumini • Biblia, Tenzi, Ibada na Ushirika'
+            : 'Unatumia Programu ya Waumini kama Mgeni wa Heshima');
 
     final String buttonText =
-        isAdmin ? 'Dashibodi ya Admin' : (isMember ? 'Badili' : 'Jiunge Rasmi');
+        isAdmin ? 'Kituo cha Sync' : (isMember ? 'Badili' : 'Jiunge Rasmi');
 
-    return AppCard(
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: badgeColor.withOpacity(0.15),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(badgeIcon, color: badgeColor, size: 22),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 13.5,
-                    color: isDark ? Colors.white : AppColors.textPrimaryLight,
+    return Column(
+      children: [
+        AppCard(
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: badgeColor.withOpacity(0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(badgeIcon, color: badgeColor, size: 22),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 13.5,
+                        color:
+                            isDark ? Colors.white : AppColors.textPrimaryLight,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: AppTypography.caption(
+                        color: isDark
+                            ? const Color(0xFF94A3B8)
+                            : AppColors.textSecondaryLight,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              OutlinedButton(
+                onPressed: () {
+                  AppHaptics.mediumImpact();
+                  if (isAdmin) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const ChurchAdminScreen()),
+                    );
+                  } else {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => OnboardingAuthScreen(
+                          onCompleted: () {
+                            Navigator.pop(context);
+                            _loadPreferences();
+                          },
+                        ),
+                      ),
+                    );
+                  }
+                },
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: badgeColor,
+                  side: BorderSide(color: badgeColor.withOpacity(0.65), width: 1.2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  minimumSize: const Size(0, 38),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                Text(
-                  subtitle,
-                  style: AppTypography.caption(
-                    color: isDark
-                        ? const Color(0xFF94A3B8)
-                        : AppColors.textSecondaryLight,
+                child: Text(buttonText,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w800, fontSize: 12)),
+              ),
+            ],
+          ),
+        ),
+        if (isAdmin) ...[
+          const SizedBox(height: 10),
+          AppCard(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(9),
+                  decoration: BoxDecoration(
+                    color: AppColors.gold.withOpacity(0.16),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.install_mobile_rounded,
+                    color: AppColors.gold,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Sayuni Viongozi Portal',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 13,
+                          color: isDark
+                              ? Colors.white
+                              : AppColors.textPrimaryLight,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Mfumo maalum wa Ofisi za Viongozi kwa Askofu, Katibu, Mhasibu na Mashemasi.',
+                        style: AppTypography.caption(
+                          color: isDark
+                              ? const Color(0xFF94A3B8)
+                              : AppColors.textSecondaryLight,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    AppHaptics.mediumImpact();
+                    final uri =
+                        Uri.parse('https://sayuni-portal.vercel.app');
+                    if (await canLaunchUrl(uri)) {
+                      await launchUrl(uri,
+                          mode: LaunchMode.externalApplication);
+                    }
+                  },
+                  icon: const Icon(Icons.open_in_new_rounded, size: 15),
+                  label: const Text('Fungua Tovuti'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.gold,
+                    foregroundColor: const Color(0xFF0A2540),
+                    elevation: 0,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    minimumSize: const Size(0, 38),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    textStyle: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w800),
                   ),
                 ),
               ],
             ),
           ),
-          OutlinedButton(
-            onPressed: () {
-              AppHaptics.mediumImpact();
-              if (isAdmin) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ChurchAdminScreen()),
-                );
-              } else {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => OnboardingAuthScreen(
-                      onCompleted: () {
-                        Navigator.pop(context);
-                        _loadPreferences();
-                      },
-                    ),
-                  ),
-                );
-              }
-            },
-            style: OutlinedButton.styleFrom(
-              foregroundColor: badgeColor,
-              side: BorderSide(color: badgeColor),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-              minimumSize: Size.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-            child: Text(buttonText,
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-          ),
         ],
-      ),
+      ],
     );
   }
 
@@ -1869,20 +2085,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: 1.2,
                   ),
                 ),
-                child: Text(
-                  _auth.isAdmin
-                      ? 'MSIMAMIZI ⚡'
-                      : (_auth.isMember ? 'MUUMINI 🛡️' : 'MGENI 🕊️'),
-                  style: TextStyle(
-                    color: _auth.isAdmin
-                        ? const Color(0xFF93C5FD)
-                        : (_auth.isMember
-                            ? const Color(0xFF86EFAC)
-                            : const Color(0xFFFDE68A)),
-                    fontSize: 9.5,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: 1.0,
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      _auth.isAdmin
+                          ? Icons.verified_user_rounded
+                          : (_auth.isMember
+                              ? Icons.shield_rounded
+                              : Icons.person_outline_rounded),
+                      size: 11,
+                      color: _auth.isAdmin
+                          ? const Color(0xFF93C5FD)
+                          : (_auth.isMember
+                              ? const Color(0xFF86EFAC)
+                              : const Color(0xFFFDE68A)),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      _auth.isAdmin
+                          ? 'MSIMAMIZI'
+                          : (_auth.isMember ? 'MUUMINI' : 'MGENI'),
+                      style: TextStyle(
+                        color: _auth.isAdmin
+                            ? const Color(0xFF93C5FD)
+                            : (_auth.isMember
+                                ? const Color(0xFF86EFAC)
+                                : const Color(0xFFFDE68A)),
+                        fontSize: 9.5,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -1892,43 +2127,70 @@ class _ProfileScreenState extends State<ProfileScreen> {
           // Member Name & Details
           Row(
             children: [
-              Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    colors: _auth.isAdmin
-                        ? [const Color(0xFF38BDF8), const Color(0xFF0D52CD)]
-                        : [const Color(0xFFFFD54F), const Color(0xFFC59B27)],
-                  ),
-                  border: Border.all(color: Colors.white, width: 2),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: Text(
-                    _name.trim().isNotEmpty
-                        ? _name
-                            .trim()
-                            .split(' ')
-                            .map((s) => s.isNotEmpty ? s[0] : '')
-                            .take(2)
-                            .join()
-                        : 'Z',
-                    style: TextStyle(
+              GestureDetector(
+                onTap: _showEditProfileDialog,
+                child: Container(
+                  width: 54,
+                  height: 54,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
                       color: _auth.isAdmin
-                          ? Colors.white
-                          : const Color(0xFF0A2540),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w900,
+                          ? const Color(0xFF60A5FA)
+                          : AppColors.gold,
+                      width: 2,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.35),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                    image: (_photoUrl != null && _photoUrl!.isNotEmpty)
+                        ? DecorationImage(
+                            image: getChurchImageProvider(
+                              _photoUrl,
+                              'assets/images/pastoral_leadership_1788577468703.jpg',
+                            ),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                    gradient: (_photoUrl == null || _photoUrl!.isEmpty)
+                        ? LinearGradient(
+                            colors: _auth.isAdmin
+                                ? [
+                                    const Color(0xFF38BDF8),
+                                    const Color(0xFF0D52CD)
+                                  ]
+                                : [
+                                    const Color(0xFFFFD54F),
+                                    const Color(0xFFC59B27)
+                                  ],
+                          )
+                        : null,
                   ),
+                  child: (_photoUrl == null || _photoUrl!.isEmpty)
+                      ? Center(
+                          child: Text(
+                            _name.trim().isNotEmpty
+                                ? _name
+                                    .trim()
+                                    .split(' ')
+                                    .map((s) => s.isNotEmpty ? s[0] : '')
+                                    .take(2)
+                                    .join()
+                                : 'Z',
+                            style: TextStyle(
+                              color: _auth.isAdmin
+                                  ? Colors.white
+                                  : const Color(0xFF0A2540),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900,
+                            ),
+                          ),
+                        )
+                      : null,
                 ),
               ),
               const SizedBox(width: 14),

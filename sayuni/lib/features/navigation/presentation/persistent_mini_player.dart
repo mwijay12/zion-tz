@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../../core/services/church_audio_service.dart';
+import '../../../core/theme/church_theme_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/haptics.dart';
 import '../../media/presentation/now_playing_screen.dart';
@@ -10,53 +11,63 @@ class PersistentMiniPlayer extends StatelessWidget {
 
   void _showFullPlayerSheet(BuildContext context, ChurchAudioService audio) {
     AppHaptics.mediumImpact();
-    // Full-screen route (not a sheet): popping it keeps audio running.
     NowPlayingScreen.open(context);
   }
 
   @override
   Widget build(BuildContext context) {
     final audio = ChurchAudioService();
+    final theme = ChurchThemeService();
 
     return ListenableBuilder(
-      listenable: audio,
+      listenable: Listenable.merge([audio, theme]),
       builder: (context, _) {
         if (!audio.hasActiveTrack) return const SizedBox.shrink();
 
         final track = audio.currentTrack!;
+        final isDark = theme.isDarkMode;
+        final primary = theme.primaryColor;
+
+        final Color titleColor =
+            isDark ? Colors.white : const Color(0xFF0A2540);
+        final Color subColor =
+            isDark ? Colors.white.withOpacity(0.78) : const Color(0xFF475569);
+        final Color iconColor = isDark ? Colors.white : const Color(0xFF0A2540);
+        final Color disabledIconColor = isDark
+            ? Colors.white.withOpacity(0.32)
+            : const Color(0xFF94A3B8);
 
         return Padding(
           padding: const EdgeInsets.only(left: 14, right: 14, bottom: 8),
           child: GestureDetector(
             onTap: () => _showFullPlayerSheet(context, audio),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(22),
+              borderRadius: BorderRadius.circular(20),
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF181C23), Color(0xFF1E232A)],
+                    gradient: LinearGradient(
+                      colors: isDark
+                          ? const [Color(0xFF141E30), Color(0xFF0F172A)]
+                          : const [Color(0xFFFFFFFF), Color(0xFFF8FAFC)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
-                    borderRadius: BorderRadius.circular(22),
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: AppColors.primary.withOpacity(0.35),
+                      color: isDark
+                          ? primary.withOpacity(0.42)
+                          : const Color(0xFFCBD5E1),
                       width: 1.2,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.35),
-                        blurRadius: 18,
+                        color: Colors.black.withOpacity(isDark ? 0.35 : 0.08),
+                        blurRadius: 16,
                         offset: const Offset(0, 4),
-                      ),
-                      BoxShadow(
-                        color: AppColors.primary.withOpacity(0.2),
-                        blurRadius: 14,
-                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
@@ -68,10 +79,11 @@ class PersistentMiniPlayer extends StatelessWidget {
                         height: 40,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: AppColors.primary.withOpacity(0.18),
+                          color: primary.withOpacity(isDark ? 0.18 : 0.10),
                           border: Border.all(
-                              color: AppColors.primary.withOpacity(0.4),
-                              width: 1.2),
+                            color: primary.withOpacity(0.45),
+                            width: 1.2,
+                          ),
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: (track.imageUrl != null &&
@@ -86,7 +98,8 @@ class PersistentMiniPlayer extends StatelessWidget {
                                     track.isLiveRadio
                                         ? Icons.radio_rounded
                                         : Icons.music_note_rounded,
-                                    color: AppColors.primaryLight,
+                                    color:
+                                        isDark ? AppColors.primaryLight : primary,
                                     size: 20,
                                   ),
                                 ),
@@ -96,7 +109,8 @@ class PersistentMiniPlayer extends StatelessWidget {
                                   track.isLiveRadio
                                       ? Icons.radio_rounded
                                       : Icons.music_note_rounded,
-                                  color: AppColors.primaryLight,
+                                  color:
+                                      isDark ? AppColors.primaryLight : primary,
                                   size: 20,
                                 ),
                               ),
@@ -115,27 +129,27 @@ class PersistentMiniPlayer extends StatelessWidget {
                                   Container(
                                     margin: const EdgeInsets.only(right: 6),
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 1),
+                                        horizontal: 5, vertical: 1.5),
                                     decoration: BoxDecoration(
-                                      color: Colors.redAccent,
+                                      color: const Color(0xFFDC2626),
                                       borderRadius: BorderRadius.circular(4),
                                     ),
                                     child: const Text(
                                       'LIVE',
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 9,
-                                        fontWeight: FontWeight.bold,
+                                        fontSize: 8.5,
+                                        fontWeight: FontWeight.w900,
                                       ),
                                     ),
                                   ),
                                 Expanded(
                                   child: Text(
                                     track.title,
-                                    style: const TextStyle(
-                                      color: Colors.white,
+                                    style: TextStyle(
+                                      color: titleColor,
                                       fontSize: 13,
-                                      fontWeight: FontWeight.w700,
+                                      fontWeight: FontWeight.w800,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -143,11 +157,13 @@ class PersistentMiniPlayer extends StatelessWidget {
                                 ),
                               ],
                             ),
+                            const SizedBox(height: 1),
                             Text(
                               track.subtitle,
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
+                                color: subColor,
                                 fontSize: 11,
+                                fontWeight: FontWeight.w600,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -157,77 +173,83 @@ class PersistentMiniPlayer extends StatelessWidget {
                       ),
 
                       // Controls
-                      if (audio.isLoading)
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8),
-                          child: SizedBox(
-                            width: 22,
-                            height: 22,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: AppColors.gold,
+                      IconButton(
+                        icon: Icon(
+                          Icons.skip_previous_rounded,
+                          color: audio.hasPrevious
+                              ? iconColor
+                              : disabledIconColor,
+                          size: 22,
+                        ),
+                        padding: EdgeInsets.zero,
+                        constraints:
+                            const BoxConstraints(minWidth: 32, minHeight: 32),
+                        onPressed: audio.hasPrevious
+                            ? () {
+                                AppHaptics.selectionClick();
+                                audio.playPrevious();
+                              }
+                            : null,
+                      ),
+                      SizedBox(
+                        width: 36,
+                        height: 36,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                audio.isPlaying
+                                    ? Icons.pause_circle_filled_rounded
+                                    : Icons.play_circle_fill_rounded,
+                                color: isDark ? AppColors.gold : primary,
+                                size: 32,
+                              ),
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(
+                                  minWidth: 36, minHeight: 36),
+                              onPressed: () {
+                                AppHaptics.selectionClick();
+                                audio.togglePlayPause();
+                              },
                             ),
-                          ),
-                        )
-                      else ...[
-                        IconButton(
-                          icon: Icon(
-                            Icons.skip_previous_rounded,
-                            color: audio.hasPrevious
-                                ? Colors.white
-                                : Colors.white38,
-                            size: 24,
-                          ),
-                          padding: EdgeInsets.zero,
-                          constraints:
-                              const BoxConstraints(minWidth: 32, minHeight: 32),
-                          onPressed: audio.hasPrevious
-                              ? () {
-                                  AppHaptics.selectionClick();
-                                  audio.playPrevious();
-                                }
-                              : null,
+                            if (audio.isLoading)
+                              IgnorePointer(
+                                child: SizedBox(
+                                  width: 32,
+                                  height: 32,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: isDark
+                                        ? AppColors.goldLight
+                                        : AppColors.gold,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
-                        IconButton(
-                          icon: Icon(
-                            audio.isPlaying
-                                ? Icons.pause_circle_filled_rounded
-                                : Icons.play_circle_fill_rounded,
-                            color: AppColors.gold,
-                            size: 34,
-                          ),
-                          padding: EdgeInsets.zero,
-                          constraints:
-                              const BoxConstraints(minWidth: 36, minHeight: 36),
-                          onPressed: () {
-                            AppHaptics.selectionClick();
-                            audio.togglePlayPause();
-                          },
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.skip_next_rounded,
+                          color: audio.hasNext ? iconColor : disabledIconColor,
+                          size: 22,
                         ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.skip_next_rounded,
-                            color:
-                                audio.hasNext ? Colors.white : Colors.white38,
-                            size: 24,
-                          ),
-                          padding: EdgeInsets.zero,
-                          constraints:
-                              const BoxConstraints(minWidth: 32, minHeight: 32),
-                          onPressed: audio.hasNext
-                              ? () {
-                                  AppHaptics.selectionClick();
-                                  audio.playNext();
-                                }
-                              : null,
-                        ),
-                      ],
-
+                        padding: EdgeInsets.zero,
+                        constraints:
+                            const BoxConstraints(minWidth: 32, minHeight: 32),
+                        onPressed: audio.hasNext
+                            ? () {
+                                AppHaptics.selectionClick();
+                                audio.playNext();
+                              }
+                            : null,
+                      ),
                       IconButton(
                         icon: Icon(
                           Icons.close_rounded,
-                          color: Colors.white.withOpacity(0.7),
-                          size: 20,
+                          color: subColor,
+                          size: 19,
                         ),
                         padding: EdgeInsets.zero,
                         constraints:

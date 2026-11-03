@@ -18,7 +18,7 @@
 
 | Nafasi / Wadhifa                      | Jina la Kiongozi                       | Majukumu Makuu                                                                                                |
 | :------------------------------------ | :------------------------------------- | :------------------------------------------------------------------------------------------------------------ |
-| **Askofu / Mchungaji Kiongozi** | **Mchungaji Askofu Messi Mgala** | Mlezi mkuu wa kiroho, mhubiri, maono ya kanisa, kupakia mafundisho/mahubiri, mabango, maamuzi makuu ya kiroho |
+| **Askofu / Mchungaji Kiongozi** | **Mchungaji Askofu Mercy Mgalla** | Mlezi mkuu wa kiroho, mhubiri, maono ya kanisa, kupakia mafundisho/mahubiri, mabango, maamuzi makuu ya kiroho |
 | **Msaidizi / Mume wa Askofu**   | **James Robert**                 | Ushauri mkuu wa uongozi, uratibu wa utawala, miradi ya kanisa na maendeleo                                    |
 | **Baraza la Wazee wa Kanisa**   | *Wazee wa Kanisa*                    | Uangalizi wa nidhamu, ushauri nasaha, usuluhishi, uthibitisho wa maamuzi, kufuatilia maombi maalum ya waumini |
 | **Sekretarieti ya Kanisa**      | *Katibu Mkuu & Wasaidizi*            | Utunzaji wa kumbukumbu, kusajili waumini, matangazo ya ibada, kuratibu kijarida cha ubaoni, vyeti rasmi       |
@@ -120,7 +120,7 @@ Kila idara ina ukurasa wake maalum (Desktop na Mobile) ili kurahisisha kazi na u
 * **09:00 – 10:00**: Sunday School ya Watoto na Madarasa ya Mafundisho.
 * **10:00 – 11:15**: Praise & Worship na Huduma ya Kwaya (Galilaya, Upendo, Wamama, Vijana).
 * **11:15 – 11:30**: Kipindi cha Katibu (Matangazo ya Haraka ya Dakika 2).
-* **11:30 – 13:00**: Neno Kuu la Mungu & Maombezi (Mchungaji Askofu Messi Mgala).
+* **11:30 – 13:00**: Neno Kuu la Mungu & Maombezi (Mchungaji Askofu Mercy Mgalla).
 
 ### Uokoaji wa Muda wa Madhabahuni:
 * Badala ya kusoma orodha ndefu za fedha, nani hajalipa, na taarifa nyingi mdomoni ambazo hufanya ibada kuwa ndefu na ya kuchosha:

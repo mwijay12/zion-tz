@@ -157,4 +157,71 @@ export class ChurchDataBackupService {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   }
+
+  /**
+   * Generates a CSV export of finances and tithes for Excel or Google Sheets
+   */
+  public static downloadFinancesCsv(): void {
+    const headers = ['Tarehe', 'Aina', 'Kundi / Mradi', 'Maelezo / Notes', 'Kiasi (TZS)', 'Njia ya Malipo', 'Mtoaji / Reference'];
+    const finances = loadStored(STORAGE_KEYS.finances, INITIAL_FINANCES);
+    const rows = finances.map(f => [
+      `"${f.date || ''}"`,
+      `"${f.type || ''}"`,
+      `"${f.category || ''}"`,
+      `"${(f.notes || '').replace(/"/g, '""')}"`,
+      f.amount || 0,
+      `"${f.paymentMethod || ''}"`,
+      `"${(f.isAnonymous ? 'Binafsi (Anonymous)' : f.donorName || f.referenceNumber || '').replace(/"/g, '""')}"`
+    ]);
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Zion_Fedha_na_Sadaka_${dateStr}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  /**
+   * Generates a CSV export of Jumuiya weekly fellowship reports for Excel or Google Sheets
+   */
+  public static downloadJumuiyaReportsCsv(): void {
+    const headers = ['Tarehe ya Ripoti', 'Jumuiya', 'Wanaume', 'Wanawake', 'Vijana', 'Watoto', 'Jumla ya Waumini', 'Wageni Wapya', 'Sadaka (TZS)', 'Mada ya Biblia', 'Imewasilishwa Na'];
+    const reports = loadStored(STORAGE_KEYS.jumuiyaReports, INITIAL_JUMUIYA_REPORTS);
+    const rows = reports.map(r => {
+      const total = (r.attendeesMen || 0) + (r.attendeesWomen || 0) + (r.attendeesYouth || 0) + (r.attendeesChildren || 0);
+      return [
+        `"${r.reportDate || ''}"`,
+        `"${r.jumuiyaName || r.jumuiyaId || ''}"`,
+        r.attendeesMen || 0,
+        r.attendeesWomen || 0,
+        r.attendeesYouth || 0,
+        r.attendeesChildren || 0,
+        total,
+        r.newVisitors || 0,
+        r.offeringAmount || 0,
+        `"${(r.scriptureTopic || '').replace(/"/g, '""')}"`,
+        `"${r.submittedBy || ''}"`
+      ];
+    });
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    const dateStr = new Date().toISOString().slice(0, 10);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Zion_Ripoti_za_Jumuiya_${dateStr}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
 }

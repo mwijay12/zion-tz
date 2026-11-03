@@ -79,7 +79,10 @@ class ChurchSyncService extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Sets up real-time stream listener to Cloud Firestore `announcements` collection
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
+      _sermonsSubscription;
+
+  /// Sets up real-time stream listener to Cloud Firestore `announcements` and `sermons` collections
   void _initFirestoreStream() {
     try {
       final announcementsRef = FirebaseFirestore.instance
@@ -90,7 +93,7 @@ class ChurchSyncService extends ChangeNotifier {
         (snapshot) {
           isCloudConnected.value = true;
           isPortalConnected.value = true;
-          syncStatusMessage.value = '🟢 Imeunganishwa na Seva ya Kanisa';
+          syncStatusMessage.value = 'Imeunganishwa na Seva ya Kanisa';
 
           for (final doc in snapshot.docs) {
             final data = doc.data();
@@ -106,14 +109,73 @@ class ChurchSyncService extends ChangeNotifier {
           debugPrint('Firestore announcements stream error: $err');
           isCloudConnected.value = false;
           syncStatusMessage.value =
-              '⚪ Nje ya mtandao — unaona matangazo yaliyohifadhiwa';
+              'Nje ya mtandao — unaona matangazo yaliyohifadhiwa';
+        },
+      );
+
+      final sermonsRef = FirebaseFirestore.instance
+          .collection('sermons')
+          .orderBy('createdAt', descending: true)
+          .limit(30);
+
+      _sermonsSubscription = sermonsRef.snapshots().listen(
+        (snapshot) async {
+          if (snapshot.docs.isEmpty) return;
+          final prefs = await SharedPreferences.getInstance();
+          final raw = prefs.getString('zion_admin_uploaded_media');
+          List<dynamic> list = [];
+          if (raw != null && raw.isNotEmpty) {
+            try {
+              list = jsonDecode(raw);
+            } catch (_) {}
+          }
+          bool changed = false;
+          for (final doc in snapshot.docs) {
+            final data = doc.data();
+            final id = doc.id;
+            if (!list.any((e) => e is Map && e['id'] == id)) {
+              final type = data['type']?.toString() ?? 'audio';
+              final mediaUrl = data['mediaUrl']?.toString() ?? '';
+              list.insert(0, {
+                'id': id,
+                'title': data['title']?.toString() ?? 'Mahubiri ya Sayuni',
+                'preacher': data['preacher']?.toString() ?? 'Askofu / Mchungaji',
+                'scripture': data['scripture']?.toString() ?? 'Neno la Mungu',
+                'date': data['date']?.toString() ?? 'Hivi karibuni',
+                'duration': data['duration']?.toString() ?? '45:00',
+                'type': type,
+                'category': data['category']?.toString() ?? 'Jumapili',
+                'description': data['description']?.toString() ??
+                    'Mahubiri yaliyowekwa na Utawala wa Kanisa.',
+                'imageUrl': data['imageUrl']?.toString() ??
+                    (type == 'video'
+                        ? 'assets/images/altar.jpg'
+                        : 'assets/images/church_front.jpg'),
+                'audioUrl': type == 'audio'
+                    ? mediaUrl
+                    : 'https://stream.zeno.fm/4v4e91y9sm8uv',
+                'videoUrl': type == 'video' ? mediaUrl : '',
+                'isAdminUpload': true,
+              });
+              changed = true;
+            }
+          }
+          if (changed) {
+            final encoded = jsonEncode(list);
+            await prefs.setString('zion_admin_uploaded_media', encoded);
+            await prefs.setString('flutter.zion_admin_uploaded_media', encoded);
+            notifyListeners();
+          }
+        },
+        onError: (err) {
+          debugPrint('Firestore sermons stream error: $err');
         },
       );
     } catch (e) {
-      debugPrint('Firestore announcements init stream error: $e');
+      debugPrint('Firestore init stream error: $e');
       isCloudConnected.value = false;
       syncStatusMessage.value =
-          '⚪ Nje ya mtandao — unaona matangazo yaliyohifadhiwa';
+          'Nje ya mtandao — unaona matangazo yaliyohifadhiwa';
     }
   }
 
@@ -250,7 +312,7 @@ class ChurchSyncService extends ChangeNotifier {
       ChurchNotificationService().showLockScreenNotification(
         id: announcement.id.hashCode,
         title:
-            '${announcement.isForLeaders ? "🔒 " : "📢 "}${announcement.title}',
+            '${announcement.isForLeaders ? "[Viongozi] " : "[Tangazo] "}${announcement.title}',
         body: announcement.summary.isNotEmpty
             ? announcement.summary
             : announcement.fullDetails,
@@ -270,7 +332,7 @@ class ChurchSyncService extends ChangeNotifier {
     currentInAppNotice.value = null;
   }
 
-  /// Broadcast a newly uploaded sermon from Mobile to the local Web portal
+  /// Broadcast a newly uploaded sermon from Mobile to Cloud Firestore & local Web portal
   Future<void> syncNewSermon({
     required String id,
     required String title,
@@ -325,23 +387,43 @@ class ChurchSyncService extends ChangeNotifier {
       await prefs.setString('zion_admin_uploaded_media', encoded);
       await prefs.setString('flutter.zion_admin_uploaded_media', encoded);
 
-      // 2. Also push to Web Portal Sync API if reachable
+      // 2. Write to Cloud Firestore `sermons` collection when authenticated as leader/admin
       try {
-        final urls = [
-          'http://localhost:5173/api/sync/sermons',
-          if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
-            'http://10.0.2.2:5173/api/sync/sermons',
-        ];
-        for (final u in urls) {
-          http
-              .post(
-                Uri.parse(u),
-                headers: {'Content-Type': 'application/json'},
-                body: jsonEncode(itemMap),
-              )
-              .catchError((_) => http.Response('', 500));
-        }
-      } catch (_) {}
+        await FirebaseFirestore.instance.collection('sermons').doc(id).set({
+          'title': title,
+          'preacher': preacher,
+          'scripture': scripture,
+          'duration': duration,
+          'type': type,
+          'category': category,
+          'mediaUrl': mediaUrl,
+          'imageUrl': itemMap['imageUrl'],
+          'description': itemMap['description'],
+          'createdAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
+      } catch (e) {
+        debugPrint('Firestore sermon write skipped (offline or unauthenticated): $e');
+      }
+
+      // 3. Also push to Web Portal Sync API if reachable in debug mode
+      if (kDebugMode) {
+        try {
+          final urls = [
+            'http://localhost:5173/api/sync/sermons',
+            if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
+              'http://10.0.2.2:5173/api/sync/sermons',
+          ];
+          for (final u in urls) {
+            http
+                .post(
+                  Uri.parse(u),
+                  headers: {'Content-Type': 'application/json'},
+                  body: jsonEncode(itemMap),
+                )
+                .catchError((_) => http.Response('', 500));
+          }
+        } catch (_) {}
+      }
 
       notifyListeners();
     } catch (e) {
@@ -359,14 +441,21 @@ class ChurchSyncService extends ChangeNotifier {
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      if (bishop != null) await prefs.setString('custom_bishop', bishop);
-      if (coLeader != null) await prefs.setString('custom_co_leader', coLeader);
-      if (assistant != null)
+      if (bishop != null) {
+        await prefs.setString('custom_bishop', bishop);
+      }
+      if (coLeader != null) {
+        await prefs.setString('custom_co_leader', coLeader);
+      }
+      if (assistant != null) {
         await prefs.setString('custom_assistant', assistant);
-      if (assistantPhone != null)
+      }
+      if (assistantPhone != null) {
         await prefs.setString('custom_assistant_phone', assistantPhone);
-      if (photoUrl != null)
+      }
+      if (photoUrl != null) {
         await prefs.setString('custom_leadership_photo', photoUrl);
+      }
       notifyListeners();
     } catch (e) {
       debugPrint('ChurchSyncService syncLeadershipInfo error: $e');
@@ -434,20 +523,43 @@ class ChurchSyncService extends ChangeNotifier {
           .map((m) => Map<String, dynamic>.from(m))
           .toList();
 
-      // Push to Vite Sync API
-      final urls = [
-        'http://localhost:5173/api/sync/prayers',
-        if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
-          'http://10.0.2.2:5173/api/sync/prayers',
-      ];
-      for (final u in urls) {
-        http
-            .post(
-              Uri.parse(u),
-              headers: {'Content-Type': 'application/json'},
-              body: jsonEncode(prayerMap),
-            )
-            .catchError((_) => http.Response('', 500));
+      // Push to Cloud Firestore `prayer_requests` collection (matches firestore.rules)
+      final auth = ChurchAuthService();
+      if (auth.uid != null) {
+        try {
+          await FirebaseFirestore.instance
+              .collection('prayer_requests')
+              .doc(id)
+              .set({
+            'title': title,
+            'senderName': author,
+            'requestText': description,
+            'urgency': urgency,
+            'userId': auth.uid,
+            'isAnswered': false,
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+        } catch (e) {
+          debugPrint('Firestore prayer_requests write skipped: $e');
+        }
+      }
+
+      // Push to Vite Sync API in debug mode
+      if (kDebugMode) {
+        final urls = [
+          'http://localhost:5173/api/sync/prayers',
+          if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
+            'http://10.0.2.2:5173/api/sync/prayers',
+        ];
+        for (final u in urls) {
+          http
+              .post(
+                Uri.parse(u),
+                headers: {'Content-Type': 'application/json'},
+                body: jsonEncode(prayerMap),
+              )
+              .catchError((_) => http.Response('', 500));
+        }
       }
 
       notifyListeners();
@@ -526,8 +638,9 @@ class ChurchSyncService extends ChangeNotifier {
         } catch (_) {}
       }
 
+      final visitorId = 'vis-${DateTime.now().millisecondsSinceEpoch}';
       final visitorMap = {
-        'id': 'vis-${DateTime.now().millisecondsSinceEpoch}',
+        'id': visitorId,
         'fullName': fullName,
         'phone': phone,
         'residence': residence.isNotEmpty ? residence : 'Mbagala',
@@ -547,20 +660,45 @@ class ChurchSyncService extends ChangeNotifier {
       await prefs.setString('zion_portal_visitors', encoded);
       await prefs.setString('flutter.zion_portal_visitors', encoded);
 
-      // Push to Vite Sync API
-      final urls = [
-        'http://localhost:5173/api/sync/visitors',
-        if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
-          'http://10.0.2.2:5173/api/sync/visitors',
-      ];
-      for (final u in urls) {
-        http
-            .post(
-              Uri.parse(u),
-              headers: {'Content-Type': 'application/json'},
-              body: jsonEncode(visitorMap),
-            )
-            .catchError((_) => http.Response('', 500));
+      // Push to Cloud Firestore `visitors_registry` collection (matches firestore.rules)
+      final auth = ChurchAuthService();
+      if (auth.uid != null) {
+        try {
+          await FirebaseFirestore.instance
+              .collection('visitors_registry')
+              .doc(visitorId)
+              .set({
+            'fullName': fullName,
+            'phone': phone,
+            'residence': residence.isNotEmpty ? residence : 'Mbagala',
+            'assignedJumuiya': assignedJumuiya,
+            'prayerRequest':
+                prayerRequest.isNotEmpty ? prayerRequest : 'Maombi ya Baraka',
+            'followUpStatus': 'Mpya',
+            'consent': true,
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+        } catch (e) {
+          debugPrint('Firestore visitors_registry write skipped: $e');
+        }
+      }
+
+      // Push to Vite Sync API in debug mode
+      if (kDebugMode) {
+        final urls = [
+          'http://localhost:5173/api/sync/visitors',
+          if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android)
+            'http://10.0.2.2:5173/api/sync/visitors',
+        ];
+        for (final u in urls) {
+          http
+              .post(
+                Uri.parse(u),
+                headers: {'Content-Type': 'application/json'},
+                body: jsonEncode(visitorMap),
+              )
+              .catchError((_) => http.Response('', 500));
+        }
       }
 
       notifyListeners();
@@ -572,6 +710,7 @@ class ChurchSyncService extends ChangeNotifier {
   @override
   void dispose() {
     _firestoreSubscription?.cancel();
+    _sermonsSubscription?.cancel();
     _syncTimer?.cancel();
     super.dispose();
   }

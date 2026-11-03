@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { MobileNav } from './components/MobileNav';
 import { Dashboard } from './components/Dashboard';
+import { ChurchHealth } from './components/ChurchHealth';
 import { FinanceModule } from './components/FinanceModule';
 import { JumuiyaModule } from './components/JumuiyaModule';
 import { CertificateStudio } from './components/CertificateStudio';
@@ -14,9 +15,12 @@ import { EldersPortal } from './components/EldersPortal';
 import { ChoirPortal } from './components/ChoirPortal';
 import { DepartmentsPortal } from './components/DepartmentsPortal';
 import { DeaconsPortal } from './components/DeaconsPortal';
+import { MediaContentStudio } from './components/MediaContentStudio';
+import { LeadershipAnalyticsView } from './components/LeadershipAnalyticsView';
 
 import type { UserRole, Language, FinancialRecord, FinancialProject, ChurchExpense, JumuiyaReport, JumuiyaGroup } from './types';
 import { AuthService, type PortalUser } from './services/authService';
+import { PrivacyAnalyticsService } from './services/privacyAnalyticsService';
 import { loadStored, saveStored, STORAGE_KEYS } from './utils/storage';
 import { AuthModal } from './components/AuthModal';
 import { 
@@ -36,6 +40,7 @@ export function App() {
   const [userRole, setUserRole] = useState<UserRole>('guest');
   const [language, setLanguage] = useState<Language>('sw');
   const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
+  const [analyticsSubTab, setAnalyticsSubTab] = useState<'telemetry' | 'operations'>('telemetry');
   const isSw = language === 'sw';
 
   useEffect(() => {
@@ -47,6 +52,10 @@ export function App() {
     });
 
     return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    PrivacyAnalyticsService.recordEvent('app_launch');
   }, []);
 
   // Shared Application State
@@ -153,6 +162,60 @@ export function App() {
             recentReports={reports}
             totalIncome={totalIncome}
           />
+        )}
+
+        {activeTab === 'analytics' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap' }}>
+              <button
+                onClick={() => setAnalyticsSubTab('telemetry')}
+                style={{
+                  padding: '0.55rem 1.15rem',
+                  borderRadius: '20px',
+                  border: analyticsSubTab === 'telemetry' ? '2px solid #0D52CD' : '1px solid var(--border-color)',
+                  backgroundColor: analyticsSubTab === 'telemetry' ? 'rgba(13, 82, 205, 0.12)' : 'var(--surface)',
+                  color: analyticsSubTab === 'telemetry' ? '#0D52CD' : 'var(--text-main)',
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  cursor: 'pointer'
+                }}
+              >
+                {isSw ? 'Takwimu za Kiroho & Faragha' : 'Spiritual Pulse & Privacy'}
+              </button>
+              <button
+                onClick={() => setAnalyticsSubTab('operations')}
+                style={{
+                  padding: '0.55rem 1.15rem',
+                  borderRadius: '20px',
+                  border: analyticsSubTab === 'operations' ? '2px solid #0D52CD' : '1px solid var(--border-color)',
+                  backgroundColor: analyticsSubTab === 'operations' ? 'rgba(13, 82, 205, 0.12)' : 'var(--surface)',
+                  color: analyticsSubTab === 'operations' ? '#0D52CD' : 'var(--text-main)',
+                  fontWeight: 700,
+                  fontSize: '0.85rem',
+                  cursor: 'pointer'
+                }}
+              >
+                {isSw ? 'Afya ya Kiutawala, Fedha & Jumuiya' : 'Church Operations & Finance Health'}
+              </button>
+            </div>
+
+            {analyticsSubTab === 'telemetry' ? (
+              <LeadershipAnalyticsView language={language} reports={reports} />
+            ) : (
+              <ChurchHealth
+                language={language}
+                reports={reports}
+                finances={finances}
+                expenses={expenses}
+                projects={projects}
+                groups={groups}
+              />
+            )}
+          </div>
+        )}
+
+        {activeTab === 'media_studio' && (
+          <MediaContentStudio language={language} />
         )}
 
         {activeTab === 'pastor_portal' && (

@@ -149,6 +149,15 @@ html, body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Prevent iOS Safari auto-zoom on form focus when using touch devices */
+@media (pointer: coarse) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
 }
 
 /* Headings with Guaranteed Contrast */
@@ -195,12 +204,29 @@ button {
   cursor: pointer;
   border: none;
   background: none;
-  transition: all var(--transition-fast);
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 120ms cubic-bezier(0.22, 1, 0.36, 1), background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast), opacity var(--transition-fast);
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 a {
   color: inherit;
   text-decoration: none;
+  touch-action: manipulation;
 }
 
 /* Material Symbols Outlined styling */
@@ -226,6 +252,7 @@ a {
 
 .portal-root {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   background-color: var(--surface);
 }
@@ -886,13 +913,97 @@ a {
   }
   .portal-topbar {
     left: 0;
-    padding: 0 1rem;
+    padding: 0 0.85rem;
+    height: 58px;
+    transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease;
+  }
+  .portal-topbar.topbar-hidden-mobile {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
   }
   .mobile-bottom-bar {
     display: block;
   }
   .portal-main-area {
-    padding: 76px 1rem 6rem 1rem;
+    padding: 68px 0.9rem 6.25rem 0.9rem;
+  }
+}
+
+/* Smooth page/tab entry & scroll reveal animations */
+@keyframes viewFadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.portal-main-area > * {
+  animation: viewFadeSlideIn 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.portal-nav-section-label {
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+  padding: 0.55rem 0.85rem 0.25rem 0.85rem;
+  opacity: 0.82;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.viongozi-quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  gap: 0.6rem;
+}
+
+.viongozi-quick-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), background-color 180ms ease;
+  text-align: left;
+}
+
+.viongozi-quick-action-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateY(-2px);
+}
+
+.dashboard-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.dashboard-split-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+  .dashboard-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
   }
 }
 
@@ -902,6 +1013,74 @@ a {
   }
   .portal-search-wrap {
     max-width: 100%;
+  }
+  .viongozi-quick-actions-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+  .viongozi-quick-action-btn {
+    padding: 0.55rem 0.65rem;
+    font-size: 0.75rem;
+  }
+  .dashboard-hero-banner {
+    padding: 1.15rem 1rem !important;
+  }
+  .dashboard-hero-title {
+    font-size: 1.22rem !important;
+  }
+  .dashboard-kpi-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.65rem !important;
+  }
+  .dashboard-kpi-grid .church-card {
+    padding: 0.85rem !important;
+    gap: 0.65rem !important;
+  }
+  .dashboard-split-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+  .portal-banner {
+    padding: 1.15rem 1rem !important;
+    gap: 0.85rem !important;
+    border-radius: 16px !important;
+  }
+  .portal-banner-icon {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 12px !important;
+  }
+  .portal-title {
+    font-size: 1.25rem !important;
+  }
+  .portal-subtitle {
+    font-size: 0.82rem !important;
+    line-height: 1.4 !important;
+  }
+  .portal-metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.65rem !important;
+  }
+  .portal-metric-card {
+    padding: 0.85rem !important;
+    gap: 0.65rem !important;
+    border-radius: 14px !important;
+  }
+  .metric-icon {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 10px !important;
+  }
+  .metric-value {
+    font-size: 1.25rem !important;
+  }
+  .metric-label {
+    font-size: 0.72rem !important;
+  }
+  .church-card,
+  .stitch-card {
+    padding: 1rem !important;
+    border-radius: 14px !important;
   }
 }
 
@@ -1548,7 +1727,7 @@ a {
 .mobile-dock-wrapper {
   display: none;
   position: fixed;
-  bottom: 16px;
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
   left: 0;
   right: 0;
   z-index: 100;
@@ -1556,6 +1735,12 @@ a {
   align-items: center;
   padding: 0 1rem;
   pointer-events: none;
+  transition: transform 250ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease;
+}
+
+.mobile-dock-wrapper.dock-scrolling-down {
+  transform: translateY(10px) scale(0.93);
+  opacity: 0.88;
 }
 
 .mobile-dock-container {
@@ -1570,6 +1755,13 @@ a {
   padding: 0.4rem 0.65rem;
   border-radius: 9999px;
   box-shadow: 0 14px 34px -4px rgba(0, 0, 0, 0.45), 0 0 16px rgba(13, 82, 205, 0.22);
+  max-width: calc(100vw - 2rem);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.mobile-dock-container::-webkit-scrollbar {
+  display: none;
 }
 
 .mobile-dock-btn {
@@ -2024,11 +2216,59 @@ a {
   .portal-sidebar,
   .portal-sidebar-backdrop,
   .printable-report-actions-bar,
+  .viongozi-quick-actions-grid,
+  .portal-controls-bar,
+  .portal-metrics-grid,
+  .portal-banner,
+  .portal-records-list,
+  .portal-search-box,
+  .portal-section-header,
   header,
   footer,
   aside,
   nav {
-    display: none !important;
+  /* 100% BULLETPROOF PRINT ISOLATION:
+     When printing an official report sheet or bulletin, only .printable-document-sheet is visible.
+     All other DOM elements are completely hidden from print output. */
+  body:has(.printable-document-sheet) * {
+    visibility: hidden !important;
+  }
+
+  body:has(.printable-document-sheet) .printable-document-sheet,
+  body:has(.printable-document-sheet) .printable-document-sheet * {
+    visibility: visible !important;
+  }
+
+  body:has(.printable-document-sheet) .printable-document-sheet {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 8mm 10mm !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* When printing dashboard bulletin */
+  body:has(#printable-church-bulletin) * {
+    visibility: hidden !important;
+  }
+
+  body:has(#printable-church-bulletin) #printable-church-bulletin,
+  body:has(#printable-church-bulletin) #printable-church-bulletin * {
+    visibility: visible !important;
+  }
+
+  body:has(#printable-church-bulletin) #printable-church-bulletin {
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 8mm 10mm !important;
+    box-shadow: none !important;
+    border: none !important;
   }
 
   .portal-root,
@@ -2045,13 +2285,23 @@ a {
     position: static !important;
     background: transparent !important;
     padding: 0 !important;
+    display: block !important;
+    overflow: visible !important;
   }
 
   .printable-document-sheet {
     box-shadow: none !important;
-    padding: 0 !important;
+    border: none !important;
+    padding: 10mm 12mm !important;
     max-width: 100% !important;
     min-height: auto !important;
+    display: block !important;
+  }
+
+  #printable-church-bulletin {
+    padding: 10mm !important;
+    box-shadow: none !important;
+    border: none !important;
   }
 
   /* Certificate Studio Print Perfection */

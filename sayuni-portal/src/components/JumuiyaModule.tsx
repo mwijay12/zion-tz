@@ -9,10 +9,14 @@ import {
   Calendar,
   BookOpen,
   Heart,
-  AlertTriangle
+  AlertTriangle,
+  FileSpreadsheet,
+  Download
 } from 'lucide-react';
 import type { Language, UserRole, JumuiyaGroup, JumuiyaReport, FinancialRecord } from '../types';
 import { createId } from '../utils/id';
+import { ChurchDataBackupService } from '../services/churchDataBackupService';
+import { generateJumuiyaReportPdf } from '../services/officialPdfService';
 
 interface JumuiyaModuleProps {
   language: Language;
@@ -125,14 +129,25 @@ export const JumuiyaModule: React.FC<JumuiyaModuleProps> = ({
           </h2>
         </div>
 
-        <button 
-          onClick={() => setShowNewReportModal(true)} 
-          className="btn-gold"
-          style={{ fontSize: '0.88rem' }}
-        >
-          <Plus size={16} />
-          <span>{isSw ? 'Wasilisha Ripoti ya Wiki' : 'Submit Weekly Report'}</span>
-        </button>
+        <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap' }}>
+          <button 
+            onClick={() => ChurchDataBackupService.downloadJumuiyaReportsCsv()}
+            className="btn-secondary"
+            style={{ fontSize: '0.88rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+            title={isSw ? 'Pakua ripoti zote kwenda Excel / Google Sheets' : 'Download all reports for Excel / Google Sheets'}
+          >
+            <FileSpreadsheet size={16} />
+            <span>{isSw ? 'Hamisha (Excel / Sheets)' : 'Export Sheets (CSV)'}</span>
+          </button>
+          <button 
+            onClick={() => setShowNewReportModal(true)} 
+            className="btn-gold"
+            style={{ fontSize: '0.88rem' }}
+          >
+            <Plus size={16} />
+            <span>{isSw ? 'Wasilisha Ripoti ya Wiki' : 'Submit Weekly Report'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Summary KPI Cards */}
@@ -379,15 +394,26 @@ export const JumuiyaModule: React.FC<JumuiyaModuleProps> = ({
                 }}>
                   <span>{isSw ? 'Imewasilishwa na:' : 'Submitted by:'} <strong>{report.submittedBy}</strong> • {report.submittedAt}</span>
                   
-                  <button
-                    onClick={() => window.print()}
-                    className="btn-secondary"
-                    style={{ fontSize: '0.75rem', padding: '0.25rem 0.65rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}
-                    title={isSw ? 'Print kwa ajili ya faili ngumu (Stationery Backup)' : 'Print for hardcopy filing'}
-                  >
-                    <Printer size={13} />
-                    <span>{isSw ? 'Print Nakala ya Faili (Backup)' : 'Print File Copy'}</span>
-                  </button>
+                  <div style={{ display: 'flex', gap: '0.4rem' }}>
+                    <button
+                      onClick={() => generateJumuiyaReportPdf(report, 'open')}
+                      className="btn-secondary"
+                      style={{ fontSize: '0.75rem', padding: '0.25rem 0.65rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+                      title={isSw ? 'Fungua / Chapa ripoti halisi ya PDF' : 'Print PDF'}
+                    >
+                      <Printer size={13} />
+                      <span>{isSw ? 'Chapa PDF' : 'Print PDF'}</span>
+                    </button>
+                    <button
+                      onClick={() => generateJumuiyaReportPdf(report, 'download')}
+                      className="btn-secondary"
+                      style={{ fontSize: '0.75rem', padding: '0.25rem 0.6rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+                      title={isSw ? 'Pakua faili la PDF la ripoti hii' : 'Download PDF'}
+                    >
+                      <Download size={13} />
+                      <span>Pakua</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             );

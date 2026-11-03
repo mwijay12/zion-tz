@@ -211,10 +211,79 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           </button>
         </form>
 
-        <p style={{ margin: '1rem 0 0 0', fontSize: '0.74rem', color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.5 }}>
+        {/* Quick Test Login Buttons for Local Dev / Wi-Fi Testing */}
+        <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle)', textAlign: 'center' }}>
+          <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.6rem', fontWeight: 700 }}>
+            {isSw ? '⚡ Jaribu Moja kwa Moja (Quick Dev Access):' : '⚡ Quick Demo Roles:'}
+          </span>
+          <div style={{ display: 'flex', gap: '0.45rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={async () => {
+                const u = await AuthService.loginAsDemo('super_admin');
+                onLoginSuccess(u);
+              }}
+              style={{
+                padding: '0.4rem 0.75rem',
+                borderRadius: '8px',
+                border: '1px solid var(--border-color)',
+                backgroundColor: 'var(--surface-variant)',
+                color: 'var(--text-main)',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                cursor: 'pointer'
+              }}
+              title="Super Admin na Mamlaka Kamili"
+            >
+              👑 Super Admin
+            </button>
+            <button
+              type="button"
+              onClick={async () => {
+                const u = await AuthService.loginAsDemo('pastor');
+                onLoginSuccess(u);
+              }}
+              style={{
+                padding: '0.4rem 0.75rem',
+                borderRadius: '8px',
+                border: '1px solid var(--border-color)',
+                backgroundColor: 'var(--surface-variant)',
+                color: 'var(--text-main)',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                cursor: 'pointer'
+              }}
+              title="Mchungaji Askofu Mercy Mgalla"
+            >
+              ✝️ Askofu Mercy
+            </button>
+            <button
+              type="button"
+              onClick={async () => {
+                const u = await AuthService.loginAsDemo('secretary');
+                onLoginSuccess(u);
+              }}
+              style={{
+                padding: '0.4rem 0.75rem',
+                borderRadius: '8px',
+                border: '1px solid var(--border-color)',
+                backgroundColor: 'var(--surface-variant)',
+                color: 'var(--text-main)',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                cursor: 'pointer'
+              }}
+              title="Katibu Mkuu wa Kanisa"
+            >
+              📜 Katibu Mkuu
+            </button>
+          </div>
+        </div>
+
+        <p style={{ margin: '0.85rem 0 0 0', fontSize: '0.74rem', color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.5 }}>
           {isSw
-            ? 'Huna akaunti? Wasiliana na msimamizi wa kanisa ili upewe wadhifa.'
-            : 'No account? Contact the church administrator to be assigned a role.'}
+            ? 'Akaunti Rasmi ya Firebase: mwijaydavie@gmail.com'
+            : 'Official Firebase Admin: mwijaydavie@gmail.com'}
         </p>
 
         {onClose && (

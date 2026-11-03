@@ -14,7 +14,9 @@ import type {
   PastoralPoster,
   ElderCounselingCase,
   ChoirSong,
-  DepartmentInfo
+  DepartmentInfo,
+  ChurchFastingCampaign,
+  MemberSkillListing
 } from '../types';
 
 export const CHURCH_PROFILE = {
@@ -22,7 +24,7 @@ export const CHURCH_PROFILE = {
   nameSw: 'KANISA LA SAYUNI YERUSALEMU',
   motto: 'Mwanga wa Mataifa na Nyumba ya Maombi',
   mottoEn: 'Light of the Nations and House of Prayer',
-  headPastor: 'Mchungaji Askofu Messi Mgala',
+  headPastor: 'Mchungaji Askofu Mercy Mgalla',
   bishopHusband: 'James Robert',
   eldersBoard: 'Baraza la Wazee wa Kanisa',
   churchSecretary: 'Sekretarieti ya Kanisa',
@@ -93,7 +95,7 @@ export const SUNDAY_SCHEDULE: SundayScheduleItem[] = [
   {
     time: '11:30 - 13:00',
     title: 'Neno la Mungu & Maombezi',
-    desc: 'Ujumbe kuu kutoka kwa Mchungaji Askofu Messi Mgala na maombi ya hitaji.'
+    desc: 'Ujumbe kuu kutoka kwa Mchungaji Askofu Mercy Mgalla na maombi ya hitaji.'
   }
 ];
 
@@ -108,9 +110,9 @@ export const INITIAL_BULLETIN_NOTICES: BulletinNotice[] = [
   },
   {
     id: 'bul-2',
-    title: 'Mkutano Maalum wa Wazee wa Kanisa na Askofu Messi Mgala',
+    title: 'Mkutano Maalum wa Wazee wa Kanisa na Askofu Mercy Mgalla',
     category: 'Taarifa Kuu',
-    content: 'Baraza la Wazee wa Kanisa litakutana na Mchungaji Askofu Messi Mgala na Ndg. James Robert mara baada ya ibada ya pili kwa ajili ya mapitio ya robo mwaka.',
+    content: 'Baraza la Wazee wa Kanisa litakutana na Mchungaji Askofu Mercy Mgalla na Ndg. James Robert mara baada ya ibada ya pili kwa ajili ya mapitio ya robo mwaka.',
     date: 'Jumapili, 06 Septemba 2026',
     isUrgent: true
   },
@@ -278,7 +280,7 @@ export const INITIAL_EXPENSES: ChurchExpense[] = [
     title: 'Malipo ya Umeme (LUKU) & Maji ya Kanisa Kwa Matope',
     category: 'Utilities',
     amount: 180000,
-    approvedBy: 'Mchungaji Askofu Messi Mgala',
+    approvedBy: 'Mchungaji Askofu Mercy Mgalla',
     isApproved: true
   },
   {
@@ -296,7 +298,7 @@ export const INITIAL_EXPENSES: ChurchExpense[] = [
     title: 'Msaada wa Dawa kwa Mjane Mama Anna - Mbagala',
     category: 'Benevolence',
     amount: 150000,
-    approvedBy: 'Mchungaji Askofu Messi Mgala',
+    approvedBy: 'Mchungaji Askofu Mercy Mgalla',
     isApproved: true
   },
   {
@@ -352,7 +354,7 @@ export const INITIAL_JUMUIYA_REPORTS: JumuiyaReport[] = [
 export const INITIAL_MEMBERS: ChurchMember[] = [
   {
     id: 'mem-1',
-    fullName: 'Mchungaji Askofu Messi Mgala',
+    fullName: 'Mchungaji Askofu Mercy Mgalla',
     phone: '+255 754 000 001',
     gender: 'Female',
     ageGroup: 'Adult',
@@ -492,7 +494,7 @@ export const INITIAL_SERMONS: SermonItem[] = [
   {
     id: 'sermon-1',
     title: 'Kusimama Imara Katika Maombi na Tabia ya Uadilifu',
-    preacher: 'Mchungaji Askofu Messi Mgala',
+    preacher: 'Mchungaji Askofu Mercy Mgalla',
     date: '2026-08-30',
     scripture: 'Waefeso 6:10-18',
     summary: 'Mafundisho maalum ya kiaskofu juu ya silaha zote za Mungu, ushindi dhidi ya majaribu ya nyakati hizi, na umuhimu wa nidhamu ya maombi ya siri na ya pamoja.',
@@ -504,7 +506,7 @@ export const INITIAL_SERMONS: SermonItem[] = [
   {
     id: 'sermon-2',
     title: 'Nguvu ya Neno la Mungu Ndani ya Familia na Ndoa',
-    preacher: 'Mchungaji Askofu Messi Mgala',
+    preacher: 'Mchungaji Askofu Mercy Mgalla',
     date: '2026-08-23',
     scripture: 'Kumbukumbu la Torati 6:4-9',
     summary: 'Umuhimu wa madhabahu ya familia nyumbani (Family Altar), kulea watoto katika njia impasayo, na jinsi amani ya ndoa inavyofungua milango ya baraka za kiuchumi.',
@@ -533,8 +535,8 @@ export const INITIAL_POSTERS: PastoralPoster[] = [
     eventDate: 'Ijumaa, 25 Septemba 2026 • Saa 3:00 Usiku Mpaka Asubuhi',
     location: 'Kanisa Kuu la Sayuni Yerusalemu, Kwa Matope - Mbagala',
     imageUrl: 'pastoral_leadership.jpg',
-    description: 'Mkesha mkubwa wa maombezi, kufunguliwa, na kuvuka viwango vya kiroho. Huduma ya maombezi itaongozwa na Mchungaji Askofu Messi Mgala.',
-    speaker: 'Mchungaji Askofu Messi Mgala & Wachungaji Wageni',
+    description: 'Mkesha mkubwa wa maombezi, kufunguliwa, na kuvuka viwango vya kiroho. Huduma ya maombezi itaongozwa na Mchungaji Askofu Mercy Mgalla.',
+    speaker: 'Mchungaji Askofu Mercy Mgalla & Wachungaji Wageni',
     status: 'active'
   },
   {
@@ -554,7 +556,7 @@ export const INITIAL_POSTERS: PastoralPoster[] = [
     location: 'Uwanja wa Kanisa, Kwa Matope',
     imageUrl: 'zion_worship_choir.jpg',
     description: 'Tamasha kubwa la uimbaji linalohusisha Kwaya ya Galilaya, Kwaya ya Upendo, Kwaya ya Wamama, Kwaya ya Vijana na Praise & Worship Team.',
-    speaker: 'Mchungaji Askofu Messi Mgala',
+    speaker: 'Mchungaji Askofu Mercy Mgalla',
     status: 'upcoming'
   }
 ];
@@ -588,7 +590,7 @@ export const INITIAL_ELDER_CASES: ElderCounselingCase[] = [
     category: 'Ushauri Nasaha',
     date: '2026-09-01',
     status: 'pending_pastor',
-    notes: 'Vipindi 4 vya awali vya mafundisho ya wazee vimekamilika. Wanaripotiwa kwa Askofu Messi Mgala kwa hatua ya mwisho ya kiuchungaji.'
+    notes: 'Vipindi 4 vya awali vya mafundisho ya wazee vimekamilika. Wanaripotiwa kwa Askofu Mercy Mgalla kwa hatua ya mwisho ya kiuchungaji.'
   }
 ];
 
@@ -690,5 +692,90 @@ export const INITIAL_DEPARTMENTS: DepartmentInfo[] = [
     currentProject: 'Vitabu vya Hadithi za Biblia & Rangi',
     upcomingEvent: 'Sikukuu ya Watoto Kukariri Mistari ya Biblia (27 Septemba)',
     description: 'Kujenga msingi imara wa kiroho kwa watoto tangu wakiwa wadogo kwa upendo, hadithi za kimaandiko, na nyimbo za sifa.'
+  }
+];
+
+export const INITIAL_FASTING_CAMPAIGN: ChurchFastingCampaign = {
+  id: 'fast-sayuni-2026',
+  title: 'Mzunguko wa Mfungo wa Siku 7 wa Maombi na Kufunguliwa',
+  themeVerse: 'Isaya 58:6 — "Je! mfungo niliouchagua si wa namna hii? Kufungua vifungo vya uovu, kuzilegeza kamba za nira..."',
+  startDate: '2026-11-01',
+  endDate: '2026-11-08',
+  fastType: 'Saa 00:00 Usiku hadi Saa 12:00 Jioni',
+  guidelines: 'Kunywa maji pekee kwa wenye afya njema. Maombi ya asubuhi Saa 12:00 Asubuhi na jioni Saa 11:30 Jioni kanisani.',
+  isActive: true,
+  participantsCount: 143
+};
+
+export const INITIAL_MEMBER_SKILLS: MemberSkillListing[] = [
+  {
+    id: 'skill-david-mkulima',
+    fullName: 'David Mwita',
+    profession: 'Mkulima wa Mboga za Majani & Bustani',
+    category: 'Kilimo & Mifugo',
+    description: 'Nalima na kusambaza mboga safi za majani (mchicha, sukuma, matango, karoti, hoho) kwa bei nafuu ya kikanisa.',
+    phone: '+255 712 345 678',
+    location: 'Mbagala Charambe',
+    jumuiya: 'Jumuiya ya Bethlehemu',
+    experienceYears: 'Miaka 6',
+    isApproved: true,
+    isVerifiedMember: true,
+    createdAt: '2026-10-15'
+  },
+  {
+    id: 'skill-emmanuel-apps',
+    fullName: 'Eng. Emmanuel Mbise',
+    profession: 'Mhandisi wa Software & Mobile Apps',
+    category: 'Tehama & Apps',
+    description: 'Ninatengeneza mifumo ya biashara (POS, Accounting), website za kisasa, na applications za simu (Flutter).',
+    phone: '+255 713 000 302',
+    location: 'Mbagala Rangi Tatu',
+    jumuiya: 'Umoja wa Vijana (Youth)',
+    experienceYears: 'Miaka 5',
+    isApproved: true,
+    isVerifiedMember: true,
+    createdAt: '2026-10-18'
+  },
+  {
+    id: 'skill-sarah-tailor',
+    fullName: 'Mama Sarah Mgalla',
+    profession: 'Mbunifu wa Nguo & Sare za Harusi',
+    category: 'Mavazi & Urembo',
+    description: 'Ninashona gauni za harusi, suti za kiume, sare za kwaya, na nguo za watoto kwa ufundi wa hali ya juu.',
+    phone: '+255 755 000 303',
+    location: 'Mbagala Kwa Matope',
+    jumuiya: 'Umoja wa Wanawake (Wamama)',
+    experienceYears: 'Miaka 12',
+    isApproved: true,
+    isVerifiedMember: true,
+    createdAt: '2026-10-20'
+  },
+  {
+    id: 'skill-mary-health',
+    fullName: 'Dr. Mary Kimaro',
+    profession: 'Afisa Afya ya Jamii & Duka la Dawa',
+    category: 'Afya & Ustawi',
+    description: 'Ninamiliki duka la dawa lililosajiliwa. Natoa vipimo vya presha, sukari na ushauri wa lishe kwa waumini.',
+    phone: '+255 754 888 999',
+    location: 'Mbagala Kijichi',
+    jumuiya: 'Jumuiya ya Galilaya',
+    experienceYears: 'Miaka 10',
+    isApproved: true,
+    isVerifiedMember: true,
+    createdAt: '2026-10-22'
+  },
+  {
+    id: 'skill-grace-teacher',
+    fullName: 'Mwl. Grace Malisa',
+    profession: 'Mwalimu wa Sayansi & Tuition ya Watoto',
+    category: 'Elimu & Mafunzo',
+    description: 'Nafundisha Hisabati, Fizikia na Kemia kwa sekondari (Form 1 - Form 4). Pia nina klabu ya usomaji ya Sunday School.',
+    phone: '+255 714 000 305',
+    location: 'Charambe Mwisho',
+    jumuiya: 'Jumuiya ya Yerusalemu',
+    experienceYears: 'Miaka 7',
+    isApproved: true,
+    isVerifiedMember: true,
+    createdAt: '2026-10-24'
   }
 ];

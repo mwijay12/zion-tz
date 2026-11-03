@@ -31,7 +31,7 @@ class ChurchBranch {
       name: 'Sayuni Yerusalemu — Makao Makuu (HQ)',
       city: 'Dar es Salaam',
       location: 'Mbagala Kwa Matope, Wilaya ya Temeke',
-      pastor: 'Mchungaji Askofu Messi Mgala',
+      pastor: 'Mchungaji Askofu Mercy Mgalla',
       phone: '+255754000111',
       whatsapp: '255754000111',
       email: 'info@zionjerusalem.org',

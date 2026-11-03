@@ -283,78 +283,114 @@ class _GivingScreenState extends State<GivingScreen> {
     const raised = GivingService.buildingRaised;
     const progress = raised / target;
 
-    return AppCard(
-      backgroundColor: AppColors.surface,
-      borderColor: AppColors.gold,
-      padding: const EdgeInsets.all(18),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0.0, end: progress),
+      duration: const Duration(milliseconds: 1400),
+      curve: Curves.easeOutCubic,
+      builder: (context, animatedValue, child) {
+        final animatedPercent = (animatedValue * 100).toInt();
+        return AppCard(
+          backgroundColor: AppColors.surface,
+          borderColor: AppColors.gold,
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppColors.goldContainer,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  'MRADI WA KANISA',
-                  style:
-                      AppTypography.caption(color: AppColors.onGoldContainer),
-                ),
-              ),
-              Text(
-                '${(progress * 100).toInt()}% Imekamilika',
-                style: AppTypography.labelLarge(color: AppColors.gold),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            GivingService.buildingProjectName,
-            style: AppTypography.titleMedium(color: AppColors.textPrimary),
-          ),
-          const SizedBox(height: 8),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: LinearProgressIndicator(
-              value: progress,
-              minHeight: 8,
-              backgroundColor: AppColors.surfaceContainer,
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Zilizopatikana',
-                      style: AppTypography.caption(color: AppColors.textMuted)),
-                  Text(AppFormatters.formatTsh(raised),
-                      style: AppTypography.labelLarge(
-                          color: AppColors.textPrimary)),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text('Lengo Kuu',
-                      style: AppTypography.caption(color: AppColors.textMuted)),
-                  Text(AppFormatters.formatTsh(target),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.goldContainer,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      'MRADI WA KANISA',
                       style:
-                          AppTypography.labelLarge(color: AppColors.primary)),
+                          AppTypography.caption(color: AppColors.onGoldContainer),
+                    ),
+                  ),
+                  Text(
+                    '$animatedPercent% Imekamilika',
+                    style: AppTypography.labelLarge(color: AppColors.gold),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                GivingService.buildingProjectName,
+                style: AppTypography.titleMedium(color: AppColors.textPrimary),
+              ),
+              const SizedBox(height: 10),
+              Stack(
+                children: [
+                  Container(
+                    height: 10,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceContainer,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  FractionallySizedBox(
+                    widthFactor: animatedValue.clamp(0.0, 1.0),
+                    child: Container(
+                      height: 10,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFFB8860B),
+                            Color(0xFFD4A847),
+                            Color(0xFFFFDF73),
+                          ],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.gold.withOpacity(0.45),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 14),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Zilizopatikana',
+                          style: AppTypography.caption(color: AppColors.textMuted)),
+                      Text(AppFormatters.formatTsh((target * animatedValue).roundToDouble()),
+                          style: AppTypography.labelLarge(
+                              color: AppColors.textPrimary)),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text('Lengo Kuu',
+                          style: AppTypography.caption(color: AppColors.textMuted)),
+                      Text(AppFormatters.formatTsh(target),
+                          style:
+                              AppTypography.labelLarge(color: AppColors.primary)),
+                    ],
+                  ),
                 ],
               ),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

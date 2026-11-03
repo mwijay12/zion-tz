@@ -7,11 +7,15 @@ import {
   DollarSign, 
   ShieldCheck,
   Wallet,
-  Calendar
+  Calendar,
+  FileSpreadsheet,
+  Download
 } from 'lucide-react';
 import type { Language, UserRole, FinancialRecord, FinancialProject, ChurchExpense } from '../types';
 import { CHURCH_PROFILE } from '../data/mockData';
 import { createId } from '../utils/id';
+import { ChurchDataBackupService } from '../services/churchDataBackupService';
+import { generateFinanceStatementPdf } from '../services/officialPdfService';
 
 interface FinanceModuleProps {
   language: Language;
@@ -137,7 +141,16 @@ export const FinanceModule: React.FC<FinanceModuleProps> = ({
           </h2>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.65rem' }}>
+        <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap' }}>
+          <button
+            onClick={() => ChurchDataBackupService.downloadFinancesCsv()}
+            className="btn-secondary"
+            style={{ fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}
+            title={isSw ? 'Pakua orodha ya fedha kwenda Excel / Google Sheets' : 'Download finances for Excel / Google Sheets'}
+          >
+            <FileSpreadsheet size={16} />
+            <span>{isSw ? 'Hamisha (Excel / Sheets)' : 'Export Sheets (CSV)'}</span>
+          </button>
           {canRecordFinance && (
             <>
               <button 
@@ -419,14 +432,26 @@ export const FinanceModule: React.FC<FinanceModuleProps> = ({
                 {isSw ? 'TAARIFA YA MAPATO NA MATUMIZI YA FEDHA' : 'MONTHLY FINANCIAL STATEMENT REPORT'}
               </h3>
             </div>
-            <button 
-              onClick={() => window.print()} 
-              className="btn-primary no-print"
-              style={{ padding: '0.5rem 1rem', fontSize: '0.85rem' }}
-            >
-              <Printer size={16} />
-              <span>{isSw ? 'Chapisha Taarifa (Print / PDF)' : 'Print Report'}</span>
-            </button>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button 
+                onClick={() => generateFinanceStatementPdf(finances, expenses, projects, 'open')} 
+                className="btn-primary no-print"
+                style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                title="Tengeneza na fungua ripoti halisi ya PDF"
+              >
+                <Printer size={16} />
+                <span>{isSw ? 'Chapa PDF Rasmi' : 'Print PDF'}</span>
+              </button>
+              <button 
+                onClick={() => generateFinanceStatementPdf(finances, expenses, projects, 'download')} 
+                className="btn-secondary no-print"
+                style={{ padding: '0.5rem 0.9rem', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                title="Pakua faili la PDF la taarifa ya fedha"
+              >
+                <Download size={15} />
+                <span>Pakua PDF</span>
+              </button>
+            </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '1.5rem' }}>

@@ -42,7 +42,7 @@ class MemberDirectoryService extends ChangeNotifier {
     ),
     MemberSkillProfile(
       id: 'member-sarah-tailor',
-      fullName: 'Mama Sarah Mgala',
+      fullName: 'Mama Sarah Mgalla',
       profession: 'Mbunifu wa Nguo & Sare za Harusi',
       category: 'Mavazi & Urembo',
       description:

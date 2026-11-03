@@ -21,6 +21,7 @@ import {
 import type { Language, SermonItem, PastoralPoster, JumuiyaReport } from '../types';
 import { CHURCH_PROFILE, INITIAL_POSTERS } from '../data/mockData';
 import { churchSync, type WarRoomPrayerRequest } from '../services/churchSyncService';
+import { PrivacyAnalyticsService } from '../services/privacyAnalyticsService';
 import { createId } from '../utils/id';
 import { loadStored, saveStored, STORAGE_KEYS } from '../utils/storage';
 import leadershipImg from '../assets/pastoral_leadership.jpg';
@@ -148,7 +149,7 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
           <div style={{ width: '92px', height: '92px', borderRadius: '50%', overflow: 'hidden', border: '3px solid #c59b27', flexShrink: 0, boxShadow: '0 0 16px rgba(13, 82, 205, 0.4)' }}>
             <img 
               src={leadershipImg} 
-              alt="Mchungaji Askofu Messi Mgala" 
+              alt="Mchungaji Askofu Mercy Mgalla" 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
           </div>
@@ -298,6 +299,10 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                       href={sermon.mediaUrl} 
                       target="_blank" 
                       rel="noreferrer"
+                      onClick={() => PrivacyAnalyticsService.recordEvent('sermon_listen', {
+                        id: sermon.id,
+                        title: sermon.title
+                      })}
                       className="btn-secondary"
                       style={{ fontSize: '0.75rem', padding: '0.3rem 0.65rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
                     >

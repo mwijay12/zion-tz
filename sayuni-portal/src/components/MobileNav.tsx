@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Church, 
   Wallet, 
   Home, 
-  Award, 
-  BookOpen, 
   ShieldCheck,
   Megaphone,
   Music,
   Users,
-  UserCheck
+  UserCheck,
+  BarChart3,
+  Sparkles
 } from 'lucide-react';
 import type { Language, UserRole } from '../types';
 import { AuthService, type PortalUser } from '../services/authService';
@@ -30,6 +30,23 @@ export const MobileNav: React.FC<MobileNavProps> = ({
   currentUser
 }) => {
   const isSw = language === 'sw';
+  const [isScrollingDown, setIsScrollingDown] = useState(false);
+
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const delta = currentScrollY - lastScrollY;
+      if (currentScrollY > 64 && delta > 8) {
+        setIsScrollingDown(true);
+      } else if (delta < -6 || currentScrollY <= 24) {
+        setIsScrollingDown(false);
+      }
+      lastScrollY = currentScrollY;
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Get active role portal info
   const getRolePortalTab = () => {
@@ -47,28 +64,41 @@ export const MobileNav: React.FC<MobileNavProps> = ({
       case 'treasurer':
         return { tab: 'finance', tooltip: isSw ? 'Hazina & Sadaka' : 'Treasury & Giving', icon: Wallet };
       case 'jumuiya_leader':
-        return { tab: 'jumuiya', tooltip: isSw ? 'Jumuiya' : 'Home Cells', icon: Users };
+        return { tab: 'jumuiya', tooltip: isSw ? 'Jumuiya' : 'Home Cells', icon: Home };
       default:
-        return { tab: 'dashboard', tooltip: isSw ? 'Dashibodi Kuu' : 'Dashboard', icon: Church };
+        return { tab: 'analytics', tooltip: isSw ? 'Afya ya Kanisa' : 'Church Health', icon: BarChart3 };
     }
   };
 
   const roleTab = getRolePortalTab();
   const RoleIcon = roleTab.icon;
 
-  const navItems = [
-    { id: 'dashboard', icon: Church, tooltip: isSw ? 'Dashibodi Kuu' : 'Dashboard' },
-    { id: 'finance', icon: Wallet, tooltip: isSw ? 'Fedha na Sadaka' : 'Finances & Offerings' },
-    { id: 'jumuiya', icon: Home, tooltip: isSw ? 'Jumuiya za Nyumbani' : 'Home Cells' },
-    { id: 'certificates', icon: Award, tooltip: isSw ? 'Vyeti Studio' : 'Certificates' },
-    { id: 'bible', icon: BookOpen, tooltip: isSw ? 'Biblia Takatifu' : 'Holy Bible' },
+  // Ordered priority list for leaders on mobile; deduplicated & capped at MAX 5 icons
+  // (All 14 modules remain accessible in the left Sidebar Drawer)
+  const candidateItems = [
+    { id: 'dashboard', icon: Church, tooltip: isSw ? 'Dashibodi ya Utawala' : 'Admin Dashboard' },
     { id: roleTab.tab, icon: RoleIcon, tooltip: roleTab.tooltip },
+    { id: 'secretary_portal', icon: Megaphone, tooltip: isSw ? 'Ofisi ya Katibu' : 'Secretary Office' },
+    { id: 'finance', icon: Wallet, tooltip: isSw ? 'Hazina & Sadaka' : 'Treasury & Offerings' },
+    { id: 'media_studio', icon: Sparkles, tooltip: isSw ? 'Studio ya App Sync' : 'App Sync Studio' },
+    { id: 'jumuiya', icon: Home, tooltip: isSw ? 'Jumuiya za Nyumbani' : 'Home Cells' },
   ];
 
-  const visibleNavItems = navItems.filter((item) => AuthService.canAccessTab(currentUser, item.id));
+  const seenIds = new Set<string>();
+  const visibleNavItems = candidateItems
+    .filter((item) => {
+      if (seenIds.has(item.id)) return false;
+      if (!AuthService.canAccessTab(currentUser, item.id)) return false;
+      seenIds.add(item.id);
+      return true;
+    })
+    .slice(0, 5);
 
   return (
-    <nav className="mobile-dock-wrapper no-print" aria-label="Mobile Navigation Dock">
+    <nav
+      className={`mobile-dock-wrapper no-print ${isScrollingDown ? 'dock-scrolling-down' : ''}`}
+      aria-label="Mobile Navigation Dock"
+    >
       <div className="mobile-dock-container">
         {visibleNavItems.map((item) => {
           const Icon = item.icon;
@@ -76,13 +106,16 @@ export const MobileNav: React.FC<MobileNavProps> = ({
           return (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => {
+                setIsScrollingDown(false);
+                setActiveTab(item.id);
+              }}
               className={`mobile-dock-btn ${isActive ? 'active' : ''}`}
               title={item.tooltip}
               aria-label={item.tooltip}
             >
               <div className="mobile-dock-icon-wrap">
-                <Icon size={21} strokeWidth={isActive ? 2.3 : 1.8} />
+                <Icon size={21} strokeWidth={isActive ? 2.3 : 1.85} />
                 {isActive && <span className="mobile-dock-active-glow" />}
               </div>
             </button>
@@ -92,3 +125,4 @@ export const MobileNav: React.FC<MobileNavProps> = ({
     </nav>
   );
 };
+

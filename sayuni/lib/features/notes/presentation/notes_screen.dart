@@ -357,14 +357,13 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
     final pdf = pw.Document();
 
     pdf.addPage(
-      pw.Page(
+      pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         margin: const pw.EdgeInsets.all(36),
-        build: (pw.Context context) {
+        header: (pw.Context context) {
           return pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              // Church Header
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
@@ -374,29 +373,30 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                       pw.Text(
                         'ZION JERUSALEM CHURCH',
                         style: pw.TextStyle(
-                          fontSize: 18,
+                          fontSize: 16,
                           fontWeight: pw.FontWeight.bold,
-                          color: PdfColors.purple900,
+                          color: PdfColors.blue900,
                         ),
                       ),
                       pw.Text(
                         'Kwa Matope, Mbagala • Dar es Salaam, Tanzania',
                         style: const pw.TextStyle(
-                            fontSize: 10, color: PdfColors.grey700),
+                            fontSize: 9, color: PdfColors.grey700),
                       ),
                     ],
                   ),
                   pw.Container(
                     padding: const pw.EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 5),
+                        horizontal: 10, vertical: 4),
                     decoration: pw.BoxDecoration(
                       color: PdfColors.amber100,
                       borderRadius: pw.BorderRadius.circular(6),
+                      border: pw.Border.all(color: PdfColors.amber700, width: 0.8),
                     ),
                     child: pw.Text(
-                      'DAFTARI LA SAYUNI',
+                      'DAFTARI LA MAFUNDISHO',
                       style: pw.TextStyle(
-                        fontSize: 9,
+                        fontSize: 8.5,
                         fontWeight: pw.FontWeight.bold,
                         color: PdfColors.amber900,
                       ),
@@ -404,78 +404,90 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                   ),
                 ],
               ),
-              pw.SizedBox(height: 12),
-              pw.Divider(thickness: 1.5, color: PdfColors.purple800),
-              pw.SizedBox(height: 16),
-
-              // Title
-              pw.Text(
-                note.title,
-                style: pw.TextStyle(
-                  fontSize: 20,
-                  fontWeight: pw.FontWeight.bold,
-                  color: PdfColors.black,
-                ),
-              ),
               pw.SizedBox(height: 8),
-
-              // Preacher & Scripture
-              pw.Row(
-                children: [
-                  pw.Text('Mhubiri: ',
-                      style: pw.TextStyle(
-                          fontWeight: pw.FontWeight.bold, fontSize: 11)),
-                  pw.Text(note.preacher,
-                      style: const pw.TextStyle(fontSize: 11)),
-                  pw.SizedBox(width: 16),
-                  if (note.scripture.isNotEmpty) ...[
-                    pw.Text('Maandiko: ',
-                        style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold, fontSize: 11)),
-                    pw.Text(note.scripture,
-                        style: const pw.TextStyle(fontSize: 11)),
-                  ],
-                ],
-              ),
-              pw.SizedBox(height: 6),
-              pw.Text(
-                'Tarehe: ${AppFormatters.formatSwahiliDate(note.date)}',
-                style:
-                    const pw.TextStyle(fontSize: 10, color: PdfColors.grey600),
-              ),
-              pw.SizedBox(height: 18),
-
-              // Content Box
-              pw.Container(
-                width: double.infinity,
-                padding: const pw.EdgeInsets.all(16),
-                decoration: pw.BoxDecoration(
-                  color: PdfColors.grey100,
-                  borderRadius: pw.BorderRadius.circular(8),
-                ),
-                child: pw.Text(
-                  note.content,
-                  style: const pw.TextStyle(fontSize: 12, lineSpacing: 4),
-                ),
-              ),
-
-              pw.Spacer(),
-              pw.Divider(thickness: 0.8, color: PdfColors.grey400),
-              pw.SizedBox(height: 6),
+              pw.Divider(thickness: 1.2, color: PdfColors.blue900),
+              pw.SizedBox(height: 10),
+            ],
+          );
+        },
+        footer: (pw.Context context) {
+          return pw.Column(
+            children: [
+              pw.Divider(thickness: 0.6, color: PdfColors.grey400),
+              pw.SizedBox(height: 4),
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('Hekalu la Sayuni — Nuru ya Mataifa',
+                  pw.Text('Hekalu la Sayuni — Nuru ya Mataifa | Simu: ${ChurchProfile.pastoralHelpline}',
                       style: const pw.TextStyle(
-                          fontSize: 9, color: PdfColors.grey600)),
-                  pw.Text('Simu: ${ChurchProfile.pastoralHelpline}',
+                          fontSize: 8.5, color: PdfColors.grey600)),
+                  pw.Text('Ukurasa ${context.pageNumber} / ${context.pagesCount}',
                       style: const pw.TextStyle(
-                          fontSize: 9, color: PdfColors.grey600)),
+                          fontSize: 8.5, color: PdfColors.grey600)),
                 ],
               ),
             ],
           );
         },
+        build: (pw.Context context) => [
+          pw.Text(
+            note.title,
+            style: pw.TextStyle(
+              fontSize: 18,
+              fontWeight: pw.FontWeight.bold,
+              color: PdfColors.black,
+            ),
+          ),
+          pw.SizedBox(height: 8),
+          pw.Container(
+            padding: const pw.EdgeInsets.all(10),
+            decoration: pw.BoxDecoration(
+              color: PdfColors.grey100,
+              borderRadius: pw.BorderRadius.circular(6),
+              border: pw.Border.all(color: PdfColors.grey300, width: 0.8),
+            ),
+            child: pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.RichText(
+                      text: pw.TextSpan(
+                        text: 'Mhubiri: ',
+                        style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, color: PdfColors.grey800),
+                        children: [
+                          pw.TextSpan(text: note.preacher, style: pw.TextStyle(fontWeight: pw.FontWeight.normal, color: PdfColors.black)),
+                        ],
+                      ),
+                    ),
+                    if (note.scripture.isNotEmpty) ...[
+                      pw.SizedBox(height: 4),
+                      pw.RichText(
+                        text: pw.TextSpan(
+                          text: 'Maandiko: ',
+                          style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10, color: PdfColors.grey800),
+                          children: [
+                            pw.TextSpan(text: note.scripture, style: pw.TextStyle(fontWeight: pw.FontWeight.normal, color: PdfColors.black)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                pw.Text(
+                  AppFormatters.formatSwahiliDate(note.date),
+                  style: const pw.TextStyle(fontSize: 9.5, color: PdfColors.grey700),
+                ),
+              ],
+            ),
+          ),
+          pw.SizedBox(height: 14),
+          pw.Text(
+            note.content,
+            style: const pw.TextStyle(fontSize: 11, lineSpacing: 3),
+          ),
+        ],
       ),
     );
 

@@ -76,16 +76,17 @@ Ubarikiwe na Mungu wa Sayuni!
         bottom: false,
         child: CustomScrollView(
           slivers: [
-            // Sticky Pinned App Bar (Protected from Status Bar Collision)
+            // Floating & Snapping App Bar (Collapses on scroll down to maximize small screen viewport)
             SliverAppBar(
-              pinned: true,
-              floating: false,
+              pinned: false,
+              floating: true,
+              snap: true,
               primary: false,
               elevation: 0,
               backgroundColor: const Color(0xFF07192F),
               automaticallyImplyLeading: false,
               titleSpacing: 16,
-              toolbarHeight: 60,
+              toolbarHeight: 58,
               title: Row(
                 children: [
                   Container(
@@ -435,7 +436,9 @@ Ubarikiwe na Mungu wa Sayuni!
             },
             borderRadius: BorderRadius.circular(16),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              height: 48,
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              alignment: Alignment.center,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
@@ -448,6 +451,7 @@ Ubarikiwe na Mungu wa Sayuni!
                 ],
               ),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Icon(
                     Icons.search_rounded,
@@ -458,9 +462,12 @@ Ubarikiwe na Mungu wa Sayuni!
                   const Expanded(
                     child: Text(
                       'Tafuta neno, huduma, biblia, kwaya...',
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: Color(0xFF64748B),
-                        fontSize: 13.5,
+                        fontSize: 13,
                         fontWeight: FontWeight.w500,
                       ),
                     ),

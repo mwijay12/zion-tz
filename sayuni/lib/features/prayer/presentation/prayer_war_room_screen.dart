@@ -13,7 +13,8 @@ import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/module_decor.dart';
 
 class PrayerWarRoomScreen extends StatefulWidget {
-  const PrayerWarRoomScreen({super.key});
+  final bool isEmbedded;
+  const PrayerWarRoomScreen({super.key, this.isEmbedded = false});
 
   @override
   State<PrayerWarRoomScreen> createState() => _PrayerWarRoomScreenState();
@@ -72,6 +73,9 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (mounted) setState(() {});
+    });
     _calculateTimeLeft();
     _loadFastingStatus();
     _loadInitialPrayers();
@@ -341,8 +345,104 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen>
     );
   }
 
+  Widget _buildEmbeddedSubTabSwitcher() {
+    final activeIndex = _tabController.index;
+    final items = [
+      {'title': 'Mfungo wa Sayuni', 'icon': Icons.timer_rounded},
+      {'title': 'Maombi ya Dharura', 'icon': Icons.shield_rounded},
+    ];
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 6),
+      child: Container(
+        padding: const EdgeInsets.all(3),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: AppColors.primary.withOpacity(0.14),
+          ),
+        ),
+        child: Row(
+          children: List.generate(items.length, (idx) {
+            final isSelected = activeIndex == idx;
+            return Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  if (_tabController.index != idx) {
+                    AppHaptics.selectionClick();
+                    _tabController.animateTo(idx);
+                  }
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeOutCubic,
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? AppColors.primary.withOpacity(0.12)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(11),
+                    border: isSelected
+                        ? Border.all(
+                            color: AppColors.primary.withOpacity(0.35),
+                            width: 1)
+                        : null,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        items[idx]['icon'] as IconData,
+                        size: 15,
+                        color: isSelected
+                            ? AppColors.primary
+                            : AppColors.textSecondary,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        items[idx]['title'] as String,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight:
+                              isSelected ? FontWeight.w700 : FontWeight.w500,
+                          color: isSelected
+                              ? AppColors.primary
+                              : AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (widget.isEmbedded) {
+      return ColoredBox(
+        color: AppColors.canvas,
+        child: Column(
+          children: [
+            _buildEmbeddedSubTabSwitcher(),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildFastingTab(),
+                  _buildWarRoomTab(),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: AppColors.canvas,
       appBar: AppBar(
@@ -385,38 +485,40 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen>
     final seconds = _timeLeft.inSeconds % 60;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 140),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 140),
       child: Column(
         children: [
-          ModuleBanner(
-            eyebrow: 'War Room • Mfungo • Maombi',
-            title: 'Chumba cha Maombi',
-            subtitle:
-                'Simama pamoja na jamii katika vita vya kiroho masaa yote.',
-            imageAsset: 'assets/images/3d_intercession.png',
-            gradient: const <Color>[Color(0xFF7C3AED), Color(0xFF0A2540)],
-            stats: const <ModuleBannerStat>[
-              ModuleBannerStat('21', 'Siku za Mfungo'),
-              ModuleBannerStat('24/7', 'Maombi'),
-            ],
-          ),
-          const SizedBox(height: 18),
+          if (!widget.isEmbedded) ...[
+            ModuleBanner(
+              eyebrow: 'War Room • Mfungo • Maombi',
+              title: 'Chumba cha Maombi',
+              subtitle:
+                  'Simama pamoja na jamii katika vita vya kiroho masaa yote.',
+              imageAsset: 'assets/images/3d_intercession.png',
+              gradient: const <Color>[Color(0xFF7C3AED), Color(0xFF0A2540)],
+              stats: const <ModuleBannerStat>[
+                ModuleBannerStat('21', 'Siku za Mfungo'),
+                ModuleBannerStat('24/7', 'Maombi'),
+              ],
+            ),
+            const SizedBox(height: 16),
+          ],
 
-          // Hero Timer Card
+          // Hero Timer Card (compact & responsive for small screens)
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
                 colors: [Color(0xFF0A2540), Color(0xFF031B4E)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(22),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF0A2540).withOpacity(0.3),
-                  blurRadius: 16,
-                  offset: const Offset(0, 6),
+                  color: const Color(0xFF0A2540).withOpacity(0.28),
+                  blurRadius: 14,
+                  offset: const Offset(0, 5),
                 ),
               ],
             ),
@@ -426,30 +528,30 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(Icons.local_fire_department_rounded,
-                        color: AppColors.primaryLight, size: 20),
-                    const SizedBox(width: 8),
+                        color: AppColors.primaryLight, size: 18),
+                    const SizedBox(width: 6),
                     Text(
                       'MFUNGO WA SAYUNI 2026',
                       style:
                           AppTypography.caption(color: AppColors.primaryLight)
                               .copyWith(
-                        letterSpacing: 1.2,
+                        letterSpacing: 1.1,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 Text(
                   'Siku 21 za Kufungua Milango',
                   style:
                       AppTypography.titleMedium(color: Colors.white).copyWith(
                     fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                    fontSize: 18,
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 14),
 
                 // Countdown Timer Boxes
                 FittedBox(
@@ -468,11 +570,12 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen>
                   ),
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 14),
                 Text(
                   '"Je! mfungo niliouchagua si wa namna hii? Kufungua vifungo vya uovu, kuzilegeza kamba za nira..." — Isaya 58:6',
                   style: AppTypography.caption(color: Colors.white70).copyWith(
                     fontStyle: FontStyle.italic,
+                    fontSize: 11.5,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -480,7 +583,7 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen>
             ),
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 14),
 
           // Participation Button
           AppCard(
@@ -521,31 +624,34 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen>
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: _toggleFastingParticipation,
-                    icon: Icon(
-                      _isParticipatingFast
-                          ? Icons.check_circle_rounded
-                          : Icons.add_circle_outline_rounded,
-                      size: 20,
-                    ),
-                    label: Text(
-                      _isParticipatingFast
-                          ? 'Niko Kwenye Mfungo (Nimeshiriki)'
-                          : 'Jiunge na Mfungo Huu',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _isParticipatingFast
-                          ? const Color(0xFF16A34A)
-                          : AppColors.primary,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
+                const SizedBox(height: 14),
+                Center(
+                  child: SizedBox(
+                    height: 42,
+                    child: ElevatedButton.icon(
+                      onPressed: _toggleFastingParticipation,
+                      icon: Icon(
+                        _isParticipatingFast
+                            ? Icons.check_circle_rounded
+                            : Icons.favorite_rounded,
+                        size: 18,
+                      ),
+                      label: Text(
+                        _isParticipatingFast
+                            ? 'Nimeshiriki Mfungo'
+                            : 'Shiriki Mfungo Huu',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: _isParticipatingFast
+                            ? const Color(0xFF16A34A)
+                            : AppColors.primary,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(22)),
+                      ),
                     ),
                   ),
                 ),

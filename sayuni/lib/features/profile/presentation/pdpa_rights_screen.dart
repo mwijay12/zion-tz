@@ -252,9 +252,9 @@ class _PdpaRightsScreenState extends State<PdpaRightsScreen> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Skrini hii ndiyo mahali pengine pekee unapoweza kuona, '
-                  'kubadilisha au kufuta taarifa zako mwenyewe — bila kuomba '
-                  'mtu, bila kwingilia simu.',
+                  'Hapa unaweza kuona, kubadilisha au kufuta taarifa zako '
+                  'kwa mujibu wa sheria za ulinzi wa data binafsi — kwa uhuru '
+                  'na usalama kamili kwenye kifaa chako.',
                   style: TextStyle(
                     fontSize: 12,
                     height: 1.4,
@@ -298,11 +298,11 @@ class _PdpaRightsScreenState extends State<PdpaRightsScreen> {
                 const SizedBox(height: 3),
                 Text(
                   active == null
-                      ? 'Rekodi yako ya kwanza itandikwa hapa ukibofya '
+                      ? 'Rekodi yako ya kwanza itaandikwa hapa ukibofya '
                           '"Nakubali idhini hii".'
                       : 'Imetolewa ${_fmt(active.at)} kwa njia '
                           '"${active.method}". Rekodi zote ${_pdpa.history.length} '
-                          'zimehifadhiwa — kanisa linaweza kuthibitisha ulichokubali.',
+                          'zimehifadhiwa kwa usalama.',
                   style: TextStyle(
                     fontSize: 11.5,
                     height: 1.35,
@@ -447,9 +447,9 @@ class _PdpaRightsScreenState extends State<PdpaRightsScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Haki yako ya kufikia (right of access). Programu inakusanya '
-            'kile chenyewe ili kwenye kifaa hiki na, kama Firebase iko, '
-            'kile kilicho kwenye wingu — kisha kukupa JSON moja kamili.',
+            'Haki yako ya kisheria ya kufikia taarifa (Right of Access). '
+            'Mfumo unakusanya nakala ya taarifa zote zilizohifadhiwa kwenye kifaa '
+            'hiki na kwenye mfumo wa kanisa, kisha kukuwekea katika faili la JSON.',
             style: TextStyle(
                 fontSize: 11.5,
                 height: 1.4,

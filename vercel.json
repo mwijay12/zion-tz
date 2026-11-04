@@ -1,0 +1,11 @@
+{
+  "buildCommand": "cd sayuni-portal && npm install && npm run build",
+  "outputDirectory": "sayuni-portal/dist",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

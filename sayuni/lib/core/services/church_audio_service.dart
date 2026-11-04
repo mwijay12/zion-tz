@@ -135,7 +135,7 @@ class ChurchAudioService extends ChangeNotifier {
           androidNotificationChannelId: notificationChannelId,
           androidNotificationChannelName: notificationChannelName,
           androidNotificationChannelDescription: notificationChannelDescription,
-          androidNotificationIcon: 'drawable/ic_notification',
+          androidNotificationIcon: 'mipmap/ic_launcher',
           androidNotificationOngoing: true,
           androidStopForegroundOnPause: true,
           androidNotificationClickStartsActivity: true,

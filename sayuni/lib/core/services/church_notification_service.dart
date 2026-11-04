@@ -27,12 +27,12 @@ class ChurchNotificationService {
       FlutterLocalNotificationsPlugin();
   bool _isInitialized = false;
 
-  static const String channelId = 'zion_church_lock_screen_alerts';
+  static const String channelId = 'zion_alerts_v2';
   static const String channelName = 'Sayuni Arifa za Juu & Lock Screen';
   static const String channelDescription =
       'Arifa za ibada, maombi, na matangazo ya Sayuni Jerusalem Church';
 
-  static const String mediaChannelId = 'zion_church_media_playback';
+  static const String mediaChannelId = 'zion_media_controls_v2';
   static const String mediaChannelName = 'Sayuni Media & Audio Controls';
   static const String mediaChannelDescription =
       'Udhibiti wa sauti na redio ya Sayuni kwenye lock screen';
@@ -48,7 +48,7 @@ class ChurchNotificationService {
 
     try {
       const androidSettings =
-          AndroidInitializationSettings('@drawable/ic_notification');
+          AndroidInitializationSettings('@mipmap/ic_launcher');
       const darwinSettings = DarwinInitializationSettings(
         requestAlertPermission: true,
         requestBadgePermission: true,
@@ -140,7 +140,7 @@ class ChurchNotificationService {
         importance: Importance.max,
         priority: Priority.high,
         visibility: NotificationVisibility.public, // VISIBLE ON LOCK SCREEN
-        icon: '@drawable/ic_notification',
+        icon: '@mipmap/ic_launcher',
         showWhen: true,
         enableVibration: true,
         playSound: true,

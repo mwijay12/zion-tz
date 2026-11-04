@@ -1,0 +1,10 @@
+{
+  "name": "zion-jerusalem",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Zion Jerusalem Church Management & Liturgical Suite",
+  "scripts": {
+    "build": "cd sayuni-portal && npm install && npm run build",
+    "dev": "cd sayuni-portal && npm run dev"
+  }
+}

@@ -216,19 +216,32 @@ class _OnlineRadioScreenState extends State<OnlineRadioScreen> {
     _showStationDetailsSheet(context, station);
   }
 
-  void _togglePlayStation(RadioStation station) {
+  Future<void> _togglePlayStation(RadioStation station) async {
     AppHaptics.mediumImpact();
-    final isCurrent = _audioService.currentTrack?.id == station.stationuuid;
-    final isPlaying = isCurrent && _audioService.isPlaying;
+    try {
+      final isCurrent = _audioService.currentTrack?.id == station.stationuuid;
+      final isPlaying = isCurrent && _audioService.isPlaying;
 
-    if (isPlaying) {
-      _audioService.togglePlayPause();
-    } else {
-      _audioService.playRadioBrowserStation(station);
-      _radioService.registerStationClick(station.stationuuid);
-      // Open the player immediately so buffering / stream errors (with Retry)
-      // are visible instead of a silent spinner on the station row.
-      NowPlayingScreen.open(context);
+      if (isPlaying) {
+        await _audioService.togglePlayPause();
+      } else {
+        await _audioService.playRadioBrowserStation(station);
+        _radioService.registerStationClick(station.stationuuid);
+        if (mounted) {
+          NowPlayingScreen.open(context);
+        }
+      }
+    } catch (e) {
+      debugPrint('Error toggling radio station: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Kituo hiki kinachelewa kujibu: ${station.name}'),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
     }
   }
 

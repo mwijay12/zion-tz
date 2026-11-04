@@ -88,48 +88,49 @@ class PdpaService extends ChangeNotifier {
   static const List<PdpaPurpose> purposes = [
     PdpaPurpose(
       key: 'membership',
-      labelSw: 'Usajili na mdau wa uanachama',
+      labelSw: 'Usajili na Daftari la Waumini',
       labelEn: 'Membership registration and roll',
       required: true,
       basis:
-          'Kanisa linahitaji jina, simu na jumuiya yako ili kukuhifadhi kwenye '
-          'orodha ya waumini na kukupa Member ID.',
+          'Kanisa linahitaji jina, namba ya simu na jumuiya yako ili kukutambua '
+          'kwenye orodha ya washirika na kukupatia Namba ya Ushirika (Member ID).',
     ),
     PdpaPurpose(
       key: 'contact',
-      labelSw: 'Mawasiliano ya kiimani (simu / SMS / email)',
+      labelSw: 'Mawasiliano ya Kikanisa (Simu, SMS na Barua Pepe)',
       labelEn: 'Church contact calls, SMS and email',
       required: false,
       basis:
-          'Kukukumbusha ibada, maandalizi na miradi. Unaweza kuondoka wakati '
-          'wowote bila kuathiri uanachama wako.',
+          'Kukukumbusha ratiba za ibada, maombi na matangazo muhimu ya kanisa. '
+          'Unaweza kusitisha wakati wowote bila kuathiri ushirika wako.',
     ),
     PdpaPurpose(
       key: 'prayer',
-      labelSw: 'Kushikilia maombi uliyoweka na matokeo yake',
+      labelSw: 'Maombi Binafsi na Uangalizi wa Kichungaji',
       labelEn: 'Storing your prayer requests and follow-up',
       required: false,
       basis:
-          'Ili desk ya wachangaji iweze kuomba na kukufuatilia. Maombi yanabaki '
-          'ya siri na hayaonyeshwa kwa umma.',
+          'Huruhusu dawati la wachungaji kukuombea na kukufuatilia kiroho. '
+          'Maombi yako hubaki kuwa siri na hayatawekwa wazi kwa umma kamwe.',
     ),
     PdpaPurpose(
       key: 'giving',
-      labelSw: 'Rekodi za mapato na utoaji (Katibu / Mhodini)',
+      labelSw: 'Kumbukumbu za Sadaka, Zaka na Michango',
       labelEn: 'Giving and income records (Secretary / Treasurer)',
       required: true,
       basis:
-          'Rekodi za fedha lazima zihifadhiwe kwa miaka kulingana na sheria za '
-          'nchi na ukaguzi wa kanisa. Hazifutwi kwa ombi la mtu binafsi.',
+          'Rekodi za utoaji huhifadhiwa kwa mujibu wa taratibu za uhasibu na ukaguzi '
+          'wa fedha za kanisa. Rekodi hizi hulindwa kwa usalama na Mweka Hazina.',
     ),
     PdpaPurpose(
       key: 'media',
-      labelSw: 'Picha, sauti na video za ibada',
+      labelSw: 'Picha, Sauti na Video za Ibada',
       labelEn: 'Worship photos, audio and video',
       required: false,
       basis:
-          'Ibada huguliwa na kuwekwa kwenye Cloudinary kwa ajili ya mahubiri. '
-          'Kama hupati ruhusa, tafadhali mfotografiani mwengine.',
+          'Matukio ya ibada hurekodiwa kwa ajili ya kumbukumbu za kanisa, mahubiri '
+          'mtandaoni na huduma ya kiroho. Ukikataa, picha au sauti yako haitachapishwa '
+          'hadharani kwenye mitandao ya kanisa bila idhini yako.',
     ),
   ];
 
@@ -268,63 +269,63 @@ class PdpaService extends ChangeNotifier {
   /// this app; nothing is claimed that the code does not do.
   static const List<Map<String, String>> dataInventory = [
     {
-      'who': 'Kanisa la Zion Jerusalem (dhibiti)',
+      'who': 'Kanisa la Sayuni Jerusalem (Msimamizi wa Data)',
       'whoEn': 'Zion Jerusalem Church (data controller)',
       'where': 'Firestore / Firebase',
       'whereEn': 'Cloud Firestore / Firebase',
-      'what': 'Jina, simu, email, jumuiya, Member ID, maombi, rekodi za mapato',
+      'what': 'Jina, namba ya simu, barua pepe, jumuiya, Member ID, maombi, rekodi za utoaji',
       'whatEn': 'Name, phone, email, cell group, Member ID, prayer requests, income records',
-      'why': 'Usimamizi wa wanachama, mali na mapato ya kanisa',
+      'why': 'Usimamizi wa washirika, huduma za kichungaji na maendeleo ya kanisa',
       'whyEn': 'Member, church-property and church-income administration',
     },
     {
       'who': 'Google (Firebase Auth + Firestore)',
       'whoEn': 'Google (Firebase Auth + Firestore)',
-      'where': 'Nje ya nchi (data centre ya Google)',
+      'where': 'Nje ya nchi (Seva Salama za Google)',
       'whereEn': 'Outside Tanzania (Google data centre)',
-      'what': 'Token ya kuingia, UID, role claim, nyaraka za database',
+      'what': 'Token ya kuingia, UID, nyaraka za mfumo',
       'whatEn': 'Sign-in token, UID, role claim, database documents',
-      'why': 'Kuthibitisha mtu na kuhifadhi data kwa usalama',
+      'why': 'Kuthibitisha utambulisho na kuhifadhi taarifa kwa usalama',
       'whyEn': 'Verifying who you are and storing records securely',
     },
     {
-      'who': 'Cloudinary',
+      'who': 'Cloudinary (Hifadhi ya Maudhui)',
       'whoEn': 'Cloudinary',
-      'where': 'Nje ya nchi (media CDN)',
+      'where': 'Nje ya nchi (Mtandao wa CDN)',
       'whereEn': 'Outside Tanzania (media CDN)',
-      'what': 'Sauti za mahubiri, video, picha za idara',
+      'what': 'Sauti za mahubiri, video za ibada na picha za kwaya',
       'whatEn': 'Sermon audio, video and department photos',
-      'why': 'Kushikilia na kusambaza nyenzo za ibada',
+      'why': 'Kusambaza mahubiri na nyimbo kwa waumini kwa kasi ya juu',
       'whyEn': 'Hosting and delivering worship media',
     },
     {
       'who': 'radio-browser.info',
       'whoEn': 'radio-browser.info',
-      'where': 'Wavuti',
+      'where': 'Mtandao Huria',
       'whereEn': 'Web',
-      'what': 'Hakuna data yako — orodha ya vituo vya redio pekee',
+      'what': 'Hakuna taarifa yako binafsi — orodha ya vituo vya redio pekee',
       'whatEn': 'None of your data — station lists only',
-      'why': 'Kupa waumini vituo vya kiimani',
+      'why': 'Kuwapatia waumini redio za injili na nyimbo za sifa 24/7',
       'whyEn': 'Providing believers with faith stations',
     },
     {
-      'who': 'Google Gemini (portal ya wasimamizi tu)',
+      'who': 'Google Gemini (Mlango wa Wasimamizi Tu)',
       'whoEn': 'Google Gemini (admin portal only)',
-      'where': 'Wavuti',
+      'where': 'Seva za AI za Google',
       'whereEn': 'Web',
-      'what': 'Maandishi ya muhtasari wa mahubiri yanayotumwa kuulizwa',
+      'what': 'Maandishi ya muhtasari wa mahubiri yanayopakiwa na viongozi',
       'whatEn': 'Sermon summary text that is submitted for processing',
-      'why': 'Kutoa muhtasari na tafsiri ya mahubiri',
+      'why': 'Kutoa muhtasari na tafsiri ya mafundisho ya kiroho',
       'whyEn': 'Producing sermon summaries and translations',
     },
     {
-      'who': 'Wahudumiaji wa Lipa Namba (Vodacom/MiGAi/CRDB)',
-      'whoEn': 'Lipa Namba providers (Vodacom / MiGAi / CRDB)',
-      'where': 'Nje ya programu',
+      'who': 'Mitandao ya Malipo (M-Pesa / Tigo Pesa / Airtel / Benki)',
+      'whoEn': 'Payment providers (M-Pesa / Tigo Pesa / Airtel / Banks)',
+      'where': 'Mifumo ya Simu za Mkononi',
       'whereEn': 'Outside the app',
-      'what': 'Jina/lipa namba na kiasi — PIN HAIPO kabisa',
+      'what': 'Jina, Lipa Namba na Kiasi — Namba ya Siri (PIN) HAIHIFADHIWI kamwe',
       'whatEn': 'Name / lipa namba and amount — never a PIN',
-      'why': 'Kupokea aseli na michango',
+      'why': 'Kupokea sadaka, zaka na michango ya ujenzi',
       'whyEn': 'Receiving tithes and offerings',
     },
   ];

@@ -171,11 +171,23 @@ class ZionAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
     queue.add(items);
     mediaItem.add(target);
 
+    final sourceChildren = <AudioSource>[];
+    for (final item in items) {
+      final trimmed = item.id.trim();
+      final uri = Uri.tryParse(trimmed);
+      if (uri != null && uri.hasScheme) {
+        sourceChildren.add(AudioSource.uri(uri));
+      }
+    }
+    if (sourceChildren.isEmpty) {
+      await _abortLoad(target.title,
+          'Anwani ya mtiririko wa "${_shorten(target.title)}" haipatikani.');
+      return;
+    }
+
     final source = ConcatenatingAudioSource(
       useLazyPreparation: true,
-      children: <AudioSource>[
-        for (final item in items) AudioSource.uri(Uri.parse(item.id)),
-      ],
+      children: sourceChildren,
     );
 
     _armConnectWatchdog(target.title);

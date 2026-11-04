@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -27,78 +28,71 @@ void main() async {
   }
 
   // Set preferred orientations for phones
-  await SystemChrome.setPreferredOrientations([
+  unawaited(SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]);
+  ]));
 
-  // Initialize Firebase Cloud Connection
+  // Core local fast initialization with strict timeout guards
   try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    await Future.wait([
+      AppLanguageService()
+          .init()
+          .timeout(const Duration(milliseconds: 1500), onTimeout: () {}),
+      ChurchThemeService()
+          .init()
+          .timeout(const Duration(milliseconds: 1500), onTimeout: () {}),
+      ChurchAuthService()
+          .init()
+          .timeout(const Duration(milliseconds: 1500), onTimeout: () {}),
+      DatabaseService()
+          .database
+          .timeout(const Duration(milliseconds: 1500)),
+    ]);
   } catch (e) {
-    debugPrint('Firebase initialize error: $e');
+    debugPrint('Fast init warning: $e');
   }
 
-  // Initialize Language Service (Default English, Swahili switchable)
-  try {
-    await AppLanguageService().init();
-  } catch (e) {
-    debugPrint('Language service init error: $e');
-  }
-
-  // Initialize Theme Service & Heavenly Palettes
-  try {
-    await ChurchThemeService().init();
-  } catch (e) {
-    debugPrint('Theme service init error: $e');
-  }
-
-  // Initialize Local SQLite Database
-  try {
-    await DatabaseService().database;
-  } catch (e) {
-    debugPrint('Database init error: $e');
-  }
-
-  // Initialize Church Auth & Member Verification
-  try {
-    await ChurchAuthService().init();
-  } catch (e) {
-    debugPrint('Auth service init error: $e');
-  }
-
-  // Initialize Lock Screen Notification Service & Reminders
-  try {
-    await ChurchNotificationService().init();
-  } catch (e) {
-    debugPrint('Notification init error: $e');
-  }
-
-  // Media audio: one AudioService-backed handler owns the only audio player.
-  // Android 13+ needs the notification permission before the media
-  // notification (and therefore the lock-screen controls) can be shown.
-  try {
-    await ChurchAudioService.requestNotificationPermission();
-    await ChurchAudioService.init();
-    await ChurchAudioService().bind();
-  } catch (e) {
-    debugPrint('Audio service init error: $e');
-  }
-
-  // NOTE: playback is intentionally never stopped from app lifecycle events
-  // (paused/inactive) - background audio must survive home button, screen
-  // lock and app switching. See ZionAudioHandler / ChurchAudioService.
-
-  // Initialize Real-time Web Portal Announcement Synchronization Bridge
-  try {
-    await ChurchSyncService().init();
-  } catch (e) {
-    debugPrint('Church sync service init error: $e');
-  }
-
+  // Launch the Flutter app immediately: splash screen clears in milliseconds
   runApp(const SayuniApp());
+
+  // Initialize background services (Firebase, Audio, Notifications, Sync) asynchronously
+  _initBackgroundServices();
+}
+
+void _initBackgroundServices() {
+  Future.microtask(() async {
+    // 1. Initialize Firebase Cloud Connection
+    try {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      ).timeout(const Duration(seconds: 4));
+    } catch (e) {
+      debugPrint('Firebase background init error: $e');
+    }
+
+    // 2. Initialize Lock Screen Notification Service & High Priority Channels
+    try {
+      await ChurchNotificationService().init();
+    } catch (e) {
+      debugPrint('Notification background init error: $e');
+    }
+
+    // 3. Media Audio Service & Lock Screen Controls
+    try {
+      await ChurchAudioService.init().timeout(const Duration(seconds: 4));
+      await ChurchAudioService().bind();
+    } catch (e) {
+      debugPrint('Audio service background init error: $e');
+    }
+
+    // 4. Real-time Announcement Synchronization Bridge
+    try {
+      await ChurchSyncService().init();
+    } catch (e) {
+      debugPrint('Church sync background init error: $e');
+    }
+  });
 }
 
 class SayuniApp extends StatelessWidget {

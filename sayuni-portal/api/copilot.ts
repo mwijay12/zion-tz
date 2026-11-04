@@ -1,7 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
 // Server-side Groq key managed securely via Vercel Environment Variables
-const BACKEND_GROQ_KEY = process.env.GROQ_API_KEY || '';
+const BACKEND_GROQ_KEY = (process.env.GROQ_API_KEY || '')
+  .replace(/^\uFEFF/, '')
+  .replace(/[^\x00-\x7F]/g, '')
+  .trim();
 
 const SYSTEM_PROMPT = `Wewe ni "Sayuni Copilot" — Msaidizi Rasmi wa Kikanisa na Kiroho wa Zion Jerusalem Church (Hekalu la Sayuni - Mbagala Kwa Matope, Dar es Salaam; chini ya uongozi wa Askofu Mercy James na Wachungaji).
 

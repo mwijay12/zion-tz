@@ -14,6 +14,7 @@ import '../../notes/presentation/notes_screen.dart';
 import '../../growth/presentation/discipleship_growth_screen.dart';
 import '../../pastoral/presentation/appointments_screen.dart';
 import 'universal_search_sheet.dart';
+import '../../copilot/presentation/sayuni_copilot_sheet.dart';
 
 class QuickMoreOptionsSheet extends StatelessWidget {
   final Function(int tabIndex) onNavigateToTab;
@@ -29,6 +30,16 @@ class QuickMoreOptionsSheet extends StatelessWidget {
     final isDark = themeService.isDarkMode;
 
     final quickItems = [
+      {
+        'title': 'Sayuni Copilot (AI)',
+        'subtitle': 'Muulize AI mistari, vitabu, tenzi, maombi',
+        'icon': Icons.auto_awesome_rounded,
+        'color': AppColors.gold,
+        'action': () {
+          Navigator.pop(context);
+          SayuniCopilotSheet.show(context, onNavigateToTab: onNavigateToTab);
+        },
+      },
       {
         'title': 'Tafuta Kila Kitu',
         'subtitle': 'Biblia, Tenzi, Waumini, Mahubiri',

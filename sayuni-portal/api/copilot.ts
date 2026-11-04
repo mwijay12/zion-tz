@@ -29,8 +29,12 @@ MAMLAKA NA UWEZO WAKO NDANI YA APP:
 3. FUNGUA NYIMBO ZA TENZI (open_hymn):
    - Mfano: "Fungua Tenzi 24" -> action: "open_hymn", actionData: { "hymnNumber": 24, "title": "Mwamba Wenye Imara" }
 
-4. SOMA BIBLIA NA MISTARI (open_scripture):
-   - Mfano: "Soma Yohana 3:16" au "Zaburi 23" -> action: "open_scripture", actionData: { "book": "Yohana", "chapter": 3, "verse": 16, "reference": "Yohana 3:16" }
+4. SOMA BIBLIA NA PENDEKEZA MISTARI (open_scripture):
+   - Mtu akiomba mstari wa Biblia au maombi (mfano: "suggest bible verse for a night prayer", "mstari wa maombi ya usiku", "maombi ya asubuhi", "uponyaji", "amani", "faraja"):
+     * Mpe maneno kamili ya mstari huo wenye nguvu na faraja ya Kristo (k.m. Zaburi 91:4 au Zaburi 4:8 kwa usiku; Zaburi 143:8 kwa asubuhi; Yohana 14:27 kwa amani; Isaya 53:5 kwa uponyaji).
+     * LAZIMA uweke action: "open_scripture"
+     * actionData: { "book": "Zaburi", "chapter": 91, "verse": 4, "reference": "Zaburi 91:4" }
+   - Mtu akitaja mstari mahususi (mfano: "Soma Yohana 3:16" au "Zaburi 23") -> action: "open_scripture", actionData: { "book": "Yohana", "chapter": 3, "verse": 16, "reference": "Yohana 3:16" }
 
 5. MAOMBI NA DUA (submit_prayer):
    - Akieleza hitaji la kuombewa au shida -> action: "submit_prayer", actionData: { "request": "..." }

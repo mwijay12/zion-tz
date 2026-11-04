@@ -15,6 +15,7 @@ import '../../notifications/services/notifications_data_service.dart';
 import 'liquid_glass_nav_bar.dart';
 import 'persistent_mini_player.dart';
 import 'quick_more_options_sheet.dart';
+import '../../copilot/presentation/sayuni_copilot_sheet.dart';
 
 class MainScaffold extends StatefulWidget {
   const MainScaffold({super.key});
@@ -319,6 +320,86 @@ class _MainScaffoldState extends State<MainScaffold> {
     );
   }
 
+  Widget _buildFloatingCopilotTrigger(BuildContext context) {
+    return Positioned(
+      bottom: 80 + MediaQuery.of(context).padding.bottom,
+      right: 14,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            AppHaptics.lightImpact();
+            SayuniCopilotSheet.show(
+              context,
+              onNavigateToTab: _onTabTapped,
+            );
+          },
+          borderRadius: BorderRadius.circular(28),
+          child: Container(
+            height: 44,
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [
+                  Color(0xFF0F172A),
+                  Color(0xFF1E293B),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(
+                color: AppColors.gold,
+                width: 1.4,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.gold.withValues(alpha: 0.35),
+                  blurRadius: 14,
+                  offset: const Offset(0, 4),
+                  spreadRadius: 1,
+                ),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: AppColors.gold.withValues(alpha: 0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.auto_awesome_rounded,
+                    color: AppColors.goldLight,
+                    size: 15,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Text(
+                  'Sayuni AI',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12.5,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final screens = [
@@ -348,6 +429,7 @@ class _MainScaffoldState extends State<MainScaffold> {
               children: screens,
             ),
             _buildInAppNotificationBanner(),
+            _buildFloatingCopilotTrigger(context),
           ],
         ),
         bottomNavigationBar: SafeArea(

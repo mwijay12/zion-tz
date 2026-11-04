@@ -272,6 +272,10 @@ Ubarikiwe na Mungu wa Sayuni!
                 delegate: SliverChildListDelegate([
                   // Sunday Service Countdown Banner
                   _buildSundayCountdownBanner(),
+                  const SizedBox(height: 16),
+
+                  // Dedicated Sayuni AI Feature Card
+                  _buildCopilotFeatureCard(context),
                   const SizedBox(height: 20),
 
                   // Quick Services Actions Grid
@@ -792,6 +796,143 @@ Ubarikiwe na Mungu wa Sayuni!
                       color: AppColors.textSecondaryOf(context)),
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCopilotFeatureCard(BuildContext context) {
+    final isDark = ChurchThemeService().isDarkMode;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: isDark
+              ? [
+                  const Color(0xFF0F172A),
+                  const Color(0xFF1E293B),
+                ]
+              : [
+                  const Color(0xFF0A2540),
+                  const Color(0xFF0D3262),
+                ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: AppColors.gold.withValues(alpha: 0.45),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gold.withValues(alpha: 0.15),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: AppColors.gold.withValues(alpha: 0.2),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.gold.withValues(alpha: 0.5),
+                    width: 1.2,
+                  ),
+                ),
+                child: const Icon(
+                  Icons.auto_awesome_rounded,
+                  color: AppColors.goldLight,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Sayuni Copilot (AI ya Kiroho)',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                    Text(
+                      'Msaidizi wa Neno, Maombi, Tenzi & Vitabu',
+                      style: TextStyle(
+                        color: AppColors.goldLight,
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: AppColors.gold.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(6),
+                  border:
+                      Border.all(color: AppColors.gold.withValues(alpha: 0.4)),
+                ),
+                child: const Text(
+                  '2026 AI',
+                  style: TextStyle(
+                    color: AppColors.goldLight,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Unaweza kumuuliza mistari ya maombi ya usiku na asubuhi, kubadili muonekano wa app, kutafuta nyimbo za Tenzi na kuagiza vitabu moja kwa moja.',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.85),
+              fontSize: 12.5,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 14),
+          SizedBox(
+            height: 42,
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                AppHaptics.lightImpact();
+                SayuniCopilotSheet.show(
+                  context,
+                  onNavigateToTab: widget.onNavigateToTab,
+                );
+              },
+              icon: const Icon(Icons.chat_bubble_outline_rounded, size: 16),
+              label: const Text('Fungua Sayuni Copilot'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.gold,
+                foregroundColor: const Color(0xFF0F172A),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                textStyle: const TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 13,
+                ),
+              ),
             ),
           ),
         ],

@@ -148,16 +148,20 @@ class SayuniCopilotService extends ChangeNotifier {
               'history': history,
             }),
           )
-          .timeout(const Duration(seconds: 7));
+          .timeout(const Duration(seconds: 20));
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data['ok'] == true) {
           final actionStr = data['action'] as String? ?? 'none';
           CopilotActionType actionType = CopilotActionType.none;
-          try {
-            actionType = CopilotActionType.values.byName(actionStr);
-          } catch (_) {}
+          final normalized = actionStr.replaceAll('_', '').toLowerCase();
+          for (final val in CopilotActionType.values) {
+            if (val.name.toLowerCase() == normalized) {
+              actionType = val;
+              break;
+            }
+          }
 
           return CopilotMessage(
             id: 'bot_${DateTime.now().millisecondsSinceEpoch}',

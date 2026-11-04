@@ -681,7 +681,7 @@ class _SayuniCopilotSheetState extends State<SayuniCopilotSheet> {
             onPressed: () {
               AppHaptics.lightImpact();
               Navigator.pop(context);
-              widget.onNavigateToTab?.call(1); // Navigates to Book Hub
+              widget.onNavigateToTab?.call(3); // Navigates to Book Hub (Biblia, Tenzi, Notes)
             },
             icon: const Icon(Icons.queue_music_rounded, size: 16, color: AppColors.gold),
             label: Text('Fungua Tenzi #$hymnNum Kwenye Kitabu'),
@@ -702,7 +702,7 @@ class _SayuniCopilotSheetState extends State<SayuniCopilotSheet> {
             onPressed: () {
               AppHaptics.lightImpact();
               Navigator.pop(context);
-              widget.onNavigateToTab?.call(1);
+              widget.onNavigateToTab?.call(3); // Navigates to Book Hub (Biblia, Tenzi, Notes)
             },
             icon: const Icon(Icons.menu_book_rounded, size: 16, color: Color(0xFF0D52CD)),
             label: Text('Soma $ref Kwenye Biblia'),

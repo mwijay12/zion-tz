@@ -16,23 +16,119 @@ class LocalFaithAiEngine {
   static LocalFaithAiResult processQuery(String rawInput) {
     final query = rawInput.trim().toLowerCase();
 
-    // 1. THEME SWITCHING INTENTS
-    if (query.contains('dark') ||
-        query.contains('giza') ||
-        query.contains('usiku') ||
-        query.contains('nyeusi')) {
+    // 1. NIGHT PRAYER & BEDTIME SCRIPTURE INTENTS (Bilingual: Swahili & English)
+    final isNightPrayer = (query.contains('night') ||
+            query.contains('usiku') ||
+            query.contains('lala') ||
+            query.contains('sleep') ||
+            query.contains('bedtime') ||
+            query.contains('usingizi') ||
+            query.contains('jioni') ||
+            query.contains('evening')) &&
+        (query.contains('prayer') ||
+            query.contains('verse') ||
+            query.contains('omba') ||
+            query.contains('dua') ||
+            query.contains('sala') ||
+            query.contains('mstari') ||
+            query.contains('biblia') ||
+            query.contains('scripture') ||
+            query.contains('neno') ||
+            query.contains('suggest'));
+
+    if (isNightPrayer) {
       return const LocalFaithAiResult(
         reply:
-            'Amina! Nimekuwekea mandhari ya giza (Dark Mode) ili kukulinda macho na kukuwezesha kusoma Neno la Mungu kwa utulivu usiku. "Neno lako ni taa ya miguu yangu, na mwanga wa njia yangu." (Zaburi 119:105)',
+            'Amani ya Kristo iwe nawe unapoenda kupumzika. Neno la Mungu kwa ajili ya maombi yako ya usiku linatoka katika Zaburi 91:4:\n\n'
+            '"Kwa manyoya yake atakufunika, na chini ya mbawa zake utapata kimbilio; uaminifu wake ni ngao na kigao."\n\n'
+            'Pia Zaburi 4:8 inatuhakikishia: "Katika amani nitajilaza na kupata usingizi mara, maana wewe, Bwana, peke yako, ndiye unifanyaye nikae salama." Pumzika kwa utulivu ukijua Mungu anakulinda.',
+        actionType: CopilotActionType.openScripture,
+        actionData: {
+          'reference': 'Zaburi 91:4',
+          'book': 'Zaburi',
+          'chapter': 91,
+          'verse': 4,
+        },
+      );
+    }
+
+    // 2. MORNING PRAYER & DAYLIGHT SCRIPTURE INTENTS
+    final isMorningPrayer = (query.contains('morning') ||
+            query.contains('asubuhi') ||
+            query.contains('alfajiri') ||
+            query.contains('amka') ||
+            query.contains('day')) &&
+        (query.contains('prayer') ||
+            query.contains('verse') ||
+            query.contains('omba') ||
+            query.contains('dua') ||
+            query.contains('sala') ||
+            query.contains('mstari') ||
+            query.contains('biblia') ||
+            query.contains('scripture') ||
+            query.contains('neno') ||
+            query.contains('suggest'));
+
+    if (isMorningPrayer) {
+      return const LocalFaithAiResult(
+        reply:
+            'Habari ya asubuhi! Neno la kuanza siku yako kwa ushindi linatoka katika Zaburi 143:8:\n\n'
+            '"Unifanye kusikia fadhili zako asubuhi, kwa maana nimekutumaini wewe; unijulishe njia nitakayoiendea, maana nakuinulia nafsi yangu."\n\n'
+            'Baraka za Bwana zikufuate katika kazi, safari na shughuli zako zote za leo!',
+        actionType: CopilotActionType.openScripture,
+        actionData: {
+          'reference': 'Zaburi 143:8',
+          'book': 'Zaburi',
+          'chapter': 143,
+          'verse': 8,
+        },
+      );
+    }
+
+    // 3. GENERAL SCRIPTURE SUGGESTIONS (e.g. "suggest bible verse", "nipe mstari wa biblia")
+    if ((query.contains('verse') || query.contains('mstari') || query.contains('scripture')) &&
+        (query.contains('suggest') || query.contains('pendekeza') || query.contains('nipe') || query.contains('soma') || query.contains('give')) &&
+        !query.contains('kitabu') &&
+        !query.contains('agiz')) {
+      return const LocalFaithAiResult(
+        reply:
+            'Neno thabiti la Bwana kwa ajili yako leo linatoka katika Zaburi 23:1-3:\n\n'
+            '"Bwana ndiye mchungaji wangu, sitapungukiwa na kitu. Hunilaza katika malisho ya majani mabichi; huniongoza kando ya maji ya utulivu. Hunihuisha nafsi yangu."\n\n'
+            'Tafakari wema na uaminifu wa Mungu anayekuongoza hatua kwa hatua.',
+        actionType: CopilotActionType.openScripture,
+        actionData: {
+          'reference': 'Zaburi 23:1',
+          'book': 'Zaburi',
+          'chapter': 23,
+          'verse': 1,
+        },
+      );
+    }
+
+    // 4. THEME SWITCHING INTENTS (Strict: Requires theme keywords, avoids false triggers on usiku/night)
+    final hasThemeKeyword = query.contains('theme') ||
+        query.contains('mandhari') ||
+        query.contains('mode') ||
+        query.contains('muonekano') ||
+        query.contains('badili') ||
+        query.contains('switch');
+
+    if ((hasThemeKeyword && (query.contains('dark') || query.contains('giza') || query.contains('nyeusi'))) ||
+        query == 'dark mode' ||
+        query == 'giza' ||
+        query == 'weka giza') {
+      return const LocalFaithAiResult(
+        reply:
+            'Amina! Nimekuwekea mandhari ya giza (Dark Mode) ili kukulinda macho na kukuwezesha kusoma Neno la Mungu kwa utulivu. "Neno lako ni taa ya miguu yangu, na mwanga wa njia yangu." (Zaburi 119:105)',
         actionType: CopilotActionType.changeTheme,
         actionData: {'mode': 'dark'},
       );
     }
 
-    if (query.contains('light') ||
-        query.contains('mchana') ||
-        query.contains('nyeupe') ||
-        query.contains('mwanga')) {
+    if ((hasThemeKeyword && (query.contains('light') || query.contains('mchana') || query.contains('nyeupe'))) ||
+        query == 'light mode' ||
+        query == 'mchana' ||
+        query == 'weka mchana') {
       return const LocalFaithAiResult(
         reply:
             'Amina! Nimekuwekea mandhari angavu ya mchana (Light Mode). "Nuru yako na iangaze mbele ya watu, wapate kuyaona matendo yenu mema." (Mathayo 5:16)',
@@ -41,10 +137,9 @@ class LocalFaithAiEngine {
       );
     }
 
-    if (query.contains('gold') ||
-        query.contains('dhahabu') ||
-        query.contains('liturujia') ||
-        query.contains('kifalme')) {
+    if ((hasThemeKeyword && (query.contains('gold') || query.contains('dhahabu') || query.contains('liturujia'))) ||
+        query == 'gold mode' ||
+        query == 'dhahabu') {
       return const LocalFaithAiResult(
         reply:
             'Amina! Nimekuwekea mandhari ya heshima ya Kiliturujia ya Dhahabu (Liturgical Gold Mode) ya Sayuni. "Bwana atatukuzwa katika Sayuni, naye ametukuka juu ya watu wote." (Zaburi 99:2)',
@@ -165,7 +260,13 @@ class LocalFaithAiEngine {
         query.contains('shida') ||
         query.contains('ugonjwa') ||
         query.contains('huzuni') ||
-        query.contains('uponyaji')) {
+        query.contains('uponyaji') ||
+        query.contains('prayer') ||
+        query.contains('pray') ||
+        query.contains('healing') ||
+        query.contains('sick') ||
+        query.contains('help me') ||
+        query.contains('trouble')) {
       return LocalFaithAiResult(
         reply:
             'Mungu wa Sayuni amesikia haja ya moyo wako. "Usiogope, kwa maana mimi ni pamoja nawe; usifadhaike, kwa maana mimi ni Mungu wako; nitakutia nguvu, naam, nitakusaidia." (Isaya 41:10)\n\nJe, ungependa kuwasilisha hitaji hili kwa Askofu Mercy James na jopo la wachungaji kwa njia salama na ya siri?',

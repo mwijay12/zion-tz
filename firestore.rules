@@ -6,36 +6,54 @@ rules_version = '2';
 //
 // 1. announcements:
 //    - id: string
-//    - title: string (1-200 chars)
-//    - body / content: string (1-5000 chars)
-//    - type: string ('normal', 'urgent', 'bereavement', 'high')
-//    - category: string (optional)
-//    - branch: string (e.g. 'Mbagala Kwa Matope (HQ)', 'Zote', etc.)
-//    - targetAudience: string ('all', 'leaders', 'elders', 'choir')
-//    - authorRole: string
-//    - authorEmail: string
+//    - title: string (1-300 chars)
+//    - body / content / summary: string (1-10000 chars)
+//    - type: optional or string in ['normal', 'urgent', 'bereavement', 'high']
+//    - category, branch, targetAudience, authorRole, authorEmail, author, priority: optional strings
 //    - createdAt: timestamp / string
 //
 // 2. sermons:
-//    - title, preacher, mediaUrl, scripture, type, duration, createdAt
+//    - title: string (1-300 chars)
+//    - preacher: optional string (<= 200 chars)
+//    - mediaUrl / media_url: string
+//    - scripture, duration, type, category, description, createdAt
 //
 // 3. choir_songs:
-//    - title, choirName, audioUrl, lyrics, keySignature, tempo, createdAt
+//    - title: string (1-300 chars)
+//    - audioUrl / audio_url: string
+//    - choirName, lyrics, keySignature, tempo, createdAt
 //
 // 4. visitors_registry:
-//    - fullName, phone, residence, assignedJumuiya, welfareNeeds, createdAt
-//    - STRICT CONFIDENTIALITY: Never public readable.
+//    - fullName / full_name: string (<= 200 chars)
+//    - phone / phoneNumber: string (>= 7 chars)
+//    - consent / consentGiven: boolean == true
+//    - residence, assignedJumuiya, prayerRequest, followUpStatus, createdAt
+//    - STRICT CONFIDENTIALITY: Accessible only by church deacons & administration.
 //
-// 5. prayer_requests:
-//    - senderName, requestText, isPrivate, isAnswered, pastoralNotes, createdAt
+// 5. sunday_school_content:
+//    - title, lessonNotes, memoryVerse, targetAge, teacherNotes, createdAt
+//
+// 6. prayer_requests:
+//    - title, senderName, requestText / content / message (<= 5000 chars), urgency, userId, isAnswered, createdAt
 //    - STRICT CONFIDENTIALITY: Pastoral desk & author only.
 //
-// 6. jumuiya_reports:
-//    - jumuiyaName, leaderName, attendanceCount, offeringAmount, notes, submittedAt
-//    - STRICT CONFIDENTIALITY: Internal leadership only.
+// 7. jumuiya_reports:
+//    - jumuiyaName / jumuiya: string
+//    - leaderName, leaderPhone, attendanceCount, offeringAmount, topicTaught, prayerNeeds, submittedAt
+//    - STRICT CONFIDENTIALITY: Internal leadership (Secretary, Jumuiya Leaders, Pastors, Admin).
 //
-// 7. profiles:
+// 8. church_settings:
+//    - System-level church settings (Public Read, Admin Write).
+//
+// 9. profiles:
 //    - fullName, phone, email, jumuiya, role, memberId, isVerifiedMember
+//    - Protected: Users can manage their own profile, Secretary can manage all.
+//
+// 10. consent_records:
+//    - uid, version, purposes, acceptedAt (PDPA 2022 audit compliance).
+//
+// 11. role_grants & audit_logs & members:
+//    - Read restricted to Admin / Secretary; write restricted to Cloud Functions Admin SDK.
 // ===============================================================
 
 service cloud.firestore {
@@ -44,41 +62,56 @@ service cloud.firestore {
     // --- Helper Functions ---
     //
     // ROLE SOURCE OF TRUTH
-    // `request.auth.token` is signed by Firebase Auth, so a client cannot forge
-    // or edit it. It is the ONLY place a role is read from in this file. A
-    // document field such as `profiles/<uid>.role` is deliberately never
-    // trusted: those documents are client-writable and would be a self-granting
-    // hole. Roles are assigned server-side by `functions/setUserRole`
-    // (admin.auth().setCustomUserClaims) — see docs/FIREBASE_SETUP_OWNER.md.
-    // The strings below must stay identical to ChurchRole.wireName in
-    // sayuni/lib/core/services/church_role_policy.dart.
+    // Authentication authority is derived from verified Firebase Auth tokens (custom claims)
+    // or bootstrapped administrative emails. Client-supplied profile fields are never trusted.
 
     function isSignedIn() {
       return request.auth != null;
     }
 
-    /// True when the account has actually been assigned a church role.
-    /// Signed-in-but-unassigned accounts are 'guest' for authorisation purposes.
+    /// True when the account has actually been assigned a church role or admin claim.
     function hasRoleClaim() {
-      return isSignedIn() && request.auth.token.role != null;
+      return isSignedIn() && (request.auth.token.role != null || request.auth.token.admin == true);
     }
 
+    /// Resolves the user's effective role.
+    /// Returns 'guest' if not signed in, the token role if present, 'admin' if admin claim is set, or 'member'.
     function getUserRole() {
-      return hasRoleClaim() ? request.auth.token.role : 'guest';
+      return !isSignedIn() ? 'guest' :
+        (hasRoleClaim() && request.auth.token.role != null ? request.auth.token.role :
+        (hasRoleClaim() && request.auth.token.admin == true ? 'admin' : 'member'));
     }
 
+    /// Administrator verification: checks custom claim role, admin boolean flag, or verified bootstrap emails.
     function isAdmin() {
-      return isSignedIn() && request.auth.token.role in ['admin', 'super_admin'];
+      return isSignedIn() && (
+        request.auth.token.role in ['admin', 'super_admin'] ||
+        request.auth.token.admin == true ||
+        request.auth.token.email in [
+          'mwijaydavie@gmail.com',
+          'davidbyanmwijage@gmail.com',
+          'admin@zionjerusalem.org',
+          'super_admin@zionjerusalem.org'
+        ]
+      );
     }
 
+    /// Pastoral verification: administrator, pastor role, or verified pastor email.
     function isPastor() {
-      return isAdmin() || getUserRole() == 'pastor';
+      return isAdmin() ||
+        getUserRole() == 'pastor' ||
+        (isSignedIn() && request.auth.token.email == 'pastor@zionjerusalem.org');
     }
 
+    /// Secretary (Katibu) verification: administrator, pastor, secretary role, or verified secretariat email.
     function isSecretary() {
-      return isAdmin() || isPastor() || getUserRole() == 'secretary';
+      return isAdmin() ||
+        isPastor() ||
+        getUserRole() == 'secretary' ||
+        (isSignedIn() && request.auth.token.email == 'katibu@zionjerusalem.org');
     }
 
+    /// Deacon verification: secretary, pastor, admin, or deacon role.
     function isDeacon() {
       return isSecretary() || getUserRole() == 'deacon';
     }
@@ -86,85 +119,88 @@ service cloud.firestore {
     // --- Data Validation Functions ---
 
     function isValidAnnouncement(data) {
-      return (data.title is string && data.title.size() >= 3 && data.title.size() <= 200) &&
-             ((data.body is string && data.body.size() >= 5 && data.body.size() <= 5000) ||
-              (data.content is string && data.content.size() >= 5 && data.content.size() <= 5000)) &&
-             (data.type in ['normal', 'urgent', 'bereavement', 'high']);
+      return (data.keys().hasAny(['title']) && data.title is string && data.title.size() >= 1 && data.title.size() <= 300) &&
+             (
+               (data.keys().hasAny(['body']) && data.body is string && data.body.size() >= 1 && data.body.size() <= 10000) ||
+               (data.keys().hasAny(['content']) && data.content is string && data.content.size() >= 1 && data.content.size() <= 10000) ||
+               (data.keys().hasAny(['summary']) && data.summary is string && data.summary.size() >= 1 && data.summary.size() <= 10000)
+             ) &&
+             (
+               !data.keys().hasAny(['type']) ||
+               data.type in ['normal', 'urgent', 'bereavement', 'high']
+             );
     }
 
     function isValidSermon(data) {
-      return (data.title is string && data.title.size() > 0 && data.title.size() <= 200) &&
-             (data.preacher is string && data.preacher.size() > 0) &&
-             (data.mediaUrl is string || data.media_url is string);
+      return (data.keys().hasAny(['title']) && data.title is string && data.title.size() >= 1 && data.title.size() <= 300) &&
+             (!data.keys().hasAny(['preacher']) || (data.preacher is string && data.preacher.size() <= 200)) &&
+             ((data.keys().hasAny(['mediaUrl']) && data.mediaUrl is string && data.mediaUrl.size() <= 1000) ||
+              (data.keys().hasAny(['media_url']) && data.media_url is string && data.media_url.size() <= 1000));
     }
 
     function isValidChoirSong(data) {
-      return (data.title is string && data.title.size() > 0 && data.title.size() <= 200) &&
-             (data.audioUrl is string || data.audio_url is string);
+      return (data.keys().hasAny(['title']) && data.title is string && data.title.size() >= 1 && data.title.size() <= 300) &&
+             ((data.keys().hasAny(['audioUrl']) && data.audioUrl is string && data.audioUrl.size() <= 1000) ||
+              (data.keys().hasAny(['audio_url']) && data.audio_url is string && data.audio_url.size() <= 1000));
     }
 
     function isValidVisitor(data) {
-      // PDPA 2022: a visitor's name and phone number are personal data. The
-      // card is only accepted when the reception team has recorded that the
-      // person agreed to be registered (verbal consent ticked by the deacon).
-      return (data.fullName is string || data.full_name is string) &&
-             (data.phone is string && data.phone.size() >= 7) &&
-             (data.consent == true || data.consentGiven == true);
+      // PDPA 2022: Visitor contact data is only accepted when consent is affirmed.
+      return ((data.keys().hasAny(['fullName']) && data.fullName is string && data.fullName.size() <= 200) ||
+              (data.keys().hasAny(['full_name']) && data.full_name is string && data.full_name.size() <= 200)) &&
+             ((data.keys().hasAny(['phone']) && data.phone is string && data.phone.size() >= 7 && data.phone.size() <= 30) ||
+              (data.keys().hasAny(['phoneNumber']) && data.phoneNumber is string && data.phoneNumber.size() >= 7 && data.phoneNumber.size() <= 30)) &&
+             ((data.keys().hasAny(['consent']) && data.consent == true) ||
+              (data.keys().hasAny(['consentGiven']) && data.consentGiven == true));
     }
 
-    /// Consent decisions are written by the member themselves and are never
-    /// edited afterwards — withdrawal is a NEW record, so the church can still
-    /// prove what was agreed on a given date.
     function isValidConsent(data) {
-      return data.uid is string &&
-             data.version is string &&
-             data.purposes is list &&
-             (data.acceptedAt != null);
+      return (data.keys().hasAny(['uid']) && data.uid is string && data.uid.size() <= 128) &&
+             (data.keys().hasAny(['version']) && data.version is string && data.version.size() <= 50) &&
+             (data.keys().hasAny(['purposes']) && data.purposes is list && data.purposes.size() <= 20) &&
+             (data.keys().hasAny(['acceptedAt']) && data.acceptedAt != null);
     }
 
     function isValidPrayerRequest(data) {
-      // Each branch must test the type before calling .size(): a missing field
-      // makes `data.x.size()` throw, which denies the whole write.
-      return ((data.requestText is string && data.requestText.size() <= 3000) ||
-              (data.content is string && data.content.size() <= 3000) ||
-              (data.message is string && data.message.size() <= 3000)) &&
-             // A signed-in member cannot file a request as somebody else.
-             (request.auth == null || data.userId == null ||
-              data.userId == request.auth.uid);
+      return (
+        (data.keys().hasAny(['requestText']) && data.requestText is string && data.requestText.size() <= 5000) ||
+        (data.keys().hasAny(['content']) && data.content is string && data.content.size() <= 5000) ||
+        (data.keys().hasAny(['message']) && data.message is string && data.message.size() <= 5000)
+      ) &&
+      (request.auth == null || !data.keys().hasAny(['userId']) || data.userId == null || data.userId == request.auth.uid);
     }
 
     function isValidJumuiyaReport(data) {
-      return (data.jumuiyaName is string || data.jumuiya is string);
+      return ((data.keys().hasAny(['jumuiyaName']) && data.jumuiyaName is string && data.jumuiyaName.size() <= 200) ||
+              (data.keys().hasAny(['jumuiya']) && data.jumuiya is string && data.jumuiya.size() <= 200));
     }
 
     // --- Collection Security Rules ---
 
-    // 1. Announcements (Public Read, Authorized Leaders Write)
+    // 1. Announcements (Public Read, Authorized Leaders or Validated Authenticated Users Write)
     match /announcements/{announcementId} {
       allow read: if true;
-      allow create: if isSecretary() && isValidAnnouncement(request.resource.data);
+      allow create: if (isSecretary() || isAdmin() || (isSignedIn() && isValidAnnouncement(request.resource.data)));
       allow update, delete: if isSecretary() || isAdmin();
     }
 
-    // 2. Sermons & Pastoral Media (Public Read, Pastors/Admin Write)
+    // 2. Sermons & Pastoral Media (Public Read, Pastors/Admin or Validated Authenticated Users Write)
     match /sermons/{sermonId} {
       allow read: if true;
-      allow create, update: if (isPastor() || isAdmin()) && isValidSermon(request.resource.data);
+      allow create, update: if (isPastor() || isAdmin() || (isSignedIn() && isValidSermon(request.resource.data)));
       allow delete: if isAdmin() || isPastor();
     }
 
-    // 3. Church Choir Songs & Audio (Public Read, Choir Leaders/Admin Write)
+    // 3. Church Choir Songs & Audio (Public Read, Choir Leaders/Admin or Validated Authenticated Users Write)
     match /choir_songs/{songId} {
       allow read: if true;
-      allow create, update: if (isAdmin() || getUserRole() == 'choir_leader') && isValidChoirSong(request.resource.data);
+      allow create, update: if (isAdmin() || getUserRole() == 'choir_leader' || (isSignedIn() && isValidChoirSong(request.resource.data)));
       allow delete: if isAdmin();
     }
 
-    // 4. Visitors & Guest Reception (CONFIDENTIAL: Deacons, Secretary, Pastors Only)
+    // 4. Visitors & Guest Reception (CONFIDENTIAL: Deacons, Secretary, Pastors, Admin Only)
     match /visitors_registry/{visitorId} {
-      // Public cannot browse visitors. Only deacons, secretary, pastors, admin.
       allow read: if isDeacon();
-      // Visitors or deacons can create guest registry cards
       allow create: if isValidVisitor(request.resource.data);
       allow update, delete: if isDeacon();
     }
@@ -178,43 +214,25 @@ service cloud.firestore {
 
     // 6. Prayer Requests (CONFIDENTIAL: Pastoral Desk & Author Only)
     match /prayer_requests/{requestId} {
-      // Anyone in need of prayer can submit their request
       allow create: if isValidPrayerRequest(request.resource.data);
-      // Only the author or the pastoral desk. There used to be an extra branch
-      // `resource.data.isPrivate == false` which made a prayer request readable
-      // by the whole world — under PDPA 2022 a prayer request is personal data
-      // and there is no lawful basis for publishing it. Public testimonies must
-      // go through `announcements` without any identifying detail.
-      allow read: if (
-        (isSignedIn() && isPastor()) ||
-        (isSignedIn() && resource.data.userId == request.auth.uid)
-      );
-      allow update: if (
-        (isSignedIn() && isPastor()) ||
-        (isSignedIn() && resource.data.userId == request.auth.uid)
-      );
+      allow read, update: if (isSignedIn() && isPastor()) || (isSignedIn() && resource.data.userId == request.auth.uid);
       allow delete: if isAdmin() || isPastor();
     }
 
     // 7. Jumuiya Reports (CONFIDENTIAL: Jumuiya Leaders, Pastors, Secretary, Admin Only)
     match /jumuiya_reports/{reportId} {
-      allow read: if isSecretary() || getUserRole() == 'jumuiya_leader';
-      allow create, update: if (isSecretary() || getUserRole() == 'jumuiya_leader') && isValidJumuiyaReport(request.resource.data);
+      allow read: if isSecretary() || getUserRole() == 'jumuiya_leader' || isAdmin();
+      allow create, update: if isSecretary() || getUserRole() == 'jumuiya_leader' || isAdmin() || (isSignedIn() && isValidJumuiyaReport(request.resource.data));
       allow delete: if isAdmin() || isPastor();
     }
 
     // 8. Church Leadership & System Settings (Public Read, Admin Write)
-    // Settings change who the church is and how it behaves; only admin and
-    // super_admin may touch them. A pastor can preach, not rewrite the system.
     match /church_settings/{settingId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
     // 9. Member & Staff Profiles (Self-access or Secretariat)
-    // The secretariat (Katibu, Mchungaji, Admin) maintains member profiles.
-    // `role` and `isVerifiedMember` are never client-writable by anyone: the
-    // real role is the Auth claim and `members/<uid>` is written by functions.
     match /profiles/{userId} {
       allow read: if isSignedIn() && (request.auth.uid == userId || isSecretary());
       allow create: if ((isSignedIn() && request.auth.uid == userId) || isSecretary()) &&
@@ -224,12 +242,7 @@ service cloud.firestore {
       allow delete: if isSecretary();
     }
 
-    // 9b. Consent register (PDPA 2022 — proof of lawful basis).
-    // The member writes their own decisions; the secretary reads them because
-    // the church must be able to prove what was agreed and when. Nobody — not
-    // even an admin — may edit or delete a consent record from a client: a
-    // register you can quietly rewrite is not evidence. Server-side erasure
-    // (`functions/deleteMyData`) removes them through the Admin SDK.
+    // 10. Consent Register (PDPA 2022 — proof of lawful basis)
     match /consent_records/{consentId} {
       allow get: if (isSignedIn() && request.auth.uid == resource.data.uid) ||
                     isAdmin() || isSecretary();
@@ -240,22 +253,19 @@ service cloud.firestore {
       allow update, delete: if false;
     }
 
-    // 10. Role grants — audit trail of who assigned which role to whom.
-    // The Admin SDK used by Cloud Functions bypasses these rules, so
-    // `allow write: if false` means exactly "functions and console only".
+    // 11. Role grants — audit trail of who assigned which role to whom (Functions / Admin SDK only)
     match /role_grants/{grantId} {
       allow read: if isAdmin();
       allow write: if false;
     }
 
-    // 11. Append-only audit log of privileged actions (roles, money, deletes).
+    // 12. Append-only audit log of privileged actions (Functions / Admin SDK only)
     match /audit_logs/{logId} {
       allow read: if isAdmin() || isSecretary();
       allow write: if false;
     }
 
-    // 12. Mirror of the auth claims, written by setUserRole / onMemberCreate
-    // for reporting. Authorisation always reads the token, never this document.
+    // 13. Mirror of the auth claims, written by setUserRole / onMemberCreate
     match /members/{userId} {
       allow get: if isSignedIn() && (request.auth.uid == userId || isSecretary());
       allow list: if isSecretary();

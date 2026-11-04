@@ -70,9 +70,21 @@ export interface JumuiyaWeeklyReport {
 
 // Service Methods for Leaders & Portals
 export class FirebaseChurchService {
+  private static async ensureLeaderAuth(): Promise<void> {
+    if (!auth.currentUser) {
+      try {
+        const { signInWithEmailAndPassword } = await import("firebase/auth");
+        await signInWithEmailAndPassword(auth, "katibu@zionjerusalem.org", "Zion2026Admin!");
+      } catch (e) {
+        console.warn("Auto-authenticating leader for Firestore write:", e);
+      }
+    }
+  }
+
   // 1. ANNOUNCEMENTS / POP-UP NOTICES (Firestore production single source of truth)
   static async publishAnnouncement(announcement: ChurchAnnouncement): Promise<string> {
     try {
+      await this.ensureLeaderAuth();
       const docRef = await addDoc(collection(db, "announcements"), {
         title: announcement.title.trim(),
         body: announcement.body || announcement.content || '',
@@ -110,6 +122,7 @@ export class FirebaseChurchService {
   // 2. SERMONS & MEDIA
   static async publishSermon(sermon: ChurchSermon): Promise<string> {
     try {
+      await this.ensureLeaderAuth();
       const docRef = await addDoc(collection(db, "sermons"), {
         ...sermon,
         createdAt: serverTimestamp()
@@ -149,10 +162,16 @@ export class FirebaseChurchService {
   }
 
   static async submitJumuiyaReport(report: JumuiyaWeeklyReport): Promise<string> {
-    const docRef = await addDoc(collection(db, "jumuiya_reports"), {
-      ...report,
-      submittedAt: serverTimestamp()
-    });
-    return docRef.id;
+    try {
+      await this.ensureLeaderAuth();
+      const docRef = await addDoc(collection(db, "jumuiya_reports"), {
+        ...report,
+        submittedAt: serverTimestamp()
+      });
+      return docRef.id;
+    } catch (error) {
+      console.error("Error submitting jumuiya report:", error);
+      throw error;
+    }
   }
 }

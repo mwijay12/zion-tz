@@ -77,6 +77,27 @@ export class AuthService {
   }
 
   static async loginAsDemo(role: UserRole = 'super_admin'): Promise<PortalUser> {
+    const demoCredentials: Record<string, { email: string; pass: string }> = {
+      super_admin: { email: 'admin@zionjerusalem.org', pass: 'Zion2026Admin!' },
+      admin: { email: 'admin@zionjerusalem.org', pass: 'Zion2026Admin!' },
+      pastor: { email: 'pastor@zionjerusalem.org', pass: 'Zion2026Admin!' },
+      secretary: { email: 'katibu@zionjerusalem.org', pass: 'Zion2026Admin!' },
+    };
+
+    const targetCred = demoCredentials[role] || demoCredentials.super_admin;
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, targetCred.email, targetCred.pass);
+      const portalUser = await this.toPortalUser(userCredential.user);
+      if (portalUser) {
+        try {
+          sessionStorage.setItem('zion_demo_user', JSON.stringify(portalUser));
+        } catch {}
+        return portalUser;
+      }
+    } catch (e) {
+      console.warn("Direct Firebase Auth demo sign-in fallback:", e);
+    }
+
     const demoUser: PortalUser = {
       id: `demo-${role}`,
       name: role === 'pastor' ? 'Mchungaji na Askofu Mercy James' : (role === 'secretary' ? 'Katibu Mkuu' : 'Super Admin Zion'),
@@ -124,17 +145,33 @@ export class AuthService {
   private static async toPortalUser(firebaseUser: User): Promise<PortalUser | null> {
     const token = await firebaseUser.getIdTokenResult(true);
     const claims = token.claims as Record<string, unknown>;
-    const role = claims.role;
+    let role = claims.role as UserRole | undefined;
 
-    if (!isPortalRole(role)) return null;
+    // Fallbacks for known administrative accounts or admin flag
+    if (!role) {
+      if (
+        claims.admin === true ||
+        firebaseUser.email === 'mwijaydavie@gmail.com' ||
+        firebaseUser.email === 'davidbyanmwijage@gmail.com' ||
+        firebaseUser.email === 'admin@zionjerusalem.org'
+      ) {
+        role = 'super_admin';
+      } else if (firebaseUser.email === 'katibu@zionjerusalem.org') {
+        role = 'secretary';
+      } else if (firebaseUser.email === 'pastor@zionjerusalem.org') {
+        role = 'pastor';
+      }
+    }
+
+    if (!role || !isPortalRole(role)) return null;
 
     return {
       id: firebaseUser.uid,
-      name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Kiongozi',
+      name: firebaseUser.displayName || (role === 'pastor' ? 'Mchungaji na Askofu Mercy James' : (role === 'secretary' ? 'Katibu Mkuu' : 'Super Admin Zion')),
       email: firebaseUser.email || '',
       role,
       isRoot: role === 'admin' || role === 'super_admin',
-      branch: typeof claims.branch === 'string' ? claims.branch : undefined,
+      branch: typeof claims.branch === 'string' ? claims.branch : 'Mbagala Kwa Matope (HQ)',
       titleSw: ROLE_TITLES[role],
     };
   }

@@ -101,8 +101,8 @@ class SayuniCopilotService extends ChangeNotifier {
     CopilotMessage botResponse;
 
     try {
-      // 1. Try Live Vercel Serverless Endpoint (Groq powered, zero keys in APK)
-      final onlineResult = await _callOnlineProxy(clean);
+      // 1. Try Live Vercel Serverless Endpoint (Mercury 2.5 + Groq failover, zero keys in APK)
+      final onlineResult = await _callOnlineProxy(clean, userMsg);
       if (onlineResult != null) {
         botResponse = onlineResult;
       } else {
@@ -127,12 +127,17 @@ class SayuniCopilotService extends ChangeNotifier {
     return botResponse;
   }
 
-  Future<CopilotMessage?> _callOnlineProxy(String query) async {
+  Future<CopilotMessage?> _callOnlineProxy(String query, CopilotMessage currentUserMsg) async {
     try {
-      // Prepare history slice
-      final history = _messages
-          .where((m) => m.id != 'welcome_msg')
-          .take(4)
+      // Prepare history slice: strictly the most recent 4 messages prior to the current user query
+      final pastMessages = _messages
+          .where((m) => m.id != 'welcome_msg' && m.id != currentUserMsg.id)
+          .toList();
+      final recentHistory = pastMessages.length > 4
+          ? pastMessages.sublist(pastMessages.length - 4)
+          : pastMessages;
+
+      final history = recentHistory
           .map((m) => {
                 'role': m.isUser ? 'user' : 'assistant',
                 'content': m.text,

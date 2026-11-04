@@ -37,6 +37,7 @@ class _SayuniCopilotSheetState extends State<SayuniCopilotSheet> {
   final TextEditingController _inputCtrl = TextEditingController();
   final ScrollController _scrollCtrl = ScrollController();
   final SayuniCopilotService _copilotService = SayuniCopilotService();
+  DateTime? _lastSendTime;
 
   @override
   void initState() {
@@ -72,8 +73,13 @@ class _SayuniCopilotSheetState extends State<SayuniCopilotSheet> {
   }
 
   void _handleSend([String? presetText]) {
+    final now = DateTime.now();
+    if (_lastSendTime != null && now.difference(_lastSendTime!) < const Duration(milliseconds: 1200)) {
+      return; // Prevent double-tap / spamming
+    }
     final text = presetText ?? _inputCtrl.text;
     if (text.trim().isEmpty) return;
+    _lastSendTime = now;
     AppHaptics.selectionClick();
     if (presetText == null) {
       _inputCtrl.clear();

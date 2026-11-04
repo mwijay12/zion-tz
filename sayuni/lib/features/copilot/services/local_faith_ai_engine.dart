@@ -16,7 +16,112 @@ class LocalFaithAiEngine {
   static LocalFaithAiResult processQuery(String rawInput) {
     final query = rawInput.trim().toLowerCase();
 
-    // 1. NIGHT PRAYER & BEDTIME SCRIPTURE INTENTS (Bilingual: Swahili & English)
+    // 1. HEARTBREAK & GRIEF SCRIPTURE INTENTS
+    final isHeartbreak = query.contains('heart break') ||
+        query.contains('heartbreak') ||
+        query.contains('broken heart') ||
+        query.contains('kuvunjika moyo') ||
+        query.contains('kuumia moyo') ||
+        query.contains('maumivu ya moyo') ||
+        query.contains('huzuni') ||
+        query.contains('grief') ||
+        query.contains('sadness') ||
+        query.contains('depression');
+
+    if (isHeartbreak) {
+      return const LocalFaithAiResult(
+        reply:
+            'Pole sana kwa maumivu unayopitia. Mungu anaona machozi yako na hapendezwi kukuona unateseka. Neno lake linatuhakikishia katika Zaburi 34:18:\n\n'
+            '"Bwana yu karibu nao waliovunjika moyo, na huwaokoa waliopondeka roho."\n\n'
+            'Pia Zaburi 147:3 inasema: "Huwaponya waliovunjika moyo, na kuyaganga maumivu yao." Uwe na amani, Bwana yupo pamoja nawe atakuvusha katika jaribu hili.',
+        actionType: CopilotActionType.openScripture,
+        actionData: {
+          'reference': 'Zaburi 34:18',
+          'book': 'Zaburi',
+          'chapter': 34,
+          'verse': 18,
+        },
+      );
+    }
+
+    // 2. JOYFUL MOMENT & THANKSGIVING SCRIPTURE INTENTS
+    final isJoyful = query.contains('joyful') ||
+        query.contains('joy') ||
+        query.contains('furaha') ||
+        query.contains('shukrani') ||
+        query.contains('thanksgiving') ||
+        query.contains('grateful') ||
+        query.contains('celebrat') ||
+        query.contains('ushindi');
+
+    if (isJoyful) {
+      return const LocalFaithAiResult(
+        reply:
+            'Haleluya! Ni jambo jema kumshukuru Bwana na kufurahi katika uwepo wake. Neno la Mungu katika Wafilipi 4:4 linatukumbusha:\n\n'
+            '"Furahini katika Bwana sikuzote; tena nasema, Furahini!"\n\n'
+            'Na 1 Wathesalonike 5:16-18: "Furahini sikuzote; ombeni bila kukoma; shukuruni kwa kila jambo; maana hayo ni mapenzi ya Mungu kwenu katika Kristo Yesu." Mungu aendelee kukujaza furaha na amani tele!',
+        actionType: CopilotActionType.openScripture,
+        actionData: {
+          'reference': 'Wafilipi 4:4',
+          'book': 'Wafilipi',
+          'chapter': 4,
+          'verse': 4,
+        },
+      );
+    }
+
+    // 3. ANXIETY, FEAR & WORRY SCRIPTURE INTENTS
+    final isAnxiety = query.contains('anxi') ||
+        query.contains('wasiwasi') ||
+        query.contains('worry') ||
+        query.contains('hofu') ||
+        query.contains('fear') ||
+        query.contains('stress') ||
+        query.contains('mashaka') ||
+        query.contains('afraid');
+
+    if (isAnxiety) {
+      return const LocalFaithAiResult(
+        reply:
+            'Usiwe na hofu wala mashaka, mkono wa Mungu u thabiti juu ya maisha yako. Neno la Bwana linatuasa katika Wafilipi 4:6-7:\n\n'
+            '"Msijisumbue kwa neno lo lote; bali katika kila neno kwa kusali na kuomba, pamoja na kushukuru, haja zenu na zijulikane na Mungu. Na amani ya Mungu, ipitayo akili zote, italinda mioyo yenu na nia zenu katika Kristo Yesu."\n\n'
+            'Tupa mahangaiko yako yote kwa Yesu maana yeye anajali sana maisha yako (1 Petro 5:7).',
+        actionType: CopilotActionType.openScripture,
+        actionData: {
+          'reference': 'Wafilipi 4:6',
+          'book': 'Wafilipi',
+          'chapter': 4,
+          'verse': 6,
+        },
+      );
+    }
+
+    // 4. SICKNESS & HEALING INTENTS
+    final isHealing = query.contains('ugonjwa') ||
+        query.contains('sick') ||
+        query.contains('illness') ||
+        query.contains('uponyaji') ||
+        query.contains('healing') ||
+        query.contains('naumwa') ||
+        query.contains('maradhi');
+
+    if (isHealing) {
+      return const LocalFaithAiResult(
+        reply:
+            'Bwana Yesu ndiye daktari mkuu na mponyaji wetu. Neno la Bwana linasema katika Isaya 53:5:\n\n'
+            '"Bali alijeruhiwa kwa makosa yetu, alichubuliwa kwa maovu yetu; adhabu ya amani yetu ilikuwa juu yake, na kwa kupigwa kwake sisi tumepona."\n\n'
+            'Tunaamini na kutangaza uponyaji juu ya mwili na roho yako kwa jina la Yesu!',
+        actionType: CopilotActionType.openScripture,
+        actionData: {
+          'reference': 'Isaya 53:5',
+          'book': 'Isaya',
+          'chapter': 53,
+          'verse': 5,
+        },
+      );
+    }
+
+    // 5. NIGHT PRAYER & BEDTIME SCRIPTURE INTENTS (Bilingual: Swahili & English)
     final isNightPrayer = (query.contains('night') ||
             query.contains('usiku') ||
             query.contains('lala') ||

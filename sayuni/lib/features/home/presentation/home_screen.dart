@@ -272,11 +272,7 @@ Ubarikiwe na Mungu wa Sayuni!
                 delegate: SliverChildListDelegate([
                   // Sunday Service Countdown Banner
                   _buildSundayCountdownBanner(),
-                  const SizedBox(height: 16),
-
-                  // Dedicated Sayuni AI Feature Card
-                  _buildCopilotFeatureCard(context),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 18),
 
                   // Quick Services Actions Grid
                   SectionHeader(
@@ -515,76 +511,6 @@ Ubarikiwe na Mungu wa Sayuni!
                           ),
                         ),
                       ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          // Touch-friendly quick Sayuni Copilot AI Pill
-          InkWell(
-            onTap: () {
-              AppHaptics.lightImpact();
-              SayuniCopilotSheet.show(
-                context,
-                onNavigateToTab: widget.onNavigateToTab,
-              );
-            },
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              height: 44,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: AppColors.gold.withOpacity(0.4),
-                  width: 1,
-                ),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 28,
-                    height: 28,
-                    decoration: BoxDecoration(
-                      color: AppColors.gold.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(
-                      Icons.auto_awesome_rounded,
-                      color: AppColors.goldLight,
-                      size: 16,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  const Expanded(
-                    child: Text(
-                      'Uliza Sayuni AI: Fungua Tenzi, Badili Theme, Vitabu...',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                    decoration: BoxDecoration(
-                      color: AppColors.gold,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: const Text(
-                      'Sayuni Copilot',
-                      style: TextStyle(
-                        color: Color(0xFF0F172A),
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w700,
-                      ),
                     ),
                   ),
                 ],

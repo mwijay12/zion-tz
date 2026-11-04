@@ -114,8 +114,9 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
         if (existingIdx == -1) {
           _customSermons.add(def);
         } else if (_customSermons[existingIdx].type != def.type ||
-            _customSermons[existingIdx].fullArticle.isEmpty) {
-          // Upgrade old cached item to full rich blog post format
+            _customSermons[existingIdx].fullArticle.isEmpty ||
+            _customSermons[existingIdx].imageUrl != def.imageUrl) {
+          // Upgrade old cached item to full rich blog post format & updated cover art
           _customSermons[existingIdx] = def;
         }
       }
@@ -248,6 +249,131 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
         imageUrl: item.imageUrl,
       );
     }
+  }
+
+  Widget _buildMediaCoverThumbnail(SermonMediaItem item) {
+    final isText = item.type == 'text';
+    final isVideo = item.type == 'video';
+    final accentColor = isText
+        ? AppColors.gold
+        : (isVideo ? const Color(0xFFDC2626) : AppColors.primary);
+
+    return Container(
+      width: 72,
+      height: 72,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: accentColor.withValues(alpha: 0.35),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 8,
+            offset: const Offset(0, 3),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(15),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            if (item.imageUrl.isNotEmpty)
+              Image(
+                image: item.imageUrl.startsWith('http')
+                    ? NetworkImage(item.imageUrl) as ImageProvider
+                    : AssetImage(item.imageUrl.startsWith('assets/')
+                        ? item.imageUrl
+                        : 'assets/images/${item.imageUrl}'),
+                fit: BoxFit.cover,
+                errorBuilder: (ctx, _, __) => _buildFallbackThumbnail(item),
+              )
+            else
+              _buildFallbackThumbnail(item),
+
+            // Subtle dark linear vignette for contrast
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.45),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+                ),
+              ),
+            ),
+
+            // Media type badge
+            Positioned(
+              right: 4,
+              bottom: 4,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.72),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isText
+                        ? AppColors.goldLight
+                        : (isVideo
+                            ? const Color(0xFFF87171)
+                            : AppColors.primaryLight),
+                    width: 1,
+                  ),
+                ),
+                child: Icon(
+                  isText
+                      ? Icons.menu_book_rounded
+                      : (isVideo
+                          ? Icons.play_arrow_rounded
+                          : Icons.headphones_rounded),
+                  size: 11,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFallbackThumbnail(SermonMediaItem item) {
+    final isText = item.type == 'text';
+    final isVideo = item.type == 'video';
+    final accentColor = isText
+        ? AppColors.gold
+        : (isVideo ? const Color(0xFFDC2626) : AppColors.primary);
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            accentColor.withValues(alpha: 0.18),
+            accentColor.withValues(alpha: 0.35),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Center(
+        child: Icon(
+          isText
+              ? Icons.menu_book_rounded
+              : (isVideo
+                  ? Icons.smart_display_rounded
+                  : Icons.headphones_rounded),
+          color: accentColor,
+          size: 28,
+        ),
+      ),
+    );
   }
 
   void _openVideoPlayer(SermonMediaItem item) {
@@ -1103,6 +1229,38 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                       ),
                       child: Stack(
                         children: [
+                          if (sermons.first.imageUrl.isNotEmpty)
+                            Positioned.fill(
+                              child: Opacity(
+                                opacity: 0.25,
+                                child: Image(
+                                  image: sermons.first.imageUrl.startsWith('http')
+                                      ? NetworkImage(sermons.first.imageUrl)
+                                          as ImageProvider
+                                      : AssetImage(sermons.first.imageUrl
+                                              .startsWith('assets/')
+                                          ? sermons.first.imageUrl
+                                          : 'assets/images/${sermons.first.imageUrl}'),
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) =>
+                                      const SizedBox.shrink(),
+                                ),
+                              ),
+                            ),
+                          Positioned.fill(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    const Color(0xFF07192F).withValues(alpha: 0.88),
+                                    const Color(0xFF0A2540).withValues(alpha: 0.95),
+                                  ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                ),
+                              ),
+                            ),
+                          ),
                           Positioned(
                             right: -20,
                             bottom: -20,
@@ -1356,43 +1514,8 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Thumbnail / Icon
-                                Container(
-                                  width: 64,
-                                  height: 64,
-                                  decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        item.type == 'text'
-                                            ? AppColors.gold.withOpacity(0.18)
-                                            : (item.type == 'video'
-                                                ? const Color(0xFFDC2626).withOpacity(0.12)
-                                                : AppColors.primary.withOpacity(0.12)),
-                                        item.type == 'text'
-                                            ? AppColors.gold.withOpacity(0.28)
-                                            : (item.type == 'video'
-                                                ? const Color(0xFFDC2626).withOpacity(0.2)
-                                                : AppColors.primary.withOpacity(0.2)),
-                                      ],
-                                    ),
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: Center(
-                                    child: Icon(
-                                      item.type == 'text'
-                                          ? Icons.menu_book_rounded
-                                          : (item.type == 'video'
-                                              ? Icons.smart_display_rounded
-                                              : Icons.headphones_rounded),
-                                      color: item.type == 'text'
-                                          ? AppColors.gold
-                                          : (item.type == 'video'
-                                              ? const Color(0xFFDC2626)
-                                              : AppColors.primary),
-                                      size: 30,
-                                    ),
-                                  ),
-                                ),
+                                // Cover Art Thumbnail
+                                _buildMediaCoverThumbnail(item),
                                 const SizedBox(width: 14),
                                 // Details
                                 Expanded(

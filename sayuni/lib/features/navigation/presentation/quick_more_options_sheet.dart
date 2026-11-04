@@ -31,16 +31,6 @@ class QuickMoreOptionsSheet extends StatelessWidget {
 
     final quickItems = [
       {
-        'title': 'Sayuni Copilot (AI)',
-        'subtitle': 'Muulize AI mistari, vitabu, tenzi, maombi',
-        'icon': Icons.auto_awesome_rounded,
-        'color': AppColors.gold,
-        'action': () {
-          Navigator.pop(context);
-          SayuniCopilotSheet.show(context, onNavigateToTab: onNavigateToTab);
-        },
-      },
-      {
         'title': 'Tafuta Kila Kitu',
         'subtitle': 'Biblia, Tenzi, Waumini, Mahubiri',
         'icon': Icons.search_rounded,
@@ -175,41 +165,116 @@ class QuickMoreOptionsSheet extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: AppColors.gold.withOpacity(0.15),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: const Icon(
-                              Icons.grid_view_rounded,
-                              color: AppColors.goldLight,
-                              size: 20,
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Huduma Zote za Sayuni',
-                                style: AppTypography.titleMedium(
-                                    color: AppColors.textPrimary),
+                      Expanded(
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: AppColors.gold.withValues(alpha: 0.15),
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              Text(
-                                'Fikia vitu vyote muhimu bila kusumbuka',
-                                style: AppTypography.caption(
-                                    color: AppColors.textMuted),
+                              child: const Icon(
+                                Icons.grid_view_rounded,
+                                color: AppColors.goldLight,
+                                size: 20,
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Huduma Zote za Sayuni',
+                                    style: AppTypography.titleMedium(
+                                        color: AppColors.textPrimary),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    'Fikia huduma zote za kanisa',
+                                    style: AppTypography.caption(
+                                        color: AppColors.textMuted),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                      const SizedBox(width: 8),
+                      // Sleek Sayuni AI Action Button on Right Top
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            AppHaptics.lightImpact();
+                            Navigator.pop(context);
+                            SayuniCopilotSheet.show(context,
+                                onNavigateToTab: onNavigateToTab);
+                          },
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: isDark
+                                    ? [
+                                        const Color(0xFF1E293B),
+                                        const Color(0xFF0F172A),
+                                      ]
+                                    : [
+                                        const Color(0xFFF1F5F9),
+                                        const Color(0xFFE2E8F0),
+                                      ],
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: AppColors.gold.withValues(alpha: 0.6),
+                                width: 1.2,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.gold.withValues(alpha: 0.18),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.auto_awesome_rounded,
+                                  color: AppColors.gold,
+                                  size: 15,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'Sayuni AI',
+                                  style: TextStyle(
+                                    color: isDark
+                                        ? Colors.white
+                                        : const Color(0xFF0F172A),
+                                    fontSize: 11.5,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: 0.2,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
                       IconButton(
                         icon: Icon(Icons.close_rounded,
                             color: AppColors.textPrimary),
+                        visualDensity: VisualDensity.compact,
                         onPressed: () => Navigator.pop(context),
                       ),
                     ],

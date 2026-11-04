@@ -429,7 +429,7 @@ class _MainScaffoldState extends State<MainScaffold> {
               children: screens,
             ),
             _buildInAppNotificationBanner(),
-            _buildFloatingCopilotTrigger(context),
+            if (_currentIndex != 0) _buildFloatingCopilotTrigger(context),
           ],
         ),
         bottomNavigationBar: SafeArea(

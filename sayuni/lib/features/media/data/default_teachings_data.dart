@@ -28,7 +28,7 @@ class DefaultTeachingsData {
       ],
       description:
           'Amri mpya nawapa, mpendane kama vile nilivyowapenda ninyi (Yohana 13:34-35, 15:12). Huu ndio ujumbe mliousikia tangu mwanzo kwamba tupendane (1 Yohana 3:11, Marko 12:31). Upendo huvumilia, hufadhili, hauhusudu na husitiri wingi wa dhambi (1 Petro 4:8, 1 Wakorintho 13:1-6). Mungu ni pendo naye akaaye katika pendo hukaa ndani ya Mungu (1 Yohana 4:7).',
-      imageUrl: 'assets/images/church_front.jpg',
+      imageUrl: 'assets/images/jumuiya_fellowship_1788577443594.jpg',
       fullArticle: '''
 ### Utangulizi: Alama ya Kweli ya Mwanafunzi wa Yesu
 Katika ulimwengu uliojaa utengano, ubinafsi na migogoro, Bwana wetu Yesu Kristo alitupa kitambulisho kikuu kinachomtofautisha mkristo wa kweli na mtu wa ulimwengu. Kitambulisho hicho si mavazi, cheo wala ukubwa wa maneno, bali ni **UPENDO WA MATENDO**. 
@@ -231,7 +231,7 @@ Mfalme Sulemani anauliza swali zito: *"Je! Wamwona mtu mwenye bidii katika kazi 
       ],
       description:
           'Eliya aliwauliza watu: "Mtasita-sita katikati ya mawazo mawili hata lini? Bwana akiwa ndiye Mungu, mfuateni" (1 Wafalme 18:21). Yoshua aliweka msimamo wazi: "Chagueni hivi leo mtakayemtumikia... lakini mimi na nyumba yangu tutamtumikia Bwana" (Yoshua 24:15). Stefano alisimama imara hata kifo (Matendo 7:58). Mkristo anahitaji msimamo thabiti usioyumbishwa na upepo wa dunia.',
-      imageUrl: 'assets/images/3d_bible.png',
+      imageUrl: 'assets/images/church_youth_fellowship.jpg',
       fullArticle: '''
 ### Utangulizi: Somo la Asubuhi ya Sunday School (Saa 03:00 - 04:00)
 Katika darasa la Sunday School asubuhi ya leo, Mwalimu Emmanuel Majaliwa alisimama na kuwakumbusha waumini na vijana umuhimu wa kuwa na msimamo thabiti katika kumfuata Bwana. 

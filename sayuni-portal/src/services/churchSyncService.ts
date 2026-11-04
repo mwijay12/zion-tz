@@ -179,10 +179,19 @@ class ChurchSyncService {
             date: item.date || 'Hivi karibuni',
             scripture: item.scripture || '',
             summary: item.description || item.summary || 'Mahubiri yaliyopakiwa na uongozi.',
-            mediaType: item.type === 'audio' ? 'audio' : 'video',
+            mediaType: (item.type === 'text' || item.mediaType === 'text')
+              ? 'text'
+              : (item.type === 'audio' || item.mediaType === 'audio' ? 'audio' : 'video'),
             mediaUrl: item.videoUrl || item.audioUrl || item.mediaUrl || '',
             category: item.category || 'Mahubiri',
-            likesCount: item.likesCount || 12
+            likesCount: item.likesCount || 12,
+            fullArticle: item.fullArticle,
+            readTime: item.readTime || 'Dakika 4 kusoma',
+            keyVerse: item.keyVerse,
+            scriptureList: item.scriptureList,
+            takeaways: item.takeaways,
+            pastoralPrayer: item.pastoralPrayer,
+            imageUrl: item.imageUrl
           }));
 
           // Merge with INITIAL_SERMONS without duplicates
@@ -209,13 +218,19 @@ class ChurchSyncService {
       preacher: s.preacher,
       scripture: s.scripture,
       date: s.date,
-      duration: '45 min',
+      duration: s.readTime || '45 min',
       type: s.mediaType,
       category: s.category,
       description: s.summary,
-      imageUrl: s.mediaType === 'video' ? 'assets/images/altar.jpg' : 'assets/images/church_front.jpg',
-      audioUrl: s.mediaType === 'audio' ? s.mediaUrl : 'https://stream.zeno.fm/4v4e91y9sm8uv',
-      videoUrl: s.mediaType === 'video' ? s.mediaUrl : '',
+      fullArticle: s.fullArticle,
+      readTime: s.readTime,
+      keyVerse: s.keyVerse,
+      scriptureList: s.scriptureList,
+      takeaways: s.takeaways,
+      pastoralPrayer: s.pastoralPrayer,
+      imageUrl: s.imageUrl || (s.mediaType === 'video' ? 'assets/images/church_front.jpg' : 'assets/images/church_front.jpg'),
+      audioUrl: s.mediaType === 'audio' ? (s.mediaUrl || '') : '',
+      videoUrl: s.mediaType === 'video' ? (s.mediaUrl || '') : '',
       isAdminUpload: true
     }));
 

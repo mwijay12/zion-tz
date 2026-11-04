@@ -27,6 +27,25 @@ abstract class AppTypography {
     return color;
   }
 
+  // Liturgical Serif Heading (Cinzel)
+  static TextStyle cinzel({
+    Color? color,
+    double fontSize = 18,
+    FontWeight fontWeight = FontWeight.w700,
+    double? letterSpacing,
+    double? height,
+  }) {
+    return GoogleFonts.cinzel(
+      fontSize: fontSize,
+      fontWeight: fontWeight,
+      letterSpacing: letterSpacing,
+      height: height,
+      color: _resolveColor(color,
+          defaultLight: AppColors.textPrimaryLight,
+          defaultDark: AppColors.textPrimaryDark),
+    );
+  }
+
   // Sacred & Authoritative Optical Serif (Newsreader)
   static TextStyle displayLarge({Color? color}) {
     return GoogleFonts.newsreader(

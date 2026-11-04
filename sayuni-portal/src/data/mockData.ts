@@ -531,9 +531,43 @@ export const INITIAL_SERMONS: SermonItem[] = [
     date: '2026-11-01',
     scripture: 'Yoh 13:34-35 • 1 Kor 13:1-6 • 1 Yoh 4:7 • 1 Pet 4:8',
     summary: 'Amri mpya nawapa, mpendane; kama nilivyowapenda ninyi (Yohana 13:34-35, 15:12). Huu ndio ujumbe tuliopokea tangu mwanzo (1 Yohana 3:11, Marko 12:31). Upendo huvumilia, hufadhili na husitiri wingi wa dhambi. Mungu ni pendo.',
-    mediaType: 'audio',
-    mediaUrl: '/audio/upendo_choir_neno.mp3',
+    mediaType: 'text',
     category: 'Upendo',
+    readTime: 'Dakika 5 kusoma',
+    keyVerse: '"Amri mpya nawapa, Mpendane. Kama vile nilivyowapenda ninyi, nanyi mpendane vivyo hivyo. Hivyo watu wote watatambua ya kuwa ninyi mmekuwa wanafunzi wangu, mkiwa na upendo ninyi kwa ninyi." — Yohana 13:34-35',
+    scriptureList: ['Yohana 13:34-35', 'Yohana 15:12', '1 Yohana 3:11', 'Marko 12:31', '1 Petro 4:8', '1 Wakorintho 13:1-6', '1 Yohana 4:7'],
+    imageUrl: '/church_front.jpg',
+    takeaways: [
+      'Upendo ni amri si hiari — ndio alama ya pekee inayothibitisha uanafunzi wa Kristo.',
+      'Vipawa vya kiroho bila upendo ni kelele tupu na upatu uvumao (1 Kor 13:1-3).',
+      'Tusitiri udhaifu wa wenzetu kwa maombi na ushauri wa upole badala ya kusengenya (1 Pet 4:8).',
+      'Piga simu au mtembelee ndugu mmoja wiki hii kufungua ukurasa wa msamaha na amani.'
+    ],
+    pastoralPrayer: 'Ee Bwana Mungu wetu, Baba wa Bwana wetu Yesu Kristo, tunakushukuru kwa upendo wako mkuu uliodhihirika msalabani. Ondoa ndani ya mioyo yetu kila aina ya kinyongo, uchungu, ubinafsi na wivu. Tujaze Roho Mtakatifu ili tuweze kupendana kwa moyo safi na kwa dhati. Bariki familia zote za Sayuni Jerusalem na kanisa lako lote nchini Tanzania. Katika jina takatifu la Yesu Kristo, Amen!',
+    fullArticle: `### Utangulizi: Alama ya Kweli ya Mwanafunzi wa Yesu
+Katika ulimwengu uliojaa utengano, ubinafsi na migogoro, Bwana wetu Yesu Kristo alitupa kitambulisho kikuu kinachomtofautisha mkristo wa kweli na mtu wa ulimwengu. Kitambulisho hicho si mavazi, cheo wala ukubwa wa maneno, bali ni UPENDO WA MATENDO.
+
+Yesu alisema: "Hivyo watu wote watatambua ya kuwa ninyi mmekuwa wanafunzi wangu, mkiwa na upendo ninyi kwa ninyi" (Yohana 13:35). Huu ndio msingi na uti wa mgongo wa huduma ya Sayuni Jerusalem tangu mwanzo.
+
+### 1. Amri Mpya: Kiwango cha Msalaba (Yohana 13:34-35, 15:12)
+Katika Agano la Kale, amri ilikuwa: "Mpende jirani yako kama nafsi yako" (Marko 12:31). Lakini Yesu anapofika, anaweka kiwango kipya cha juu zaidi: "Mpendane KAMA VILE NILIVYOWAPENDA NINYI" (Yohana 15:12).
+• Kristo alitupenda tulipokuwa bado wenye dhambi na wasiostahili.
+• Hakupenda kwa masharti wala kwa manufaa binafsi.
+• Upendo wa agape ni upendo wa kujitoa muhanga, kusamehe kabla ya kuombwa msamaha, na kuinua walioanguka.
+
+### 2. Upendo Usio na Matendo Ni Kelele Tupu (1 Wakorintho 13:1-6)
+Mtume Paulo anafundisha kwa ujasiri kuwa tunaweza kuwa na vipawa vikubwa vya unabii, tukasema kwa lugha za malaika, tukatoa sadaka kubwa, lakini kama hatuna upendo, sisi ni sawa na shaba iliayo au upatu uvumao:
+• Upendo huvumilia: Haupati hasira upesi wala kulipiza kisasi.
+• Upendo hufadhili: Unatafuta ustawi na kuinuliwa kwa mwingine.
+• Upendo hauhusudu: Haufurahii kuanguka kwa mwenzako wala kuonea wivu baraka zake.
+• Upendo hautakabari: Haujivuni wala kukosa adabu.
+
+### 3. Upendo Husitiri Wingi wa Dhambi (1 Petro 4:8)
+Mtume Petro anatusihi: "Zaidi ya yote iweni na juhudi nyingi katika kupendana; kwa sababu upendano husitiri wingi wa dhambi."
+Kusitiri dhambi si kuficha uovu au unafiki; bali ni moyo wa kichungaji unaomkinga ndugu asiaibike hadharani, bali unamrejesha kwa upole, maombi na staha.
+
+### 4. Asili Yetu: Mungu Mwenyewe Ni Upendo (1 Yohana 4:7)
+"Wapenzi, na mpendane; kwa kuwa pendo latoka kwa Mungu, na kila apendaye amezaliwa na Mungu, naye anamjua Mungu."`,
     likesCount: 148
   },
   {
@@ -543,9 +577,33 @@ export const INITIAL_SERMONS: SermonItem[] = [
     date: '2026-10-25',
     scripture: 'Mathayo 19:27-29 • Mhubiri 10:10 • Malaki 3:7-12 • Kutoka 33:14-19',
     summary: 'Swali la Petro: "Tumeacha vyote, tutapata nini?" Yesu aliahidi mara mia sasa duniani na uzima wa milele. Somo la Ayubu: uaminifu na kurejeshewa mara mbili. Kibali cha Mungu huambatana na maarifa (1 Samweli 2:7, Mwanzo 30:25-32). Chuma kikiwa butu hutumia nguvu zaidi bali hekima yafaa kuelekeza (Mhubiri 10:10). Watu wapende kujifunza na kujiendeleza kitaluma na kiuchumi.',
-    mediaType: 'audio',
-    mediaUrl: 'https://stream.zeno.fm/4v4e91y9sm8uv',
+    mediaType: 'text',
     category: 'Maendeleo',
+    readTime: 'Dakika 6 kusoma',
+    keyVerse: '"Chuma kikiwa butu, wala asikinoe makali, ndipo hana budi kutumia nguvu zaidi; lakini hekima yafaa kuelekeza." — Mhubiri 10:10',
+    scriptureList: ['Mathayo 19:27-29', 'Mhubiri 10:10', 'Malaki 3:7-12', 'Kutoka 33:14-19', '1 Samweli 2:7', 'Mwanzo 30:25-32'],
+    imageUrl: '/church_men_fellowship.jpg',
+    takeaways: [
+      'Mungu anataka ubarikiwe mara mia hapa duniani na uzima wa milele mbinguni (Mathayo 19:29).',
+      'Kibali cha Mungu huambatana na maarifa — chuma butu kinatumia nguvu bila matokeo (Mhubiri 10:10).',
+      'Tenganisha akaunti ya biashara na fedha za nyumbani; nidhamu ya fedha ndiyo inayohifadhi miujiza ya kiuchumi.',
+      'Zaka na sadaka za uaminifu hufungua madirisha ya mbinguni na kumkemea mharibifu wa biashara zako (Malaki 3:10).'
+    ],
+    pastoralPrayer: 'Mungu Mwenye Enzi, Mmiliki wa fedha na dhahabu yote, tunakuomba umwage kibali chako juu ya kazi, biashara na ajira za wana wa Sayuni. Wape hekima ya kunoa mashoka yao ili wasipoteze nguvu bure bila matunda. Fungua akili zao kuona fursa za kiuchumi, na uwabariki kwa hekima ya Yakobo na Ayubu. Katika jina la Yesu Kristo mkombozi wetu, Amen!',
+    fullArticle: `### Utangulizi: Mtazamo wa Kiungu Kuhusu Mali na Ustawi
+Kuna dhana potofu iliyowapoteza baadhi ya wakristo kwamba umaskini ndio utakatifu. Lakini Biblia inatufundisha kuwa fedha na dhahabu ni mali ya Bwana (Hagai 2:8), naye hutupa uwezo wa kupata utajiri ili alithibitishe agano lake (Kumbukumbu 8:18).
+
+### 1. Swali la Petro na Ahadi ya Yesu (Mathayo 19:27-29)
+Petro alimuuliza Yesu kwa uwazi: "Tazama, sisi tumeacha vyote tukakufuata; tutapata nini basi?" Yesu alimjibu: Yeyote aliyeacha nyumba, mashamba au ndugu kwa ajili ya jina lake, atapokea mara mia sasa katika wakati huu wa duniani, na katika ulimwengu ujao atapokea uzima wa milele.
+
+### 2. Somo la Ayubu: Uaminifu na Kurejeshewa Mara Mbili
+Ayubu alipitia mtihani mzito lakini hakukufuru. Mwisho wake Mungu alimbariki Ayubu zaidi ya mwanzo wake, akampa mifugo mara mbili na ngamia mara mbili.
+
+### 3. Kibali cha Mungu Huleta Pumziko (Kutoka 33:14-19)
+Uwepo wa Bwana unaleta pumziko na kukuinua. Malaki 3:10 inasisitiza uaminifu wa zaka na sadaka unaomfunga mharibifu na kufungua mawazo ya baraka.
+
+### 4. Hekima ya Kunoa Shoka (Mhubiri 10:10)
+Chuma kikiwa butu hutumia nguvu nyingi bila matokeo. Kunoa shoka ni: kupata maarifa, kujifunza vitabu, kujiendeleza kitaluma, na kuweka nidhamu ya kurekodi kila senti.`,
     likesCount: 182
   },
   {
@@ -557,6 +615,28 @@ export const INITIAL_SERMONS: SermonItem[] = [
     summary: 'Wamwona mtu mwenye bidii katika kazi yake? Yeye atasimama mbele ya wafalme; hatasimama mbele ya watu wasio na vyeo (Mithali 22:29). Epuka kuwa mdhamini ovyo au kuweka rehani mikono bila hekima (Mithali 22:26). Bidii na uaminifu kazini ndio ushuhuda wetu mkuu kwa jamii.',
     mediaType: 'text',
     category: 'Bidii',
+    readTime: 'Dakika 4 kusoma',
+    keyVerse: '"Je! Wamwona mtu mwenye bidii katika kazi yake? Yeye atasimama mbele ya wafalme; hatasimama mbele ya watu wasio na vyeo." — Mithali 22:29',
+    scriptureList: ['Mithali 22:29', 'Mithali 22:26', 'Wakolosai 3:23-24', 'Mithali 10:4', '2 Wathesalonike 3:10'],
+    imageUrl: '/pastoral_leadership_1788577468703.jpg',
+    takeaways: [
+      'Bidii na ubora wa kazi ndiyo daraja la kuinuliwa mbele ya watu wakuu na wafalme (Mithali 22:29).',
+      'Mkristo halisi hafanyi kazi kwa kuangaliwa na bosi, bali anamtumikia Mungu aliye mbinguni.',
+      'Jiepushe na udhamini wa ovyo na rehani za haraka zinazovuruga uchumi wa nyumba yako (Mithali 22:26).',
+      'Kamilisha kazi uliyoiahirisha kwa muda mrefu — pambana na tabia ya kughairisha mambo.'
+    ],
+    pastoralPrayer: 'Bwana Yesu Kristo, tunabariki kazi za mikono ya waumini wako wote wa Sayuni. Wape hekima, nguvu za kuamka asubuhi na akili za kubuni mbinu bora za kibiashara na kikazi. Mungu wetu, waondolee roho ya uchovu, uvivu na madeni yasiyo na tija. Wafungulie milango ya kusimama mbele ya wafalme na viongozi kwa utukufu wa jina lako. Katika jina la Yesu, Amen!',
+    fullArticle: `### Utangulizi: Kazi Kama Madhabahu ya Ibada
+Imani ya mkristo haionekani tu anapokuwa amepiga magoti madhabahuni Jumapili; inaonekana pia anaposhika jembe, anapoingia ofisini, sokoni na anapoandika taarifa kazini.
+
+### 1. Siri ya Kusimama Mbele ya Wafalme (Mithali 22:29)
+Bidii inaleta heshima mbele ya wakuu kama ilivyokuwa kwa Yusufu na Danieli waliokuwa na roho bora kuliko wengine wote.
+
+### 2. Tahadhari Dhidi ya Madeni na Rehani Haramu (Mithali 22:26)
+Biblia inatufundisha kuwa na hekima na nidhamu ya kifedha; epuka udhamini wa mihemko na madeni yanayofifisha amani ya familia.
+
+### 3. Fanya Kazi Kama Unamtumikia Kristo (Wakolosai 3:23-24)
+Lo lote mfanyalo, lifanyeni kwa moyo kama kwa Bwana wala si kwa wanadamu. Fika kazini kwa wakati na toa thamani halisi.`,
     likesCount: 97
   },
   {
@@ -568,6 +648,28 @@ export const INITIAL_SERMONS: SermonItem[] = [
     summary: 'Eliya mlimani Karmeli: "Mtasita-sita katikati ya mawazo mawili hata lini? Bwana akiwa ndiye Mungu mfuateni" (1 Wafalme 18:21). Yoshua: "Chagueni hivi leo... lakini mimi na nyumba yangu tutamtumikia Bwana" (Yoshua 24:15). Stefano alisimama imara bila kuyumba (Matendo 7:58). Mkristo anahitaji msimamo thabiti usioyumbishwa na ulimwengu.',
     mediaType: 'text',
     category: 'Sunday School',
+    readTime: 'Dakika 4 kusoma',
+    keyVerse: '"Eliya akawakaribia watu wote, akasema, Mtasita-sita katikati ya mawazo mawili hata lini? Bwana akiwa ndiye Mungu, mfuateni; bali ikiwa Baali ni Mungu, mfuateni yeye." — 1 Wafalme 18:21',
+    scriptureList: ['1 Wafalme 18:21', 'Yoshua 24:15', 'Matendo ya Mitume 7:58', 'Yakobo 1:6-8', 'Ufunuo 3:15-16'],
+    imageUrl: '/3d_bible.png',
+    takeaways: [
+      'Mtu mwenye nia mbili husita-sita katika njia zake zote na hawezi kupokea kitu kwa Bwana (Yakobo 1:6-8).',
+      'Uamuzi wa kumtumikia Kristo ni uamuzi thabiti wa kibinafsi na wa kifamilia.',
+      'Usiogope kutengwa na marafiki wa dunia unaposimamia kweli ya Neno la Mungu.',
+      'Hudhuria Sunday School kila Jumapili saa tatu asubuhi kujenga misingi imara ya Biblia.'
+    ],
+    pastoralPrayer: 'Bwana Yesu, tunakuomba uimarishe nia za vijana wetu, wamama na wababa wa Sayuni Jerusalem. Waondolee roho ya kusitasita na kutikiswa na maneno ya watu. Wape ujasiri kama wa Nabii Eliya na mtumishi wako Yoshua ili watangaze wazi kwamba wao na nyumba zao wanakutumikia wewe pekee. Katika jina la Yesu, Amen!',
+    fullArticle: `### Utangulizi: Somo la Asubuhi ya Sunday School (Saa 03:00 - 04:00)
+Mwalimu Emmanuel Majaliwa alikumbusha waumini na vijana umuhimu wa msimamo thabiti katika kumfuata Bwana, badala ya kuishi maisha vuguvugu ya mguu mmoja kanisani na mguu mwingine anasani.
+
+### 1. Swali la Eliya Mlimani Karmeli (1 Wafalme 18:21)
+Bwana akiwa ndiye Mungu mfuateni. Mungu hawezi kupokea ibada vuguvugu.
+
+### 2. Kauli ya Ujasiri ya Yoshua (Yoshua 24:15)
+Chagueni hivi leo mtakayemtumikia... lakini mimi na nyumba yangu tutamtumikia Bwana.
+
+### 3. Ushuhuda wa Stefano: Kusimama Mpaka Mwisho (Matendo 7:58)
+Stefano alisimama imara hata mbele ya mawe; na Yesu alisimama mbinguni kumlaki!`,
     likesCount: 115
   },
   {
@@ -579,6 +681,28 @@ export const INITIAL_SERMONS: SermonItem[] = [
     summary: 'Wakili ni msimamizi aliyepewa dhamana na mamlaka ya kulinda na kusimamia maslahi ya Bwana wake (1 Wakorintho 4:1-2). Mungu anatafuta mtu wa kusimama mahali palipobomoka kwa ajili ya kanisa na nchi (Ezekieli 22:30). Mwombaji ni wakili anayeshikilia funguo za ufalme wa mbinguni.',
     mediaType: 'text',
     category: 'Maombi',
+    readTime: 'Dakika 5 kusoma',
+    keyVerse: '"Nami nikatafuta mtu miongoni mwao atakayetengeneza boma, na kusimama mbele zangu mahali palipobomoka kwa ajili ya nchi, nisije nikaiharibu; lakini sikuona mtu." — Ezekieli 22:30',
+    scriptureList: ['Ezekieli 22:30', '1 Wakorintho 4:1-2', 'Ezekieli 3:17', 'Luka 18:1', 'Waefeso 6:18'],
+    imageUrl: '/3d_intercession.png',
+    takeaways: [
+      'Mwombaji si mlalamikaji, bali ni wakili mwaminifu wa siri za Mungu mwenye mamlaka ya kifalme (1 Kor 4:1-2).',
+      'Mungu anatafuta mtu mmoja tu wa kusimama kwenye pengo ili kuokoa familia na taifa (Ezekieli 22:30).',
+      'Uaminifu na usiri ni nguzo za chumba cha maombi; mambo ya maombezi hayafanywi umbea mitaani.',
+      'Tenga angalau dakika 30 kila siku kuombea wengine, kanisa na viongozi wa nchi.'
+    ],
+    pastoralPrayer: 'Mungu Baba mwenye uweza wote, utupe roho ya neema na kuomba kama ulivyoahidi kupitia Nabii Zekaria. Inua mawakili waaminifu ndani ya kanisa la Sayuni Jerusalem watakaosimama kwenye boma usiku na mchana. Walinde waombezi wetu, linda afya zao na familia zao. Kila pigo lililokusudiwa na ibilisi livunjwe na sala za watakatifu. Katika jina la Yesu Kristo, Amen!',
+    fullArticle: `### Utangulizi: War Room na Chumba cha Siri cha Sayuni
+Mwombaji si mtu duni bali ni wakili mkuu wa siri za ufalme wa mbinguni.
+
+### 1. Maana ya Kuwa "Wakili" (1 Wakorintho 4:1-2)
+Wakili amekabidhiwa mamlaka na dhamana ya kusimamia mali ya Bwana wake. Uaminifu na usiri ni nguzo kuu ya chumba cha maombi.
+
+### 2. Mungu Anatafuta Mtu wa Kusimama Kwenye Boma (Ezekieli 22:30)
+Boma likivunjika adui huingia. Mwombaji ndiye fundi anayeziba mapengo kwa maombi ya kufunga na kukesha.
+
+### 3. Silaha za War Room
+Maombi bila kukoma (Luka 18:1), mikono safi na moyo mweupe, na Neno la Mungu kama upanga.`,
     likesCount: 134
   },
   {
@@ -588,9 +712,30 @@ export const INITIAL_SERMONS: SermonItem[] = [
     date: '2026-09-27',
     scripture: 'Zaburi 3:8 • Kutoka 14:13-14 • Warumi 8:31-39',
     summary: 'Wokovu na ukombozi unatoka kwa Bwana pekee (Zaburi 3:8). Musa aliwaambia watu: "Msiogope, simameni tu, mkauone wokovu wa Bwana atakaowafanyia leo" (Kutoka 14:13). Kama Mungu akiwa upande wetu, hakuna nguvu itakayotushinda.',
-    mediaType: 'video',
-    mediaUrl: 'https://youtube.com/watch?v=zion-sermon-ukombozi',
+    mediaType: 'text',
     category: 'Ukombozi',
+    readTime: 'Dakika 5 kusoma',
+    keyVerse: '"Musa akawaambia watu, Msiogope, simameni tu, mkauone wokovu wa Bwana atakaowafanyia leo; kwa maana hao Wamisri mliowaona leo hamtawaona tena milele." — Kutoka 14:13',
+    scriptureList: ['Zaburi 3:8', 'Kutoka 14:13-14', 'Warumi 8:31-39', 'Isaya 43:1-2', 'Yohana 8:36'],
+    imageUrl: '/church_women_fellowship.jpg',
+    takeaways: [
+      'Wokovu na ukombozi hautoki kwa wanadamu wala waganga, bali unatoka kwa Bwana pekee (Zaburi 3:8).',
+      'Simama tu kwa utulivu; Bwana anapigana vita yako na maadui wako watanyamazishwa (Kutoka 14:13-14).',
+      'Hakuna silaha itakayofanikiwa dhidi ya mteule wa Mungu; sisi ni zaidi ya washindi katika Kristo Yesu (Warumi 8:37).',
+      'Uhuru wa kweli unapatikana unapomruhusu Yesu kuwa Bwana na Mwokozi wa maisha yako.'
+    ],
+    pastoralPrayer: 'Ee Bwana Mungu Mkombozi wetu, tunakushukuru kwa kuwa umetuokoa kutoka kwenye giza totoro na kutuingiza katika nuru ya Mwanao mpendwa. Tangaza ukombozi leo kwa kila anayesoma ujumbe huu: fungua vifungo vya magonjwa, umaskini, hofu na kukata tamaa. Wamisri waliowatesa jana wasionekane tena maishani mwao. Baraka na ulinzi wa damu ya Yesu vifunike Sayuni yote. Katika jina la Yesu Kristo, Amen!',
+    fullArticle: `### Utangulizi: Hali ya Vita na Ushindi wa Msalaba
+Hakuna mwanadamu anayeweza kujiokoa kwa akili zake au waganga. Ukombozi wa kweli unatoka kwa Bwana pekee.
+
+### 1. Wokovu Hutoka kwa Bwana (Zaburi 3:8)
+Bwana ndiye ngao yetu, utukufu wetu na mwinua kichwa chetu.
+
+### 2. "Simameni Tu Mkauone Wokovu wa Bwana" (Kutoka 14:13-14)
+Wamisri mliowaona leo hamtawaona tena milele. Bwana atawapigania nanyi mtanyamaza kimya.
+
+### 3. Zaidi ya Washindi Katika Kristo (Warumi 8:31-39)
+Ikiwa Mungu yuko upande wetu, ni nani aliye juu yetu? Hakuna kinachoweza kututenga na upendo wa Mungu.`,
     likesCount: 165
   },
   {

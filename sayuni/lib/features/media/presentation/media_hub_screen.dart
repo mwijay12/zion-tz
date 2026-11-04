@@ -16,73 +16,12 @@ import 'admin_media_upload_sheet.dart';
 import 'online_radio_screen.dart';
 import '../../../core/services/radio_browser_service.dart';
 import 'now_playing_screen.dart';
+import '../models/sermon_media_item.dart';
+import '../data/default_teachings_data.dart';
+import 'teaching_article_reader_screen.dart';
 
-class SermonMediaItem {
-  final String id;
-  final String title;
-  final String preacher;
-  final String scripture;
-  final String date;
-  final String duration;
-  final String type; // 'video' | 'audio'
-  final String category; // 'Mahubiri' | 'Mafundisho' | 'Kwaya' | 'Podcasts'
-  final String description;
-  final String imageUrl;
-  final String audioUrl;
-  final String videoUrl;
-  final bool isAdminUpload;
+export '../models/sermon_media_item.dart';
 
-  const SermonMediaItem({
-    required this.id,
-    required this.title,
-    required this.preacher,
-    required this.scripture,
-    required this.date,
-    required this.duration,
-    required this.type,
-    required this.category,
-    required this.description,
-    required this.imageUrl,
-    this.audioUrl = 'https://stream.zeno.fm/4v4e91y9sm8uv',
-    this.videoUrl = '',
-    this.isAdminUpload = false,
-  });
-
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'preacher': preacher,
-        'scripture': scripture,
-        'date': date,
-        'duration': duration,
-        'type': type,
-        'category': category,
-        'description': description,
-        'imageUrl': imageUrl,
-        'audioUrl': audioUrl,
-        'videoUrl': videoUrl,
-        'isAdminUpload': isAdminUpload,
-      };
-
-  factory SermonMediaItem.fromJson(Map<String, dynamic> json) =>
-      SermonMediaItem(
-        id: json['id']?.toString() ?? '',
-        title: json['title']?.toString() ?? '',
-        preacher: json['preacher']?.toString() ?? '',
-        scripture: json['scripture']?.toString() ?? '',
-        date: json['date']?.toString() ?? '',
-        duration: json['duration']?.toString() ?? '45 min',
-        type: json['type']?.toString() ?? 'video',
-        category: json['category']?.toString() ?? 'Mahubiri',
-        description: json['description']?.toString() ?? '',
-        imageUrl:
-            json['imageUrl']?.toString() ?? 'assets/images/church_front.jpg',
-        audioUrl: json['audioUrl']?.toString() ??
-            'https://stream.zeno.fm/4v4e91y9sm8uv',
-        videoUrl: json['videoUrl']?.toString() ?? '',
-        isAdminUpload: json['isAdminUpload'] == true,
-      );
-}
 
 class MediaHubScreen extends StatefulWidget {
   const MediaHubScreen({super.key});
@@ -169,9 +108,15 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
       }
 
       // Merge real church teachings and Upendo choir songs from pastoral diary
-      for (final def in _defaultChurchTeachings) {
-        if (!_customSermons.any((existing) => existing.id == def.id)) {
+      for (final def in DefaultTeachingsData.items) {
+        final existingIdx =
+            _customSermons.indexWhere((existing) => existing.id == def.id);
+        if (existingIdx == -1) {
           _customSermons.add(def);
+        } else if (_customSermons[existingIdx].type != def.type ||
+            _customSermons[existingIdx].fullArticle.isEmpty) {
+          // Upgrade old cached item to full rich blog post format
+          _customSermons[existingIdx] = def;
         }
       }
 
@@ -181,128 +126,6 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
     }
   }
 
-  static const List<SermonMediaItem> _defaultChurchTeachings = [
-    SermonMediaItem(
-      id: 'teach-upendo-kristo',
-      title: 'Upendo wa Kristo: Msingi na Amri Kuu',
-      preacher: 'Mchungaji Askofu Mercy Mgalla',
-      scripture: 'Yoh 13:34-35 • 1 Kor 13:1-6 • 1 Yoh 4:7',
-      date: 'Ibada Kuu ya Jumapili',
-      duration: '45 min',
-      type: 'audio',
-      category: 'Mafundisho',
-      description:
-          'Amri mpya nawapa, mpendane kama vile nilivyowapenda ninyi (Yohana 13:34-35, 15:12). Huu ndio ujumbe mliousikia tangu mwanzo kwamba tupendane (1 Yohana 3:11, Marko 12:31). Upendo huvumilia, hufadhili, hauhusudu na husitiri wingi wa dhambi (1 Petro 4:8, 1 Wakorintho 13:1-6). Mungu ni pendo naye akaaye katika pendo hukaa ndani ya Mungu (1 Yohana 4:7).',
-      imageUrl: 'assets/images/church_front.jpg',
-      audioUrl: 'assets/audio/upendo_choir_neno.mp3',
-      isAdminUpload: false,
-    ),
-    SermonMediaItem(
-      id: 'teach-uchumi-mkristo',
-      title: 'Uchumi na Maendeleo ya Mkristo',
-      preacher: 'Mchungaji Alex',
-      scripture: 'Mathayo 19:27-29 • Mhubiri 10:10 • Malaki 3:7-12',
-      date: 'Semina ya Uchumi na Maendeleo',
-      duration: '58 min',
-      type: 'audio',
-      category: 'Mafundisho',
-      description:
-          'Mch. Alex alifafanua swali la Petro: "Tazama, sisi tumeacha vyote; tutapata nini basi?" Yesu akajibu atapokea mara mia sasa duniani na uzima wa milele mbinguni. Mfano wa Ayubu: kumcha Mungu na kurejeshewa mara mbili. Kibali cha Mungu huleta mafanikio (Kutoka 33:14-19, 1 Samweli 2:7, Malaki 3:7-12, Mwanzo 30:25-32). Chuma kikiwa butu hutumia nguvu zaidi bali hekima yafaa kuelekeza (Mhubiri 10:10). Watu wapende kujifunza, kujiendeleza, na kuwa na nidhamu ya kifedha.',
-      imageUrl: 'assets/images/church_men_fellowship.jpg',
-      audioUrl: 'https://stream.zeno.fm/4v4e91y9sm8uv',
-      isAdminUpload: false,
-    ),
-    SermonMediaItem(
-      id: 'teach-bidii-kazini',
-      title: 'Bidii Kazini: Mkristo Kusimama Mbele ya Wafalme',
-      preacher: 'Mchungaji Askofu Mercy Mgalla',
-      scripture: 'Mithali 22:26, 29',
-      date: 'Neno la Jumapili',
-      duration: '38 min',
-      type: 'audio',
-      category: 'Mahubiri',
-      description:
-          'Je! Wamwona mtu mwenye bidii katika kazi yake? Yeye atasimama mbele ya wafalme; hatasimama mbele ya watu wasio na vyeo (Mithali 22:29). Usiwe mmoja wa wawekao rehani mikono yao au walio wadhamini wa madeni (Mithali 22:26). Bidii iliyoambatana na maombi ndio siri ya heshima na mafanikio ya mkristo.',
-      imageUrl: 'assets/images/pastoral_leadership_1788577468703.jpg',
-      audioUrl: 'https://stream.zeno.fm/4v4e91y9sm8uv',
-      isAdminUpload: false,
-    ),
-    SermonMediaItem(
-      id: 'teach-sunday-school-utasitasita',
-      title: 'Utasitasita Mpaka Lini? Chagua Hivi Leo Utakaye Mtumikia',
-      preacher: 'Mwl. Emmanuel Majaliwa (Sunday School)',
-      scripture: '1 Wafalme 18:21 • Yoshua 24:15 • Matendo 7:58',
-      date: 'Sunday School (Saa 03:00 - 04:00 Asubuhi)',
-      duration: '40 min',
-      type: 'audio',
-      category: 'Mafundisho',
-      description:
-          'Eliya aliwauliza watu: "Mtasita-sita katikati ya mawazo mawili hata lini? Bwana akiwa ndiye Mungu, mfuateni" (1 Wafalme 18:21). Yoshua aliweka msimamo wazi: "Chagueni hivi leo mtakayemtumikia... lakini mimi na nyumba yangu tutamtumikia Bwana" (Yoshua 24:15). Stefano alisimama imara hata kifo (Matendo 7:58). Mkristo anahitaji msimamo thabiti usioyumbishwa na upepo wa dunia.',
-      imageUrl: 'assets/images/3d_bible.png',
-      audioUrl: 'https://stream.zeno.fm/3g28669e4ehvv',
-      isAdminUpload: false,
-    ),
-    SermonMediaItem(
-      id: 'teach-mwombaji-wakili',
-      title: 'Nafasi ya Mwombaji Kama Wakili wa Siri za Mungu',
-      preacher: 'Mchungaji Askofu Mercy Mgalla',
-      scripture: 'Ezekieli 22:30 • 1 Wakorintho 4:1-2',
-      date: 'War Room • Semina ya Maombi',
-      duration: '48 min',
-      type: 'audio',
-      category: 'Mafundisho',
-      description:
-          'Wakili ni msimamizi mwenye mamlaka na dhamana ya kulinda na kusimamia maslahi ya Bwana wake (1 Wakorintho 4:1-2). Mungu anatafuta mtu wa kusimama kwenye pengo na kulitengeneza boma kwa ajili ya kanisa na taifa (Ezekieli 22:30). Mwombaji ni wakili wa kiroho anayebeba mahitaji ya wengine mbele za kiti cha rehema.',
-      imageUrl: 'assets/images/3d_intercession.png',
-      audioUrl: 'https://stream.zeno.fm/w74w7e91sm8uv',
-      isAdminUpload: false,
-    ),
-    SermonMediaItem(
-      id: 'teach-ukombozi-kwa-mungu',
-      title: 'Ukombozi Wetu Upo kwa Mungu Pekee',
-      preacher: 'Mchungaji Askofu Mercy Mgalla',
-      scripture: 'Zaburi 3:8 • Kutoka 14:13-14 • Warumi 8:31',
-      date: 'Mkesha wa Ushindi na Uponyaji',
-      duration: '52 min',
-      type: 'audio',
-      category: 'Mahubiri',
-      description:
-          'Wokovu na ukombozi unatoka kwa Bwana pekee, na baraka yake i juu ya watu wake (Zaburi 3:8). Musa aliwaambia watu: "Msiogope, simameni tu, mkauone wokovu wa Bwana atakaowafanyia leo" (Kutoka 14:13). Kama Mungu akiwa upande wetu, ni nani aliye juu yetu? Hakuna nguvu ya giza inayoweza kushinda kanisa la Sayuni.',
-      imageUrl: 'assets/images/church_women_fellowship.jpg',
-      audioUrl: 'https://stream.zeno.fm/h2f9g3m19t8uv',
-      isAdminUpload: false,
-    ),
-    SermonMediaItem(
-      id: 'choir-upendo-neno-media',
-      title: 'Neno la Mungu (Upendo Choir)',
-      preacher: 'Kwaya ya Upendo (Mwl. Emmanuel Majaliwa)',
-      scripture: 'Zaburi 119:105 • Isaya 40:8',
-      date: 'Albamu ya Upendo Vol. 1',
-      duration: '05:32',
-      type: 'audio',
-      category: 'Kwaya',
-      description:
-          'Wimbo wa sifa na kuabudu kutoka Kwaya ya Upendo ukisisitiza kuwa Neno la Bwana linadumu milele na ni taa ya miguu yetu.',
-      imageUrl: 'assets/images/zion_worship_choir_1788577423671.jpg',
-      audioUrl: 'assets/audio/upendo_choir_neno.mp3',
-      isAdminUpload: false,
-    ),
-    SermonMediaItem(
-      id: 'choir-upendo-vitabu-media',
-      title: 'Vitabu vya Biblia (Upendo Choir)',
-      preacher: 'Kwaya ya Upendo (Mwl. Emmanuel Majaliwa)',
-      scripture: '2 Timotheo 3:16 • Zaburi 1:1-3',
-      date: 'Albamu ya Upendo Vol. 1',
-      duration: '04:25',
-      type: 'audio',
-      category: 'Kwaya',
-      description:
-          'Wimbo unaoelezea na kuimba vitabu vyote vya Biblia kuanzia Mwanzo hadi Ufunuo, ukitia moyo usomaji wa Maandiko Matakatifu.',
-      imageUrl: 'assets/images/3d_bible.png',
-      audioUrl: 'assets/audio/upendo_choir_vitabu.mp3',
-      isAdminUpload: false,
-    ),
-  ];
 
   Future<void> _saveCustomSermons() async {
     try {
@@ -407,7 +230,14 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
 
   void _openMediaPlayer(SermonMediaItem item) {
     AppHaptics.mediumImpact();
-    if (item.type == 'video') {
+    if (item.type == 'text') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => TeachingArticleReaderScreen(article: item),
+        ),
+      );
+    } else if (item.type == 'video') {
       _openVideoPlayer(item);
     } else {
       ChurchAudioService().playTrack(
@@ -1318,7 +1148,9 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                     ),
                                     const Spacer(),
                                     Text(
-                                      '${sermons.first.duration} • ${sermons.first.type.toUpperCase()}',
+                                      sermons.first.type == 'text'
+                                          ? '${sermons.first.readTime} • MAKALA'
+                                          : '${sermons.first.duration} • ${sermons.first.type.toUpperCase()}',
                                       style: const TextStyle(
                                           fontSize: 11,
                                           color: AppColors.gold,
@@ -1352,9 +1184,14 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                     ElevatedButton.icon(
                                       onPressed: () =>
                                           _openMediaPlayer(sermons.first),
-                                      icon: const Icon(Icons.play_arrow_rounded,
+                                      icon: Icon(
+                                          sermons.first.type == 'text'
+                                              ? Icons.auto_stories_rounded
+                                              : Icons.play_arrow_rounded,
                                           size: 20),
-                                      label: const Text('Tazama Sasa'),
+                                      label: Text(sermons.first.type == 'text'
+                                          ? 'Soma Somo'
+                                          : 'Tazama Sasa'),
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: AppColors.gold,
                                         foregroundColor:
@@ -1526,19 +1363,33 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
                                       colors: [
-                                        AppColors.primary.withOpacity(0.1),
-                                        AppColors.primary.withOpacity(0.2),
+                                        item.type == 'text'
+                                            ? AppColors.gold.withOpacity(0.18)
+                                            : (item.type == 'video'
+                                                ? const Color(0xFFDC2626).withOpacity(0.12)
+                                                : AppColors.primary.withOpacity(0.12)),
+                                        item.type == 'text'
+                                            ? AppColors.gold.withOpacity(0.28)
+                                            : (item.type == 'video'
+                                                ? const Color(0xFFDC2626).withOpacity(0.2)
+                                                : AppColors.primary.withOpacity(0.2)),
                                       ],
                                     ),
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   child: Center(
                                     child: Icon(
-                                      item.type == 'video'
-                                          ? Icons.smart_display_rounded
-                                          : Icons.mic_external_on_rounded,
-                                      color: AppColors.primary,
-                                      size: 32,
+                                      item.type == 'text'
+                                          ? Icons.menu_book_rounded
+                                          : (item.type == 'video'
+                                              ? Icons.smart_display_rounded
+                                              : Icons.headphones_rounded),
+                                      color: item.type == 'text'
+                                          ? AppColors.gold
+                                          : (item.type == 'video'
+                                              ? const Color(0xFFDC2626)
+                                              : AppColors.primary),
+                                      size: 30,
                                     ),
                                   ),
                                 ),
@@ -1601,28 +1452,34 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 7, vertical: 2),
                                             decoration: BoxDecoration(
-                                              color: item.type == 'video'
-                                                  ? const Color(0xFFDC2626)
-                                                      .withOpacity(0.12)
-                                                  : AppColors.primary
-                                                      .withOpacity(0.12),
+                                              color: item.type == 'text'
+                                                  ? AppColors.gold.withOpacity(0.15)
+                                                  : (item.type == 'video'
+                                                      ? const Color(0xFFDC2626).withOpacity(0.12)
+                                                      : AppColors.primary.withOpacity(0.12)),
                                               borderRadius:
                                                   BorderRadius.circular(6),
                                             ),
                                             child: Text(
-                                              item.type.toUpperCase(),
+                                              item.type == 'text'
+                                                  ? 'MAKALA'
+                                                  : item.type.toUpperCase(),
                                               style: TextStyle(
                                                 fontSize: 9,
                                                 fontWeight: FontWeight.w800,
-                                                color: item.type == 'video'
-                                                    ? const Color(0xFFDC2626)
-                                                    : AppColors.primary,
+                                                color: item.type == 'text'
+                                                    ? AppColors.gold
+                                                    : (item.type == 'video'
+                                                        ? const Color(0xFFDC2626)
+                                                        : AppColors.primary),
                                               ),
                                             ),
                                           ),
                                           const SizedBox(width: 8),
                                           Text(
-                                            item.duration,
+                                            item.type == 'text'
+                                                ? item.readTime
+                                                : item.duration,
                                             style: AppTypography.caption(
                                                 color: AppColors.textMuted),
                                           ),
@@ -1655,16 +1512,37 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
                                 ),
                                 Container(
                                   margin: const EdgeInsets.only(left: 4),
-                                  child: IconButton(
-                                    icon: Icon(
-                                      item.type == 'video'
-                                          ? Icons.play_circle_fill_rounded
-                                          : Icons.play_circle_outline_rounded,
-                                      color: AppColors.primary,
-                                      size: 32,
-                                    ),
-                                    onPressed: () => _openMediaPlayer(item),
-                                  ),
+                                  child: item.type == 'text'
+                                      ? TextButton.icon(
+                                          onPressed: () => _openMediaPlayer(item),
+                                          icon: const Icon(Icons.auto_stories_rounded,
+                                              size: 14, color: AppColors.gold),
+                                          label: const Text(
+                                            'Soma',
+                                            style: TextStyle(
+                                              color: AppColors.gold,
+                                              fontWeight: FontWeight.w800,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                          style: TextButton.styleFrom(
+                                            visualDensity: VisualDensity.compact,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 4),
+                                          ),
+                                        )
+                                      : IconButton(
+                                          icon: Icon(
+                                            item.type == 'video'
+                                                ? Icons.play_circle_fill_rounded
+                                                : Icons.play_circle_outline_rounded,
+                                            color: item.type == 'video'
+                                                ? const Color(0xFFDC2626)
+                                                : AppColors.primary,
+                                            size: 32,
+                                          ),
+                                          onPressed: () => _openMediaPlayer(item),
+                                        ),
                                 ),
                               ],
                             ),

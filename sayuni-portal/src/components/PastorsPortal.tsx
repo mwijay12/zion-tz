@@ -3,7 +3,6 @@ import {
   BookOpen, 
   Video, 
   Music, 
-  FileText, 
   Upload, 
   Plus, 
   Calendar, 
@@ -42,6 +41,7 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
   const [sermons, setSermons] = useState<SermonItem[]>(() => churchSync.getSermons());
   const [warRoomPrayers, setWarRoomPrayers] = useState<WarRoomPrayerRequest[]>(() => churchSync.getPrayers());
   const [showSermonModal, setShowSermonModal] = useState(false);
+  const [readingArticle, setReadingArticle] = useState<SermonItem | null>(null);
   const [sermonTitle, setSermonTitle] = useState('');
   const [preacher, setPreacher] = useState(CHURCH_PROFILE.headPastor);
   const [scripture, setScripture] = useState('');
@@ -290,25 +290,36 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                   <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                     {sermon.mediaType === 'video' && <Video size={15} style={{ color: '#ef4444' }} />}
                     {sermon.mediaType === 'audio' && <Music size={15} style={{ color: '#059669' }} />}
-                    {sermon.mediaType === 'text' && <FileText size={15} style={{ color: '#1e3a8a' }} />}
-                    <span>{sermon.mediaType.toUpperCase()} Format</span>
+                    {sermon.mediaType === 'text' && <BookOpen size={15} style={{ color: '#d97706' }} />}
+                    <span>{sermon.mediaType === 'text' ? (sermon.readTime || 'MAKALA YA NENO') : `${sermon.mediaType.toUpperCase()} Format`}</span>
                   </span>
 
-                  {sermon.mediaUrl && (
-                    <a 
-                      href={sermon.mediaUrl} 
-                      target="_blank" 
-                      rel="noreferrer"
-                      onClick={() => PrivacyAnalyticsService.recordEvent('sermon_listen', {
-                        id: sermon.id,
-                        title: sermon.title
-                      })}
-                      className="btn-secondary"
+                  {sermon.mediaType === 'text' ? (
+                    <button 
+                      onClick={() => setReadingArticle(sermon)}
+                      className="btn-gold"
                       style={{ fontSize: '0.75rem', padding: '0.3rem 0.65rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
                     >
-                      <span>{isSw ? 'Fungua Media' : 'Open Media'}</span>
-                      <ExternalLink size={12} />
-                    </a>
+                      <BookOpen size={13} />
+                      <span>{isSw ? 'Soma Somo' : 'Read Article'}</span>
+                    </button>
+                  ) : (
+                    sermon.mediaUrl && (
+                      <a 
+                        href={sermon.mediaUrl} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        onClick={() => PrivacyAnalyticsService.recordEvent('sermon_listen', {
+                          id: sermon.id,
+                          title: sermon.title
+                        })}
+                        className="btn-secondary"
+                        style={{ fontSize: '0.75rem', padding: '0.3rem 0.65rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+                      >
+                        <span>{isSw ? 'Fungua Media' : 'Open Media'}</span>
+                        <ExternalLink size={12} />
+                      </a>
+                    )
                   )}
                 </div>
               </div>
@@ -756,6 +767,126 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ARTICLE READER MODAL (BLOG POST FORMAT) */}
+      {readingArticle && (
+        <div className="modal-backdrop" onClick={() => setReadingArticle(null)}>
+          <div 
+            className="modal-content" 
+            onClick={(e) => e.stopPropagation()}
+            style={{ 
+              maxWidth: '750px', 
+              maxHeight: '88vh', 
+              overflowY: 'auto',
+              borderRadius: '16px',
+              border: '1px solid #D4A847',
+              padding: '2rem'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
+              <div>
+                <span className="badge badge-gold" style={{ marginBottom: '0.5rem', display: 'inline-flex' }}>
+                  <Tag size={12} /> {readingArticle.category} • {readingArticle.readTime || 'Makala ya Neno'}
+                </span>
+                <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-headline)', margin: '0.25rem 0' }}>
+                  {readingArticle.title}
+                </h2>
+                <div style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.25rem' }}>
+                  <BookOpen size={14} />
+                  <span>{readingArticle.scripture} • Mhubiri: {readingArticle.preacher}</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => setReadingArticle(null)}
+                style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '1.2rem' }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Key Verse Callout Card */}
+            {readingArticle.keyVerse && (
+              <div style={{
+                background: 'rgba(212, 168, 71, 0.08)',
+                borderLeft: '4px solid #D4A847',
+                padding: '1rem 1.25rem',
+                borderRadius: '8px',
+                marginBottom: '1.5rem',
+                fontStyle: 'italic',
+                color: 'var(--text-headline)',
+                lineHeight: 1.6
+              }}>
+                <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#D4A847', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.35rem' }}>
+                  Mstari wa Msingi
+                </div>
+                {readingArticle.keyVerse}
+              </div>
+            )}
+
+            {/* Full Article Content */}
+            <div style={{ 
+              fontSize: '0.95rem', 
+              lineHeight: 1.7, 
+              color: 'var(--text-body)',
+              whiteSpace: 'pre-line',
+              marginBottom: '1.5rem'
+            }}>
+              {readingArticle.fullArticle || readingArticle.summary}
+            </div>
+
+            {/* Takeaways Card */}
+            {readingArticle.takeaways && readingArticle.takeaways.length > 0 && (
+              <div style={{
+                background: 'var(--bg-surface-elevated, #f8fafc)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: '12px',
+                padding: '1.25rem',
+                marginBottom: '1.5rem'
+              }}>
+                <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#16A34A', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '0 0 0.75rem 0' }}>
+                  <CheckCircle2 size={16} /> Hatua za Kuchukua Wiki Hii (Practical Takeaways)
+                </h4>
+                <ul style={{ margin: 0, paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                  {readingArticle.takeaways.map((point, idx) => (
+                    <li key={idx} style={{ fontSize: '0.88rem', color: 'var(--text-body)' }}>{point}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Pastoral Prayer */}
+            {readingArticle.pastoralPrayer && (
+              <div style={{
+                background: 'linear-gradient(135deg, #0A2540 0%, #0D52CD 100%)',
+                color: '#ffffff',
+                borderRadius: '12px',
+                padding: '1.25rem',
+                marginBottom: '1.5rem'
+              }}>
+                <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#E5B238', marginBottom: '0.4rem', letterSpacing: '0.5px' }}>
+                  SALA YA KICHUNGAJI NA BARAKA
+                </div>
+                <p style={{ margin: 0, fontSize: '0.9rem', fontStyle: 'italic', lineHeight: 1.6 }}>
+                  "{readingArticle.pastoralPrayer}"
+                </p>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-subtle)', paddingTop: '1rem' }}>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                {CHURCH_PROFILE.name} • {CHURCH_PROFILE.location}
+              </span>
+              <button 
+                onClick={() => setReadingArticle(null)}
+                className="btn-gold"
+                style={{ fontSize: '0.85rem' }}
+              >
+                {isSw ? 'Funga Makala' : 'Close Article'}
+              </button>
+            </div>
           </div>
         </div>
       )}

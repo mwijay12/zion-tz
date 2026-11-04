@@ -236,6 +236,13 @@ export interface SermonItem {
   mediaUrl?: string;
   category: 'Imani' | 'Uponyaji' | 'Familia' | 'Uongozi' | 'Kusifu' | 'Upendo' | 'Maendeleo' | 'Bidii' | 'Sunday School' | 'Maombi' | 'Ukombozi' | 'Kwaya';
   likesCount: number;
+  fullArticle?: string;
+  readTime?: string;
+  keyVerse?: string;
+  scriptureList?: string[];
+  takeaways?: string[];
+  pastoralPrayer?: string;
+  imageUrl?: string;
 }
 
 export interface PastoralPoster {

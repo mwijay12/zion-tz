@@ -5,7 +5,7 @@ class DefaultTeachingsData {
     SermonMediaItem(
       id: 'teach-upendo-kristo',
       title: 'Upendo wa Kristo: Msingi na Amri Kuu ya Kanisa',
-      preacher: 'Mchungaji Askofu Mercy Mgalla',
+      preacher: 'Mchungaji na Askofu Mercy James',
       scripture: 'Yoh 13:34-35 • 1 Kor 13:1-6 • 1 Yoh 4:7 • 1 Pet 4:8',
       date: 'Ibada Kuu ya Jumapili',
       duration: 'Dakika 5 kusoma',
@@ -150,7 +150,7 @@ Mch. Alex alisisitiza sana sehemu hii:
     SermonMediaItem(
       id: 'teach-bidii-kazini',
       title: 'Bidii Kazini: Mkristo Kusimama Mbele ya Wafalme',
-      preacher: 'Mchungaji Askofu Mercy Mgalla',
+      preacher: 'Mchungaji na Askofu Mercy James',
       scripture: 'Mithali 22:26, 29',
       date: 'Neno la Jumapili',
       duration: 'Dakika 4 kusoma',
@@ -274,7 +274,7 @@ Mwalimu Majaliwa alikumbusha jinsi Stefano alivyosimama akihubiri neno la kweli 
     SermonMediaItem(
       id: 'teach-mwombaji-wakili',
       title: 'Nafasi ya Mwombaji Kama Wakili wa Siri za Mungu',
-      preacher: 'Mchungaji Askofu Mercy Mgalla',
+      preacher: 'Mchungaji na Askofu Mercy James',
       scripture: 'Ezekieli 22:30 • 1 Wakorintho 4:1-2',
       date: 'War Room • Semina ya Maombi',
       duration: 'Dakika 5 kusoma',
@@ -295,7 +295,7 @@ Mwalimu Majaliwa alikumbusha jinsi Stefano alivyosimama akihubiri neno la kweli 
       imageUrl: 'assets/images/3d_intercession.png',
       fullArticle: '''
 ### Utangulizi: War Room na Chumba cha Siri cha Sayuni
-Katika semina hii kuu ya maombi na maombezi (Intercession), Askofu Mercy Mgalla alifundisha kwa kina kuhusu hadhi na mamlaka ya mwombaji. 
+Katika semina hii kuu ya maombi na maombezi (Intercession), Askofu Mercy James alifundisha kwa kina kuhusu hadhi na mamlaka ya mwombaji. 
 
 Watu wengi wanadhania kuwa kuomba ni jukumu la watu wasio na kazi au wazee pekee. Lakini katika ufalme wa Mungu, **mwombaji ni WAKILI MKUU WA SIRI ZA MBINGUNI** anayeamua mwelekeo wa vita vya kiroho duniani.
 
@@ -336,7 +336,7 @@ Katika kitabu cha Ezekieli, Mungu anatoa kilio chenye huzuni:
     SermonMediaItem(
       id: 'teach-ukombozi-kwa-mungu',
       title: 'Ukombozi Wetu Upo kwa Mungu Pekee',
-      preacher: 'Mchungaji Askofu Mercy Mgalla',
+      preacher: 'Mchungaji na Askofu Mercy James',
       scripture: 'Zaburi 3:8 • Kutoka 14:13-14 • Warumi 8:31-39',
       date: 'Mkesha wa Ushindi na Uponyaji',
       duration: 'Dakika 5 kusoma',
@@ -359,7 +359,7 @@ Katika kitabu cha Ezekieli, Mungu anatoa kilio chenye huzuni:
 ### Utangulizi: Hali ya Vita na Ushindi wa Msalaba
 Hakuna mwanadamu anayeweza kujiokoa mwenyewe kwa akili zake, uwezo wake wa kiuchumi au waganga wa kienyeji. Ukombozi wa kweli wa roho, nafsi na mwili unatoka kwa Muumba wa mbingu na nchi pekee. 
 
-Katika mkesha huu mkuu wa ushindi na uponyaji, Askofu Mercy Mgalla alitangaza ujumbe wa kufariji kuwa siku za utumwa na machozi zimekoma mbele ya nguvu ya Yesu Kristo!
+Katika mkesha huu mkuu wa ushindi na uponyaji, Askofu Mercy James alitangaza ujumbe wa kufariji kuwa siku za utumwa na machozi zimekoma mbele ya nguvu ya Yesu Kristo!
 
 ---
 

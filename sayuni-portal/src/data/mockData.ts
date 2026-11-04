@@ -24,7 +24,7 @@ export const CHURCH_PROFILE = {
   nameSw: 'KANISA LA SAYUNI YERUSALEMU',
   motto: 'Mwanga wa Mataifa na Nyumba ya Maombi',
   mottoEn: 'Light of the Nations and House of Prayer',
-  headPastor: 'Mchungaji Askofu Mercy Mgalla',
+  headPastor: 'Mchungaji na Askofu Mercy James',
   bishopHusband: 'James Robert',
   eldersBoard: 'Baraza la Wazee wa Kanisa',
   churchSecretary: 'Sekretarieti ya Kanisa',
@@ -95,7 +95,7 @@ export const SUNDAY_SCHEDULE: SundayScheduleItem[] = [
   {
     time: '11:30 - 13:00',
     title: 'Neno la Mungu & Maombezi',
-    desc: 'Ujumbe kuu kutoka kwa Mchungaji Askofu Mercy Mgalla na maombi ya hitaji.'
+    desc: 'Ujumbe kuu kutoka kwa Mchungaji na Askofu Mercy James na maombi ya hitaji.'
   }
 ];
 
@@ -110,9 +110,9 @@ export const INITIAL_BULLETIN_NOTICES: BulletinNotice[] = [
   },
   {
     id: 'bul-2',
-    title: 'Mkutano Maalum wa Wazee wa Kanisa na Askofu Mercy Mgalla',
+    title: 'Mkutano Maalum wa Wazee wa Kanisa na Askofu Mercy James',
     category: 'Taarifa Kuu',
-    content: 'Baraza la Wazee wa Kanisa litakutana na Mchungaji Askofu Mercy Mgalla na Ndg. James Robert mara baada ya ibada ya pili kwa ajili ya mapitio ya robo mwaka.',
+    content: 'Baraza la Wazee wa Kanisa litakutana na Mchungaji na Askofu Mercy James na Ndg. James Robert mara baada ya ibada ya pili kwa ajili ya mapitio ya robo mwaka.',
     date: 'Jumapili, 06 Septemba 2026',
     isUrgent: true
   },
@@ -280,7 +280,7 @@ export const INITIAL_EXPENSES: ChurchExpense[] = [
     title: 'Malipo ya Umeme (LUKU) & Maji ya Kanisa Kwa Matope',
     category: 'Utilities',
     amount: 180000,
-    approvedBy: 'Mchungaji Askofu Mercy Mgalla',
+    approvedBy: 'Mchungaji na Askofu Mercy James',
     isApproved: true
   },
   {
@@ -298,7 +298,7 @@ export const INITIAL_EXPENSES: ChurchExpense[] = [
     title: 'Msaada wa Dawa kwa Mjane Mama Anna - Mbagala',
     category: 'Benevolence',
     amount: 150000,
-    approvedBy: 'Mchungaji Askofu Mercy Mgalla',
+    approvedBy: 'Mchungaji na Askofu Mercy James',
     isApproved: true
   },
   {
@@ -354,7 +354,7 @@ export const INITIAL_JUMUIYA_REPORTS: JumuiyaReport[] = [
 export const INITIAL_MEMBERS: ChurchMember[] = [
   {
     id: 'mem-1',
-    fullName: 'Mchungaji Askofu Mercy Mgalla',
+    fullName: 'Mchungaji na Askofu Mercy James',
     phone: '+255 744 126 927',
     gender: 'Female',
     ageGroup: 'Adult',
@@ -527,7 +527,7 @@ export const INITIAL_SERMONS: SermonItem[] = [
   {
     id: 'sermon-upendo',
     title: 'Upendo wa Kristo: Msingi na Amri Kuu ya Kanisa',
-    preacher: 'Mchungaji Askofu Mercy Mgalla',
+    preacher: 'Mchungaji na Askofu Mercy James',
     date: '2026-11-01',
     scripture: 'Yoh 13:34-35 • 1 Kor 13:1-6 • 1 Yoh 4:7 • 1 Pet 4:8',
     summary: 'Amri mpya nawapa, mpendane; kama nilivyowapenda ninyi (Yohana 13:34-35, 15:12). Huu ndio ujumbe tuliopokea tangu mwanzo (1 Yohana 3:11, Marko 12:31). Upendo huvumilia, hufadhili na husitiri wingi wa dhambi. Mungu ni pendo.',
@@ -609,7 +609,7 @@ Chuma kikiwa butu hutumia nguvu nyingi bila matokeo. Kunoa shoka ni: kupata maar
   {
     id: 'sermon-bidii',
     title: 'Bidii Kazini: Mkristo Kusimama Mbele ya Wafalme',
-    preacher: 'Mchungaji Askofu Mercy Mgalla',
+    preacher: 'Mchungaji na Askofu Mercy James',
     date: '2026-10-18',
     scripture: 'Mithali 22:26, 29',
     summary: 'Wamwona mtu mwenye bidii katika kazi yake? Yeye atasimama mbele ya wafalme; hatasimama mbele ya watu wasio na vyeo (Mithali 22:29). Epuka kuwa mdhamini ovyo au kuweka rehani mikono bila hekima (Mithali 22:26). Bidii na uaminifu kazini ndio ushuhuda wetu mkuu kwa jamii.',
@@ -675,7 +675,7 @@ Stefano alisimama imara hata mbele ya mawe; na Yesu alisimama mbinguni kumlaki!`
   {
     id: 'sermon-mwombaji-wakili',
     title: 'Nafasi ya Mwombaji Kama Wakili wa Siri za Mungu',
-    preacher: 'Mchungaji Askofu Mercy Mgalla',
+    preacher: 'Mchungaji na Askofu Mercy James',
     date: '2026-10-04',
     scripture: 'Ezekieli 22:30 • 1 Wakorintho 4:1-2',
     summary: 'Wakili ni msimamizi aliyepewa dhamana na mamlaka ya kulinda na kusimamia maslahi ya Bwana wake (1 Wakorintho 4:1-2). Mungu anatafuta mtu wa kusimama mahali palipobomoka kwa ajili ya kanisa na nchi (Ezekieli 22:30). Mwombaji ni wakili anayeshikilia funguo za ufalme wa mbinguni.',
@@ -708,7 +708,7 @@ Maombi bila kukoma (Luka 18:1), mikono safi na moyo mweupe, na Neno la Mungu kam
   {
     id: 'sermon-ukombozi',
     title: 'Ukombozi Wetu Upo kwa Mungu Pekee',
-    preacher: 'Mchungaji Askofu Mercy Mgalla',
+    preacher: 'Mchungaji na Askofu Mercy James',
     date: '2026-09-27',
     scripture: 'Zaburi 3:8 • Kutoka 14:13-14 • Warumi 8:31-39',
     summary: 'Wokovu na ukombozi unatoka kwa Bwana pekee (Zaburi 3:8). Musa aliwaambia watu: "Msiogope, simameni tu, mkauone wokovu wa Bwana atakaowafanyia leo" (Kutoka 14:13). Kama Mungu akiwa upande wetu, hakuna nguvu itakayotushinda.',
@@ -771,8 +771,8 @@ export const INITIAL_POSTERS: PastoralPoster[] = [
     eventDate: 'Ijumaa, 25 Septemba 2026 • Saa 3:00 Usiku Mpaka Asubuhi',
     location: 'Kanisa Kuu la Sayuni Yerusalemu, Kwa Matope - Mbagala',
     imageUrl: 'pastoral_leadership.jpg',
-    description: 'Mkesha mkubwa wa maombezi, kufunguliwa, na kuvuka viwango vya kiroho. Huduma ya maombezi itaongozwa na Mchungaji Askofu Mercy Mgalla.',
-    speaker: 'Mchungaji Askofu Mercy Mgalla & Wachungaji Wageni',
+    description: 'Mkesha mkubwa wa maombezi, kufunguliwa, na kuvuka viwango vya kiroho. Huduma ya maombezi itaongozwa na Mchungaji na Askofu Mercy James.',
+    speaker: 'Mchungaji na Askofu Mercy James & Wachungaji Wageni',
     status: 'active'
   },
   {
@@ -792,7 +792,7 @@ export const INITIAL_POSTERS: PastoralPoster[] = [
     location: 'Uwanja wa Kanisa, Kwa Matope',
     imageUrl: 'zion_worship_choir.jpg',
     description: 'Tamasha kubwa la uimbaji linalohusisha Kwaya ya Galilaya, Kwaya ya Upendo, Kwaya ya Wamama, Kwaya ya Vijana na Praise & Worship Team.',
-    speaker: 'Mchungaji Askofu Mercy Mgalla',
+    speaker: 'Mchungaji na Askofu Mercy James',
     status: 'upcoming'
   }
 ];
@@ -826,7 +826,7 @@ export const INITIAL_ELDER_CASES: ElderCounselingCase[] = [
     category: 'Ushauri Nasaha',
     date: '2026-09-01',
     status: 'pending_pastor',
-    notes: 'Vipindi 4 vya awali vya mafundisho ya wazee vimekamilika. Wanaripotiwa kwa Askofu Mercy Mgalla kwa hatua ya mwisho ya kiuchungaji.'
+    notes: 'Vipindi 4 vya awali vya mafundisho ya wazee vimekamilika. Wanaripotiwa kwa Askofu Mercy James kwa hatua ya mwisho ya kiuchungaji.'
   }
 ];
 
@@ -988,7 +988,7 @@ export const INITIAL_MEMBER_SKILLS: MemberSkillListing[] = [
   },
   {
     id: 'skill-sarah-tailor',
-    fullName: 'Mama Sarah Mgalla',
+    fullName: 'Mama Sarah James',
     profession: 'Mbunifu wa Nguo & Sare za Harusi',
     category: 'Mavazi & Urembo',
     description: 'Ninashona gauni za harusi, suti za kiume, sare za kwaya, na nguo za watoto kwa ufundi wa hali ya juu.',

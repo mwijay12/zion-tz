@@ -253,7 +253,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 fontWeight: 700,
                 cursor: 'pointer'
               }}
-              title="Mchungaji Askofu Mercy Mgalla"
+              title="Mchungaji na Askofu Mercy James"
             >
               ✝️ Askofu Mercy
             </button>

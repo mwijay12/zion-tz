@@ -69,7 +69,7 @@ void main() {
       final newNote = SermonNote(
         id: 'note-test',
         title: 'Somo la Uvumilivu',
-        preacher: 'Askofu Mercy Mgalla',
+        preacher: 'Askofu Mercy James',
         scripture: 'Yakobo 1:2-4',
         content: 'Kuhesabu majaribu kuwa furaha.',
         date: DateTime.now(),
@@ -79,7 +79,7 @@ void main() {
       final updated = await service.getNotes();
 
       expect(updated.first.title, 'Somo la Uvumilivu');
-      expect(updated.first.preacher, 'Askofu Mercy Mgalla');
+      expect(updated.first.preacher, 'Askofu Mercy James');
     });
   });
 

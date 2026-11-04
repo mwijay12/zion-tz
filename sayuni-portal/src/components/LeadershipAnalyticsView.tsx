@@ -382,7 +382,7 @@ export const LeadershipAnalyticsView: React.FC<LeadershipAnalyticsViewProps> = (
             {metrics.sermonsListenedCount > 0 ? (
               <>
                 <TrendingUp size={14} style={{ flexShrink: 0, marginTop: '2px' }} />
-                <span>+24% {isSw ? 'mafundisho ya Askofu Mercy Mgalla' : 'Bishop Mercy Mgalla messages'}</span>
+                <span>+24% {isSw ? 'mafundisho ya Askofu Mercy James' : 'Bishop Mercy James messages'}</span>
               </>
             ) : (
               <span>{isSw ? 'Hakuna mahubiri yaliyosikilizwa bado' : 'No sermons played yet'}</span>

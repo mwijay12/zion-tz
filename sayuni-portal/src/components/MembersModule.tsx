@@ -38,7 +38,7 @@ export interface LeaderAccount {
 const INITIAL_LEADER_ACCOUNTS: LeaderAccount[] = [
   {
     id: 'lead-1',
-    name: 'Askofu Mercy Mgalla',
+    name: 'Askofu Mercy James',
     email: 'pastor@zionjerusalem.org',
     phone: '+255 754 123 456',
     role: 'pastor',

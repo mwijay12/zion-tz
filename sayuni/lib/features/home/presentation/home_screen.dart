@@ -608,7 +608,7 @@ Ubarikiwe na Mungu wa Sayuni!
                       onPressed: () async {
                         AppHaptics.lightImpact();
                         final uri = Uri.parse(
-                            'https://wa.me/255754000111?text=Bwana%20Yesu%20Asifiwe%20Ofisi%20ya%20Askofu%20Zion%20Jerusalem');
+                            'https://wa.me/255744126927?text=Bwana%20Yesu%20Asifiwe%20Ofisi%20ya%20Askofu%20Zion%20Jerusalem');
                         if (await canLaunchUrl(uri)) {
                           await launchUrl(uri,
                               mode: LaunchMode.externalApplication);

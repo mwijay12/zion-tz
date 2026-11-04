@@ -488,7 +488,7 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
                     marginBottom: '2px',
                     textShadow: '0 1px 1px rgba(0,0,0,0.08)'
                   }}>
-                    Askofu Mercy Mgalla
+                    Askofu Mercy James
                   </div>
                   <div style={{ borderBottom: '1.5px solid #0f172a', width: '100%', marginBottom: '4px' }} />
                   <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#1e3a8a', textTransform: 'uppercase', letterSpacing: '0.5px' }}>

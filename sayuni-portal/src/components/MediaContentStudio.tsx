@@ -38,10 +38,10 @@ const TEMPLATES: TemplateOption[] = [
   {
     id: 'bishop-quote-1',
     category: 'quote',
-    title: 'Nukuu ya Askofu Mercy Mgalla',
+    title: 'Nukuu ya Askofu Mercy James',
     titleEn: "Bishop Mercy's Pastoral Quote",
     quote: 'Ukitembea katika imani ya kweli, mashaka yote ya kesho yanakoma mbele za Mungu. Usiangalie ukubwa wa mawimbi, mtazame yule aliyetuliza dhoruba.',
-    speaker: 'Mchungaji Askofu Mercy Mgalla',
+    speaker: 'Mchungaji na Askofu Mercy James',
     scripture: 'Marko 4:39-40',
     dateInfo: 'Jumapili ya Imani • Sayuni Jerusalem',
     theme: 'sanctuary',
@@ -356,7 +356,7 @@ export const MediaContentStudio: React.FC<MediaContentStudioProps> = ({ language
           </h1>
           <p style={{ margin: '0.4rem 0 0 0', opacity: 0.88, fontSize: '0.92rem', maxWidth: '640px' }}>
             {isSw 
-              ? 'Tengeneza kwa sekunde picha za HD kwa ajili ya WhatsApp Status (9:16) na Instagram (1:1) zenye nukuu za Askofu Mercy Mgalla na mistari ya ibada.'
+              ? 'Tengeneza kwa sekunde picha za HD kwa ajili ya WhatsApp Status (9:16) na Instagram (1:1) zenye nukuu za Askofu Mercy James na mistari ya ibada.'
               : 'Generate high-res graphics for WhatsApp Status (9:16) and Instagram (1:1) featuring Bishop Mercy quotes and scripture in seconds.'}
           </p>
         </div>

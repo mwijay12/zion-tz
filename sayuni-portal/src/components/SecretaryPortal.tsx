@@ -889,7 +889,7 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
           </div>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>
             {isSw 
-              ? 'Thibitisha na uchapishe vyeti vya ubatizo, ndoa na wakfu vilivyosainiwa na Askofu Mercy Mgalla.'
+              ? 'Thibitisha na uchapishe vyeti vya ubatizo, ndoa na wakfu vilivyosainiwa na Askofu Mercy James.'
               : 'Endorse and print official certificates with church seals.'}
           </p>
           <button onClick={() => setActiveTab('certificates')} className="btn-primary" style={{ marginTop: 'auto' }}>

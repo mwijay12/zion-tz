@@ -340,7 +340,7 @@ export const PrintableOfficialReport: React.FC<PrintableOfficialReportProps> = (
           <div className="sign-col">
             <div className="sign-label">Imeridhiwa na Kuidhinishwa:</div>
             <div className="sign-space" />
-            <div className="sign-name">Askofu Mercy Mgalla</div>
+            <div className="sign-name">Askofu Mercy James</div>
             <div className="sign-title">Mchungaji Askofu Kiongozi — Sayuni Yerusalemu</div>
             <div className="sign-date">Tarehe: {currentDate}</div>
           </div>

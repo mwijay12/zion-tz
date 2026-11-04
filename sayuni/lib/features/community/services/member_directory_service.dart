@@ -15,6 +15,32 @@ class MemberDirectoryService extends ChangeNotifier {
 
   static const List<MemberSkillProfile> _initialProfiles = [
     MemberSkillProfile(
+      id: 'member-bishop-mercy-james',
+      fullName: 'Mchungaji na Askofu Mercy James',
+      profession: 'Mchungaji Askofu Kiongozi & Mwangalizi Mkuu',
+      category: 'Uchungaji & Uongozi',
+      description:
+          'Kusimamia huduma ya kanisa zima, kufundisha neno la uzima, huduma ya maombezi na ushauri wa kichungaji hekaluni na matawini yote.',
+      phone: '+255744126927',
+      location: 'Mbagala Kwa Matope',
+      jumuiya: 'Baraza la Wachungaji',
+      experienceYears: 'Miaka 20+',
+      avatarEmoji: '',
+    ),
+    MemberSkillProfile(
+      id: 'member-pastor-alex',
+      fullName: 'Mchungaji Alex',
+      profession: 'Mchungaji Msaidizi & Msimamizi wa Maombi',
+      category: 'Uchungaji & Uongozi',
+      description:
+          'Kusaidia uongozi wa kiroho, kuongoza vipindi vya maombi na maombezi, na kutoa ushauri nasaha wa familia na ndoa.',
+      phone: '+255787190026',
+      location: 'Mbagala Kwa Matope / Kibondemaji',
+      jumuiya: 'Baraza la Wachungaji',
+      experienceYears: 'Miaka 12',
+      avatarEmoji: '',
+    ),
+    MemberSkillProfile(
       id: 'member-david-mwijage',
       fullName: 'David Erick Mwijage',
       profession: 'Mhandisi wa Mifumo ya TEHAMA, Media & Apps',
@@ -55,7 +81,7 @@ class MemberDirectoryService extends ChangeNotifier {
     ),
     MemberSkillProfile(
       id: 'member-sarah-tailor',
-      fullName: 'Mama Sarah Mgalla',
+      fullName: 'Mama Sarah James',
       profession: 'Mbunifu wa Nguo & Sare za Harusi',
       category: 'Mavazi & Urembo',
       description:

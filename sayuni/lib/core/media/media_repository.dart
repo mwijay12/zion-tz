@@ -225,8 +225,8 @@ class SayuniMediaRepository extends MediaRepository {
       AudioTrack(
         id: 'sermon-upendo-kristo',
         title: 'Upendo wa Kristo: Msingi na Amri Kuu',
-        subtitle: 'Askofu Mercy Mgalla • Yohana 13:34-35',
-        artist: 'Mchungaji Askofu Mercy Mgalla',
+        subtitle: 'Askofu Mercy James • Yohana 13:34-35',
+        artist: 'Mchungaji na Askofu Mercy James',
         url: 'assets/audio/upendo_choir_neno.mp3',
         artworkAsset: 'assets/images/church_front.jpg',
         category: MediaCategory.sermons,
@@ -236,8 +236,8 @@ class SayuniMediaRepository extends MediaRepository {
       AudioTrack(
         id: 'sermon-bidii-kazini',
         title: 'Bidii Kazini: Mkristo Kusimama Mbele ya Wafalme',
-        subtitle: 'Askofu Mercy Mgalla • Mithali 22:26, 29',
-        artist: 'Mchungaji Askofu Mercy Mgalla',
+        subtitle: 'Askofu Mercy James • Mithali 22:26, 29',
+        artist: 'Mchungaji na Askofu Mercy James',
         url: 'https://stream.zeno.fm/4v4e91y9sm8uv',
         artworkAsset: 'assets/images/pastoral_leadership_1788577468703.jpg',
         category: MediaCategory.sermons,
@@ -269,8 +269,8 @@ class SayuniMediaRepository extends MediaRepository {
       AudioTrack(
         id: 'sermon-nafasi-ya-mwombaji',
         title: 'Nafasi ya Mwombaji Kama Wakili wa Siri za Mungu',
-        subtitle: 'Askofu Mercy Mgalla • Ezekieli 22:30 • 1 Kor 4:1-2',
-        artist: 'Mchungaji Askofu Mercy Mgalla',
+        subtitle: 'Askofu Mercy James • Ezekieli 22:30 • 1 Kor 4:1-2',
+        artist: 'Mchungaji na Askofu Mercy James',
         url: 'https://stream.zeno.fm/w74w7e91sm8uv',
         artworkAsset: 'assets/images/3d_intercession.png',
         category: MediaCategory.sermons,
@@ -280,8 +280,8 @@ class SayuniMediaRepository extends MediaRepository {
       AudioTrack(
         id: 'sermon-ukombozi-kwa-mungu',
         title: 'Ukombozi Wetu Upo kwa Mungu Pekee',
-        subtitle: 'Askofu Mercy Mgalla • Zaburi 3:8 • Kutoka 14:13',
-        artist: 'Mchungaji Askofu Mercy Mgalla',
+        subtitle: 'Askofu Mercy James • Zaburi 3:8 • Kutoka 14:13',
+        artist: 'Mchungaji na Askofu Mercy James',
         url: 'https://stream.zeno.fm/h2f9g3m19t8uv',
         artworkAsset: 'assets/images/church_women_fellowship.jpg',
         category: MediaCategory.sermons,

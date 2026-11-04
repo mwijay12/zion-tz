@@ -106,8 +106,8 @@ export const EldersPortal: React.FC<EldersPortalProps> = ({ language }) => {
 
             <p style={{ fontSize: '0.88rem', color: '#dee1ff', margin: 0, maxWidth: '750px', lineHeight: 1.55 }}>
               {isSw 
-                ? 'Kusimamia nidhamu ya kiroho, kutoa ushauri nasaha wa ndoa na familia, kufanya ziara za maombi kwa wagonjwa, na kusaidia maono ya Askofu Mercy Mgalla.'
-                : 'Overseeing spiritual order, offering marital counseling, conducting sick visitations, and supporting Bishop Mercy Mgalla’s pastoral vision.'}
+                ? 'Kusimamia nidhamu ya kiroho, kutoa ushauri nasaha wa ndoa na familia, kufanya ziara za maombi kwa wagonjwa, na kusaidia maono ya Askofu Mercy James.'
+                : 'Overseeing spiritual order, offering marital counseling, conducting sick visitations, and supporting Bishop Mercy James’s pastoral vision.'}
             </p>
           </div>
 

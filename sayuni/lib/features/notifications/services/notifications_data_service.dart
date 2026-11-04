@@ -23,11 +23,11 @@ class NotificationsDataService extends ChangeNotifier {
       time: 'Saa 02:30 Asubuhi - 07:00 Mchana',
       location: 'Hekalu Kuu la Sayuni, Mbagala Kwa Matope',
       summary:
-          'Askofu Mercy Mgalla ataongoza ibada ya sifa, uponyaji na ushirika mtakatifu.',
+          'Askofu Mercy James ataongoza ibada ya sifa, uponyaji na ushirika mtakatifu.',
       fullDetails:
           'Tunakukaribisha wewe, familia yako na majirani katika Ibada Kuu ya Ushindi. Kutakuwa na meza ya Bwana, maombi maalum ya uponyaji kwa wagonjwa, na neno la kinabii la kuvuka dhoruba. '
           'Mavazi ya heshima yanazingatiwa. Waumini wanaotaka kubatizwa wafike ofisi ya kanisa saa 01:30 asubuhi.',
-      preacherOrLeader: 'Askofu Mercy Mgalla',
+      preacherOrLeader: 'Askofu Mercy James',
       isHighPriority: true,
     ),
     ChurchAnnouncement(
@@ -72,7 +72,7 @@ class NotificationsDataService extends ChangeNotifier {
       fullDetails:
           'Wamama na Wababa wa Sayuni pamoja na vijana wanakaribishwa katika semina ya wazi ya ujenzi wa ndoa imara na kulea watoto katika njia ya Bwana. '
           'Kutakuwa na chakula cha jioni cha pamoja na nafasi ya maswali na ushauri wa kichungaji kwa siri.',
-      preacherOrLeader: 'Mama Mch. Sarah Mgalla & Wachungaji Washauri',
+      preacherOrLeader: 'Mama Mch. Sarah James & Wachungaji Washauri',
       isHighPriority: false,
     ),
     ChurchAnnouncement(
@@ -101,7 +101,7 @@ class NotificationsDataService extends ChangeNotifier {
       fullDetails:
           'Kikao hiki ni kwa ajili ya Wazee wa Kanisa wote, Mashemasi, Katibu na Viongozi wote wa Idara. '
           'Tafadhali fika na ripoti fupi ya idara yako kwa mwezi uliopita. Taarifa hii ni ya siri ya uongozi.',
-      preacherOrLeader: 'Askofu Mkuu Mercy Mgalla & Katibu Mkuu',
+      preacherOrLeader: 'Mchungaji na Askofu Mercy James & Katibu Mkuu',
       isHighPriority: true,
       targetAudience: 'leaders',
     ),

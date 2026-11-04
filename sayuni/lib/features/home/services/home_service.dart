@@ -24,7 +24,7 @@ class HomeService {
     SermonAudioItem(
       id: 'sermon-1',
       title: 'Kusimama Imara Katika Maombi na Tabia ya Uadilifu',
-      preacher: 'Mchungaji Askofu Mercy Mgalla',
+      preacher: 'Mchungaji na Askofu Mercy James',
       duration: '48:12',
       date: '30 Ago 2026',
       scripture: 'Waefeso 6:10-18',
@@ -40,7 +40,7 @@ class HomeService {
     SermonAudioItem(
       id: 'sermon-3',
       title: 'Kuvunja Vikwazo vya Kiroho Kupitia Sadaka na Maombi',
-      preacher: 'Mchungaji Askofu Mercy Mgalla',
+      preacher: 'Mchungaji na Askofu Mercy James',
       duration: '54:20',
       date: '16 Ago 2026',
       scripture: 'Wafilipi 4:6-7',

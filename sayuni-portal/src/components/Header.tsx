@@ -97,7 +97,7 @@ const INITIAL_NOTIFICATIONS: ChurchNotification[] = [
   {
     id: 'notif-5',
     title: 'Nukuu ya Mahubiri ya Askofu',
-    description: 'Askofu Mercy Mgalla ameweka mistari na mada ya somo la Jumapili: "Kutembea Katika Imani".',
+    description: 'Askofu Mercy James ameweka mistari na mada ya somo la Jumapili: "Kutembea Katika Imani".',
     time: 'Jana',
     read: true,
     type: 'pastoral',

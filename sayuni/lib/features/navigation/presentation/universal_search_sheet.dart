@@ -79,7 +79,7 @@ class _UniversalSearchSheetState extends State<UniversalSearchSheet> {
     {'label': '📖 Zaburi 23', 'query': 'Zaburi 23'},
     {'label': '🎵 Tenzi #130', 'query': 'Tenzi 130'},
     {'label': '🧱 Ujenzi wa Hekalu', 'query': 'Ujenzi'},
-    {'label': '🕊️ Askofu Mercy Mgalla', 'query': 'Mercy Mgalla'},
+    {'label': 'Askofu Mercy James', 'query': 'Mercy James'},
     {'label': '🙏 Uponyaji & Faraja', 'query': 'Uponyaji'},
   ];
 

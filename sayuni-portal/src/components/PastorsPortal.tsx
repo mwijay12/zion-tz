@@ -149,7 +149,7 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
           <div style={{ width: '92px', height: '92px', borderRadius: '50%', overflow: 'hidden', border: '3px solid #c59b27', flexShrink: 0, boxShadow: '0 0 16px rgba(13, 82, 205, 0.4)' }}>
             <img 
               src={leadershipImg} 
-              alt="Mchungaji Askofu Mercy Mgalla" 
+              alt="Mchungaji na Askofu Mercy James" 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
           </div>

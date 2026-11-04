@@ -106,7 +106,7 @@ class JumuiyaService {
       id: 'group-women',
       name: 'Umoja wa Wanawake wa Sayuni (Wamama)',
       category: 'Wamama',
-      leader: 'Mama Mchungaji Sarah Mgalla',
+      leader: 'Mama Mchungaji Sarah James',
       leaderTitle: 'Mlezi wa Idara ya Wamama',
       phone: '+255755000303',
       meetingSchedule: 'Alhamisi • 09:30 Alasiri',

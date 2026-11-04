@@ -19,7 +19,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
   final List<Map<String, dynamic>> _myAppointments = [
     {
       'id': '1',
-      'pastor': 'Askofu Mercy Mgalla',
+      'pastor': 'Mchungaji na Askofu Mercy James',
       'category': 'Ushauri wa Kiroho & Maombi',
       'date': '2026-09-12',
       'time': '10:30 Asubuhi',
@@ -37,17 +37,19 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
     },
   ];
 
-  String _selectedPastor = 'Askofu Mercy Mgalla';
+  String _selectedPastor =
+      'Mchungaji na Askofu Mercy James (Mchungaji Kiongozi)';
   String _selectedCategory = 'Ushauri wa Kiroho & Maombi';
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
   final TextEditingController _reasonController = TextEditingController();
 
   final List<String> _pastors = [
-    'Askofu Mercy Mgalla (Mchungaji Kiongozi)',
+    'Mchungaji na Askofu Mercy James (Mchungaji Kiongozi)',
     'Mchungaji Alex (Mchungaji Msaidizi)',
     'Jonathan (Kiongozi wa Praise & Worship)',
     'Mwl. Emmanuel Majaliwa (Mwalimu wa Kwaya)',
+    'David Erick Mwijage (Msimamizi wa Mifumo)',
     'Mzee Boniface Mlay (Mzee wa Kanisa)',
   ];
 

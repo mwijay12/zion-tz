@@ -37,7 +37,7 @@ class _PrayerWarRoomScreenState extends State<PrayerWarRoomScreen>
     {
       'id': '1',
       'title': 'Uombezi wa Mkutano Mkuu wa Uamsho',
-      'author': 'Askofu Mercy Mgalla',
+      'author': 'Askofu Mercy James',
       'urgency': 'Critical',
       'description':
           'Tunaomba ulinzi wa kiroho na kufunguliwa kwa maelfu ya roho kwenye mkutano ujao. Vita vya kiroho ni vikali lakini ushindi ni wa Bwana.',

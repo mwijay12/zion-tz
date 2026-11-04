@@ -728,7 +728,7 @@ class ChurchAuthService extends ChangeNotifier {
 
     switch (role) {
       case 'pastor':
-        _name = 'Askofu Mercy Mgalla';
+        _name = 'Askofu Mercy James';
         _email = 'pastor@zionjerusalem.org';
         _department = 'Uongozi Mkuu wa Askofu';
         _memberId = 'ZJC-LEAD-01';

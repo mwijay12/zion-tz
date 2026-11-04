@@ -36,8 +36,8 @@ const createEmptyMetrics = (): AnonymousTelemetryMetrics => ({
   appLaunchesCount: 2310,
   lastRecordedAt: new Date().toISOString(),
   popularSermons: [
-    { id: 'sermon-1', title: 'Nguvu ya Maombi ya Asubuhi - Askofu Mercy Mgalla', count: 340 },
-    { id: 'sermon-2', title: 'Kuvuka Bahari ya Shamu - Askofu Mercy Mgalla', count: 285 },
+    { id: 'sermon-1', title: 'Nguvu ya Maombi ya Asubuhi - Askofu Mercy James', count: 340 },
+    { id: 'sermon-2', title: 'Kuvuka Bahari ya Shamu - Askofu Mercy James', count: 285 },
     { id: 'sermon-3', title: 'Neema Iliyofunuliwa Sayuni', count: 240 }
   ],
   popularHymns: [

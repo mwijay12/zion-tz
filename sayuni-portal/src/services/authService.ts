@@ -79,7 +79,7 @@ export class AuthService {
   static async loginAsDemo(role: UserRole = 'super_admin'): Promise<PortalUser> {
     const demoUser: PortalUser = {
       id: `demo-${role}`,
-      name: role === 'pastor' ? 'Mchungaji Askofu Mercy Mgalla' : (role === 'secretary' ? 'Katibu Mkuu' : 'Super Admin Zion'),
+      name: role === 'pastor' ? 'Mchungaji na Askofu Mercy James' : (role === 'secretary' ? 'Katibu Mkuu' : 'Super Admin Zion'),
       email: `${role}@zionjerusalem.org`,
       role,
       isRoot: role === 'admin' || role === 'super_admin',

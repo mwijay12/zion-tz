@@ -665,7 +665,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _openWhatsApp() async {
     AppHaptics.lightImpact();
     final uri = Uri.parse(
-        'https://wa.me/255754000111?text=Habari%20Ofisi%20ya%20Askofu%20Zion%20Jerusalem');
+        'https://wa.me/255744126927?text=Habari%20Ofisi%20ya%20Askofu%20Zion%20Jerusalem');
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }

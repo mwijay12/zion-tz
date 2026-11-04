@@ -616,7 +616,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 {isSw ? 'Studio ya Vyeti Rasmi vya Kanisa' : 'Official Certificate Studio'}
               </h4>
               <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                {isSw ? 'Vilivyosainiwa na Askofu Mercy Mgalla' : 'Endorsed by Bishop Mercy Mgalla'}
+                {isSw ? 'Vilivyosainiwa na Askofu Mercy James' : 'Endorsed by Bishop Mercy James'}
               </span>
             </div>
           </div>

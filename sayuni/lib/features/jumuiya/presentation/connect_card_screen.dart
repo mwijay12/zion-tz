@@ -317,7 +317,7 @@ class _ConnectCardScreenState extends State<ConnectCardScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Taarifa zako zimepokelewa kwa upendo na Idara ya Ukaribisho na Askofu Mercy Mgalla. Tutaendelea kuwasiliana nawe kwa maombi na ushirika.',
+              'Taarifa zako zimepokelewa kwa upendo na Idara ya Ukaribisho na Askofu Mercy James. Tutaendelea kuwasiliana nawe kwa maombi na ushirika.',
               style: AppTypography.bodySmall(color: AppColors.textSecondary),
               textAlign: TextAlign.center,
             ),

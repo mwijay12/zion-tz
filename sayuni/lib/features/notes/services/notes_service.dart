@@ -9,7 +9,7 @@ class NotesService {
     SermonNote(
       id: 'note-upendo',
       title: 'Upendo wa Kristo: Msingi na Amri Kuu',
-      preacher: 'Mchungaji Askofu Mercy Mgalla',
+      preacher: 'Mchungaji na Askofu Mercy James',
       scripture: 'Yoh 13:34-35 • 1 Kor 13:1-6 • 1 Yoh 4:7',
       content:
           '1. Amri Mpya: Yesu alituamuru kupendana kama Yeye alivyotupenda (Yohana 13:34-35, 15:12).\n'
@@ -34,7 +34,7 @@ class NotesService {
     SermonNote(
       id: 'note-bidii',
       title: 'Bidii Kazini: Mkristo Kusimama Mbele ya Wafalme',
-      preacher: 'Mchungaji Askofu Mercy Mgalla',
+      preacher: 'Mchungaji na Askofu Mercy James',
       scripture: 'Mithali 22:26, 29',
       content:
           '1. Kusimama Mbele ya Wafalme: Mtu mwenye bidii katika kazi yake atasimama mbele ya wafalme na viongozi wakuu (Mithali 22:29).\n'
@@ -56,7 +56,7 @@ class NotesService {
     SermonNote(
       id: 'note-mwombaji-wakili',
       title: 'Nafasi ya Mwombaji Kama Wakili wa Siri za Mungu',
-      preacher: 'Mchungaji Askofu Mercy Mgalla',
+      preacher: 'Mchungaji na Askofu Mercy James',
       scripture: 'Ezekieli 22:30 • 1 Wakorintho 4:1-2',
       content:
           '1. Maana ya Wakili: Msimamizi aliyepewa dhamana na mamlaka ya kulinda na kusimamia siri na mali ya Bwana wake (1 Wakorintho 4:1-2).\n'
@@ -67,7 +67,7 @@ class NotesService {
     SermonNote(
       id: 'note-ukombozi',
       title: 'Ukombozi Wetu Upo kwa Mungu Pekee',
-      preacher: 'Mchungaji Askofu Mercy Mgalla',
+      preacher: 'Mchungaji na Askofu Mercy James',
       scripture: 'Zaburi 3:8 • Kutoka 14:13-14 • Warumi 8:31',
       content:
           '1. Chanzo cha Ukombozi: Wokovu na ukombozi unatoka kwa Bwana pekee (Zaburi 3:8).\n'

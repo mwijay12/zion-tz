@@ -170,7 +170,7 @@ class ChurchNotificationService {
         id: 777,
         title: '🔔 Kesho ni Ibada Kuu ya Sayuni!',
         body:
-            'Usisahau kufika Hekaluni Mbagala Kwa Matope saa 02:30 Asubuhi. Askofu Mercy Mgalla na jopo la wachungaji wameandaa neno la uponyaji na ukombozi kwa ajili yako!',
+            'Usisahau kufika Hekaluni Mbagala Kwa Matope saa 02:30 Asubuhi. Askofu Mercy James na jopo la wachungaji wameandaa neno la uponyaji na ukombozi kwa ajili yako!',
         payload: 'saturday_service_reminder',
       );
     } else if (now.weekday == DateTime.sunday) {

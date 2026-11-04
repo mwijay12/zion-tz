@@ -502,7 +502,7 @@ async function create(meta: DocMeta): Promise<OfficialDocument> {
 }
 
 const SECRETARY = { name: 'Mwl. Peter Mwita', title: 'Katibu Mkuu wa Kanisa - Sayuni Yerusalemu' };
-const BISHOP = { name: 'Askofu Mercy Mgalla', title: 'Mchungaji Askofu Kiongozi - Sayuni Yerusalemu' };
+const BISHOP = { name: 'Askofu Mercy James', title: 'Mchungaji Askofu Kiongozi - Sayuni Yerusalemu' };
 const TREASURER = { name: 'Mhazini Mkuu', title: 'Kamati ya Hazina na Fedha - Sayuni Yerusalemu' };
 
 // ---------------------------------------------------------------------------

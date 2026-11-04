@@ -15,7 +15,8 @@ import {
   Clock,
   Mic,
   AlertTriangle,
-  ShieldCheck
+  ShieldCheck,
+  Edit3
 } from 'lucide-react';
 import type { Language, SermonItem, PastoralPoster, JumuiyaReport } from '../types';
 import { CHURCH_PROFILE, INITIAL_POSTERS } from '../data/mockData';
@@ -41,14 +42,20 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
   const [sermons, setSermons] = useState<SermonItem[]>(() => churchSync.getSermons());
   const [warRoomPrayers, setWarRoomPrayers] = useState<WarRoomPrayerRequest[]>(() => churchSync.getPrayers());
   const [showSermonModal, setShowSermonModal] = useState(false);
+  const [editingSermon, setEditingSermon] = useState<SermonItem | null>(null);
   const [readingArticle, setReadingArticle] = useState<SermonItem | null>(null);
   const [sermonTitle, setSermonTitle] = useState('');
   const [preacher, setPreacher] = useState(CHURCH_PROFILE.headPastor);
   const [scripture, setScripture] = useState('');
   const [summary, setSummary] = useState('');
-  const [mediaType, setMediaType] = useState<'video' | 'audio' | 'text'>('video');
+  const [mediaType, setMediaType] = useState<'video' | 'audio' | 'text'>('text');
   const [mediaUrl, setMediaUrl] = useState('');
   const [category, setCategory] = useState<'Imani' | 'Uponyaji' | 'Familia' | 'Uongozi' | 'Kusifu'>('Imani');
+  const [fullArticleText, setFullArticleText] = useState('');
+  const [keyVerseText, setKeyVerseText] = useState('');
+  const [readTimeText, setReadTimeText] = useState('');
+  const [takeawaysText, setTakeawaysText] = useState('');
+  const [pastoralPrayerText, setPastoralPrayerText] = useState('');
 
   // Posters state
   const [posters, setPosters] = useState<PastoralPoster[]>(() => loadStored(STORAGE_KEYS.pastoralPosters, INITIAL_POSTERS));
@@ -79,32 +86,167 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
   // Prayer needs from Jumuiya reports
   const prayerNeeds = recentReports.filter(r => r.sickOrWelfareNeeds || r.prayerRequests);
 
+  const openNewSermonModal = () => {
+    setEditingSermon(null);
+    setSermonTitle('');
+    setPreacher(CHURCH_PROFILE.headPastor);
+    setScripture('');
+    setSummary('');
+    setMediaType('text');
+    setMediaUrl('');
+    setCategory('Imani');
+    setFullArticleText('');
+    setKeyVerseText('');
+    setReadTimeText('Dakika 5 kusoma');
+    setTakeawaysText('');
+    setPastoralPrayerText('');
+    setShowSermonModal(true);
+  };
+
+  const openEditSermon = (sermon: SermonItem) => {
+    setEditingSermon(sermon);
+    setSermonTitle(sermon.title);
+    setPreacher(sermon.preacher);
+    setScripture(sermon.scripture);
+    setSummary(sermon.summary);
+    setMediaType(sermon.mediaType);
+    setMediaUrl(sermon.mediaUrl || '');
+    setCategory(sermon.category as any);
+    setFullArticleText(sermon.fullArticle || '');
+    setKeyVerseText(sermon.keyVerse || '');
+    setReadTimeText(sermon.readTime || '');
+    setTakeawaysText(sermon.takeaways ? sermon.takeaways.join('\n') : '');
+    setPastoralPrayerText(sermon.pastoralPrayer || '');
+    setShowSermonModal(true);
+  };
+
   const handleCreateSermon = (e: React.FormEvent) => {
     e.preventDefault();
     if (!sermonTitle || !scripture) return;
 
-    const newSermon: SermonItem = {
-      id: createId('sermon'),
+    const sermonToSave: SermonItem = {
+      id: editingSermon ? editingSermon.id : createId('sermon'),
       title: sermonTitle,
-      date: new Date().toISOString().split('T')[0],
+      date: editingSermon ? editingSermon.date : new Date().toISOString().split('T')[0],
       preacher,
       scripture,
       summary,
       mediaType,
       mediaUrl: mediaUrl || undefined,
       category,
-      likesCount: 0
+      likesCount: editingSermon ? editingSermon.likesCount : 0,
+      fullArticle: fullArticleText || undefined,
+      keyVerse: keyVerseText || undefined,
+      readTime: readTimeText || (mediaType === 'text' ? 'Dakika 5 kusoma' : undefined),
+      takeaways: takeawaysText ? takeawaysText.split('\n').map(s => s.trim()).filter(Boolean) : undefined,
+      pastoralPrayer: pastoralPrayerText || undefined,
+      imageUrl: editingSermon?.imageUrl
     };
 
-    // Save to sync bridge so mobile gets it immediately
-    churchSync.addSermon(newSermon);
-    setSermons(churchSync.getSermons());
+    // Save to sync bridge so mobile and portal update immediately
+    churchSync.addSermon(sermonToSave);
+    const updated = churchSync.getSermons();
+    setSermons(updated);
+    if (readingArticle && readingArticle.id === sermonToSave.id) {
+      setReadingArticle(sermonToSave);
+    }
 
     setShowSermonModal(false);
-    setSermonTitle('');
-    setScripture('');
-    setSummary('');
-    setMediaUrl('');
+    setEditingSermon(null);
+  };
+
+  const renderArticleMarkdown = (content: string) => {
+    if (!content) return null;
+    const lines = content.split('\n');
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+        {lines.map((rawLine, idx) => {
+          const line = rawLine.trim();
+          if (!line) return <div key={idx} style={{ height: '0.35rem' }} />;
+
+          // Parse inline formatting: **bold** and *italic*
+          const parseInline = (text: string) => {
+            const parts = text.split(/(\*\*.+?\*\*|\*.+?\*)/g);
+            return parts.map((part, pIdx) => {
+              if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
+                return <strong key={pIdx} style={{ color: 'var(--text-headline)', fontWeight: 700 }}>{part.slice(2, -2)}</strong>;
+              }
+              if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
+                return <em key={pIdx} style={{ color: 'var(--primary)', fontStyle: 'italic' }}>{part.slice(1, -1)}</em>;
+              }
+              return part;
+            });
+          };
+
+          if (line.startsWith('# ')) {
+            return (
+              <h2 key={idx} style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-headline)', margin: '1rem 0 0.25rem 0' }}>
+                {parseInline(line.replace(/^#\s*/, ''))}
+              </h2>
+            );
+          }
+          if (line.startsWith('## ')) {
+            return (
+              <div key={idx} style={{ margin: '1.1rem 0 0.35rem 0' }}>
+                <h3 style={{ fontSize: '1.18rem', fontWeight: 800, color: '#C59B27', margin: 0 }}>
+                  {parseInline(line.replace(/^##\s*/, ''))}
+                </h3>
+                <div style={{ width: '36px', height: '2px', background: '#C59B27', marginTop: '4px', borderRadius: '2px' }} />
+              </div>
+            );
+          }
+          if (line.startsWith('### ')) {
+            return (
+              <h4 key={idx} style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-headline)', margin: '0.85rem 0 0.2rem 0' }}>
+                {parseInline(line.replace(/^###\s*/, ''))}
+              </h4>
+            );
+          }
+          if (line === '---') {
+            return <hr key={idx} style={{ border: 'none', borderTop: '1px solid var(--border-subtle)', margin: '0.85rem 0' }} />;
+          }
+          if (line.startsWith('• ') || line.startsWith('- ')) {
+            return (
+              <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', paddingLeft: '0.35rem' }}>
+                <span style={{ color: '#C59B27', fontSize: '0.8rem', lineHeight: '1.6' }}>●</span>
+                <span style={{ fontSize: '0.92rem', color: 'var(--text-body)', lineHeight: 1.65 }}>
+                  {parseInline(line.replace(/^(• |- )\s*/, ''))}
+                </span>
+              </div>
+            );
+          }
+          if (/^\d+\.\s+/.test(line)) {
+            const num = line.match(/^(\d+)\.\s+/)?.[1] || '1';
+            const text = line.replace(/^\d+\.\s+/, '');
+            return (
+              <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', paddingLeft: '0.35rem' }}>
+                <span style={{ 
+                  background: 'rgba(212, 168, 71, 0.15)', 
+                  color: '#C59B27', 
+                  fontSize: '0.72rem', 
+                  fontWeight: 800, 
+                  padding: '1px 5px', 
+                  borderRadius: '4px',
+                  marginTop: '2px'
+                }}>
+                  {num}
+                </span>
+                <span style={{ fontSize: '0.92rem', color: 'var(--text-body)', lineHeight: 1.65 }}>
+                  {parseInline(text)}
+                </span>
+              </div>
+            );
+          }
+
+          return (
+            <p key={idx} style={{ fontSize: '0.92rem', color: 'var(--text-body)', lineHeight: 1.65, margin: 0 }}>
+              {parseInline(line)}
+            </p>
+          );
+        })}
+      </div>
+    );
   };
 
   const handleCreatePoster = (e: React.FormEvent) => {
@@ -179,7 +321,7 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
 
           <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap' }}>
             <button 
-              onClick={() => setShowSermonModal(true)}
+              onClick={openNewSermonModal}
               className="btn-primary" 
               style={{ padding: '0.6rem 1.25rem', fontSize: '0.85rem', background: '#0D52CD', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)' }}
             >
@@ -243,7 +385,7 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
             </div>
 
             <button 
-              onClick={() => setShowSermonModal(true)}
+              onClick={openNewSermonModal}
               className="btn-primary"
               style={{ fontSize: '0.85rem' }}
             >
@@ -286,7 +428,7 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                   {sermon.summary}
                 </p>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-subtle)', paddingTop: '0.65rem', marginTop: 'auto' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-subtle)', paddingTop: '0.65rem', marginTop: 'auto', flexWrap: 'wrap', gap: '0.5rem' }}>
                   <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
                     {sermon.mediaType === 'video' && <Video size={15} style={{ color: '#ef4444' }} />}
                     {sermon.mediaType === 'audio' && <Music size={15} style={{ color: '#059669' }} />}
@@ -294,33 +436,45 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                     <span>{sermon.mediaType === 'text' ? (sermon.readTime || 'MAKALA YA NENO') : `${sermon.mediaType.toUpperCase()} Format`}</span>
                   </span>
 
-                  {sermon.mediaType === 'text' ? (
-                    <button 
-                      onClick={() => setReadingArticle(sermon)}
-                      className="btn-gold"
+                  <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                    <button
+                      onClick={() => openEditSermon(sermon)}
+                      className="btn-secondary"
                       style={{ fontSize: '0.75rem', padding: '0.3rem 0.65rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+                      title={isSw ? 'Hariri Somo Hili' : 'Edit Sermon'}
                     >
-                      <BookOpen size={13} />
-                      <span>{isSw ? 'Soma Somo' : 'Read Article'}</span>
+                      <Edit3 size={13} />
+                      <span>{isSw ? 'Hariri' : 'Edit'}</span>
                     </button>
-                  ) : (
-                    sermon.mediaUrl && (
-                      <a 
-                        href={sermon.mediaUrl} 
-                        target="_blank" 
-                        rel="noreferrer"
-                        onClick={() => PrivacyAnalyticsService.recordEvent('sermon_listen', {
-                          id: sermon.id,
-                          title: sermon.title
-                        })}
-                        className="btn-secondary"
+
+                    {sermon.mediaType === 'text' ? (
+                      <button 
+                        onClick={() => setReadingArticle(sermon)}
+                        className="btn-gold"
                         style={{ fontSize: '0.75rem', padding: '0.3rem 0.65rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
                       >
-                        <span>{isSw ? 'Fungua Media' : 'Open Media'}</span>
-                        <ExternalLink size={12} />
-                      </a>
-                    )
-                  )}
+                        <BookOpen size={13} />
+                        <span>{isSw ? 'Soma Somo' : 'Read Article'}</span>
+                      </button>
+                    ) : (
+                      sermon.mediaUrl && (
+                        <a 
+                          href={sermon.mediaUrl} 
+                          target="_blank" 
+                          rel="noreferrer"
+                          onClick={() => PrivacyAnalyticsService.recordEvent('sermon_listen', {
+                            id: sermon.id,
+                            title: sermon.title
+                          })}
+                          className="btn-secondary"
+                          style={{ fontSize: '0.75rem', padding: '0.3rem 0.65rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+                        >
+                          <span>{isSw ? 'Fungua Media' : 'Open Media'}</span>
+                          <ExternalLink size={12} />
+                        </a>
+                      )
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -566,10 +720,14 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
         }}>
           <div className="church-card" style={{ maxWidth: '580px', width: '100%', maxHeight: '92vh', overflowY: 'auto' }}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.3rem', color: 'var(--text-headline)' }}>
-              {isSw ? 'Pakia Somo / Mahubiri ya Kichungaji' : 'Upload Sermon or Biblical Teaching'}
+              {editingSermon 
+                ? (isSw ? 'Hariri Somo / Makala ya Neno' : 'Edit Sermon / Biblical Teaching')
+                : (isSw ? 'Pakia Somo / Mahubiri ya Kichungaji' : 'Upload Sermon or Biblical Teaching')}
             </h3>
             <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-              {isSw ? 'Mafundisho haya yataonekana mara moja kwenye simu za waumini.' : 'This sermon will be available immediately to congregants.'}
+              {isSw 
+                ? 'Mafundisho haya yataonekana mara moja kwenye simu za waumini na yanaweza kusomwa au kuhaririwa.' 
+                : 'This sermon will be available immediately to congregants.'}
             </p>
 
             <form onSubmit={handleCreateSermon} style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
@@ -616,9 +774,9 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                     onChange={(e) => setMediaType(e.target.value as any)}
                     className="form-select"
                   >
+                    <option value="text">Maandishi (Makala ya Neno / Text Study)</option>
                     <option value="video">Video (YouTube / MP4)</option>
                     <option value="audio">Audio (Sauti / Podcast)</option>
-                    <option value="text">Maandishi (Text Study)</option>
                   </select>
                 </div>
                 <div>
@@ -637,25 +795,91 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                 </div>
               </div>
 
+              {mediaType !== 'text' && (
+                <div>
+                  <label className="form-label">{isSw ? 'Kiunganishi cha Media (Link ya YouTube au Audio)' : 'Media URL'}</label>
+                  <input 
+                    type="url" 
+                    placeholder="https://..."
+                    value={mediaUrl}
+                    onChange={(e) => setMediaUrl(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+              )}
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                <div>
+                  <label className="form-label">{isSw ? 'Muda wa Kusoma' : 'Read Time'}</label>
+                  <input 
+                    type="text" 
+                    placeholder="mf. Dakika 5 kusoma"
+                    value={readTimeText}
+                    onChange={(e) => setReadTimeText(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+                <div>
+                  <label className="form-label">{isSw ? 'Mstari wa Msingi / Kukumbuka' : 'Key Verse'}</label>
+                  <input 
+                    type="text" 
+                    placeholder="mf. Yohana 13:34-35"
+                    value={keyVerseText}
+                    onChange={(e) => setKeyVerseText(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+              </div>
+
               <div>
-                <label className="form-label">{isSw ? 'Kiunganishi cha Media (Link ya YouTube au Audio)' : 'Media URL'}</label>
-                <input 
-                  type="url" 
-                  placeholder="https://..."
-                  value={mediaUrl}
-                  onChange={(e) => setMediaUrl(e.target.value)}
-                  className="form-input"
+                <label className="form-label">{isSw ? 'Muhtasari wa Somo (Summary)' : 'Teaching Summary'} *</label>
+                <textarea 
+                  rows={2} 
+                  required
+                  placeholder={isSw ? 'Muhtasari mfupi unaoonekana kwenye kadi ya somo...' : 'Brief summary shown on sermon card...'}
+                  value={summary}
+                  onChange={(e) => setSummary(e.target.value)}
+                  className="form-textarea"
                 />
               </div>
 
               <div>
-                <label className="form-label">{isSw ? 'Muhtasari wa Mafundisho & Vidokezo' : 'Teaching Summary & Key Notes'} *</label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
+                  <label className="form-label" style={{ margin: 0 }}>
+                    {isSw ? 'Maudhui Kamili ya Makala (Full Article)' : 'Full Article Content'}
+                  </label>
+                  <span style={{ fontSize: '0.72rem', color: '#c59b27', fontWeight: 600 }}>
+                    Markdown: ## Vichwa | **Kukoleza** | • Nukta
+                  </span>
+                </div>
+                <textarea 
+                  rows={7} 
+                  placeholder={isSw ? 'Andika maudhui kamili ya somo hapa kwa waumini kusoma...' : 'Write full sermon notes, scriptures, and teachings here...'}
+                  value={fullArticleText}
+                  onChange={(e) => setFullArticleText(e.target.value)}
+                  className="form-textarea"
+                  style={{ fontFamily: 'monospace', fontSize: '0.85rem' }}
+                />
+              </div>
+
+              <div>
+                <label className="form-label">{isSw ? 'Hatua za Vitendo / Mafunzo (Kila mstari nukta moja)' : 'Practical Takeaways (one per line)'}</label>
                 <textarea 
                   rows={3} 
-                  required
-                  placeholder={isSw ? 'Andika vidokezo vikuu vya somo kwa ajili ya waumini...' : 'Write sermon outline and key lessons...'}
-                  value={summary}
-                  onChange={(e) => setSummary(e.target.value)}
+                  placeholder={isSw ? 'Wapende wote bila ubaguzi\nFanya kazi kwa bidii na uaminifu' : 'Love everyone sincerely\nWork diligently'}
+                  value={takeawaysText}
+                  onChange={(e) => setTakeawaysText(e.target.value)}
+                  className="form-textarea"
+                />
+              </div>
+
+              <div>
+                <label className="form-label">{isSw ? 'Sala ya Kichungaji na Baraka' : 'Pastoral Prayer & Blessing'}</label>
+                <textarea 
+                  rows={2} 
+                  placeholder={isSw ? 'Bwana akubariki na kukulinda...' : 'The Lord bless you and keep you...'}
+                  value={pastoralPrayerText}
+                  onChange={(e) => setPastoralPrayerText(e.target.value)}
                   className="form-textarea"
                 />
               </div>
@@ -670,7 +894,11 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                 </button>
                 <button type="submit" className="btn-primary">
                   <CheckCircle2 size={16} />
-                  <span>{isSw ? 'Hifadhi & Chapisha Somo' : 'Save & Publish'}</span>
+                  <span>
+                    {editingSermon 
+                      ? (isSw ? 'Hifadhi Mabadiliko' : 'Save Changes')
+                      : (isSw ? 'Hifadhi & Chapisha Somo' : 'Save & Publish')}
+                  </span>
                 </button>
               </div>
             </form>
@@ -799,12 +1027,26 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                   <span>{readingArticle.scripture} • Mhubiri: {readingArticle.preacher}</span>
                 </div>
               </div>
-              <button 
-                onClick={() => setReadingArticle(null)}
-                style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '1.2rem' }}
-              >
-                ✕
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <button
+                  onClick={() => {
+                    const art = readingArticle;
+                    setReadingArticle(null);
+                    openEditSermon(art);
+                  }}
+                  className="btn-secondary"
+                  style={{ fontSize: '0.78rem', padding: '0.35rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}
+                >
+                  <Edit3 size={14} />
+                  <span>{isSw ? 'Hariri Somo Hili' : 'Edit Article'}</span>
+                </button>
+                <button 
+                  onClick={() => setReadingArticle(null)}
+                  style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '1.2rem', padding: '0.25rem' }}
+                >
+                  ✕
+                </button>
+              </div>
             </div>
 
             {/* Key Verse Callout Card */}
@@ -827,14 +1069,8 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
             )}
 
             {/* Full Article Content */}
-            <div style={{ 
-              fontSize: '0.95rem', 
-              lineHeight: 1.7, 
-              color: 'var(--text-body)',
-              whiteSpace: 'pre-line',
-              marginBottom: '1.5rem'
-            }}>
-              {readingArticle.fullArticle || readingArticle.summary}
+            <div style={{ marginBottom: '1.5rem' }}>
+              {renderArticleMarkdown(readingArticle.fullArticle || readingArticle.summary)}
             </div>
 
             {/* Takeaways Card */}

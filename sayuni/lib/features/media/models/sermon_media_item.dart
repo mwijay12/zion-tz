@@ -92,4 +92,48 @@ class SermonMediaItem {
             : const [],
         pastoralPrayer: json['pastoralPrayer']?.toString() ?? '',
       );
+
+  SermonMediaItem copyWith({
+    String? id,
+    String? title,
+    String? preacher,
+    String? scripture,
+    String? date,
+    String? duration,
+    String? type,
+    String? category,
+    String? description,
+    String? imageUrl,
+    String? audioUrl,
+    String? videoUrl,
+    bool? isAdminUpload,
+    String? readTime,
+    String? keyVerse,
+    List<String>? scriptureList,
+    String? fullArticle,
+    List<String>? takeaways,
+    String? pastoralPrayer,
+  }) {
+    return SermonMediaItem(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      preacher: preacher ?? this.preacher,
+      scripture: scripture ?? this.scripture,
+      date: date ?? this.date,
+      duration: duration ?? this.duration,
+      type: type ?? this.type,
+      category: category ?? this.category,
+      description: description ?? this.description,
+      imageUrl: imageUrl ?? this.imageUrl,
+      audioUrl: audioUrl ?? this.audioUrl,
+      videoUrl: videoUrl ?? this.videoUrl,
+      isAdminUpload: isAdminUpload ?? this.isAdminUpload,
+      readTime: readTime ?? this.readTime,
+      keyVerse: keyVerse ?? this.keyVerse,
+      scriptureList: scriptureList ?? this.scriptureList,
+      fullArticle: fullArticle ?? this.fullArticle,
+      takeaways: takeaways ?? this.takeaways,
+      pastoralPrayer: pastoralPrayer ?? this.pastoralPrayer,
+    );
+  }
 }

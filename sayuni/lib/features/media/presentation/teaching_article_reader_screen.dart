@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../core/constants/church_profile.dart';
+import '../../../core/services/church_auth_service.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/haptics.dart';
@@ -25,6 +26,7 @@ class TeachingArticleReaderScreen extends StatefulWidget {
 
 class _TeachingArticleReaderScreenState
     extends State<TeachingArticleReaderScreen> {
+  late SermonMediaItem _currentArticle;
   double _fontSize = 15.5;
   bool _isSavedToNotes = false;
   final ScrollController _scrollController = ScrollController();
@@ -37,6 +39,7 @@ class _TeachingArticleReaderScreenState
   @override
   void initState() {
     super.initState();
+    _currentArticle = widget.article;
     _initTts();
     _checkSavedStatus();
   }
@@ -73,8 +76,8 @@ class _TeachingArticleReaderScreenState
     try {
       final notes = await NotesService().getNotes();
       final exists = notes.any((n) =>
-          n.id == 'note-${widget.article.id}' ||
-          n.title == widget.article.title);
+          n.id == 'note-${_currentArticle.id}' ||
+          n.title == _currentArticle.title);
       if (mounted) setState(() => _isSavedToNotes = exists);
     } catch (_) {}
   }
@@ -86,14 +89,14 @@ class _TeachingArticleReaderScreenState
       if (mounted) setState(() => _isSpeaking = false);
     } else {
       final buffer = StringBuffer();
-      buffer.writeln(widget.article.title);
-      buffer.writeln('Mhubiri: ${widget.article.preacher}.');
-      if (widget.article.keyVerse.isNotEmpty) {
-        buffer.writeln('Mstari wa msingi: ${widget.article.keyVerse}.');
+      buffer.writeln(_currentArticle.title);
+      buffer.writeln('Mhubiri: ${_currentArticle.preacher}.');
+      if (_currentArticle.keyVerse.isNotEmpty) {
+        buffer.writeln('Mstari wa msingi: ${_currentArticle.keyVerse}.');
       }
-      buffer.writeln(widget.article.fullArticle.replaceAll(RegExp(r'#|\*|•|-'), ' '));
-      if (widget.article.pastoralPrayer.isNotEmpty) {
-        buffer.writeln('Sala ya Kichungaji: ${widget.article.pastoralPrayer}');
+      buffer.writeln(_currentArticle.fullArticle.replaceAll(RegExp(r'#|\*|•|-'), ' '));
+      if (_currentArticle.pastoralPrayer.isNotEmpty) {
+        buffer.writeln('Sala ya Kichungaji: ${_currentArticle.pastoralPrayer}');
       }
       await _flutterTts.speak(buffer.toString());
       if (mounted) setState(() => _isSpeaking = true);
@@ -103,13 +106,13 @@ class _TeachingArticleReaderScreenState
   Future<void> _saveToNotes() async {
     AppHaptics.mediumImpact();
     final note = SermonNote(
-      id: 'note-${widget.article.id}',
-      title: widget.article.title,
-      preacher: widget.article.preacher,
-      scripture: widget.article.scripture,
-      content: widget.article.fullArticle.isNotEmpty
-          ? widget.article.fullArticle
-          : widget.article.description,
+      id: 'note-${_currentArticle.id}',
+      title: _currentArticle.title,
+      preacher: _currentArticle.preacher,
+      scripture: _currentArticle.scripture,
+      content: _currentArticle.fullArticle.isNotEmpty
+          ? _currentArticle.fullArticle
+          : _currentArticle.description,
       date: DateTime.now(),
     );
 
@@ -141,24 +144,24 @@ class _TeachingArticleReaderScreenState
   Future<void> _shareArticle() async {
     AppHaptics.lightImpact();
     final buffer = StringBuffer();
-    buffer.writeln('📖 *${widget.article.title.toUpperCase()}*');
-    buffer.writeln('👤 *Mhubiri:* ${widget.article.preacher}');
-    buffer.writeln('📜 *Maandiko:* ${widget.article.scripture}');
+    buffer.writeln('📖 *${_currentArticle.title.toUpperCase()}*');
+    buffer.writeln('👤 *Mhubiri:* ${_currentArticle.preacher}');
+    buffer.writeln('📜 *Maandiko:* ${_currentArticle.scripture}');
     buffer.writeln('');
-    if (widget.article.keyVerse.isNotEmpty) {
+    if (_currentArticle.keyVerse.isNotEmpty) {
       buffer.writeln('✨ *Mstari wa Kukumbuka:*');
-      buffer.writeln(widget.article.keyVerse);
+      buffer.writeln(_currentArticle.keyVerse);
       buffer.writeln('');
     }
     buffer.writeln('💡 *Masomo ya Vitendo:*');
-    for (final t in widget.article.takeaways) {
+    for (final t in _currentArticle.takeaways) {
       buffer.writeln('• $t');
     }
     buffer.writeln('');
     buffer.writeln('🏛️ *${ChurchProfile.name}* • ${ChurchProfile.location}');
     buffer.writeln('Soma zaidi kwenye App ya Sayuni Jerusalem.');
 
-    await Share.share(buffer.toString(), subject: widget.article.title);
+    await Share.share(buffer.toString(), subject: _currentArticle.title);
   }
 
   void _showScriptureModal(String scripture) {
@@ -210,7 +213,7 @@ class _TeachingArticleReaderScreenState
                 border: Border.all(color: AppColors.gold.withOpacity(0.2)),
               ),
               child: Text(
-                'Mstari huu ni sehemu ya somo la "${widget.article.title}". Fungua Biblia ya Sayuni ili kusoma sura nzima na maelezo ya kina ya kitheolojia.',
+                'Mstari huu ni sehemu ya somo la "${_currentArticle.title}". Fungua Biblia ya Sayuni ili kusoma sura nzima na maelezo ya kina ya kitheolojia.',
                 style: const TextStyle(
                   color: Color(0xFFF1F5F9),
                   fontSize: 14,
@@ -251,6 +254,13 @@ class _TeachingArticleReaderScreenState
         ? const Color(0xFFD4A847).withOpacity(0.12)
         : const Color(0xFFE2E8F0);
 
+    final auth = ChurchAuthService();
+    final canEdit = auth.isAdmin ||
+        auth.churchRole == ChurchRole.pastor ||
+        auth.churchRole == ChurchRole.superAdmin ||
+        auth.can(ChurchPermission.uploadSermonMedia) ||
+        auth.demoAccessAllowed;
+
     return Scaffold(
       backgroundColor: bgColor,
       appBar: AppBar(
@@ -270,6 +280,18 @@ class _TeachingArticleReaderScreenState
           ),
         ),
         actions: [
+          // Pastor / Admin Article Editor
+          if (canEdit)
+            IconButton(
+              icon: const Icon(
+                Icons.edit_note_rounded,
+                color: AppColors.gold,
+                size: 26,
+              ),
+              tooltip: 'Hariri Somo (Mchungaji / Admin)',
+              onPressed: () => _showEditArticleSheet(context, isDark),
+            ),
+
           // Text Size Controller Menu
           PopupMenuButton<double>(
             icon: Icon(Icons.format_size_rounded, color: textColor),
@@ -380,11 +402,11 @@ class _TeachingArticleReaderScreenState
               child: Stack(
                 children: [
                   Image(
-                    image: (widget.article.imageUrl.startsWith('http') ||
-                            widget.article.imageUrl.startsWith('assets/'))
-                        ? (widget.article.imageUrl.startsWith('assets/')
-                            ? AssetImage(widget.article.imageUrl) as ImageProvider
-                            : NetworkImage(widget.article.imageUrl))
+                    image: (_currentArticle.imageUrl.startsWith('http') ||
+                            _currentArticle.imageUrl.startsWith('assets/'))
+                        ? (_currentArticle.imageUrl.startsWith('assets/')
+                            ? AssetImage(_currentArticle.imageUrl) as ImageProvider
+                            : NetworkImage(_currentArticle.imageUrl))
                         : const AssetImage('assets/images/church_front.jpg'),
                     height: 220,
                     width: double.infinity,
@@ -423,7 +445,7 @@ class _TeachingArticleReaderScreenState
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        widget.article.category.toUpperCase(),
+                        _currentArticle.category.toUpperCase(),
                         style: const TextStyle(
                           fontSize: 10,
                           fontWeight: FontWeight.w900,
@@ -451,7 +473,7 @@ class _TeachingArticleReaderScreenState
                               size: 13, color: Colors.white),
                           const SizedBox(width: 4),
                           Text(
-                            widget.article.readTime,
+                            _currentArticle.readTime,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 11,
@@ -470,7 +492,7 @@ class _TeachingArticleReaderScreenState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.article.date,
+                          _currentArticle.date,
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.85),
                             fontSize: 12,
@@ -485,7 +507,7 @@ class _TeachingArticleReaderScreenState
                             const SizedBox(width: 6),
                             Expanded(
                               child: Text(
-                                widget.article.preacher,
+                                _currentArticle.preacher,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 13,
@@ -507,7 +529,7 @@ class _TeachingArticleReaderScreenState
 
             // Article Main Headline
             Text(
-              widget.article.title,
+              _currentArticle.title,
               style: AppTypography.cinzel(
                 color: textColor,
                 fontSize: 22,
@@ -517,11 +539,11 @@ class _TeachingArticleReaderScreenState
             const SizedBox(height: 12),
 
             // Scripture Reference Chips
-            if (widget.article.scriptureList.isNotEmpty) ...[
+            if (_currentArticle.scriptureList.isNotEmpty) ...[
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
-                children: widget.article.scriptureList.map((sc) {
+                children: _currentArticle.scriptureList.map((sc) {
                   return InkWell(
                     onTap: () => _showScriptureModal(sc),
                     borderRadius: BorderRadius.circular(8),
@@ -558,7 +580,7 @@ class _TeachingArticleReaderScreenState
             ],
 
             // Golden Key Memory Verse Callout Card
-            if (widget.article.keyVerse.isNotEmpty) ...[
+            if (_currentArticle.keyVerse.isNotEmpty) ...[
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -607,7 +629,7 @@ class _TeachingArticleReaderScreenState
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            widget.article.keyVerse,
+                            _currentArticle.keyVerse,
                             style: TextStyle(
                               fontFamily: 'Cinzel',
                               fontSize: _fontSize,
@@ -628,9 +650,9 @@ class _TeachingArticleReaderScreenState
 
             // Article Body Content (Divided into Rich Paragraphs & Sections)
             _buildArticleContent(
-              content: widget.article.fullArticle.isNotEmpty
-                  ? widget.article.fullArticle
-                  : widget.article.description,
+              content: _currentArticle.fullArticle.isNotEmpty
+                  ? _currentArticle.fullArticle
+                  : _currentArticle.description,
               textColor: textColor,
               textMuted: textMuted,
               cardBg: cardBg,
@@ -639,7 +661,7 @@ class _TeachingArticleReaderScreenState
             const SizedBox(height: 24),
 
             // Takeaways & Practical Action Items Card
-            if (widget.article.takeaways.isNotEmpty) ...[
+            if (_currentArticle.takeaways.isNotEmpty) ...[
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(18),
@@ -675,7 +697,7 @@ class _TeachingArticleReaderScreenState
                       ],
                     ),
                     const SizedBox(height: 14),
-                    ...widget.article.takeaways.map((point) {
+                    ..._currentArticle.takeaways.map((point) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Row(
@@ -708,7 +730,7 @@ class _TeachingArticleReaderScreenState
             ],
 
             // Pastoral Blessing & Prayer Card
-            if (widget.article.pastoralPrayer.isNotEmpty) ...[
+            if (_currentArticle.pastoralPrayer.isNotEmpty) ...[
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(18),
@@ -740,7 +762,7 @@ class _TeachingArticleReaderScreenState
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      widget.article.pastoralPrayer,
+                      _currentArticle.pastoralPrayer,
                       style: TextStyle(
                         color: const Color(0xFFF1F5F9),
                         fontSize: _fontSize,
@@ -843,6 +865,79 @@ class _TeachingArticleReaderScreenState
     );
   }
 
+  List<InlineSpan> _buildInlineSpans(
+    String text,
+    TextStyle baseStyle, {
+    Color? boldColor,
+    Color? italicColor,
+  }) {
+    if (text.isEmpty) return const [];
+    final spans = <InlineSpan>[];
+    final regex =
+        RegExp(r'(\*\*\*(.+?)\*\*\*|\*\*(.+?)\*\*|\*(.+?)\*|_(.+?)_)');
+    int lastMatchEnd = 0;
+
+    for (final match in regex.allMatches(text)) {
+      if (match.start > lastMatchEnd) {
+        spans.add(TextSpan(
+          text: text.substring(lastMatchEnd, match.start),
+          style: baseStyle,
+        ));
+      }
+
+      final raw = match.group(0)!;
+      if (raw.startsWith('***') && raw.endsWith('***') && raw.length > 6) {
+        final inner = raw.substring(3, raw.length - 3);
+        spans.add(TextSpan(
+          text: inner,
+          style: baseStyle.copyWith(
+            fontWeight: FontWeight.w800,
+            fontStyle: FontStyle.italic,
+            color: boldColor ?? baseStyle.color,
+          ),
+        ));
+      } else if (raw.startsWith('**') && raw.endsWith('**') && raw.length > 4) {
+        final inner = raw.substring(2, raw.length - 2);
+        spans.add(TextSpan(
+          text: inner,
+          style: baseStyle.copyWith(
+            fontWeight: FontWeight.w800,
+            color: boldColor ?? baseStyle.color,
+          ),
+        ));
+      } else if (raw.startsWith('*') && raw.endsWith('*') && raw.length > 2) {
+        final inner = raw.substring(1, raw.length - 1);
+        spans.add(TextSpan(
+          text: inner,
+          style: baseStyle.copyWith(
+            fontStyle: FontStyle.italic,
+            color: italicColor ?? baseStyle.color,
+          ),
+        ));
+      } else if (raw.startsWith('_') && raw.endsWith('_') && raw.length > 2) {
+        final inner = raw.substring(1, raw.length - 1);
+        spans.add(TextSpan(
+          text: inner,
+          style: baseStyle.copyWith(
+            fontStyle: FontStyle.italic,
+            color: italicColor ?? baseStyle.color,
+          ),
+        ));
+      }
+
+      lastMatchEnd = match.end;
+    }
+
+    if (lastMatchEnd < text.length) {
+      spans.add(TextSpan(
+        text: text.substring(lastMatchEnd),
+        style: baseStyle,
+      ));
+    }
+
+    return spans;
+  }
+
   Widget _buildArticleContent({
     required String content,
     required Color textColor,
@@ -857,67 +952,215 @@ class _TeachingArticleReaderScreenState
       final line = rawLine.trim();
       if (line.isEmpty) {
         widgets.add(const SizedBox(height: 10));
-      } else if (line.startsWith('### ')) {
+      } else if (line.startsWith('# ')) {
+        final clean = line.replaceFirst(RegExp(r'^#\s*'), '');
         widgets.add(Padding(
-          padding: const EdgeInsets.only(top: 14, bottom: 8),
-          child: Text(
-            line.replaceFirst('### ', ''),
-            style: AppTypography.cinzel(
-              color: textColor,
-              fontSize: _fontSize + 2.5,
-              fontWeight: FontWeight.w800,
+          padding: const EdgeInsets.only(top: 22, bottom: 8),
+          child: Text.rich(
+            TextSpan(
+              children: _buildInlineSpans(
+                clean,
+                AppTypography.cinzel(
+                  color: textColor,
+                  fontSize: _fontSize + 4.5,
+                  fontWeight: FontWeight.w900,
+                ),
+                boldColor: AppColors.gold,
+              ),
             ),
           ),
         ));
-      } else if (line.startsWith('# ')) {
+      } else if (line.startsWith('## ')) {
+        final clean = line.replaceFirst(RegExp(r'^##\s*'), '');
         widgets.add(Padding(
-          padding: const EdgeInsets.only(top: 16, bottom: 10),
-          child: Text(
-            line.replaceFirst('# ', ''),
-            style: AppTypography.cinzel(
-              color: textColor,
-              fontSize: _fontSize + 4,
-              fontWeight: FontWeight.w900,
+          padding: const EdgeInsets.only(top: 20, bottom: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text.rich(
+                TextSpan(
+                  children: _buildInlineSpans(
+                    clean,
+                    AppTypography.cinzel(
+                      color: AppColors.gold,
+                      fontSize: _fontSize + 2.5,
+                      fontWeight: FontWeight.w800,
+                    ),
+                    boldColor: AppColors.gold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Container(
+                width: 38,
+                height: 2.5,
+                decoration: BoxDecoration(
+                  color: AppColors.gold.withOpacity(0.55),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ],
+          ),
+        ));
+      } else if (line.startsWith('### ')) {
+        final clean = line.replaceFirst(RegExp(r'^###\s*'), '');
+        widgets.add(Padding(
+          padding: const EdgeInsets.only(top: 16, bottom: 6),
+          child: Text.rich(
+            TextSpan(
+              children: _buildInlineSpans(
+                clean,
+                AppTypography.cinzel(
+                  color: textColor,
+                  fontSize: _fontSize + 1.8,
+                  fontWeight: FontWeight.w800,
+                ),
+                boldColor: AppColors.gold,
+              ),
+            ),
+          ),
+        ));
+      } else if (line.startsWith('#### ')) {
+        final clean = line.replaceFirst(RegExp(r'^####\s*'), '');
+        widgets.add(Padding(
+          padding: const EdgeInsets.only(top: 12, bottom: 6),
+          child: Text.rich(
+            TextSpan(
+              children: _buildInlineSpans(
+                clean,
+                TextStyle(
+                  color: AppColors.gold,
+                  fontSize: _fontSize + 1.0,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
           ),
         ));
       } else if (line == '---') {
         widgets.add(Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.symmetric(vertical: 14),
           child: Divider(color: borderColor, height: 1),
         ));
       } else if (line.startsWith('• ') || line.startsWith('- ')) {
+        final clean = line.replaceFirst(RegExp(r'^(• |- )\s*'), '');
         widgets.add(Padding(
-          padding: const EdgeInsets.only(bottom: 6),
+          padding: const EdgeInsets.only(bottom: 7),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 6, right: 8),
-                child: Icon(Icons.circle, size: 6, color: AppColors.gold),
+              Container(
+                margin: const EdgeInsets.only(top: 7, right: 9),
+                width: 6,
+                height: 6,
+                decoration: const BoxDecoration(
+                  color: AppColors.gold,
+                  shape: BoxShape.circle,
+                ),
               ),
               Expanded(
-                child: Text(
-                  line.replaceFirst(RegExp(r'^(• |- )'), ''),
-                  style: TextStyle(
-                    fontSize: _fontSize,
-                    color: textColor,
-                    height: 1.5,
+                child: Text.rich(
+                  TextSpan(
+                    children: _buildInlineSpans(
+                      clean,
+                      TextStyle(
+                        fontSize: _fontSize,
+                        color: textColor,
+                        height: 1.55,
+                      ),
+                      boldColor: textColor,
+                    ),
                   ),
                 ),
               ),
             ],
           ),
         ));
+      } else if (RegExp(r'^\d+\.\s+').hasMatch(line)) {
+        final match = RegExp(r'^(\d+)\.\s+(.*)$').firstMatch(line);
+        final numStr = match?.group(1) ?? '1';
+        final clean = match?.group(2) ?? line;
+        widgets.add(Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 2, right: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                decoration: BoxDecoration(
+                  color: AppColors.gold.withOpacity(0.18),
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(color: AppColors.gold.withOpacity(0.35)),
+                ),
+                child: Text(
+                  numStr,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w800,
+                    color: AppColors.gold,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Text.rich(
+                  TextSpan(
+                    children: _buildInlineSpans(
+                      clean,
+                      TextStyle(
+                        fontSize: _fontSize,
+                        color: textColor,
+                        height: 1.55,
+                      ),
+                      boldColor: textColor,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ));
+      } else if (line.startsWith('> ')) {
+        final clean = line.replaceFirst(RegExp(r'^>\s*'), '');
+        widgets.add(Container(
+          margin: const EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.fromLTRB(14, 10, 14, 10),
+          decoration: BoxDecoration(
+            color: cardBg,
+            borderRadius: BorderRadius.circular(8),
+            border: const Border(
+              left: BorderSide(color: AppColors.gold, width: 3.5),
+            ),
+          ),
+          child: Text.rich(
+            TextSpan(
+              children: _buildInlineSpans(
+                clean,
+                TextStyle(
+                  fontSize: _fontSize,
+                  color: textColor,
+                  fontStyle: FontStyle.italic,
+                  height: 1.55,
+                ),
+                boldColor: AppColors.gold,
+              ),
+            ),
+          ),
+        ));
       } else {
         widgets.add(Padding(
           padding: const EdgeInsets.only(bottom: 10),
-          child: Text(
-            line,
-            style: TextStyle(
-              fontSize: _fontSize,
-              color: textColor,
-              height: 1.6,
+          child: Text.rich(
+            TextSpan(
+              children: _buildInlineSpans(
+                line,
+                TextStyle(
+                  fontSize: _fontSize,
+                  color: textColor,
+                  height: 1.62,
+                ),
+                boldColor: textColor,
+              ),
             ),
           ),
         ));
@@ -930,6 +1173,366 @@ class _TeachingArticleReaderScreenState
     );
   }
 
+  void _showEditArticleSheet(BuildContext context, bool isDark) {
+    AppHaptics.selectionClick();
+    final titleCtrl = TextEditingController(text: _currentArticle.title);
+    final preacherCtrl = TextEditingController(text: _currentArticle.preacher);
+    final scriptureCtrl = TextEditingController(text: _currentArticle.scripture);
+    final keyVerseCtrl = TextEditingController(text: _currentArticle.keyVerse);
+    final readTimeCtrl = TextEditingController(text: _currentArticle.readTime);
+    final fullArticleCtrl =
+        TextEditingController(text: _currentArticle.fullArticle);
+    final takeawaysCtrl =
+        TextEditingController(text: _currentArticle.takeaways.join('\n'));
+    final prayerCtrl =
+        TextEditingController(text: _currentArticle.pastoralPrayer);
+
+    final sheetBg = isDark ? const Color(0xFF0F172A) : Colors.white;
+    final inputBg = isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC);
+    final textColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
+    final borderColor = isDark
+        ? const Color(0xFFD4A847).withOpacity(0.2)
+        : const Color(0xFFCBD5E1);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: sheetBg,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSheetState) {
+          return Padding(
+            padding: EdgeInsets.only(
+              top: 16,
+              left: 18,
+              right: 18,
+              bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+            ),
+            child: SizedBox(
+              height: MediaQuery.of(ctx).size.height * 0.88,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Drag Handle
+                  Center(
+                    child: Container(
+                      width: 44,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.35),
+                        borderRadius: BorderRadius.circular(2),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+
+                  // Header with badge
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(7),
+                            decoration: BoxDecoration(
+                              color: AppColors.gold.withOpacity(0.18),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(Icons.edit_note_rounded,
+                                color: AppColors.gold, size: 22),
+                          ),
+                          const SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Hariri Somo / Makala',
+                                style: AppTypography.cinzel(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w800,
+                                  color: textColor,
+                                ),
+                              ),
+                              const Text(
+                                'Mchungaji & Wasimamizi wa Sayuni',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: AppColors.gold,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.close_rounded, color: textColor),
+                        onPressed: () => Navigator.pop(ctx),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Divider(color: borderColor, height: 1),
+                  const SizedBox(height: 12),
+
+                  // Form inputs
+                  Expanded(
+                    child: ListView(
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        _buildInputField(
+                          label: 'Kichwa cha Somo *',
+                          controller: titleCtrl,
+                          textColor: textColor,
+                          inputBg: inputBg,
+                          borderColor: borderColor,
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _buildInputField(
+                                label: 'Mhubiri / Mwalimu *',
+                                controller: preacherCtrl,
+                                textColor: textColor,
+                                inputBg: inputBg,
+                                borderColor: borderColor,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: _buildInputField(
+                                label: 'Muda wa Kusoma',
+                                controller: readTimeCtrl,
+                                textColor: textColor,
+                                inputBg: inputBg,
+                                borderColor: borderColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                        _buildInputField(
+                          label:
+                              'Mistari ya Kusoma (e.g. Yoh 13:34-35 • 1 Kor 13:1-6)',
+                          controller: scriptureCtrl,
+                          textColor: textColor,
+                          inputBg: inputBg,
+                          borderColor: borderColor,
+                        ),
+                        const SizedBox(height: 12),
+                        _buildInputField(
+                          label: 'Mstari wa Kukumbuka (Key Verse)',
+                          controller: keyVerseCtrl,
+                          textColor: textColor,
+                          inputBg: inputBg,
+                          borderColor: borderColor,
+                          maxLines: 2,
+                        ),
+                        const SizedBox(height: 12),
+                        _buildInputField(
+                          label:
+                              'Maudhui Kamili ya Makala (Inakubali Markdown: ##, ###, **, •)',
+                          controller: fullArticleCtrl,
+                          textColor: textColor,
+                          inputBg: inputBg,
+                          borderColor: borderColor,
+                          maxLines: 10,
+                          hint: 'Andika mafundisho hapa...',
+                        ),
+                        const SizedBox(height: 12),
+                        _buildInputField(
+                          label:
+                              'Hatua za Vitendo (Takeaways - Andika kila nukta kwenye mstari wake)',
+                          controller: takeawaysCtrl,
+                          textColor: textColor,
+                          inputBg: inputBg,
+                          borderColor: borderColor,
+                          maxLines: 4,
+                          hint: 'Nukta ya 1\nNukta ya 2\nNukta ya 3',
+                        ),
+                        const SizedBox(height: 12),
+                        _buildInputField(
+                          label: 'Sala ya Kichungaji na Baraka',
+                          controller: prayerCtrl,
+                          textColor: textColor,
+                          inputBg: inputBg,
+                          borderColor: borderColor,
+                          maxLines: 3,
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+
+                  // Bottom action buttons
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(ctx),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: textColor,
+                            side: BorderSide(color: borderColor),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text('Ghairi'),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () async {
+                            final title = titleCtrl.text.trim();
+                            if (title.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: Colors.redAccent,
+                                  content:
+                                      Text('Tafadhali weka kichwa cha somo'),
+                                ),
+                              );
+                              return;
+                            }
+
+                            final scriptureText = scriptureCtrl.text.trim();
+                            final scriptureList = scriptureText
+                                .split(RegExp(r'[•,]'))
+                                .map((s) => s.trim())
+                                .where((s) => s.isNotEmpty)
+                                .toList();
+
+                            final takeaways = takeawaysCtrl.text
+                                .split('\n')
+                                .map((s) => s.trim())
+                                .where((s) => s.isNotEmpty)
+                                .toList();
+
+                            final updated = _currentArticle.copyWith(
+                              title: title,
+                              preacher: preacherCtrl.text.trim(),
+                              scripture: scriptureText,
+                              scriptureList: scriptureList.isNotEmpty
+                                  ? scriptureList
+                                  : _currentArticle.scriptureList,
+                              readTime: readTimeCtrl.text.trim().isNotEmpty
+                                  ? readTimeCtrl.text.trim()
+                                  : _currentArticle.readTime,
+                              keyVerse: keyVerseCtrl.text.trim(),
+                              fullArticle: fullArticleCtrl.text.trim(),
+                              takeaways: takeaways,
+                              pastoralPrayer: prayerCtrl.text.trim(),
+                            );
+
+                            await DefaultTeachingsData.saveTeachingUpdate(
+                                updated);
+                            if (!mounted) return;
+                            setState(() {
+                              _currentArticle = updated;
+                            });
+                            if (ctx.mounted) {
+                              Navigator.pop(ctx);
+                            }
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: Color(0xFF16A34A),
+                                  content: Row(
+                                    children: [
+                                      Icon(Icons.check_circle_rounded,
+                                          color: Colors.white, size: 20),
+                                      SizedBox(width: 10),
+                                      Expanded(
+                                        child: Text(
+                                          'Makala imesasishwa na kuhifadhiwa kikamilifu!',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.check_rounded, size: 18),
+                            label: const Text('Hifadhi Mabadiliko'),
+                            style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.gold,
+                            foregroundColor: const Color(0xFF0F172A),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            textStyle: const TextStyle(
+                              fontWeight: FontWeight.w800,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildInputField({
+    required String label,
+    required TextEditingController controller,
+    required Color textColor,
+    required Color inputBg,
+    required Color borderColor,
+    int maxLines = 1,
+    String? hint,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            color: textColor,
+          ),
+        ),
+        const SizedBox(height: 5),
+        TextField(
+          controller: controller,
+          maxLines: maxLines,
+          style: TextStyle(fontSize: 14, color: textColor),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle:
+                TextStyle(fontSize: 13, color: textColor.withOpacity(0.4)),
+            filled: true,
+            fillColor: inputBg,
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: borderColor),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: AppColors.gold, width: 1.5),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildNextTeachingsSection(
     Color textColor,
     Color textMuted,
@@ -937,7 +1540,7 @@ class _TeachingArticleReaderScreenState
     Color borderColor,
   ) {
     final others = DefaultTeachingsData.items
-        .where((t) => t.id != widget.article.id && t.type == 'text')
+        .where((t) => t.id != _currentArticle.id && t.type == 'text')
         .take(3)
         .toList();
 

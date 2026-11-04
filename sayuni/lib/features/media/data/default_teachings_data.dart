@@ -1,7 +1,10 @@
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/sermon_media_item.dart';
 
 class DefaultTeachingsData {
-  static const List<SermonMediaItem> items = [
+  static final List<SermonMediaItem> items = [
     SermonMediaItem(
       id: 'teach-upendo-kristo',
       title: 'Upendo wa Kristo: Msingi na Amri Kuu ya Kanisa',
@@ -432,4 +435,37 @@ Mtume Paulo anapiga muhuri ushindi wetu:
       isAdminUpload: false,
     ),
   ];
+
+  /// Persists article/teaching updates locally and in memory
+  static Future<void> saveTeachingUpdate(SermonMediaItem updated) async {
+    final idx = items.indexWhere((e) => e.id == updated.id);
+    if (idx != -1) {
+      items[idx] = updated;
+    } else {
+      items.insert(0, updated);
+    }
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getString('zion_admin_uploaded_media');
+      List<dynamic> list = [];
+      if (raw != null) {
+        try {
+          final decoded = jsonDecode(raw);
+          if (decoded is List) list = decoded;
+        } catch (_) {}
+      }
+
+      final existingIdx =
+          list.indexWhere((e) => e is Map && e['id'] == updated.id);
+      if (existingIdx != -1) {
+        list[existingIdx] = updated.toJson();
+      } else {
+        list.insert(0, updated.toJson());
+      }
+      await prefs.setString('zion_admin_uploaded_media', jsonEncode(list));
+    } catch (e) {
+      debugPrint('Error persisting teaching update: $e');
+    }
+  }
 }

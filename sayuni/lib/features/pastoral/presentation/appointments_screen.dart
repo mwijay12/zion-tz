@@ -44,10 +44,11 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
   final TextEditingController _reasonController = TextEditingController();
 
   final List<String> _pastors = [
-    'Askofu Mercy Mgalla',
-    'Mchungaji Msaidizi Alex',
-    'Mchungaji Peter Mabula (Mwanza)',
-    'Mchungaji Grace Mwambene (Dodoma)',
+    'Askofu Mercy Mgalla (Mchungaji Kiongozi)',
+    'Mchungaji Alex (Mchungaji Msaidizi)',
+    'Jonathan (Kiongozi wa Praise & Worship)',
+    'Mwl. Emmanuel Majaliwa (Mwalimu wa Kwaya)',
+    'Mzee Boniface Mlay (Mzee wa Kanisa)',
   ];
 
   final List<String> _categories = [

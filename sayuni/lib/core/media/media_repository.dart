@@ -198,6 +198,102 @@ class SayuniMediaRepository extends MediaRepository {
       debugPrint('MediaRepository local read failed: $e');
     }
 
+    // Bundled offline catalogue for Upendo Choir and foundational teachings
+    final bundled = <AudioTrack>[
+      AudioTrack(
+        id: 'choir-upendo-neno',
+        title: 'Neno la Mungu',
+        subtitle: 'Kwaya ya Upendo • Zaburi 119:105',
+        artist: 'Kwaya ya Upendo (Sayuni)',
+        url: 'assets/audio/upendo_choir_neno.mp3',
+        artworkAsset: 'assets/images/zion_worship_choir_1788577423671.jpg',
+        category: MediaCategory.choir,
+        type: MediaType.choir,
+        duration: const Duration(minutes: 5, seconds: 32),
+      ),
+      AudioTrack(
+        id: 'choir-upendo-vitabu',
+        title: 'Vitabu vya Biblia',
+        subtitle: 'Kwaya ya Upendo • 2 Timotheo 3:16',
+        artist: 'Kwaya ya Upendo (Sayuni)',
+        url: 'assets/audio/upendo_choir_vitabu.mp3',
+        artworkAsset: 'assets/images/3d_bible.png',
+        category: MediaCategory.choir,
+        type: MediaType.choir,
+        duration: const Duration(minutes: 4, seconds: 25),
+      ),
+      AudioTrack(
+        id: 'sermon-upendo-kristo',
+        title: 'Upendo wa Kristo: Msingi na Amri Kuu',
+        subtitle: 'Askofu Mercy Mgalla • Yohana 13:34-35',
+        artist: 'Mchungaji Askofu Mercy Mgalla',
+        url: 'assets/audio/upendo_choir_neno.mp3',
+        artworkAsset: 'assets/images/church_front.jpg',
+        category: MediaCategory.sermons,
+        type: MediaType.sermon,
+        duration: const Duration(minutes: 45),
+      ),
+      AudioTrack(
+        id: 'sermon-bidii-kazini',
+        title: 'Bidii Kazini: Mkristo Kusimama Mbele ya Wafalme',
+        subtitle: 'Askofu Mercy Mgalla • Mithali 22:26, 29',
+        artist: 'Mchungaji Askofu Mercy Mgalla',
+        url: 'https://stream.zeno.fm/4v4e91y9sm8uv',
+        artworkAsset: 'assets/images/pastoral_leadership_1788577468703.jpg',
+        category: MediaCategory.sermons,
+        type: MediaType.sermon,
+        duration: const Duration(minutes: 38),
+      ),
+      AudioTrack(
+        id: 'sermon-uchumi-maendeleo',
+        title: 'Uchumi na Maendeleo ya Mkristo',
+        subtitle: 'Mchungaji Alex • Mathayo 19:27 • Mhubiri 10:10',
+        artist: 'Mchungaji Alex',
+        url: 'https://stream.zeno.fm/4v4e91y9sm8uv',
+        artworkAsset: 'assets/images/church_men_fellowship.jpg',
+        category: MediaCategory.sermons,
+        type: MediaType.sermon,
+        duration: const Duration(minutes: 58),
+      ),
+      AudioTrack(
+        id: 'sermon-utasitasita-lini',
+        title: 'Utasitasita Mpaka Lini? Msimamo Imara wa Mkristo',
+        subtitle: 'Mwl. Emmanuel Majaliwa • 1 Wafalme 18:21',
+        artist: 'Mwalimu Emmanuel Majaliwa',
+        url: 'https://stream.zeno.fm/3g28669e4ehvv',
+        artworkAsset: 'assets/images/3d_bible.png',
+        category: MediaCategory.sermons,
+        type: MediaType.sermon,
+        duration: const Duration(minutes: 40),
+      ),
+      AudioTrack(
+        id: 'sermon-nafasi-ya-mwombaji',
+        title: 'Nafasi ya Mwombaji Kama Wakili wa Siri za Mungu',
+        subtitle: 'Askofu Mercy Mgalla • Ezekieli 22:30 • 1 Kor 4:1-2',
+        artist: 'Mchungaji Askofu Mercy Mgalla',
+        url: 'https://stream.zeno.fm/w74w7e91sm8uv',
+        artworkAsset: 'assets/images/3d_intercession.png',
+        category: MediaCategory.sermons,
+        type: MediaType.sermon,
+        duration: const Duration(minutes: 48),
+      ),
+      AudioTrack(
+        id: 'sermon-ukombozi-kwa-mungu',
+        title: 'Ukombozi Wetu Upo kwa Mungu Pekee',
+        subtitle: 'Askofu Mercy Mgalla • Zaburi 3:8 • Kutoka 14:13',
+        artist: 'Mchungaji Askofu Mercy Mgalla',
+        url: 'https://stream.zeno.fm/h2f9g3m19t8uv',
+        artworkAsset: 'assets/images/church_women_fellowship.jpg',
+        category: MediaCategory.sermons,
+        type: MediaType.sermon,
+        duration: const Duration(minutes: 52),
+      ),
+    ];
+
+    for (final b in bundled) {
+      add(b);
+    }
+
     return tracks;
   }
 

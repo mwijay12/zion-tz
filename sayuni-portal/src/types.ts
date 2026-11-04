@@ -234,7 +234,7 @@ export interface SermonItem {
   summary: string;
   mediaType: 'video' | 'audio' | 'text';
   mediaUrl?: string;
-  category: 'Imani' | 'Uponyaji' | 'Familia' | 'Uongozi' | 'Kusifu';
+  category: 'Imani' | 'Uponyaji' | 'Familia' | 'Uongozi' | 'Kusifu' | 'Upendo' | 'Maendeleo' | 'Bidii' | 'Sunday School' | 'Maombi' | 'Ukombozi' | 'Kwaya';
   likesCount: number;
 }
 

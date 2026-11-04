@@ -166,12 +166,143 @@ class _MediaHubScreenState extends State<MediaHubScreen> {
             _customSermons.add(s);
           }
         }
-        if (mounted) setState(() {});
       }
+
+      // Merge real church teachings and Upendo choir songs from pastoral diary
+      for (final def in _defaultChurchTeachings) {
+        if (!_customSermons.any((existing) => existing.id == def.id)) {
+          _customSermons.add(def);
+        }
+      }
+
+      if (mounted) setState(() {});
     } catch (e) {
       debugPrint('Error loading custom sermons: $e');
     }
   }
+
+  static const List<SermonMediaItem> _defaultChurchTeachings = [
+    SermonMediaItem(
+      id: 'teach-upendo-kristo',
+      title: 'Upendo wa Kristo: Msingi na Amri Kuu',
+      preacher: 'Mchungaji Askofu Mercy Mgalla',
+      scripture: 'Yoh 13:34-35 • 1 Kor 13:1-6 • 1 Yoh 4:7',
+      date: 'Ibada Kuu ya Jumapili',
+      duration: '45 min',
+      type: 'audio',
+      category: 'Mafundisho',
+      description:
+          'Amri mpya nawapa, mpendane kama vile nilivyowapenda ninyi (Yohana 13:34-35, 15:12). Huu ndio ujumbe mliousikia tangu mwanzo kwamba tupendane (1 Yohana 3:11, Marko 12:31). Upendo huvumilia, hufadhili, hauhusudu na husitiri wingi wa dhambi (1 Petro 4:8, 1 Wakorintho 13:1-6). Mungu ni pendo naye akaaye katika pendo hukaa ndani ya Mungu (1 Yohana 4:7).',
+      imageUrl: 'assets/images/church_front.jpg',
+      audioUrl: 'assets/audio/upendo_choir_neno.mp3',
+      isAdminUpload: false,
+    ),
+    SermonMediaItem(
+      id: 'teach-uchumi-mkristo',
+      title: 'Uchumi na Maendeleo ya Mkristo',
+      preacher: 'Mchungaji Alex',
+      scripture: 'Mathayo 19:27-29 • Mhubiri 10:10 • Malaki 3:7-12',
+      date: 'Semina ya Uchumi na Maendeleo',
+      duration: '58 min',
+      type: 'audio',
+      category: 'Mafundisho',
+      description:
+          'Mch. Alex alifafanua swali la Petro: "Tazama, sisi tumeacha vyote; tutapata nini basi?" Yesu akajibu atapokea mara mia sasa duniani na uzima wa milele mbinguni. Mfano wa Ayubu: kumcha Mungu na kurejeshewa mara mbili. Kibali cha Mungu huleta mafanikio (Kutoka 33:14-19, 1 Samweli 2:7, Malaki 3:7-12, Mwanzo 30:25-32). Chuma kikiwa butu hutumia nguvu zaidi bali hekima yafaa kuelekeza (Mhubiri 10:10). Watu wapende kujifunza, kujiendeleza, na kuwa na nidhamu ya kifedha.',
+      imageUrl: 'assets/images/church_men_fellowship.jpg',
+      audioUrl: 'https://stream.zeno.fm/4v4e91y9sm8uv',
+      isAdminUpload: false,
+    ),
+    SermonMediaItem(
+      id: 'teach-bidii-kazini',
+      title: 'Bidii Kazini: Mkristo Kusimama Mbele ya Wafalme',
+      preacher: 'Mchungaji Askofu Mercy Mgalla',
+      scripture: 'Mithali 22:26, 29',
+      date: 'Neno la Jumapili',
+      duration: '38 min',
+      type: 'audio',
+      category: 'Mahubiri',
+      description:
+          'Je! Wamwona mtu mwenye bidii katika kazi yake? Yeye atasimama mbele ya wafalme; hatasimama mbele ya watu wasio na vyeo (Mithali 22:29). Usiwe mmoja wa wawekao rehani mikono yao au walio wadhamini wa madeni (Mithali 22:26). Bidii iliyoambatana na maombi ndio siri ya heshima na mafanikio ya mkristo.',
+      imageUrl: 'assets/images/pastoral_leadership_1788577468703.jpg',
+      audioUrl: 'https://stream.zeno.fm/4v4e91y9sm8uv',
+      isAdminUpload: false,
+    ),
+    SermonMediaItem(
+      id: 'teach-sunday-school-utasitasita',
+      title: 'Utasitasita Mpaka Lini? Chagua Hivi Leo Utakaye Mtumikia',
+      preacher: 'Mwl. Emmanuel Majaliwa (Sunday School)',
+      scripture: '1 Wafalme 18:21 • Yoshua 24:15 • Matendo 7:58',
+      date: 'Sunday School (Saa 03:00 - 04:00 Asubuhi)',
+      duration: '40 min',
+      type: 'audio',
+      category: 'Mafundisho',
+      description:
+          'Eliya aliwauliza watu: "Mtasita-sita katikati ya mawazo mawili hata lini? Bwana akiwa ndiye Mungu, mfuateni" (1 Wafalme 18:21). Yoshua aliweka msimamo wazi: "Chagueni hivi leo mtakayemtumikia... lakini mimi na nyumba yangu tutamtumikia Bwana" (Yoshua 24:15). Stefano alisimama imara hata kifo (Matendo 7:58). Mkristo anahitaji msimamo thabiti usioyumbishwa na upepo wa dunia.',
+      imageUrl: 'assets/images/3d_bible.png',
+      audioUrl: 'https://stream.zeno.fm/3g28669e4ehvv',
+      isAdminUpload: false,
+    ),
+    SermonMediaItem(
+      id: 'teach-mwombaji-wakili',
+      title: 'Nafasi ya Mwombaji Kama Wakili wa Siri za Mungu',
+      preacher: 'Mchungaji Askofu Mercy Mgalla',
+      scripture: 'Ezekieli 22:30 • 1 Wakorintho 4:1-2',
+      date: 'War Room • Semina ya Maombi',
+      duration: '48 min',
+      type: 'audio',
+      category: 'Mafundisho',
+      description:
+          'Wakili ni msimamizi mwenye mamlaka na dhamana ya kulinda na kusimamia maslahi ya Bwana wake (1 Wakorintho 4:1-2). Mungu anatafuta mtu wa kusimama kwenye pengo na kulitengeneza boma kwa ajili ya kanisa na taifa (Ezekieli 22:30). Mwombaji ni wakili wa kiroho anayebeba mahitaji ya wengine mbele za kiti cha rehema.',
+      imageUrl: 'assets/images/3d_intercession.png',
+      audioUrl: 'https://stream.zeno.fm/w74w7e91sm8uv',
+      isAdminUpload: false,
+    ),
+    SermonMediaItem(
+      id: 'teach-ukombozi-kwa-mungu',
+      title: 'Ukombozi Wetu Upo kwa Mungu Pekee',
+      preacher: 'Mchungaji Askofu Mercy Mgalla',
+      scripture: 'Zaburi 3:8 • Kutoka 14:13-14 • Warumi 8:31',
+      date: 'Mkesha wa Ushindi na Uponyaji',
+      duration: '52 min',
+      type: 'audio',
+      category: 'Mahubiri',
+      description:
+          'Wokovu na ukombozi unatoka kwa Bwana pekee, na baraka yake i juu ya watu wake (Zaburi 3:8). Musa aliwaambia watu: "Msiogope, simameni tu, mkauone wokovu wa Bwana atakaowafanyia leo" (Kutoka 14:13). Kama Mungu akiwa upande wetu, ni nani aliye juu yetu? Hakuna nguvu ya giza inayoweza kushinda kanisa la Sayuni.',
+      imageUrl: 'assets/images/church_women_fellowship.jpg',
+      audioUrl: 'https://stream.zeno.fm/h2f9g3m19t8uv',
+      isAdminUpload: false,
+    ),
+    SermonMediaItem(
+      id: 'choir-upendo-neno-media',
+      title: 'Neno la Mungu (Upendo Choir)',
+      preacher: 'Kwaya ya Upendo (Mwl. Emmanuel Majaliwa)',
+      scripture: 'Zaburi 119:105 • Isaya 40:8',
+      date: 'Albamu ya Upendo Vol. 1',
+      duration: '05:32',
+      type: 'audio',
+      category: 'Kwaya',
+      description:
+          'Wimbo wa sifa na kuabudu kutoka Kwaya ya Upendo ukisisitiza kuwa Neno la Bwana linadumu milele na ni taa ya miguu yetu.',
+      imageUrl: 'assets/images/zion_worship_choir_1788577423671.jpg',
+      audioUrl: 'assets/audio/upendo_choir_neno.mp3',
+      isAdminUpload: false,
+    ),
+    SermonMediaItem(
+      id: 'choir-upendo-vitabu-media',
+      title: 'Vitabu vya Biblia (Upendo Choir)',
+      preacher: 'Kwaya ya Upendo (Mwl. Emmanuel Majaliwa)',
+      scripture: '2 Timotheo 3:16 • Zaburi 1:1-3',
+      date: 'Albamu ya Upendo Vol. 1',
+      duration: '04:25',
+      type: 'audio',
+      category: 'Kwaya',
+      description:
+          'Wimbo unaoelezea na kuimba vitabu vyote vya Biblia kuanzia Mwanzo hadi Ufunuo, ukitia moyo usomaji wa Maandiko Matakatifu.',
+      imageUrl: 'assets/images/3d_bible.png',
+      audioUrl: 'assets/audio/upendo_choir_vitabu.mp3',
+      isAdminUpload: false,
+    ),
+  ];
 
   Future<void> _saveCustomSermons() async {
     try {

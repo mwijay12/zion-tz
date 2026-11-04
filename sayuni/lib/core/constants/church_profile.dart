@@ -6,19 +6,25 @@ class ChurchProfile {
   static const String motto = 'Kanisa la Upendo, Maombi na Neno Thabiti';
   static const String location = 'Kwa Matope, Mbagala, Dar es Salaam, Tanzania';
 
-  // Pastoral Leadership
+  // Pastoral & Ministry Leadership
   static const String headBishop = 'Mchungaji Askofu Mercy Mgalla';
-  static const String assistantPastor = 'Mchungaji Msaidizi Alex';
+  static const String assistantPastor = 'Mchungaji Alex';
   static const String pastorCoLeader = 'Ndg. James Robert';
   static const String pastoralLeadership =
-      'Askofu Mercy Mgalla, Mch. Msaidizi Alex & Ndg. James Robert';
+      'Askofu Mercy Mgalla, Mch. Alex & Ndg. James Robert';
+  static const String praiseLeader = 'Jonathan';
+  static const String choirTeacher = 'Mwl. Emmanuel Majaliwa';
   static const String churchSecretary = 'Mwl. Peter Mwita';
   static const String leadElder = 'Mzee Boniface Mlay';
+  static const String systemsAdmin = 'David Erick Mwijage';
 
   // Contact
-  static const String pastorPhone = '+255754000111';
-  static const String assistantPastorPhone = '+255755889900';
-  static const String pastoralHelpline = '+255754000111';
+  static const String pastorPhone = '+255744126927';
+  static const String assistantPastorPhone = '+255787190026';
+  static const String praiseLeaderPhone = '+255746296707';
+  static const String choirTeacherPhone = '+255745896311';
+  static const String pastoralHelpline = '+255744126927';
+  static const String adminPhone = '+255790942616';
   static const String secretaryPhone = '+255768222333';
   static const String eldersPhone = '+255713444555';
   static const String email = 'info@zionjerusalem.org';

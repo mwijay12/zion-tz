@@ -175,7 +175,15 @@ class ZionAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
     for (final item in items) {
       final trimmed = item.id.trim();
       final uri = Uri.tryParse(trimmed);
-      if (uri != null && uri.hasScheme) {
+      if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {
+        sourceChildren.add(AudioSource.uri(uri));
+      } else if (trimmed.startsWith('assets/') ||
+          (uri != null && uri.scheme == 'asset')) {
+        final path = trimmed.startsWith('assets/')
+            ? trimmed
+            : (uri!.path.startsWith('/') ? uri.path.substring(1) : uri.path);
+        sourceChildren.add(AudioSource.asset(path));
+      } else if (uri != null && uri.hasScheme) {
         sourceChildren.add(AudioSource.uri(uri));
       }
     }

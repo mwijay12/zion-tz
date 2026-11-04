@@ -31,7 +31,7 @@ export const CHURCH_PROFILE = {
   churchTreasurer: 'Kamati ya Hazina & Fedha',
   location: 'Kwa Matope, Mbagala, Dar es Salaam, Tanzania',
   poBox: 'Kwa Matope, Mbagala, Dar es Salaam',
-  phone: '+255 754 000 001 / +255 713 000 002',
+  phone: '+255 744 126 927 / +255 787 190 026',
   email: 'huduma@zionjerusalem.org',
   paymentChannels: {
     mpesaTill: '5624108',
@@ -51,8 +51,13 @@ export const CHURCH_CHOIRS: ChoirItem[] = [
   },
   {
     name: 'Kwaya ya Upendo',
-    leader: 'Uongozi wa Kwaya ya Upendo',
-    desc: 'Kwaya inayobeba huduma ya upendo, mshikamano wa kindugu na nyimbo za faraja.'
+    leader: 'Mwl. Emmanuel Majaliwa (0745896311)',
+    desc: 'Kwaya inayobeba huduma ya upendo, mshikamano wa kindugu na nyimbo za sifa (Neno la Mungu, Vitabu vya Biblia).'
+  },
+  {
+    name: 'Sayuni Praise & Worship Team',
+    leader: 'Jonathan (0746296707)',
+    desc: 'Inaongoza kusanyiko katika maingilio matakatifu ya sifa na kuabudu kabla ya neno na mikesha.'
   },
   {
     name: 'Kwaya ya Wamama',
@@ -63,11 +68,6 @@ export const CHURCH_CHOIRS: ChoirItem[] = [
     name: 'Kwaya ya Vijana',
     leader: 'Idara ya Vijana',
     desc: 'Kwaya yenye nguvu, ubunifu, na uhamasishaji wa vijana kumtumikia Bwana.'
-  },
-  {
-    name: 'Praise & Worship Team',
-    leader: 'Timu ya Kusifu na Kuabudu',
-    desc: 'Inaongoza kusanyiko katika maingilio matakatifu ya sifa na kuabudu kabla ya neno.'
   }
 ];
 
@@ -355,13 +355,57 @@ export const INITIAL_MEMBERS: ChurchMember[] = [
   {
     id: 'mem-1',
     fullName: 'Mchungaji Askofu Mercy Mgalla',
-    phone: '+255 754 000 001',
+    phone: '+255 744 126 927',
     gender: 'Female',
     ageGroup: 'Adult',
     jumuiyaId: 'jum-1',
     isBaptized: true,
     role: 'Mchungaji Kiongozi & Askofu',
     joinedDate: '2012-01-01'
+  },
+  {
+    id: 'mem-alex',
+    fullName: 'Mchungaji Alex',
+    phone: '+255 787 190 026',
+    gender: 'Male',
+    ageGroup: 'Adult',
+    jumuiyaId: 'jum-1',
+    isBaptized: true,
+    role: 'Mchungaji Msaidizi',
+    joinedDate: '2014-05-15'
+  },
+  {
+    id: 'mem-jonathan',
+    fullName: 'Jonathan',
+    phone: '+255 746 296 707',
+    gender: 'Male',
+    ageGroup: 'Adult',
+    jumuiyaId: 'jum-2',
+    isBaptized: true,
+    role: 'Kiongozi wa Praise & Worship',
+    joinedDate: '2019-02-10'
+  },
+  {
+    id: 'mem-majaliwa',
+    fullName: 'Mwl. Emmanuel Majaliwa',
+    phone: '+255 745 896 311',
+    gender: 'Male',
+    ageGroup: 'Adult',
+    jumuiyaId: 'jum-3',
+    isBaptized: true,
+    role: 'Mwalimu wa Kwaya (Kwaya ya Upendo & Kwaya Kuu)',
+    joinedDate: '2016-08-20'
+  },
+  {
+    id: 'mem-david',
+    fullName: 'David Erick Mwijage',
+    phone: '+255 790 942 616',
+    gender: 'Male',
+    ageGroup: 'Adult',
+    jumuiyaId: 'jum-4',
+    isBaptized: true,
+    role: 'Msimamizi wa Mifumo ya TEHAMA & Media',
+    joinedDate: '2018-03-12'
   },
   {
     id: 'mem-2',
@@ -393,19 +437,8 @@ export const INITIAL_MEMBERS: ChurchMember[] = [
     ageGroup: 'Adult',
     jumuiyaId: 'jum-3',
     isBaptized: true,
-    role: 'Kiongozi wa Kwaya ya Upendo',
+    role: 'Mlezi wa Kwaya ya Upendo',
     joinedDate: '2017-06-14'
-  },
-  {
-    id: 'mem-5',
-    fullName: 'Ndg. Baraka Mlay',
-    phone: '+255 784 112 334',
-    gender: 'Male',
-    ageGroup: 'Adult',
-    jumuiyaId: 'jum-4',
-    isBaptized: true,
-    role: 'Kiongozi wa Kwaya ya Galilaya',
-    joinedDate: '2018-09-01'
   }
 ];
 
@@ -492,39 +525,97 @@ export const INITIAL_CERTIFICATES: CertificateData[] = [
 
 export const INITIAL_SERMONS: SermonItem[] = [
   {
-    id: 'sermon-1',
-    title: 'Kusimama Imara Katika Maombi na Tabia ya Uadilifu',
+    id: 'sermon-upendo',
+    title: 'Upendo wa Kristo: Msingi na Amri Kuu ya Kanisa',
     preacher: 'Mchungaji Askofu Mercy Mgalla',
-    date: '2026-08-30',
-    scripture: 'Waefeso 6:10-18',
-    summary: 'Mafundisho maalum ya kiaskofu juu ya silaha zote za Mungu, ushindi dhidi ya majaribu ya nyakati hizi, na umuhimu wa nidhamu ya maombi ya siri na ya pamoja.',
-    mediaType: 'video',
-    mediaUrl: 'https://youtube.com/watch?v=zion-sermon-1',
-    category: 'Imani',
-    likesCount: 64
-  },
-  {
-    id: 'sermon-2',
-    title: 'Nguvu ya Neno la Mungu Ndani ya Familia na Ndoa',
-    preacher: 'Mchungaji Askofu Mercy Mgalla',
-    date: '2026-08-23',
-    scripture: 'Kumbukumbu la Torati 6:4-9',
-    summary: 'Umuhimu wa madhabahu ya familia nyumbani (Family Altar), kulea watoto katika njia impasayo, na jinsi amani ya ndoa inavyofungua milango ya baraka za kiuchumi.',
+    date: '2026-11-01',
+    scripture: 'Yoh 13:34-35 • 1 Kor 13:1-6 • 1 Yoh 4:7 • 1 Pet 4:8',
+    summary: 'Amri mpya nawapa, mpendane; kama nilivyowapenda ninyi (Yohana 13:34-35, 15:12). Huu ndio ujumbe tuliopokea tangu mwanzo (1 Yohana 3:11, Marko 12:31). Upendo huvumilia, hufadhili na husitiri wingi wa dhambi. Mungu ni pendo.',
     mediaType: 'audio',
-    mediaUrl: 'https://soundcloud.com/zion-church/family-sermon',
-    category: 'Familia',
-    likesCount: 52
+    mediaUrl: '/audio/upendo_choir_neno.mp3',
+    category: 'Upendo',
+    likesCount: 148
   },
   {
-    id: 'sermon-3',
-    title: 'Upatanisho na Ushirika wa Kweli Katika Kristo',
-    preacher: 'Ndg. James Robert',
-    date: '2026-08-16',
-    scripture: '2 Wakorintho 5:17-21',
-    summary: 'Huduma ya upatanisho, kuondoa vinyongo kanisani na majumbani, na kuwa mabalozi wazuri wa Yesu Kristo katika eneo letu la Kwa Matope na Mbagala nzima.',
+    id: 'sermon-uchumi',
+    title: 'Uchumi na Maendeleo ya Mkristo: Hekima na Kibali',
+    preacher: 'Mchungaji Alex',
+    date: '2026-10-25',
+    scripture: 'Mathayo 19:27-29 • Mhubiri 10:10 • Malaki 3:7-12 • Kutoka 33:14-19',
+    summary: 'Swali la Petro: "Tumeacha vyote, tutapata nini?" Yesu aliahidi mara mia sasa duniani na uzima wa milele. Somo la Ayubu: uaminifu na kurejeshewa mara mbili. Kibali cha Mungu huambatana na maarifa (1 Samweli 2:7, Mwanzo 30:25-32). Chuma kikiwa butu hutumia nguvu zaidi bali hekima yafaa kuelekeza (Mhubiri 10:10). Watu wapende kujifunza na kujiendeleza kitaluma na kiuchumi.',
+    mediaType: 'audio',
+    mediaUrl: 'https://stream.zeno.fm/4v4e91y9sm8uv',
+    category: 'Maendeleo',
+    likesCount: 182
+  },
+  {
+    id: 'sermon-bidii',
+    title: 'Bidii Kazini: Mkristo Kusimama Mbele ya Wafalme',
+    preacher: 'Mchungaji Askofu Mercy Mgalla',
+    date: '2026-10-18',
+    scripture: 'Mithali 22:26, 29',
+    summary: 'Wamwona mtu mwenye bidii katika kazi yake? Yeye atasimama mbele ya wafalme; hatasimama mbele ya watu wasio na vyeo (Mithali 22:29). Epuka kuwa mdhamini ovyo au kuweka rehani mikono bila hekima (Mithali 22:26). Bidii na uaminifu kazini ndio ushuhuda wetu mkuu kwa jamii.',
     mediaType: 'text',
-    category: 'Uongozi',
-    likesCount: 45
+    category: 'Bidii',
+    likesCount: 97
+  },
+  {
+    id: 'sermon-utasitasita',
+    title: 'Utasitasita Mpaka Lini? Chagua Hivi Leo Utakaye Mtumikia',
+    preacher: 'Mwl. Emmanuel Majaliwa (Sunday School)',
+    date: '2026-10-11',
+    scripture: '1 Wafalme 18:21 • Yoshua 24:15 • Matendo 7:58',
+    summary: 'Eliya mlimani Karmeli: "Mtasita-sita katikati ya mawazo mawili hata lini? Bwana akiwa ndiye Mungu mfuateni" (1 Wafalme 18:21). Yoshua: "Chagueni hivi leo... lakini mimi na nyumba yangu tutamtumikia Bwana" (Yoshua 24:15). Stefano alisimama imara bila kuyumba (Matendo 7:58). Mkristo anahitaji msimamo thabiti usioyumbishwa na ulimwengu.',
+    mediaType: 'text',
+    category: 'Sunday School',
+    likesCount: 115
+  },
+  {
+    id: 'sermon-mwombaji-wakili',
+    title: 'Nafasi ya Mwombaji Kama Wakili wa Siri za Mungu',
+    preacher: 'Mchungaji Askofu Mercy Mgalla',
+    date: '2026-10-04',
+    scripture: 'Ezekieli 22:30 • 1 Wakorintho 4:1-2',
+    summary: 'Wakili ni msimamizi aliyepewa dhamana na mamlaka ya kulinda na kusimamia maslahi ya Bwana wake (1 Wakorintho 4:1-2). Mungu anatafuta mtu wa kusimama mahali palipobomoka kwa ajili ya kanisa na nchi (Ezekieli 22:30). Mwombaji ni wakili anayeshikilia funguo za ufalme wa mbinguni.',
+    mediaType: 'text',
+    category: 'Maombi',
+    likesCount: 134
+  },
+  {
+    id: 'sermon-ukombozi',
+    title: 'Ukombozi Wetu Upo kwa Mungu Pekee',
+    preacher: 'Mchungaji Askofu Mercy Mgalla',
+    date: '2026-09-27',
+    scripture: 'Zaburi 3:8 • Kutoka 14:13-14 • Warumi 8:31-39',
+    summary: 'Wokovu na ukombozi unatoka kwa Bwana pekee (Zaburi 3:8). Musa aliwaambia watu: "Msiogope, simameni tu, mkauone wokovu wa Bwana atakaowafanyia leo" (Kutoka 14:13). Kama Mungu akiwa upande wetu, hakuna nguvu itakayotushinda.',
+    mediaType: 'video',
+    mediaUrl: 'https://youtube.com/watch?v=zion-sermon-ukombozi',
+    category: 'Ukombozi',
+    likesCount: 165
+  },
+  {
+    id: 'choir-neno-portal',
+    title: 'Neno la Mungu — Wimbo wa Sifa (Upendo Choir)',
+    preacher: 'Kwaya ya Upendo (Mwl. Emmanuel Majaliwa)',
+    date: '2026-09-20',
+    scripture: 'Zaburi 119:105 • Isaya 40:8',
+    summary: 'Wimbo mtamu wa sifa na kuabudu kutoka Kwaya ya Upendo ya Sayuni ukisisitiza kuwa Neno la Bwana linadumu milele na ni taa ya miguu yetu.',
+    mediaType: 'audio',
+    mediaUrl: '/audio/upendo_choir_neno.mp3',
+    category: 'Kwaya',
+    likesCount: 210
+  },
+  {
+    id: 'choir-vitabu-portal',
+    title: 'Vitabu vya Biblia — Wimbo wa Kwaya (Upendo Choir)',
+    preacher: 'Kwaya ya Upendo (Mwl. Emmanuel Majaliwa)',
+    date: '2026-09-13',
+    scripture: '2 Timotheo 3:16 • Zaburi 1:1-3',
+    summary: 'Wimbo wa kufundisha na kuadhimisha vitabu vyote 66 vya Biblia Takatifu kuanzia Mwanzo hadi Ufunuo, ukiimbwa kwa ustadi na Kwaya ya Upendo.',
+    mediaType: 'audio',
+    mediaUrl: '/audio/upendo_choir_vitabu.mp3',
+    category: 'Kwaya',
+    likesCount: 195
   }
 ];
 
@@ -709,32 +800,46 @@ export const INITIAL_FASTING_CAMPAIGN: ChurchFastingCampaign = {
 
 export const INITIAL_MEMBER_SKILLS: MemberSkillListing[] = [
   {
-    id: 'skill-david-mkulima',
-    fullName: 'David Mwita',
-    profession: 'Mkulima wa Mboga za Majani & Bustani',
-    category: 'Kilimo & Mifugo',
-    description: 'Nalima na kusambaza mboga safi za majani (mchicha, sukuma, matango, karoti, hoho) kwa bei nafuu ya kikanisa.',
-    phone: '+255 712 345 678',
-    location: 'Mbagala Charambe',
-    jumuiya: 'Jumuiya ya Bethlehemu',
+    id: 'skill-david-mwijage',
+    fullName: 'David Erick Mwijage',
+    profession: 'Mhandisi wa Mifumo ya TEHAMA & Media',
+    category: 'Tehama & Apps',
+    description: 'Ninatengeneza mifumo ya kanisa, website ya sayuni-portal, apps za simu (Flutter), na usimamizi wa sauti na kurusha ibada hewani.',
+    phone: '+255 790 942 616',
+    location: 'Mbagala Kwa Matope',
+    jumuiya: 'Umoja wa Vijana (Youth)',
     experienceYears: 'Miaka 6',
     isApproved: true,
     isVerifiedMember: true,
     createdAt: '2026-10-15'
   },
   {
-    id: 'skill-emmanuel-apps',
-    fullName: 'Eng. Emmanuel Mbise',
-    profession: 'Mhandisi wa Software & Mobile Apps',
-    category: 'Tehama & Apps',
-    description: 'Ninatengeneza mifumo ya biashara (POS, Accounting), website za kisasa, na applications za simu (Flutter).',
-    phone: '+255 713 000 302',
-    location: 'Mbagala Rangi Tatu',
-    jumuiya: 'Umoja wa Vijana (Youth)',
-    experienceYears: 'Miaka 5',
+    id: 'skill-emmanuel-majaliwa',
+    fullName: 'Mwl. Emmanuel Majaliwa',
+    profession: 'Mwalimu Mkuu wa Kwaya & Muziki wa Injili',
+    category: 'Sanaa & Muziki',
+    description: 'Kufundisha kwaya, kutunga na kurekodi nyimbo (Upendo Choir), na kutoa mafunzo ya ala za muziki (kinanda, sauti na solo).',
+    phone: '+255 745 896 311',
+    location: 'Mbagala Kwa Matope',
+    jumuiya: 'Kwaya ya Upendo',
+    experienceYears: 'Miaka 10',
     isApproved: true,
     isVerifiedMember: true,
-    createdAt: '2026-10-18'
+    createdAt: '2026-10-16'
+  },
+  {
+    id: 'skill-jonathan-praise',
+    fullName: 'Jonathan',
+    profession: 'Kiongozi wa Sifa & Muimbaji (Praise & Worship)',
+    category: 'Sanaa & Muziki',
+    description: 'Kuongoza ibada za sifa, mafunzo ya uimbaji wa madhabahuni, na kupanga timu za kusifu katika mikesha na makongamano.',
+    phone: '+255 746 296 707',
+    location: 'Mbagala Rangi Tatu',
+    jumuiya: 'Sayuni Praise Team',
+    experienceYears: 'Miaka 7',
+    isApproved: true,
+    isVerifiedMember: true,
+    createdAt: '2026-10-17'
   },
   {
     id: 'skill-sarah-tailor',

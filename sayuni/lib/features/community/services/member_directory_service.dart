@@ -15,30 +15,43 @@ class MemberDirectoryService extends ChangeNotifier {
 
   static const List<MemberSkillProfile> _initialProfiles = [
     MemberSkillProfile(
-      id: 'member-david-mkulima',
-      fullName: 'David Mwita',
-      profession: 'Mkulima wa Mboga za Majani & Bustani',
-      category: 'Kilimo & Mifugo',
-      description:
-          'Nalima na kusambaza mboga safi za majani (mchicha, sukuma, matango, karoti, hoho) kwa bei nafuu ya kikanisa. Pia natoa ushauri wa kuanzisha bustani ndogo nyumbani.',
-      phone: '+255712345678',
-      location: 'Mbagala Charambe',
-      jumuiya: 'Jumuiya ya Bethlehemu',
-      experienceYears: 'Miaka 6',
-      avatarEmoji: '🥬',
-    ),
-    MemberSkillProfile(
-      id: 'member-emmanuel-apps',
-      fullName: 'Eng. Emmanuel Mbise',
-      profession: 'Mhandisi wa Software & Mobile Apps',
+      id: 'member-david-mwijage',
+      fullName: 'David Erick Mwijage',
+      profession: 'Mhandisi wa Mifumo ya TEHAMA, Media & Apps',
       category: 'Tehama & Apps',
       description:
-          'Ninatengeneza mifumo ya biashara (POS, Accounting), website za kisasa, na applications za simu (Flutter). Pia natoa ushauri wa kidijitali na kurekebisha vifaa vya TEHAMA.',
-      phone: '+255713000302',
-      location: 'Mbagala Rangi Tatu',
+          'Kusimamia mifumo ya kidijitali ya kanisa, website ya kanisa, kurusha matangazo mtandaoni, na huduma ya Tehama na sauti.',
+      phone: '+255790942616',
+      location: 'Mbagala Kwa Matope',
       jumuiya: 'Umoja wa Vijana (Youth)',
-      experienceYears: 'Miaka 5',
+      experienceYears: 'Miaka 6',
       avatarEmoji: '💻',
+    ),
+    MemberSkillProfile(
+      id: 'member-emmanuel-majaliwa',
+      fullName: 'Mwl. Emmanuel Majaliwa',
+      profession: 'Mwalimu Mkuu wa Kwaya & Muziki wa Injili',
+      category: 'Muziki & Sifa',
+      description:
+          'Kufundisha sauti, kutunga na kurekodi nyimbo za kwaya (Kwaya ya Upendo na Kwaya Kuu), na kuongoza mazoezi ya uimbaji hekaluni.',
+      phone: '+255745896311',
+      location: 'Mbagala Kwa Matope',
+      jumuiya: 'Kwaya ya Upendo',
+      experienceYears: 'Miaka 10',
+      avatarEmoji: '🎼',
+    ),
+    MemberSkillProfile(
+      id: 'member-jonathan-praise',
+      fullName: 'Jonathan',
+      profession: 'Kiongozi wa Sifa na Kuabudu (Praise & Worship)',
+      category: 'Muziki & Sifa',
+      description:
+          'Kuongoza jopo la waimbaji wa Praise Team katika ibada za Jumapili, mikesha na makongamano ya maombi Sayuni.',
+      phone: '+255746296707',
+      location: 'Mbagala Rangi Tatu',
+      jumuiya: 'Sayuni Praise Team',
+      experienceYears: 'Miaka 7',
+      avatarEmoji: '🎸',
     ),
     MemberSkillProfile(
       id: 'member-sarah-tailor',

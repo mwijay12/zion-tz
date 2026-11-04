@@ -54,6 +54,62 @@ class _ChoirScreenState extends State<ChoirScreen> {
 
   static const List<ChoirSongItem> _defaultSongs = [
     ChoirSongItem(
+      id: 'choir-upendo-neno',
+      title: 'Neno la Mungu',
+      choir: 'Kwaya ya Upendo',
+      album: 'Albamu ya Upendo Vol. 1',
+      key: 'Key ya F',
+      tempo: '88 BPM',
+      duration: '05:32',
+      audioUrl: 'assets/audio/upendo_choir_neno.mp3',
+      imagePath: 'assets/images/zion_worship_choir_1788577423671.jpg',
+      lyrics: '''(Ubeti wa 1)
+Neno la Mungu ni taa ya miguu yangu,
+Na mwanga wa njia yangu kote niendako.
+Katika giza na dhoruba za dunia,
+Neno la uzima linasimama imara daima.
+
+(Kiitikio)
+Neno la Bwana linadumu milele,
+Mbingu na nchi zitapita, lakini Neno lake halitapita!
+Linaponya, linakomboa, linaweka huru,
+Sifa na heshima zimrudie Mungu wa Sayuni!
+
+(Ubeti wa 2)
+Tukilishika neno hili mioyoni mwetu,
+Hatudanganywi na uongo wala hila za adui.
+Ni upanga wa Roho, ngao yetu ya wokovu,
+Tunaliamini na kuliishi siku zote!''',
+    ),
+    ChoirSongItem(
+      id: 'choir-upendo-vitabu',
+      title: 'Vitabu vya Biblia',
+      choir: 'Kwaya ya Upendo',
+      album: 'Albamu ya Upendo Vol. 1',
+      key: 'Key ya G',
+      tempo: '96 BPM',
+      duration: '04:25',
+      audioUrl: 'assets/audio/upendo_choir_vitabu.mp3',
+      imagePath: 'assets/images/3d_bible.png',
+      lyrics: '''(Ubeti wa 1)
+Vitabu vya Agano la Kale na Jipya,
+Yote ni pumzi takatifu ya Mungu wetu.
+Mwanzo hadi Ufunuo ujumbe ni ule ule:
+Yesu Kristo ndiye Mwokozi wa wanadamu wote!
+
+(Kiitikio)
+Soma vitabu, shika mausia yake,
+Vitabu vya Mungu havina upotofu kamwe.
+Kwaya ya Upendo tunaimba kwa furaha,
+Tufungue kurasa za neema hekaluni Sayuni!
+
+(Ubeti wa 2)
+Vitabu vya sheria, vya hekima na unabii,
+Injili nne na nyaraka za mitume.
+Zinatufunza upendo, umoja na utakatifu,
+Tuwe tayari kwa ujio wa Bwana wetu!''',
+    ),
+    ChoirSongItem(
       id: 'choir-song-1',
       title: 'Mungu Wetu Yu Mwaminifu',
       choir: 'Kwaya ya Galilaya',

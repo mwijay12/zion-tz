@@ -62,17 +62,31 @@ class JumuiyaService {
   static const List<ChurchMinistryGroup> ministryGroups = [
     ChurchMinistryGroup(
       id: 'group-choir-main',
-      name: 'Kwaya Kuu ya Sayuni',
+      name: 'Kwaya Kuu & Kwaya ya Upendo',
       category: 'Kwaya',
-      leader: 'Mwl. Joshua Msigwa',
+      leader: 'Mwl. Emmanuel Majaliwa',
       leaderTitle: 'Mwalimu Mkuu wa Kwaya',
-      phone: '+255754000301',
+      phone: '+255745896311',
       meetingSchedule: 'Jumanne & Jumamosi • 10:30 Jioni',
       description:
-          'Kwaya Kuu inayoongoza sifa na kuabudu katika ibada zote kuu za Jumapili na mikutano ya injili.',
+          'Kwaya Kuu na Kwaya ya Upendo zinazoongoza sifa na kuabudu katika ibada zote za Jumapili na mikutano ya injili.',
       imagePath: 'assets/images/zion_worship_choir_1788577423671.jpg',
-      membersCount: 68,
+      membersCount: 75,
       activities: ['Mazoezi ya Sauti', 'Albamu za Nyimbo', 'Huduma za Nje'],
+    ),
+    ChurchMinistryGroup(
+      id: 'group-praise-worship',
+      name: 'Sayuni Praise & Worship Team',
+      category: 'Kwaya',
+      leader: 'Jonathan',
+      leaderTitle: 'Kiongozi wa Praise & Worship',
+      phone: '+255746296707',
+      meetingSchedule: 'Ijumaa & Jumamosi • 10:00 Jioni',
+      description:
+          'Timu ya kusifu na kuabudu inayohudumu madhabahuni katika ibada zote kuu na mikesha ya uamsho.',
+      imagePath: 'assets/images/church_youth_fellowship.jpg',
+      membersCount: 28,
+      activities: ['Ibada za Moja kwa Moja', 'Maombi ya Waimbaji', 'Semina za Muziki'],
     ),
     ChurchMinistryGroup(
       id: 'group-youth',

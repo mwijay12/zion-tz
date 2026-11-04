@@ -52,4 +52,16 @@ class ChurchProfile {
   static const String crdbAccountNumber = '0150829103900';
   static const String crdbAccountName = 'ZION JERUSALEM CHURCH MBAGALA';
   static const String crdbBranch = 'Mbagala Branch';
+
+  // Church Branches (Matawi ya Sayuni Yerusalemu)
+  static const List<String> branches = [
+    'Makao Makuu (Mbagala Kwa Matope)',
+    'Mbagala Kibondemaji',
+    'Vikindu',
+    'Kisemvule',
+    'Morogoro',
+    'Bukoba (Kagera)',
+    'Njombe',
+    'Makambako',
+  ];
 }

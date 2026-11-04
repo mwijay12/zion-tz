@@ -21,6 +21,7 @@ import '../../notifications/presentation/notifications_screen.dart';
 import '../../notifications/services/notifications_data_service.dart';
 import '../../../core/services/church_customization_service.dart';
 import '../../navigation/presentation/universal_search_sheet.dart';
+import '../../copilot/presentation/sayuni_copilot_sheet.dart';
 
 class HomeScreen extends StatefulWidget {
   final Function(int tabIndex) onNavigateToTab;
@@ -191,6 +192,22 @@ Ubarikiwe na Mungu wa Sayuni!
                             ),
                           ),
                       ],
+                    );
+                  },
+                ),
+                // Sayuni Copilot (AI) Action Button
+                IconButton(
+                  icon: const Icon(
+                    Icons.auto_awesome_rounded,
+                    color: AppColors.gold,
+                    size: 22,
+                  ),
+                  tooltip: 'Sayuni Copilot (AI)',
+                  onPressed: () {
+                    AppHaptics.lightImpact();
+                    SayuniCopilotSheet.show(
+                      context,
+                      onNavigateToTab: widget.onNavigateToTab,
                     );
                   },
                 ),
@@ -494,6 +511,76 @@ Ubarikiwe na Mungu wa Sayuni!
                           ),
                         ),
                       ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          // Touch-friendly quick Sayuni Copilot AI Pill
+          InkWell(
+            onTap: () {
+              AppHaptics.lightImpact();
+              SayuniCopilotSheet.show(
+                context,
+                onNavigateToTab: widget.onNavigateToTab,
+              );
+            },
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              height: 44,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: AppColors.gold.withOpacity(0.4),
+                  width: 1,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: AppColors.gold.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(
+                      Icons.auto_awesome_rounded,
+                      color: AppColors.goldLight,
+                      size: 16,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const Expanded(
+                    child: Text(
+                      'Uliza Sayuni AI: Fungua Tenzi, Badili Theme, Vitabu...',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: AppColors.gold,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: const Text(
+                      'Sayuni Copilot',
+                      style: TextStyle(
+                        color: Color(0xFF0F172A),
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ],

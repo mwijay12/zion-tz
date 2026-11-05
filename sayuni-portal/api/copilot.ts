@@ -1,4 +1,7 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+// Vercel Edge Runtime Configuration: Zero cold-start (<10ms) & No 10-second serverless timeout!
+export const config = {
+  runtime: 'edge',
+};
 
 // 1. SECURE SERVER-SIDE CREDENTIALS (ZERO KEYS IN CLIENT APK OR GIT)
 const cleanKey = (k: string) => k.replace(/^\uFEFF/, '').replace(/[^\x00-\x7F]/g, '').trim();
@@ -53,7 +56,8 @@ const SYSTEM_PROMPT = `Wewe ni "Sayuni Copilot" — Msaidizi Rasmi wa Kikanisa, 
 Lugha yako: Jibu kwa lugha aliyotumia muumini (Kiswahili chenye upendo wa Kristo, heshima na staha ya kiliturujia, au Kiingereza iwapo mtumiaji ameuliza kwa Kiingereza).
 
 MAMLAKA NA UWEZO WAKO:
-1. PENDEKEZA MISTARI YA BIBLIA KWA HALI YOYOTE YA MAISHA (open_scripture):
+1. PENDEKEZA MISTARI YA BIBLIA NA FUNDISHA KUHUSU WATU WA BIBLIA (open_scripture):
+   - Mfano mtu akiuliza kuhusu "Noah in the bible" / "Nuhu": Eleza kisa chake cha safina, utii wake mbele za Mungu, na agano la upinde wa mvua (Mwanzo 6:8-9, Waebrania 11:7).
    - "heart break" / "kuvunjika moyo" / "maumivu": Zaburi 34:18 ("Bwana yu karibu nao waliovunjika moyo..."), Mathayo 11:28, Zaburi 147:3.
    - "joyful moment" / "furaha" / "shukrani": Wafilipi 4:4, 1 Wathesalonike 5:16-18, Zaburi 100:1-4.
    - "night prayer" / "maombi ya usiku" / "lala": Zaburi 91:4, Zaburi 4:8, Mithali 3:24.
@@ -61,9 +65,9 @@ MAMLAKA NA UWEZO WAKO:
    - "anxiety" / "wasiwasi" / "hofu": Wafilipi 4:6-7, Isaya 41:10, 1 Petro 5:7.
    - "uponyaji" / "healing" / "ugonjwa": Isaya 53:5, Yeremia 30:17, Yakobo 5:14-15.
    - Mistari mahususi (mfano "Yohana 3:16", "Zaburi 23"):
-   * Unapopendekeza mstari, weka maneno kamili ya andiko kwa upole, kisha:
+   * Unapopendekeza au kutaja mstari, weka maneno kamili ya andiko kwa upole, kisha:
      action: "open_scripture"
-     actionData: { "reference": "Zaburi 34:18", "book": "Zaburi", "chapter": 34, "verse": 18 }
+     actionData: { "reference": "Mwanzo 6:9", "book": "Mwanzo", "chapter": 6, "verse": 9 }
 
 2. BADILI MANDHARI YA APP (change_theme):
    - Giza / usiku / dark mode -> action: "change_theme", actionData: { "mode": "dark" }
@@ -174,69 +178,89 @@ async function callGroq(messages: any[]): Promise<string | null> {
   return null;
 }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: Request) {
   // CORS configuration
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  const corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  };
 
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    return new Response(null, { status: 200, headers: corsHeaders });
   }
 
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed. Use POST.' });
+    return new Response(
+      JSON.stringify({ error: 'Method not allowed. Use POST.' }),
+      { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   }
 
   // Rate Limiting check
-  const clientIp = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() ||
-                   req.socket?.remoteAddress || '127.0.0.1';
-
+  const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1';
   if (!checkRateLimit(clientIp)) {
-    return res.status(429).json({
-      ok: false,
-      fallback: true,
-      error: 'Umetuma maombi mengi mno kwa muda mfupi. Tafadhali subiri sekunde chache.',
-    });
+    return new Response(
+      JSON.stringify({
+        ok: false,
+        fallback: true,
+        error: 'Umetuma maombi mengi mno kwa muda mfupi. Tafadhali subiri sekunde chache.',
+      }),
+      { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   }
 
   try {
-    const { message, history } = req.body || {};
+    const body: any = await req.json().catch(() => ({}));
+    const { message, history } = body || {};
     if (!message || typeof message !== 'string') {
-      return res.status(400).json({ error: 'Message field is required.' });
+      return new Response(
+        JSON.stringify({ error: 'Message field is required.' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const cleanInput = message.trim();
 
     // Guardrail 1: Max length check (Anti-abuse)
     if (cleanInput.length > 500) {
-      return res.status(200).json({
-        ok: true,
-        reply: 'Swali lako ni refu sana. Tafadhali fupisha swali lako liwe chini ya herufi 500 ili niweze kukusaidia vizuri.',
-        action: 'none',
-        actionData: {},
-      });
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          reply: 'Swali lako ni refu sana. Tafadhali fupisha swali lako liwe chini ya herufi 500 ili niweze kukusaidia vizuri.',
+          action: 'none',
+          actionData: {},
+        }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    // Guardrail 2: Prompt Injection / Adversarial Jailbreak Detection
+    // Guardrail 2: Injection check
     if (isPromptInjection(cleanInput)) {
-      return res.status(200).json({
-        ok: true,
-        reply: 'Mimi ni Sayuni Copilot, msaidizi rasmi wa kikanisa na kiroho wa Zion Jerusalem Church. Lengo langu ni kukusaidia katika masuala ya kiroho, Neno la Mungu, nyimbo za Tenzi, na huduma za kanisa.',
-        action: 'none',
-        actionData: {},
-      });
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          reply: 'Mimi ni msaidizi wa huduma na mafundisho ya kiroho ya Zion Jerusalem Church. Je, ninaweza kukusaidiaje katika sala, Tenzi, au Biblia leo?',
+          action: 'none',
+          actionData: {},
+        }),
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
-    // Sanitize conversation history to prevent consecutive same-role errors
-    const sanitizedHistory: { role: string; content: string }[] = [];
+    // Sanitize conversation history
+    const sanitizedHistory: any[] = [];
     if (Array.isArray(history)) {
-      let lastRole = '';
       for (const item of history.slice(-4)) {
-        const r = item.role === 'assistant' ? 'assistant' : 'user';
-        if (r !== lastRole && item.content) {
-          sanitizedHistory.push({ role: r, content: String(item.content).slice(0, 300) });
-          lastRole = r;
+        if (
+          item &&
+          (item.role === 'user' || item.role === 'assistant') &&
+          typeof item.content === 'string'
+        ) {
+          sanitizedHistory.push({
+            role: item.role,
+            content: item.content.slice(0, 300),
+          });
         }
       }
       // If last history item is already 'user', pop it to avoid consecutive user messages
@@ -258,11 +282,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     if (!rawContent) {
-      return res.status(502).json({
-        ok: false,
-        fallback: true,
-        error: 'All AI providers busy. Falling back to offline engine.',
-      });
+      return new Response(
+        JSON.stringify({
+          ok: false,
+          fallback: true,
+          error: 'All AI providers busy. Falling back to offline engine.',
+        }),
+        { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     let parsed: any;
@@ -276,18 +303,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       };
     }
 
-    return res.status(200).json({
-      ok: true,
-      reply: parsed.reply || 'Ubarikiwe katika Sayuni.',
-      action: parsed.action || 'none',
-      actionData: parsed.actionData || {},
-    });
+    return new Response(
+      JSON.stringify({
+        ok: true,
+        reply: parsed.reply || 'Ubarikiwe katika Sayuni.',
+        action: parsed.action || 'none',
+        actionData: parsed.actionData || {},
+      }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   } catch (error: any) {
     console.error('Copilot handler exception:', error);
-    return res.status(500).json({
-      ok: false,
-      fallback: true,
-      error: error?.message || 'Internal error',
-    });
+    return new Response(
+      JSON.stringify({
+        ok: false,
+        fallback: true,
+        error: error?.message || 'Internal error',
+      }),
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
   }
 }

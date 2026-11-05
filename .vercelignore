@@ -1,0 +1,8 @@
+sayuni/
+*.apk
+.git
+.github
+.gemini
+node_modules
+dist
+build

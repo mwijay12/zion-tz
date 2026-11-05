@@ -210,7 +210,90 @@ class LocalFaithAiEngine {
       );
     }
 
-    // 4. THEME SWITCHING INTENTS (Strict: Requires theme keywords, avoids false triggers on usiku/night)
+    // 4. BIBLICAL FIGURES & HEROES OF FAITH (Offline Knowledge)
+    // NOAH / NUHU
+    if (query.contains('noah') || query.contains('nuhu')) {
+      return const LocalFaithAiResult(
+        reply:
+            'Nuhu (Noah) alikuwa mtu wa haki na mkamilifu katika kizazi chake, naye alitembea pamoja na Mungu (Mwanzo 6:9).\n\n'
+            'Wakati dunia ilipojaa maovu, Mungu alimwokoa Nuhu na familia yake kupitia Safina wakati wa gharika kuu kutokana na utii na imani yake thabiti.\n\n'
+            'Katika Waebrania 11:7 imeandikwa: "Kwa imani Nuhu akiisha kuonywa na Mungu katika habari za mambo yasiyoonekana bado, kwa jinsi alivyomcha Mungu, aliunda safina..."\n\n'
+            'Mfano wa Nuhu unatufundisha kusimama imara katika imani na kumtii Mungu hata wakati ulimwengu unapoenda kinyume na mapenzi yake.',
+        actionType: CopilotActionType.openScripture,
+        actionData: {
+          'reference': 'Mwanzo 6:9',
+          'book': 'Mwanzo',
+          'chapter': 6,
+          'verse': 9,
+        },
+      );
+    }
+
+    // ABRAHAM / IBRAHIMU
+    if (query.contains('abraham') || query.contains('ibrahimu')) {
+      return const LocalFaithAiResult(
+        reply:
+            'Ibrahimu (Abraham) anajulikana kama "baba wa imani". Mungu alimwita atoke katika nchi yake aende nchi atakayomwonyesha (Mwanzo 12:1-3).\n\n'
+            'Kwa imani alitii bila kujua aendako, na Mungu alifanya naye agano la kuwa baraka kwa mataifa yote duniani. Warumi 4:3 inasema: "Ibrahimu alimwamini Mungu, ikahesabiwa kwake kuwa haki."',
+        actionType: CopilotActionType.openScripture,
+        actionData: {
+          'reference': 'Mwanzo 12:1',
+          'book': 'Mwanzo',
+          'chapter': 12,
+          'verse': 1,
+        },
+      );
+    }
+
+    // MOSES / MUSA
+    if (query.contains('moses') || query.contains('musa')) {
+      return const LocalFaithAiResult(
+        reply:
+            'Musa alikuwa mtumishi mkuu wa Mungu aliyeitwa kupitia kichaka kilichokuwa kikiwaka moto (Kutoka 3).\n\n'
+            'Aliongoza wana wa Israeli kutoka utumwani Misri, akavusha watu Bahari ya Shamu, na kupokea Amri Kumi za Mungu kule Mlima Sinai. Alikuwa mtumishi mnyenyekevu sana kuliko watu wote duniani (Hesabu 12:3).',
+        actionType: CopilotActionType.openScripture,
+        actionData: {
+          'reference': 'Kutoka 3:14',
+          'book': 'Kutoka',
+          'chapter': 3,
+          'verse': 14,
+        },
+      );
+    }
+
+    // DAVID / DAUDI
+    if (query.contains('david') || query.contains('daudi')) {
+      return const LocalFaithAiResult(
+        reply:
+            'Mfalme Daudi alikuwa "mtu anayeupendeza moyo wa Mungu" (1 Samweli 13:14). Kutoka kuwa mchungaji wa kondoo hadi kumpiga Goliathi kwa jiwe na kombeo (1 Samweli 17).\n\n'
+            'Daudi pia alikuwa mwimbaji na mwandishi wa Zaburi nyingi zinazotupa faraja, zikiwemo Zaburi 23 na Zaburi 51.',
+        actionType: CopilotActionType.openScripture,
+        actionData: {
+          'reference': 'Zaburi 23:1',
+          'book': 'Zaburi',
+          'chapter': 23,
+          'verse': 1,
+        },
+      );
+    }
+
+    // JESUS / YESU KRISTO
+    if (query.contains('jesus') || query.contains('yesu') || query.contains('kristo') || query.contains('christ')) {
+      return const LocalFaithAiResult(
+        reply:
+            'Yesu Kristo ni Mwana wa Mungu, Bwana na Mwokozi wetu aliyetupenda hata akatoa uhai wake msalabani ili tupate msamaha wa dhambi na uzima wa milele.\n\n'
+            '"Kwa maana jinsi hii Mungu aliupenda ulimwengu, hata akamtoa Mwanawe pekee, ili kila mtu amwaminiye asipotee, bali awe na uzima wa milele." (Yohana 3:16)',
+        actionType: CopilotActionType.openScripture,
+        actionData: {
+          'reference': 'Yohana 3:16',
+          'book': 'Yohana',
+          'chapter': 3,
+          'verse': 16,
+        },
+      );
+    }
+
+    // 5. THEME SWITCHING INTENTS (Strict: Requires theme keywords, avoids false triggers on usiku/night)
     final hasThemeKeyword = query.contains('theme') ||
         query.contains('mandhari') ||
         query.contains('mode') ||

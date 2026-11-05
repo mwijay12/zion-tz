@@ -22,6 +22,7 @@ Thumbs.db
 .kilo/
 .kilocode/
 .tools/
+.vercel/
 skills-lock.json
 
 # Node / Vite

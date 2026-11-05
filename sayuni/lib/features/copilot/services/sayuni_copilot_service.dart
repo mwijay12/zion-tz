@@ -178,6 +178,18 @@ class SayuniCopilotService extends ChangeNotifier {
             isOffline: false,
           );
         }
+      } else if (response.statusCode == 429) {
+        debugPrint('SayuniCopilot rate limit reached: ${response.body}');
+        return CopilotMessage(
+          id: 'bot_ratelimit_${DateTime.now().millisecondsSinceEpoch}',
+          text: 'Umetuma maombi mengi mno kwa muda mfupi. Tafadhali subiri sekunde chache kabla ya kuuliza tena.',
+          isUser: false,
+          timestamp: DateTime.now(),
+          actionType: CopilotActionType.none,
+          isOffline: false,
+        );
+      } else {
+        debugPrint('SayuniCopilot online HTTP returned ${response.statusCode}: ${response.body}');
       }
     } catch (e) {
       debugPrint('Online copilot unreachable, switching to offline: $e');

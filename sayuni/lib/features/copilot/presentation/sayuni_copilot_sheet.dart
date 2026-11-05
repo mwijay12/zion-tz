@@ -570,13 +570,40 @@ class _SayuniCopilotSheetState extends State<SayuniCopilotSheet> {
                       ),
                     ],
                   ),
-                  child: SelectableText(
-                    msg.text,
-                    style: TextStyle(
-                      fontSize: 13.5,
-                      height: 1.55,
-                      color: isUser ? Colors.white : (isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A)),
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SelectableText(
+                        msg.text,
+                        style: TextStyle(
+                          fontSize: 13.5,
+                          height: 1.55,
+                          color: isUser ? Colors.white : (isDark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A)),
+                        ),
+                      ),
+                      if (!isUser && msg.id != 'welcome_msg') ...[
+                        const SizedBox(height: 6),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              msg.isOffline ? Icons.wifi_off_rounded : Icons.bolt_rounded,
+                              size: 11,
+                              color: msg.isOffline ? const Color(0xFF94A3B8) : const Color(0xFF16A34A),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              msg.isOffline ? 'Kikanisa (Nje ya Mtandao)' : 'Sayuni AI • Mtandaoni',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                color: msg.isOffline ? const Color(0xFF94A3B8) : const Color(0xFF16A34A),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               ),

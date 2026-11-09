@@ -27,13 +27,13 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final ChurchAuthService _auth = ChurchAuthService();
 
-  // Member Profile Fields
+  // Member Profile Fields (empty until real profile/claim provides them)
   String _name = 'Muumini wa Sayuni';
-  String _phone = '+255 754 000 123';
-  String _email = 'muumini@zionjerusalem.org';
+  String _phone = '';
+  String _email = '';
   String _jumuiya = 'Mbagala Kijichi';
   String _department = 'Kwaya ya Galilaya';
-  String _memberId = 'ZJC-2026-8894';
+  String _memberId = '';
   bool _isBaptized = true;
   String? _photoUrl;
 
@@ -2245,7 +2245,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    'ID: $_memberId',
+                    _memberId.isEmpty ? 'ID: Inasubiri uthibitisho' : 'ID: $_memberId',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 12,

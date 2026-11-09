@@ -1,6 +1,6 @@
-import { 
-  signInWithEmailAndPassword, 
-  signOut as firebaseSignOut, 
+import {
+  signInWithEmailAndPassword,
+  signOut as firebaseSignOut,
   onAuthStateChanged,
   type User
 } from "firebase/auth";
@@ -16,6 +16,12 @@ export interface PortalUser {
   branch?: string;
   avatarUrl?: string;
   titleSw: string;
+  /**
+   * True when this session is a LOCAL demo only — it never touched Firebase
+   * Auth and must never be treated as authenticated for Firestore writes.
+   * The UI must show a DEMO banner whenever this is true.
+   */
+  isDemo?: boolean;
 }
 
 const ROLE_TITLES: Record<UserRole, string> = {
@@ -48,6 +54,16 @@ function isPortalRole(value: unknown): value is UserRole {
   return typeof value === 'string' && PORTAL_ROLES.has(value as UserRole);
 }
 
+/**
+ * Demo mode is opt-in and local-only:
+ * - `npm run dev` (Vite DEV) → demo buttons visible for localhost showcase.
+ * - Deployed builds → demo buttons hidden unless `VITE_DEMO_MODE=true`
+ *   is set in the deployment environment (e.g. Vercel env vars).
+ * Demo sessions NEVER call Firebase Auth and NEVER write to Firestore.
+ */
+export const DEMO_MODE_ENABLED: boolean =
+  import.meta.env.DEV || import.meta.env.VITE_DEMO_MODE === 'true';
+
 export class AuthService {
   static async login(email: string, password: string): Promise<PortalUser> {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -65,47 +81,48 @@ export class AuthService {
     try {
       sessionStorage.removeItem('zion_demo_user');
     } catch {}
-    await firebaseSignOut(auth);
+    try {
+      await firebaseSignOut(auth);
+    } catch {}
   }
 
   static getStoredDemoUser(): PortalUser | null {
+    if (!DEMO_MODE_ENABLED) return null;
     try {
       const raw = sessionStorage.getItem('zion_demo_user');
-      if (raw) return JSON.parse(raw);
-    } catch {}
-    return null;
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as PortalUser;
+      // Only honour sessions explicitly marked as demo — never trust a
+      // stored object that claims a real Firebase uid.
+      if (!parsed.isDemo) return null;
+      return parsed;
+    } catch {
+      return null;
+    }
   }
 
+  /**
+   * LOCAL DEMO ONLY — creates a fake leader session in sessionStorage.
+   * It does NOT sign in to Firebase, does NOT use any password, and
+   * Firestore writes will be blocked (see FirebaseChurchService.requireAuth).
+   * Use it for localhost showcase / UI walkthroughs, never for real data.
+   */
   static async loginAsDemo(role: UserRole = 'super_admin'): Promise<PortalUser> {
-    const demoCredentials: Record<string, { email: string; pass: string }> = {
-      super_admin: { email: 'admin@zionjerusalem.org', pass: 'Zion2026Admin!' },
-      admin: { email: 'admin@zionjerusalem.org', pass: 'Zion2026Admin!' },
-      pastor: { email: 'pastor@zionjerusalem.org', pass: 'Zion2026Admin!' },
-      secretary: { email: 'katibu@zionjerusalem.org', pass: 'Zion2026Admin!' },
-    };
-
-    const targetCred = demoCredentials[role] || demoCredentials.super_admin;
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, targetCred.email, targetCred.pass);
-      const portalUser = await this.toPortalUser(userCredential.user);
-      if (portalUser) {
-        try {
-          sessionStorage.setItem('zion_demo_user', JSON.stringify(portalUser));
-        } catch {}
-        return portalUser;
-      }
-    } catch (e) {
-      console.warn("Direct Firebase Auth demo sign-in fallback:", e);
+    if (!DEMO_MODE_ENABLED) {
+      throw new Error(
+        'Demo mode imezimwa kwenye build hii. Weka VITE_DEMO_MODE=true au tumia akaunti halisi ya Firebase.'
+      );
     }
 
     const demoUser: PortalUser = {
       id: `demo-${role}`,
-      name: role === 'pastor' ? 'Mchungaji na Askofu Mercy James' : (role === 'secretary' ? 'Katibu Mkuu' : 'Super Admin Zion'),
-      email: `${role}@zionjerusalem.org`,
+      name: role === 'pastor' ? 'Mchungaji na Askofu Mercy James (DEMO)' : (role === 'secretary' ? 'Katibu Mkuu (DEMO)' : 'Super Admin Zion (DEMO)'),
+      email: `${role}@demo.local`,
       role,
       isRoot: role === 'admin' || role === 'super_admin',
       branch: 'Mbagala Kwa Matope (HQ)',
-      titleSw: ROLE_TITLES[role] || 'Kiongozi wa Kanisa'
+      titleSw: ROLE_TITLES[role] || 'Kiongozi wa Kanisa',
+      isDemo: true,
     };
     try {
       sessionStorage.setItem('zion_demo_user', JSON.stringify(demoUser));
@@ -143,36 +160,37 @@ export class AuthService {
   }
 
   private static async toPortalUser(firebaseUser: User): Promise<PortalUser | null> {
-    const token = await firebaseUser.getIdTokenResult(true);
-    const claims = token.claims as Record<string, unknown>;
-    let role = claims.role as UserRole | undefined;
-
-    // Fallbacks for known administrative accounts or admin flag
-    if (!role) {
-      if (
-        claims.admin === true ||
-        firebaseUser.email === 'mwijaydavie@gmail.com' ||
-        firebaseUser.email === 'davidbyanmwijage@gmail.com' ||
-        firebaseUser.email === 'admin@zionjerusalem.org'
-      ) {
-        role = 'super_admin';
-      } else if (firebaseUser.email === 'katibu@zionjerusalem.org') {
-        role = 'secretary';
-      } else if (firebaseUser.email === 'pastor@zionjerusalem.org') {
-        role = 'pastor';
-      }
+    // Privileged portal access requires a verified email. Unverified
+    // accounts must not gain leader roles even if claims were mis-set.
+    if (!firebaseUser.emailVerified) {
+      return null;
     }
 
-    if (!role || !isPortalRole(role)) return null;
+    const token = await firebaseUser.getIdTokenResult(true);
+    const claims = token.claims as Record<string, unknown>;
+    const role = claims.role as UserRole | undefined;
+
+    // Role comes ONLY from Firebase custom claims (set by
+    // functions/setUserRole via Admin SDK). No email allowlist fallback —
+    // a hardcoded email list would let anyone who registers that email
+    // become admin. The `admin: true` legacy claim is still honoured for
+    // backwards compatibility with already-provisioned accounts.
+    let effectiveRole = role;
+    if (!effectiveRole && claims.admin === true) {
+      effectiveRole = 'super_admin';
+    }
+
+    if (!effectiveRole || !isPortalRole(effectiveRole)) return null;
 
     return {
       id: firebaseUser.uid,
-      name: firebaseUser.displayName || (role === 'pastor' ? 'Mchungaji na Askofu Mercy James' : (role === 'secretary' ? 'Katibu Mkuu' : 'Super Admin Zion')),
+      name: firebaseUser.displayName || (effectiveRole === 'pastor' ? 'Mchungaji na Askofu Mercy James' : (effectiveRole === 'secretary' ? 'Katibu Mkuu' : 'Super Admin Zion')),
       email: firebaseUser.email || '',
-      role,
-      isRoot: role === 'admin' || role === 'super_admin',
+      role: effectiveRole,
+      isRoot: effectiveRole === 'admin' || effectiveRole === 'super_admin',
       branch: typeof claims.branch === 'string' ? claims.branch : 'Mbagala Kwa Matope (HQ)',
-      titleSw: ROLE_TITLES[role],
+      titleSw: ROLE_TITLES[effectiveRole],
+      isDemo: false,
     };
   }
 

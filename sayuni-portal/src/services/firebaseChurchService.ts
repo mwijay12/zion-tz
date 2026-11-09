@@ -1,17 +1,21 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { 
-  getFirestore, 
-  collection, 
-  addDoc, 
-  query, 
-  orderBy, 
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  query,
+  orderBy,
   onSnapshot,
   serverTimestamp,
-  type Unsubscribe 
+  type Unsubscribe
 } from "firebase/firestore";
 
 // Sayuni Jerusalem Church Firebase Configuration (Verified Live Project)
+// NOTE: Firebase web API keys are client identifiers, not secrets — they are
+// safe to ship in a web app. Security comes from Firestore rules + Auth,
+// not from hiding these values. Restrict the key in Google Cloud Console
+// (HTTP referrers + API restrictions) as defence in depth.
 const firebaseConfig = {
   apiKey: "AIzaSyB4I1tmrPahB1OREVNyRYOtAwI8DMFBVJc",
   authDomain: "zion-mbagala-church.firebaseapp.com",
@@ -70,21 +74,30 @@ export interface JumuiyaWeeklyReport {
 
 // Service Methods for Leaders & Portals
 export class FirebaseChurchService {
-  private static async ensureLeaderAuth(): Promise<void> {
-    if (!auth.currentUser) {
-      try {
-        const { signInWithEmailAndPassword } = await import("firebase/auth");
-        await signInWithEmailAndPassword(auth, "katibu@zionjerusalem.org", "Zion2026Admin!");
-      } catch (e) {
-        console.warn("Auto-authenticating leader for Firestore write:", e);
-      }
+  /**
+   * Writes require a REAL signed-in Firebase user. Demo sessions
+   * (sessionStorage `zion_demo_user`) are local-only and must never
+   * write to Firestore — previously this auto-signed-in as a hardcoded
+   * leader account, which is removed. Fail closed with a clear message.
+   */
+  private static requireAuth(): string {
+    const user = auth.currentUser;
+    if (!user) {
+      throw new Error(
+        'Huwezi kuandika kwenye wingu bila kuingia kwa akaunti halisi ya Firebase. ' +
+        'Demo mode ni ya kuonyesha UI tu — data haihifadhiwi kwenye Firestore.'
+      );
     }
+    if (!user.emailVerified) {
+      throw new Error('Thibitisha barua pepe yako kwanza kabla ya kuandika.');
+    }
+    return user.uid;
   }
 
   // 1. ANNOUNCEMENTS / POP-UP NOTICES (Firestore production single source of truth)
   static async publishAnnouncement(announcement: ChurchAnnouncement): Promise<string> {
     try {
-      await this.ensureLeaderAuth();
+      const uid = this.requireAuth();
       const docRef = await addDoc(collection(db, "announcements"), {
         title: announcement.title.trim(),
         body: announcement.body || announcement.content || '',
@@ -94,8 +107,9 @@ export class FirebaseChurchService {
         branch: announcement.branch || 'Zote',
         targetAudience: announcement.targetAudience || 'all',
         authorRole: announcement.authorRole || 'Ofisi ya Katibu Mkuu',
-        authorEmail: announcement.authorEmail || 'katibu@zionjerusalem.org',
+        authorEmail: announcement.authorEmail || auth.currentUser?.email || '',
         author: announcement.author || announcement.authorRole || 'Ofisi ya Katibu Mkuu',
+        createdBy: uid,
         priority: announcement.type === 'urgent' ? 'high' : (announcement.priority || 'normal'),
         createdAt: serverTimestamp()
       });
@@ -122,9 +136,10 @@ export class FirebaseChurchService {
   // 2. SERMONS & MEDIA
   static async publishSermon(sermon: ChurchSermon): Promise<string> {
     try {
-      await this.ensureLeaderAuth();
+      const uid = this.requireAuth();
       const docRef = await addDoc(collection(db, "sermons"), {
         ...sermon,
+        createdBy: uid,
         createdAt: serverTimestamp()
       });
       return docRef.id;
@@ -163,9 +178,10 @@ export class FirebaseChurchService {
 
   static async submitJumuiyaReport(report: JumuiyaWeeklyReport): Promise<string> {
     try {
-      await this.ensureLeaderAuth();
+      const uid = this.requireAuth();
       const docRef = await addDoc(collection(db, "jumuiya_reports"), {
         ...report,
+        submittedBy: uid,
         submittedAt: serverTimestamp()
       });
       return docRef.id;

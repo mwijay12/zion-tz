@@ -1,4 +1,15 @@
-// Vercel Edge Runtime Configuration: Zero cold-start (<10ms) & No 10-second serverless timeout!
+// Sayuni Copilot — Vercel Edge Runtime (zero cold-start, no 10s timeout).
+// NOTE: This file exists in TWO places and must stay identical:
+//   - api/copilot.ts            (repo-root Vercel project — used by the APK)
+//   - sayuni-portal/api/copilot.ts (portal-as-root Vercel project)
+// Edit both together, or better: deploy one project and point the other
+// at it. Drift between the copies has already caused confusion once.
+//
+// Abuse note: this endpoint is unauthenticated by design (the Flutter app
+// has no user session for copilot calls). Anyone on the internet can call
+// it and burn Groq/Mercury quota. Mitigations below are best-effort for
+// the demo; production should add Firebase App Check + a real rate limiter
+// (e.g. Upstash Redis) and a monthly budget cap on the provider keys.
 export const config = {
   runtime: 'edge',
 };
@@ -14,6 +25,9 @@ const MERCURY_KEYS = RAW_MERCURY_KEYS
   : [];
 
 // 2. IN-MEMORY RATE LIMITER (20 REQUESTS / MINUTE PER CLIENT IP)
+// LIMITATION: Edge instances do not share memory, so this only limits
+// per-instance bursts. It is a speed bump, not real protection. For
+// production, use a shared store (Upstash/Vercel KV) keyed by IP + user.
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
 
 function checkRateLimit(ip: string): boolean {
@@ -194,6 +208,27 @@ export default async function handler(req: Request) {
     return new Response(
       JSON.stringify({ error: 'Method not allowed. Use POST.' }),
       { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
+  // Optional shared-secret gate: set COPILOT_API_KEY in Vercel env and
+  // send it as `x-copilot-key` from the app to block casual abuse.
+  // Unset = open demo mode (current behaviour). The Flutter app does not
+  // send this header yet, so enabling it requires an app update first.
+  const expectedKey = cleanKey(process.env.COPILOT_API_KEY || '');
+  if (expectedKey && req.headers.get('x-copilot-key') !== expectedKey) {
+    return new Response(
+      JSON.stringify({ error: 'Unauthorized.' }),
+      { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+  }
+
+  // Reject oversized bodies before parsing (anti-abuse).
+  const contentLength = Number(req.headers.get('content-length') || '0');
+  if (contentLength > 10000) {
+    return new Response(
+      JSON.stringify({ error: 'Request too large.' }),
+      { status: 413, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 

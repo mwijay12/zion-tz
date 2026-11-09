@@ -19,6 +19,17 @@ import type {
   MemberSkillListing
 } from '../types';
 
+/**
+ * DEMO DATA — everything in this file is sample data for showcase only.
+ * It is NOT real member/finance data and must never be presented as such.
+ * Giving numbers below are aligned to the Flutter app's canonical source
+ * (sayuni/lib/core/constants/church_profile.dart) so app + portal never
+ * show different tills. TODO(verify): confirm every number with the
+ * treasurer (Mehani) before any real giving campaign — a wrong till
+ * number sends church money to the wrong account.
+ */
+export const IS_DEMO_DATA = true;
+
 export const CHURCH_PROFILE = {
   name: 'ZION JERUSALEM CHURCH',
   nameSw: 'KANISA LA SAYUNI YERUSALEMU',
@@ -34,12 +45,15 @@ export const CHURCH_PROFILE = {
   phone: '+255 744 126 927 / +255 787 190 026',
   email: 'huduma@zionjerusalem.org',
   paymentChannels: {
-    mpesaTill: '5624108',
-    mpesaName: 'ZION JERUSALEM - KWA MATOPE',
-    airtelMoney: '+255 784 555 123',
+    // Canonical numbers — keep in sync with ChurchProfile (Flutter).
+    // Verify with treasurer before production use.
+    mpesaTill: '5524101',
+    mpesaName: 'ZION JERUSALEM CHURCH',
+    tigopesaTill: '8919293',
+    airtelMoney: '3310022',
     bankName: 'CRDB Bank - Mbagala Branch',
-    accountNumber: '0150248967300',
-    accountName: 'ZION JERUSALEM CHURCH'
+    accountNumber: '0150829103900',
+    accountName: 'ZION JERUSALEM CHURCH MBAGALA'
   }
 };
 

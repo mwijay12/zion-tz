@@ -89,3 +89,9 @@ flutter_church_app_ui-master/
 /assets/bible/
 /assets/hymns/
 /assets/stitch_designs/
+
+# Local tunnel binary — download from Cloudflare, never commit (40MB binary)
+/cloudflared
+
+# Generated media output (AI image generations) — not product assets
+/media-output/

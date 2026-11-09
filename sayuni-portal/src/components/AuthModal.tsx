@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AlertCircle, Lock, LogIn, Mail } from 'lucide-react';
-import { AuthService, type PortalUser } from '../services/authService';
+import { AuthService, DEMO_MODE_ENABLED, type PortalUser } from '../services/authService';
 import type { Language } from '../types';
 
 interface AuthModalProps {
@@ -211,10 +211,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           </button>
         </form>
 
-        {/* Quick Test Login Buttons for Local Dev / Wi-Fi Testing */}
+        {/* Local demo only — never touches Firebase Auth, never writes to Firestore */}
+        {DEMO_MODE_ENABLED && (
         <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle)', textAlign: 'center' }}>
           <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.6rem', fontWeight: 700 }}>
-            {isSw ? '⚡ Jaribu Moja kwa Moja (Quick Dev Access):' : '⚡ Quick Demo Roles:'}
+            {isSw ? '⚡ Onyesho la Ndani Tu (Local Demo — haina uhusiano na wingu):' : '⚡ Local Demo Only (no cloud sync):'}
           </span>
           <div style={{ display: 'flex', gap: '0.45rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <button
@@ -278,13 +279,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               📜 Katibu Mkuu
             </button>
           </div>
+          <p style={{ margin: '0.6rem 0 0 0', fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+            {isSw
+              ? 'Demo hii ni ya kuonyesha UI tu. Haina password, haiingii Firebase, na haihifadhi data kwenye wingu.'
+              : 'This demo is UI-only. It has no password, never signs in to Firebase, and never saves data to the cloud.'}
+          </p>
         </div>
+        )}
 
+        {!DEMO_MODE_ENABLED && (
         <p style={{ margin: '0.85rem 0 0 0', fontSize: '0.74rem', color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.5 }}>
           {isSw
-            ? 'Akaunti Rasmi ya Firebase: mwijaydavie@gmail.com'
-            : 'Official Firebase Admin: mwijaydavie@gmail.com'}
+            ? 'Ikiwa huna akaunti, wasiliana na msimamizi wa mfumo ili kupewa wadhifa.'
+            : 'No account? Contact the system administrator to be granted a role.'}
         </p>
+        )}
 
         {onClose && (
           <button

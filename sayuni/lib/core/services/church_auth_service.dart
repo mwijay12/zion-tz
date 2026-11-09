@@ -79,11 +79,14 @@ class ChurchAuthService extends ChangeNotifier {
   bool get isCloudVerified => _source == RoleSource.cloud;
 
   String _name = 'Muumini wa Sayuni';
-  String _phone = '+255 754 000 123';
-  String _email = 'muumini@zionjerusalem.org';
+  // No fake personal data: phone/email/memberId stay empty until a real
+  // profile or Firebase claim provides them. Showing one shared fake
+  // member ID to every user looks like mock data in a demo.
+  String _phone = '';
+  String _email = '';
   String _jumuiya = 'Mbagala Kijichi';
   String _department = 'Kwaya ya Galilaya';
-  String _memberId = 'ZJC-2026-8894';
+  String _memberId = '';
   bool _isBaptized = true;
   String? _photoUrl;
 
@@ -203,11 +206,11 @@ class ChurchAuthService extends ChangeNotifier {
 
     _uid = prefs.getString('auth_uid');
     _name = prefs.getString('user_name') ?? defaultNameForRole();
-    _phone = prefs.getString('user_phone') ?? '+255 754 000 123';
-    _email = prefs.getString('user_email') ?? 'muumini@zionjerusalem.org';
+    _phone = prefs.getString('user_phone') ?? '';
+    _email = prefs.getString('user_email') ?? '';
     _jumuiya = prefs.getString('user_jumuiya') ?? 'Mbagala Kijichi';
     _department = prefs.getString('user_dept') ?? 'Kwaya ya Galilaya';
-    _memberId = prefs.getString('user_member_id') ?? 'ZJC-2026-8894';
+    _memberId = prefs.getString('user_member_id') ?? '';
     _isBaptized = prefs.getBool('user_baptized') ?? true;
     _photoUrl = prefs.getString('user_photo');
 

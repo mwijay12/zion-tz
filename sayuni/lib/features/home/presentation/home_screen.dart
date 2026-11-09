@@ -7,6 +7,7 @@ import '../../../core/theme/church_theme_service.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../core/widgets/app_card.dart';
+import '../../../core/widgets/motion/motion.dart';
 import '../../../core/widgets/section_header.dart';
 import '../models/home_content.dart';
 import '../services/home_service.dart';
@@ -271,50 +272,77 @@ Ubarikiwe na Mungu wa Sayuni!
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   // Sunday Service Countdown Banner
-                  _buildSundayCountdownBanner(),
+                  StaggeredReveal(
+                    index: 0,
+                    child: _buildSundayCountdownBanner(),
+                  ),
                   const SizedBox(height: 18),
 
                   // Quick Services Actions Grid
-                  SectionHeader(
-                    title: 'Huduma za Haraka',
-                    subtitle: 'Miongozo, sala, na ushirika',
+                  const StaggeredReveal(
+                    index: 1,
+                    child: SectionHeader(
+                      title: 'Huduma za Haraka',
+                      subtitle: 'Miongozo, sala, na ushirika',
+                    ),
                   ),
-                  _buildQuickActionGrid(),
+                  StaggeredReveal(
+                    index: 2,
+                    child: _buildQuickActionGrid(),
+                  ),
                   const SizedBox(height: 24),
 
                   // Uongozi wa Kiroho (Pastoral Leadership Section)
-                  SectionHeader(
-                    title: 'Uongozi wa Kiroho',
-                    subtitle: 'Askofu Mkuu na Watumishi wa Bwana',
-                    actionText: 'Miadi',
-                    onAction: () {
-                      AppHaptics.lightImpact();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const AppointmentsScreen()),
-                      );
-                    },
+                  StaggeredReveal(
+                    index: 3,
+                    child: SectionHeader(
+                      title: 'Uongozi wa Kiroho',
+                      subtitle: 'Askofu Mkuu na Watumishi wa Bwana',
+                      actionText: 'Miadi',
+                      onAction: () {
+                        AppHaptics.lightImpact();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const AppointmentsScreen()),
+                        );
+                      },
+                    ),
                   ),
-                  _buildPastoralLeadershipSection(context),
+                  StaggeredReveal(
+                    index: 4,
+                    child: _buildPastoralLeadershipSection(context),
+                  ),
                   const SizedBox(height: 24),
 
                   // Matawi & Huduma za Kiroho
-                  SectionHeader(
-                    title: 'Matawi & Huduma za Kiroho',
-                    subtitle: 'Matawi ya kanisa, chumba cha maombi, na miadi',
+                  const StaggeredReveal(
+                    index: 5,
+                    child: SectionHeader(
+                      title: 'Matawi & Huduma za Kiroho',
+                      subtitle: 'Matawi ya kanisa, chumba cha maombi, na miadi',
+                    ),
                   ),
-                  _buildBranchesAndMinistryHub(),
+                  StaggeredReveal(
+                    index: 6,
+                    child: _buildBranchesAndMinistryHub(),
+                  ),
                   const SizedBox(height: 24),
 
                   // Daily Devotional Card (Neno la Siku)
-                  SectionHeader(
-                    title: 'Neno la Siku & Tafakari',
-                    subtitle: devotional.reference,
-                    actionText: 'Shiriki',
-                    onAction: () => _shareDevotional(devotional),
+                  StaggeredReveal(
+                    index: 7,
+                    child: SectionHeader(
+                      title: 'Neno la Siku & Tafakari',
+                      subtitle: devotional.reference,
+                      actionText: 'Shiriki',
+                      onAction: () => _shareDevotional(devotional),
+                    ),
                   ),
-                  _buildDevotionalCard(devotional),
+                  StaggeredReveal(
+                    index: 8,
+                    child: _buildDevotionalCard(devotional),
+                  ),
                   SizedBox(
                       height: 180 +
                           MediaQuery.of(context)

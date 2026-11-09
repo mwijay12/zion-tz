@@ -424,9 +424,28 @@ class _MainScaffoldState extends State<MainScaffold> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: Stack(
           children: [
-            IndexedStack(
-              index: _currentIndex,
-              children: screens,
+            // Smooth tab transition: SharedAxis (horizontal) fade/slide
+            // on index change, while IndexedStack preserves each tab's
+            // scroll/state. Keyed TweenAnimationBuilder restarts the
+            // 220ms transition without rebuilding the screens themselves.
+            TweenAnimationBuilder<double>(
+              key: ValueKey<int>(_currentIndex),
+              tween: Tween<double>(begin: 0.0, end: 1.0),
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutCubic,
+              builder: (context, t, child) {
+                return Opacity(
+                  opacity: t,
+                  child: Transform.translate(
+                    offset: Offset((1 - t) * 24, 0),
+                    child: child,
+                  ),
+                );
+              },
+              child: IndexedStack(
+                index: _currentIndex,
+                children: screens,
+              ),
             ),
             _buildInAppNotificationBanner(),
             if (_currentIndex != 0) _buildFloatingCopilotTrigger(context),

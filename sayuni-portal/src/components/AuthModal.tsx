@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
-import { AlertCircle, Lock, LogIn, Mail } from 'lucide-react';
-import { AuthService, DEMO_MODE_ENABLED, type PortalUser } from '../services/authService';
-import type { Language } from '../types';
+import { AlertCircle, Check, Copy, KeyRound, Lock, LogIn, Mail } from 'lucide-react';
+import {
+  AuthService,
+  DEMO_CREDENTIALS,
+  DEMO_MODE_ENABLED,
+  type PortalUser,
+} from '../services/authService';
+import type { Language, UserRole } from '../types';
 
 interface AuthModalProps {
   language: Language;
@@ -31,14 +36,24 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [demoRole, setDemoRole] = useState<UserRole>('super_admin');
+  const [copiedDemo, setCopiedDemo] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
+
+    if (email.trim().toLowerCase() === DEMO_CREDENTIALS.email && !DEMO_MODE_ENABLED) {
+      setError(isSw
+        ? 'Demo mode imezimwa kwenye build hii. Weka VITE_DEMO_MODE=true kwenye mazingira ya deployment.'
+        : 'Demo mode is disabled in this build. Set VITE_DEMO_MODE=true in the deployment environment.');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const user = await AuthService.login(email.trim(), password);
+      const user = await AuthService.login(email.trim(), password, demoRole);
       onLoginSuccess(user);
     } catch (err) {
       const code = (err as { code?: string })?.code;
@@ -211,87 +226,143 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           </button>
         </form>
 
-        {/* Local demo only — never touches Firebase Auth, never writes to Firestore */}
-        {DEMO_MODE_ENABLED && (
-        <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle)', textAlign: 'center' }}>
-          <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.6rem', fontWeight: 700 }}>
-            {isSw ? '⚡ Onyesho la Ndani Tu (Local Demo — haina uhusiano na wingu):' : '⚡ Local Demo Only (no cloud sync):'}
-          </span>
-          <div style={{ display: 'flex', gap: '0.45rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              onClick={async () => {
-                const u = await AuthService.loginAsDemo('super_admin');
-                onLoginSuccess(u);
-              }}
-              style={{
-                padding: '0.4rem 0.75rem',
-                borderRadius: '8px',
-                border: '1px solid var(--border-color)',
-                backgroundColor: 'var(--surface-variant)',
-                color: 'var(--text-main)',
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
-              title="Super Admin na Mamlaka Kamili"
-            >
-              👑 Super Admin
-            </button>
-            <button
-              type="button"
-              onClick={async () => {
-                const u = await AuthService.loginAsDemo('pastor');
-                onLoginSuccess(u);
-              }}
-              style={{
-                padding: '0.4rem 0.75rem',
-                borderRadius: '8px',
-                border: '1px solid var(--border-color)',
-                backgroundColor: 'var(--surface-variant)',
-                color: 'var(--text-main)',
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
-              title="Mchungaji na Askofu Mercy James"
-            >
-              ✝️ Askofu Mercy
-            </button>
-            <button
-              type="button"
-              onClick={async () => {
-                const u = await AuthService.loginAsDemo('secretary');
-                onLoginSuccess(u);
-              }}
-              style={{
-                padding: '0.4rem 0.75rem',
-                borderRadius: '8px',
-                border: '1px solid var(--border-color)',
-                backgroundColor: 'var(--surface-variant)',
-                color: 'var(--text-main)',
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
-              title="Katibu Mkuu wa Kanisa"
-            >
-              📜 Katibu Mkuu
-            </button>
+        {/* ===== DEMO CREDENTIALS =====
+            A local-only, explicitly labelled showcase login. The credential
+            pair is checked in the browser and NEVER reaches Firebase Auth;
+            the resulting session is isDemo=true and cannot write to Firestore. */}
+        {DEMO_MODE_ENABLED ? (
+        <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.6rem' }}>
+            <KeyRound size={15} style={{ color: 'var(--primary-gold)' }} />
+            <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--text-headline)' }}>
+              {isSw ? 'Demo credentials — maonyesho tu' : 'Demo credentials — showcase only'}
+            </span>
           </div>
-          <p style={{ margin: '0.6rem 0 0 0', fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+
+          <div style={{
+            padding: '0.7rem 0.85rem', borderRadius: 12,
+            backgroundColor: 'rgba(197, 155, 39, 0.09)',
+            border: '1px solid rgba(197, 155, 39, 0.32)'
+          }}>
+            {[
+              { label: isSw ? 'Barua pepe' : 'Email', value: DEMO_CREDENTIALS.email },
+              { label: isSw ? 'Neno la siri' : 'Password', value: DEMO_CREDENTIALS.password },
+            ].map(row => (
+              <div key={row.label} style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                gap: '0.5rem', flexWrap: 'wrap', padding: '0.22rem 0'
+              }}>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{row.label}</span>
+                <code style={{
+                  fontSize: '0.78rem', fontWeight: 700, color: 'var(--text-headline)',
+                  wordBreak: 'break-all'
+                }}>{row.value}</code>
+              </div>
+            ))}
+
+            <div style={{ display: 'flex', gap: '0.45rem', flexWrap: 'wrap', marginTop: '0.65rem' }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail(DEMO_CREDENTIALS.email);
+                  setPassword(DEMO_CREDENTIALS.password);
+                  setError('');
+                }}
+                style={{
+                  padding: '0.4rem 0.75rem', borderRadius: 8, border: 'none',
+                  backgroundColor: 'var(--primary-gold)', color: '#1a1a1a',
+                  fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer'
+                }}
+              >
+                {isSw ? '📝 Jaza fomu' : '📝 Fill sign-in form'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  void navigator.clipboard.writeText(
+                    `${DEMO_CREDENTIALS.email}\n${DEMO_CREDENTIALS.password}`
+                  );
+                  setCopiedDemo(true);
+                  setTimeout(() => setCopiedDemo(false), 2200);
+                }}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '0.35rem',
+                  padding: '0.4rem 0.75rem', borderRadius: 8,
+                  border: '1px solid var(--border-color)',
+                  backgroundColor: 'var(--surface-variant)', color: 'var(--text-main)',
+                  fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer'
+                }}
+              >
+                {copiedDemo ? <Check size={13} /> : <Copy size={13} />}
+                {copiedDemo ? (isSw ? 'Imenakiliwa!' : 'Copied!') : (isSw ? 'Nakili' : 'Copy')}
+              </button>
+            </div>
+          </div>
+
+          <label style={{
+            display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap',
+            marginTop: '0.7rem', fontSize: '0.73rem', color: 'var(--text-muted)'
+          }}>
+            {isSw ? 'Wadhifa ukichapa credentials:' : 'Role when typing credentials:'}
+            <select
+              value={demoRole}
+              onChange={event => setDemoRole(event.target.value as UserRole)}
+              style={{
+                padding: '0.35rem 0.5rem', borderRadius: 8,
+                border: '1px solid var(--border-color)',
+                background: 'var(--surface-variant)', color: 'var(--text-main)',
+                fontSize: '0.75rem', fontWeight: 700
+              }}
+            >
+              <option value="super_admin">👑 Super Admin</option>
+              <option value="pastor">✝️ Mchungaji / Askofu</option>
+              <option value="secretary">📜 Katibu Mkuu</option>
+              <option value="deacon">🕊️ Mzee / Shemasi</option>
+              <option value="usher">🙌 Mkaribishaji (Usher)</option>
+              <option value="treasurer">💰 Mehani</option>
+              <option value="choir_leader">🎵 Kiongozi wa Kwaya</option>
+              <option value="jumuiya_leader">🏠 Kiongozi wa Jumuiya</option>
+              <option value="children_teacher">🧒 Mwalimu wa Watoto</option>
+            </select>
+          </label>
+
+          <div style={{ display: 'flex', gap: '0.45rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '0.7rem' }}>
+            {([
+              { role: 'super_admin', label: '👑 Super Admin', title: 'Super Admin na Mamlaka Kamili' },
+              { role: 'pastor', label: '✝️ Askofu Mercy', title: 'Mchungaji na Askofu Mercy James' },
+              { role: 'secretary', label: '📜 Katibu Mkuu', title: 'Katibu Mkuu wa Kanisa' },
+            ] as const).map(item => (
+              <button
+                key={item.role}
+                type="button"
+                title={item.title}
+                onClick={async () => {
+                  const u = await AuthService.loginAsDemo(item.role);
+                  onLoginSuccess(u);
+                }}
+                style={{
+                  padding: '0.4rem 0.75rem', borderRadius: 8,
+                  border: '1px solid var(--border-color)',
+                  backgroundColor: 'var(--surface-variant)', color: 'var(--text-main)',
+                  fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer'
+                }}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          <p style={{ margin: '0.65rem 0 0 0', fontSize: '0.71rem', color: 'var(--text-muted)', lineHeight: 1.5, textAlign: 'center' }}>
             {isSw
-              ? 'Demo hii ni ya kuonyesha UI tu. Haina password, haiingii Firebase, na haihifadhi data kwenye wingu.'
-              : 'This demo is UI-only. It has no password, never signs in to Firebase, and never saves data to the cloud.'}
+              ? '⚠️ Hizi SI akaunti za Firebase. Data yote ni ya sampuli, haihifadhiwi kwenye wingu, na haiwezi kuandika Firestore. Usizitumie kwa data halisi ya wanachama.'
+              : '⚠️ These are NOT Firebase accounts. All data is sample, nothing is saved to the cloud, and Firestore writes are blocked. Never use with real member data.'}
           </p>
         </div>
-        )}
-
-        {!DEMO_MODE_ENABLED && (
+        ) : (
         <p style={{ margin: '0.85rem 0 0 0', fontSize: '0.74rem', color: 'var(--text-muted)', textAlign: 'center', lineHeight: 1.5 }}>
           {isSw
-            ? 'Ikiwa huna akaunti, wasiliana na msimamizi wa mfumo ili kupewa wadhifa.'
-            : 'No account? Contact the system administrator to be granted a role.'}
+            ? 'Ikiwa huna akaunti, wasiliana na msimamizi wa mfumo ili kupewa wadhifa. (Demo huwezeshwa kwa VITE_DEMO_MODE=true.)'
+            : 'No account? Contact the system administrator to be granted a role. (Demo is enabled with VITE_DEMO_MODE=true.)'}
         </p>
         )}
 

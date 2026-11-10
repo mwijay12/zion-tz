@@ -131,17 +131,23 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
       .catch(err => console.error('Error loading tenzi_za_rohoni.json', err));
 
     // Nyimbo za Kikristo (221 titles indexed from MySongbooks).
-    // Titles + links only — no lyrics bundled (copyright).
+    // Most entries are titles + links only (no lyrics copied — copyright),
+    // but a subset carries ORIGINAL Swahili translations of classic
+    // public-domain hymns (written for this project) so they work offline.
     fetch('/data/nyimbo_za_kikristo.json')
       .then(res => res.json())
-      .then((data: Array<{ siteNumber: number; title: string; url: string; likes: number }>) => {
+      .then((data: Array<{ siteNumber: number; title: string; url: string; likes: number; stanzas?: Array<{ verse_number: number; text: string }>; chorus?: string }>) => {
         const normalized: TenziHymn[] = data.map(s => ({
           number: s.siteNumber,
           title: s.title,
           category: 'Nyimbo za Kikristo',
           key: '',
           time_signature: '',
-          stanzas: [],
+          stanzas: (s.stanzas ?? []).map(st => ({
+            verse_number: st.verse_number,
+            text: st.text,
+          })),
+          chorus: s.chorus,
           collection: 'nyimbo' as const,
           externalUrl: s.url,
           likes: s.likes,
@@ -1503,16 +1509,22 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
                   </div>
                 </div>
 
-                {/* Nyimbo (MySongbooks index): external link, no bundled lyrics */}
+                {/* Nyimbo (MySongbooks index): external link for audio / full lyrics.
+                    Hymns with bundled public-domain translations show lyrics
+                    below AND keep this link for audio. */}
                 {selectedHymn.collection === 'nyimbo' && selectedHymn.externalUrl && (
                   <div className="church-card" style={{ maxWidth: '680px', marginBottom: '1.25rem' }}>
                     <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1rem' }}>
                       {isSw ? 'Nyimbo za Kikristo — MySongbooks' : 'Nyimbo za Kikristo — MySongbooks'}
                     </h3>
                     <p style={{ margin: '0 0 1rem 0', fontSize: '0.85rem', lineHeight: 1.6, color: 'var(--text-muted)' }}>
-                      {isSw
-                        ? 'Wimbo huu ni sehemu ya orodha ya Nyimbo za Kikristo (221 nyimbo) kutoka MySongbooks. Maneno kamili na sauti zinapatikana kupitia kiungo — hazijanakiliwa kwenye app (haki za miliki).'
-                        : 'This hymn is part of the Nyimbo za Kikristo index (221 songs) from MySongbooks. Full lyrics and audio are available via the link — they are not copied into the app (copyright).'}
+                      {selectedHymn.stanzas.length > 0
+                        ? (isSw
+                            ? 'Maneno kamili ya wimbo huu yapo hapa chini (tafsiri mpya ya wimbo wa zamani). Sauti na maelezo zaidi yanapatikana kwenye MySongbooks.'
+                            : 'Full lyrics for this hymn are below (a fresh translation of a classic public-domain hymn). Audio and more are on MySongbooks.')
+                        : (isSw
+                            ? 'Wimbo huu ni sehemu ya orodha ya Nyimbo za Kikristo (221 nyimbo) kutoka MySongbooks. Maneno kamili na sauti zinapatikana kupitia kiungo — hazijanakiliwa kwenye app (haki za miliki).'
+                            : 'This hymn is part of the Nyimbo za Kikristo index (221 songs) from MySongbooks. Full lyrics and audio are available via the link — they are not copied into the app (copyright).')}
                     </p>
                     <a
                       href={selectedHymn.externalUrl}
@@ -1521,7 +1533,9 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
                       className="btn-primary"
                       style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none', fontSize: '0.85rem' }}
                     >
-                      {isSw ? 'Fungua Maneno kwenye MySongbooks' : 'Open Lyrics on MySongbooks'}
+                      {selectedHymn.stanzas.length > 0
+                        ? (isSw ? 'Sikiliza kwenye MySongbooks' : 'Listen on MySongbooks')
+                        : (isSw ? 'Fungua Maneno kwenye MySongbooks' : 'Open Lyrics on MySongbooks')}
                     </a>
                   </div>
                 )}

@@ -199,6 +199,10 @@ export interface NyimboSong {
   url: string;
   likes: number;
   source: string;
+  /** Original Swahili translations of public-domain hymns (subset only). */
+  stanzas?: TenziStanza[];
+  chorus?: string;
+  lyricsNote?: string;
 }
 
 

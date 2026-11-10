@@ -21,13 +21,14 @@ class TenziStanza {
 /// - **Tenzi za Rohoni** (`collection == 'tenzi'`): bundled offline with
 ///   full lyrics (`stanzas` non-empty, `hasLyrics == true`).
 /// - **Nyimbo za Kikristo** (`collection == 'nyimbo'`): indexed from
-///   MySongbooks (mysongbooks.scaptedesigns.com) — title + link only,
-///   no lyrics bundled (`stanzas` empty, `externalUrl` set). Full
-///   lyrics/audio open on MySongbooks via the link.
+///   MySongbooks (mysongbooks.scaptedesigns.com) — title + link. Most
+///   entries are link-only (`stanzas` empty, `externalUrl` set), but a
+///   subset carries ORIGINAL Swahili translations of classic
+///   public-domain hymns (written for this project, marked with
+///   `lyricsNote`) so they work fully offline (`hasLyrics == true`).
 ///
-/// Only titles/numbers/URLs are indexed for Nyimbo — lyrics are never
-/// copied from the website (copyright). See
-/// `assets/hymns/nyimbo_za_kikristo.json` header note in docs.
+/// Lyrics are never copied from the website (copyright). The public-domain
+/// translations are new work, not scraped from any hymnal or blog.
 class TenziHymn {
   final int number;
   final String title;
@@ -67,7 +68,10 @@ class TenziHymn {
 
   factory TenziHymn.fromJson(Map<String, dynamic> json) {
     // Nyimbo format: {siteNumber, title, slug, url, likes, source}
+    // A subset also carries `stanzas`/`chorus` (original public-domain
+    // translations) — parse them so those hymns work fully offline.
     if (json.containsKey('siteNumber') || json.containsKey('url')) {
+      final rawStanzas = json['stanzas'] as List<dynamic>? ?? [];
       return TenziHymn(
         number: json['siteNumber'] is int
             ? json['siteNumber'] as int
@@ -76,7 +80,10 @@ class TenziHymn {
         category: 'Nyimbo za Kikristo',
         key: '',
         timeSignature: '',
-        stanzas: const [],
+        stanzas: rawStanzas
+            .map((s) => TenziStanza.fromJson(s as Map<String, dynamic>))
+            .toList(),
+        chorus: json['chorus']?.toString(),
         collection: 'nyimbo',
         externalUrl: json['url']?.toString(),
         likes: json['likes'] is int

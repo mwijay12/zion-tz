@@ -921,9 +921,11 @@ class _BibleScreenState extends State<BibleScreen> {
                                   : AppColors.textPrimary,
                             ),
                           ),
-                          subtitle: Text(hymn.hasLyrics
-                              ? '${hymn.category} • ${hymn.key}'
-                              : 'Nyimbo za Kikristo • MySongbooks'),
+                          subtitle: Text(hymn.isNyimbo
+                              ? (hymn.hasLyrics
+                                  ? 'Nyimbo za Kikristo • Maneno kamili'
+                                  : 'Nyimbo za Kikristo • MySongbooks')
+                              : '${hymn.category} • ${hymn.key}'),
                           onTap: () {
                             AppHaptics.lightImpact();
                             _stopAudio();
@@ -1734,8 +1736,10 @@ class _BibleScreenState extends State<BibleScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Nyimbo (MySongbooks index): no bundled lyrics — link out.
-              if (!hymn.hasLyrics && hymn.externalUrl != null)
+              // Nyimbo (MySongbooks index): link out for audio / full lyrics.
+              // Hymns with bundled public-domain translations show the
+              // lyrics below AND keep this link for audio.
+              if (hymn.externalUrl != null)
                 AppCard(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1747,7 +1751,9 @@ class _BibleScreenState extends State<BibleScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Wimbo huu ni sehemu ya orodha ya Nyimbo za Kikristo (221 nyimbo) kutoka MySongbooks. Maneno kamili na sauti zinapatikana kupitia kiungo — hazijanakiliwa kwenye app (haki za miliki).',
+                        hymn.hasLyrics
+                            ? 'Maneno kamili ya wimbo huu yapo hapa chini (tafsiri mpya ya wimbo wa zamani). Sauti na maelezo zaidi yanapatikana kwenye MySongbooks.'
+                            : 'Wimbo huu ni sehemu ya orodha ya Nyimbo za Kikristo (221 nyimbo) kutoka MySongbooks. Maneno kamili na sauti zinapatikana kupitia kiungo — hazijanakiliwa kwenye app (haki za miliki).',
                         style: AppTypography.bodySmall(
                             color: AppColors.textSecondary),
                       ),
@@ -1763,7 +1769,9 @@ class _BibleScreenState extends State<BibleScreen> {
                             );
                           },
                           icon: const Icon(Icons.open_in_new_rounded),
-                          label: const Text('Fungua Maneno kwenye MySongbooks'),
+                          label: Text(hymn.hasLyrics
+                              ? 'Sikiliza kwenye MySongbooks'
+                              : 'Fungua Maneno kwenye MySongbooks'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primary,
                             foregroundColor: Colors.white,

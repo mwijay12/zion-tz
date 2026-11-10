@@ -26,6 +26,7 @@ interface Theme {
   surface: Rgb;
   ink: Rgb;
   accent: Rgb;
+  accentSoft: Rgb;
   muted: Rgb;
   hairline: Rgb;
 }
@@ -55,6 +56,7 @@ function themeFor(variant: CertificateVariant): Theme {
     surface: hexToRgb(palette.surface),
     ink: hexToRgb(palette.ink),
     accent: hexToRgb(palette.accent),
+    accentSoft: hexToRgb(palette.accentSoft),
     muted: hexToRgb(palette.muted),
     hairline: hexToRgb(palette.hairline)
   };
@@ -184,12 +186,10 @@ function drawBackground(doc: jsPDF, theme: Theme): void {
   doc.rect(0, 0, PAGE_WIDTH, PAGE_HEIGHT, 'F');
 
   if (theme.variant === 'modern') {
-    // A single quiet accent spine instead of a decorative frame.
+    // Accent rail + a quiet footer stub give the sheet structure without a frame.
     setFillColor(doc, theme.accent);
     doc.rect(0, 0, 3.2, PAGE_HEIGHT, 'F');
-    setDrawColor(doc, theme.hairline);
-    doc.setLineWidth(0.2);
-    doc.line(MARGIN, 15, PAGE_WIDTH - MARGIN, 15);
+    doc.rect(3.2, 199, 42, 1.2, 'F');
     return;
   }
 
@@ -234,48 +234,57 @@ function drawWatermark(doc: jsPDF, theme: Theme, logo: string | null): void {
   doc.restoreGraphicsState();
 }
 
+/** Modern design: a solid ink masthead with an accent band underneath. */
+function drawMasthead(doc: jsPDF, theme: Theme, logo: string | null, isSw: boolean): void {
+  const bandHeight = 38;
+
+  setFillColor(doc, theme.ink);
+  doc.rect(3.2, 0, PAGE_WIDTH - 3.2, bandHeight, 'F');
+  setFillColor(doc, theme.accent);
+  doc.rect(3.2, bandHeight - 1.4, PAGE_WIDTH - 3.2, 1.4, 'F');
+
+  const logoX = MARGIN;
+  const logoY = 11;
+  setFillColor(doc, theme.paper);
+  doc.roundedRect(logoX, logoY, 16, 16, 2, 2, 'F');
+  if (logo) {
+    doc.addImage(logo, 'PNG', logoX + 1, logoY + 1, 14, 14, undefined, 'FAST');
+  }
+
+  fitFontSize(doc, CHURCH_PROFILE.name, 200, 14, 10, 'helvetica', 'bold');
+  setTextColor(doc, theme.paper);
+  doc.text(CHURCH_PROFILE.name, 44, 20, { charSpace: 0.5 });
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(7.2);
+  setTextColor(doc, theme.accentSoft);
+  doc.text((isSw ? CHURCH_PROFILE.motto : CHURCH_PROFILE.mottoEn).toUpperCase(), 44, 26, {
+    charSpace: 0.7
+  });
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(6.4);
+  setTextColor(doc, theme.hairline);
+  doc.text(`${CHURCH_PROFILE.location}  •  ${CHURCH_PROFILE.phone}`, 44, 31);
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(6.2);
+  setTextColor(doc, theme.accentSoft);
+  doc.text(isSw ? 'HATI RASMI YA KANISA' : 'OFFICIAL CHURCH DOCUMENT', PAGE_WIDTH - MARGIN, 20, {
+    align: 'right'
+  });
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(6.4);
+  setTextColor(doc, theme.hairline);
+  doc.text(isSw ? 'SAYUNI YERUSALEMU' : 'ZION JERUSALEM', PAGE_WIDTH - MARGIN, 26, {
+    align: 'right'
+  });
+}
+
 function drawHeader(doc: jsPDF, theme: Theme, logo: string | null, isSw: boolean): void {
   if (theme.variant === 'modern') {
-    const logoX = MARGIN;
-    const logoY = 22;
-    if (logo) {
-      doc.addImage(logo, 'PNG', logoX, logoY, 16, 16, undefined, 'FAST');
-    }
-    setDrawColor(doc, theme.accent);
-    doc.setLineWidth(0.6);
-    doc.roundedRect(logoX, logoY, 16, 16, 2, 2, 'S');
-
-    fitFontSize(doc, CHURCH_PROFILE.name, 200, 14, 10, 'helvetica', 'bold');
-    setTextColor(doc, theme.ink);
-    doc.text(CHURCH_PROFILE.name, 44, 28.5, { charSpace: 0.5 });
-
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7.2);
-    setTextColor(doc, theme.accent);
-    doc.text((isSw ? CHURCH_PROFILE.motto : CHURCH_PROFILE.mottoEn).toUpperCase(), 44, 34, { charSpace: 0.8 });
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(6.8);
-    setTextColor(doc, theme.muted);
-    doc.text(`${CHURCH_PROFILE.location}  •  ${CHURCH_PROFILE.phone}`, 44, 38.4);
-
-    // Right-aligned labels use a plain align (charSpace + align can overflow
-    // the right margin in jsPDF), then the accent is added with a short rule.
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(6.2);
-    setTextColor(doc, theme.accent);
-    doc.text(isSw ? 'HATI RASMI YA KANISA' : 'OFFICIAL CHURCH DOCUMENT', PAGE_WIDTH - MARGIN, 27, {
-      align: 'right'
-    });
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(6.6);
-    setTextColor(doc, theme.muted);
-    doc.text(isSw ? 'SAYUNI YERUSALEMU' : 'ZION JERUSALEM', PAGE_WIDTH - MARGIN, 32, {
-      align: 'right'
-    });
-
-    drawRule(doc, theme, 44, 110);
+    drawMasthead(doc, theme, logo, isSw);
     return;
   }
 
@@ -310,15 +319,18 @@ function drawTitle(doc: jsPDF, theme: Theme, title: string, isSw: boolean): void
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(6.5);
     setTextColor(doc, theme.accent);
-    doc.text(isSw ? 'HATI RASMI' : 'OFFICIAL DOCUMENT', MARGIN, 53, { charSpace: 1.4 });
+    doc.text(isSw ? 'HATI RASMI' : 'OFFICIAL DOCUMENT', MARGIN, 50, { charSpace: 1.4 });
 
-    fitFontSize(doc, title, 250, 17, 10, 'helvetica', 'bold');
+    fitFontSize(doc, title, 250, 18, 11, 'helvetica', 'bold');
     setTextColor(doc, theme.ink);
-    doc.text(title, MARGIN, 62, { charSpace: 0.2 });
+    doc.text(title, MARGIN, 60, { charSpace: 0.2 });
 
     setDrawColor(doc, theme.accent);
     doc.setLineWidth(0.9);
-    doc.line(MARGIN, 66, MARGIN + 30, 66);
+    doc.line(MARGIN, 64, MARGIN + 30, 64);
+    setDrawColor(doc, theme.hairline);
+    doc.setLineWidth(0.2);
+    doc.line(MARGIN + 34, 64, PAGE_WIDTH - MARGIN, 64);
     return;
   }
 
@@ -359,11 +371,8 @@ function drawRecipientName(doc: jsPDF, theme: Theme, name: string, baselineY: nu
   }
 
   setTextColor(doc, theme.ink);
-  if (modern) {
-    drawLeftLines(doc, lines, MARGIN, baselineY, lineHeight);
-  } else {
-    drawCenteredLines(doc, lines, baselineY, lineHeight);
-  }
+  if (modern) drawLeftLines(doc, lines, MARGIN, baselineY, lineHeight);
+  else drawCenteredLines(doc, lines, baselineY, lineHeight);
 
   const lastLineWidth = Math.min(doc.getTextWidth(lines[lines.length - 1]), 235);
   const underlineY = baselineY + (lines.length - 1) * lineHeight + 3.2;
@@ -378,11 +387,8 @@ function drawRecipientName(doc: jsPDF, theme: Theme, name: string, baselineY: nu
 
   setDrawColor(doc, theme.hairline);
   doc.setLineWidth(0.18);
-  if (modern) {
-    doc.line(MARGIN, underlineY + 1.4, PAGE_WIDTH - MARGIN, underlineY + 1.4);
-  } else {
-    doc.line(CENTER_X - 74, underlineY + 1.2, CENTER_X + 74, underlineY + 1.2);
-  }
+  if (modern) doc.line(MARGIN, underlineY + 1.4, PAGE_WIDTH - MARGIN, underlineY + 1.4);
+  else doc.line(CENTER_X - 74, underlineY + 1.2, CENTER_X + 74, underlineY + 1.2);
 
   return underlineY + 8;
 }
@@ -392,25 +398,20 @@ function drawBody(doc: jsPDF, theme: Theme, input: CertificatePdfInput, isSw: bo
   const definition = CERTIFICATE_DEFINITIONS[input.type];
   const recipientName = textOrDefault(input.recipientName, isSw ? 'Mpokeaji' : 'Recipient');
   const intro = isSw ? 'Hati hii inathibitisha kwamba:' : 'This certifies that:';
+  const shift = modern ? 2 : 4;
 
   let cursorY: number;
-  // Keep the content block optically centred in the space between the title
-  // rule and the footer rule (this mirrors the flex centring in the preview).
-  const shift = modern ? 6 : 9;
-
   if (modern) {
     doc.setFont('helvetica', 'italic');
     doc.setFontSize(9.4);
     setTextColor(doc, theme.muted);
     doc.text(intro, MARGIN, 77 + shift);
-
     cursorY = drawRecipientName(doc, theme, recipientName, 88 + shift);
   } else {
     doc.setFont('times', 'italic');
     doc.setFontSize(9.8);
     setTextColor(doc, theme.muted);
     doc.text(intro, CENTER_X, 80 + shift, { align: 'center' });
-
     cursorY = drawRecipientName(doc, theme, recipientName, 89.5 + shift);
   }
 
@@ -440,6 +441,14 @@ function drawBody(doc: jsPDF, theme: Theme, input: CertificatePdfInput, isSw: bo
   else drawCenteredLines(doc, bodyLines, cursorY + 1.5, 5.2);
   cursorY += (bodyLines.length - 1) * 5.2 + 9;
 
+  // Compute the verse panel first, then place notes above it so nothing overlaps.
+  const quote = textOrDefault(input.scripture, definition.defaultVerse).replace(/"/g, '');
+  doc.setFont(modern ? 'helvetica' : 'times', 'italic');
+  doc.setFontSize(modern ? 9 : 8.7);
+  const quoteLines = doc.splitTextToSize(`“${quote}”`, modern ? 232 : 208) as string[];
+  const quoteHeight = 10 + quoteLines.length * 4.6;
+  const boxTop = Math.min(cursorY + 2, 146 - quoteHeight);
+
   const notes = input.notes?.trim();
   if (notes) {
     const noteLines = doc.splitTextToSize(
@@ -449,24 +458,15 @@ function drawBody(doc: jsPDF, theme: Theme, input: CertificatePdfInput, isSw: bo
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(7.2);
     setTextColor(doc, theme.muted);
-    if (modern) drawLeftLines(doc, noteLines, MARGIN, cursorY, 3.7);
-    else drawCenteredLines(doc, noteLines, cursorY + 1, 3.7);
-    cursorY += noteLines.length * 3.7 + 2;
+    const noteY = Math.min(cursorY + 1, boxTop - noteLines.length * 3.7 - 2);
+    if (modern) drawLeftLines(doc, noteLines, MARGIN, noteY, 3.7);
+    else drawCenteredLines(doc, noteLines, noteY, 3.7);
   }
-
-  // Scripture: a quiet panel, never a decorative element.
-  const quote = textOrDefault(input.scripture, definition.defaultVerse).replace(/"/g, '');
-  doc.setFont(modern ? 'helvetica' : 'times', 'italic');
-  doc.setFontSize(modern ? 9 : 8.7);
-  setTextColor(doc, theme.ink);
-  const quoteText = `“${quote}”`;
-  const quoteLines = doc.splitTextToSize(quoteText, modern ? 232 : 208) as string[];
-  const quoteHeight = 10 + quoteLines.length * 4.6;
-  const boxTop = Math.min(cursorY + 2, 154 - quoteHeight);
 
   setFillColor(doc, theme.surface);
   setDrawColor(doc, theme.hairline);
   doc.setLineWidth(0.22);
+  setTextColor(doc, theme.ink);
   if (modern) {
     doc.rect(MARGIN, boxTop, PAGE_WIDTH - MARGIN * 2, quoteHeight, 'FD');
     setFillColor(doc, theme.accent);
@@ -482,6 +482,35 @@ function drawBody(doc: jsPDF, theme: Theme, input: CertificatePdfInput, isSw: bo
   }
 }
 
+/**
+ * Two empty lines for physical signing. No printed signature and no seal.
+ */
+function drawSigningLines(doc: jsPDF, theme: Theme, isSw: boolean): void {
+  const centers = theme.variant === 'modern' ? [66, 231] : [66, 231];
+  const width = theme.variant === 'modern' ? 70 : 64;
+  const roles = [
+    isSw ? 'MCHUNGAJI KIONGOZI' : 'SENIOR PASTOR',
+    isSw ? 'KATIBU WA KANISA' : 'CHURCH SECRETARY'
+  ];
+  const sub = isSw ? 'Saini ya mkono' : 'Signed by hand';
+
+  centers.forEach((x, index) => {
+    setDrawColor(doc, theme.ink);
+    doc.setLineWidth(0.35);
+    doc.line(x - width / 2, 161, x + width / 2, 161);
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(6.8);
+    setTextColor(doc, theme.ink);
+    doc.text(roles[index], x, 166.5, { align: 'center', charSpace: 0.3 });
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(6.2);
+    setTextColor(doc, theme.muted);
+    doc.text(sub, x, 170.2, { align: 'center' });
+  });
+}
+
 function drawFooter(doc: jsPDF, theme: Theme, input: CertificatePdfInput, isSw: boolean): void {
   const modern = theme.variant === 'modern';
   const issuedDate = formatCertificateDate(localIsoDate(new Date()), input.language);
@@ -493,7 +522,8 @@ function drawFooter(doc: jsPDF, theme: Theme, input: CertificatePdfInput, isSw: 
     { label: isSw ? 'NAMBA YA UTHIBITISHO' : 'VERIFICATION NO.', value: input.serialNumber }
   ];
 
-  drawRule(doc, theme, 166, 118);
+  drawRule(doc, theme, 150, 118);
+  drawSigningLines(doc, theme, isSw);
 
   const columns = modern ? [MARGIN, 108, 196] : [46, CENTER_X, PAGE_WIDTH - 46];
   meta.forEach((item, index) => {
@@ -503,31 +533,31 @@ function drawFooter(doc: jsPDF, theme: Theme, input: CertificatePdfInput, isSw: 
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(6.2);
     setTextColor(doc, theme.accent);
-    doc.text(item.label, x, 173, align ? { align, charSpace: 0.7 } : { charSpace: 0.7 });
+    doc.text(item.label, x, 178, align ? { align, charSpace: 0.7 } : { charSpace: 0.7 });
 
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8.2);
     setTextColor(doc, theme.ink);
-    doc.text(item.value, x, 179, align ? { align } : {});
+    doc.text(item.value, x, 183.5, align ? { align } : {});
   });
 
   setDrawColor(doc, theme.hairline);
   doc.setLineWidth(0.2);
-  doc.line(modern ? MARGIN : 30, 187, modern ? PAGE_WIDTH - MARGIN : 267, 187);
+  doc.line(modern ? MARGIN : 30, 189, modern ? PAGE_WIDTH - MARGIN : 267, 189);
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(6.2);
   setTextColor(doc, theme.muted);
 
   if (modern) {
-    doc.text(CHURCH_PROFILE.name, MARGIN, 192);
-    doc.text(`${CHURCH_PROFILE.email}  •  ${CHURCH_PROFILE.phone}`, CENTER_X, 192, { align: 'center' });
-    doc.text(isSw ? 'HATI RASMI' : 'OFFICIAL DOCUMENT', PAGE_WIDTH - MARGIN, 192, { align: 'right' });
+    doc.text(CHURCH_PROFILE.name, MARGIN, 193.5);
+    doc.text(`${CHURCH_PROFILE.email}  •  ${CHURCH_PROFILE.phone}`, CENTER_X, 193.5, { align: 'center' });
+    doc.text(isSw ? 'HATI RASMI' : 'OFFICIAL DOCUMENT', PAGE_WIDTH - MARGIN, 193.5, { align: 'right' });
   } else {
     doc.text(
       `${CHURCH_PROFILE.name}  •  ${CHURCH_PROFILE.email}  •  ${CHURCH_PROFILE.phone}`,
       CENTER_X,
-      192,
+      193.5,
       { align: 'center' }
     );
   }

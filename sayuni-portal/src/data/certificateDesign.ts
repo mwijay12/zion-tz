@@ -14,6 +14,8 @@ export interface CertificatePalette {
   surface: string;
   ink: string;
   accent: string;
+  /** A light tint of the same accent, used only for text on dark ink. */
+  accentSoft: string;
   muted: string;
   hairline: string;
 }
@@ -34,13 +36,14 @@ export const CERTIFICATE_DESIGNS: Record<CertificateVariant, CertificateDesign> 
     id: 'classic',
     labelSw: 'Rasmi',
     labelEn: 'Classic',
-    descriptionSw: 'Karatasi ya pembe, herufi za kiserifu, mistari ya dhahabu iliyotulia.',
-    descriptionEn: 'Ivory paper, formal serif type, restrained bronze rules.',
+    descriptionSw: 'Karatasi ya pembe, herufi za kiserifu, fremu ya dhahabu iliyotulia.',
+    descriptionEn: 'Ivory paper, formal serif type, a restrained bronze frame.',
     palette: {
       paper: '#FCFAF4',
       surface: '#F7F1E3',
       ink: '#1B2A4A',
       accent: '#A2761F',
+      accentSoft: '#E3CE9A',
       muted: '#737B8C',
       hairline: '#DCD1B7'
     }
@@ -49,13 +52,14 @@ export const CERTIFICATE_DESIGNS: Record<CertificateVariant, CertificateDesign> 
     id: 'modern',
     labelSw: 'Kisasa',
     labelEn: 'Modern',
-    descriptionSw: 'Karatasi nyeupe, mpangilio wa kushoto, herufi safi za kisasa.',
-    descriptionEn: 'Clean white sheet, left-aligned editorial grid, modern type.',
+    descriptionSw: 'Bendera ya giza juu, utepe wa kijani, herufi kubwa za kisasa.',
+    descriptionEn: 'Bold dark masthead, teal accent rail, large modern type.',
     palette: {
       paper: '#FFFFFF',
       surface: '#F4F6F8',
       ink: '#101C2E',
       accent: '#1F5F57',
+      accentSoft: '#9FD3C9',
       muted: '#6B7686',
       hairline: '#D7DEE6'
     }
@@ -70,6 +74,7 @@ export function certificateCssVars(variant: CertificateVariant): Record<string, 
     '--cert-surface': palette.surface,
     '--cert-ink': palette.ink,
     '--cert-accent': palette.accent,
+    '--cert-accent-soft': palette.accentSoft,
     '--cert-muted': palette.muted,
     '--cert-hairline': palette.hairline
   };

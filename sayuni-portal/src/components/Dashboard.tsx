@@ -623,8 +623,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
           <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
             {isSw 
-              ? 'Tengeneza na uchapishe vyeti rasmi vya Ubatizo, Ndoa na Wakfu kwa miundo miwili iliyosafishwa, yenye nambari ya uthibitisho na bila saini wala muhuri.'
-              : 'Generate and print baptism, wedding and dedication certificates in two polished designs, with a unique verification number and no signature or seal.'}
+              ? 'Tengeneza na uchapishe vyeti rasmi vya Ubatizo, Ndoa na Wakfu kwa miundo miwili iliyosafishwa, yenye nambari ya uthibitisho na mistari ya kusainiwa kwa mkono.'
+              : 'Generate and print baptism, wedding and dedication certificates in two polished designs, with a unique verification number and blank signing lines.'}
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>

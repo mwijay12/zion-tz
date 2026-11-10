@@ -171,7 +171,7 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({ language }
         ))}
       </div>
 
-      {/* Design picker: two serious, two-colour layouts. No signature / seal UI. */}
+      {/* Design picker: two serious, two-colour layouts with blank physical signing lines. */}
       <div className="church-card no-print cert-design-card">
         <div className="cert-design-head">
           <div style={{ minWidth: 0, flex: '1 1 300px' }}>
@@ -181,8 +181,8 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({ language }
             </div>
             <p className="cert-design-desc">
               {isSw
-                ? 'Chagua muundo rasmi. Yote miwili hutumia rangi mbili tu, haina saini wala muhuri, na inalingana kabisa na PDF utakayopakua.'
-                : 'Choose an official layout. Both use two ink colours only, carry no signature or seal, and match the downloaded PDF exactly.'}
+                ? 'Chagua muundo rasmi. Yote miwili ina mistari miwili tupu ya kusainiwa kwa mkono, haina saini iliyochapishwa wala muhuri, na inalingana kabisa na PDF.'
+                : 'Choose an official layout. Both keep two blank lines for physical signing, print no signature or seal, and match the downloaded PDF exactly.'}
             </p>
           </div>
           <span className="cert-design-count">{isSw ? 'Miundo 2' : '2 designs'}</span>
@@ -326,8 +326,8 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({ language }
           </button>
           <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.45, textAlign: 'center', margin: 0 }}>
             {isSw
-              ? `PDF ya vekta (A4 landscape) · Muundo: ${design.labelSw} · Hakuna saini wala muhuri.`
-              : `Vector PDF (A4 landscape) · Design: ${design.labelEn} · No signature or seal.`}
+              ? `PDF ya vekta (A4 landscape) · Muundo: ${design.labelSw} · Mistari ya kusainiwa kwa mkono, hakuna muhuri.`
+              : `Vector PDF (A4 landscape) · Design: ${design.labelEn} · Blank signing lines, no seal.`}
           </p>
         </div>
 
@@ -345,6 +345,19 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({ language }
               <span className="cert-corner cert-corner--br" />
             </div>
             <div className="cert-edge" aria-hidden="true" />
+            <div className="cert-masthead" aria-hidden="true">
+              <div className="cert-masthead-mark">
+                <img src="/zion_logo.png" alt="" width={54} height={54} />
+              </div>
+              <div className="cert-masthead-text">
+                <strong>{CHURCH_PROFILE.name}</strong>
+                <span>{isSw ? CHURCH_PROFILE.motto : CHURCH_PROFILE.mottoEn}</span>
+                <small>{CHURCH_PROFILE.location} • {CHURCH_PROFILE.phone}</small>
+              </div>
+              <div className="cert-masthead-tag">
+                {isSw ? 'Hati Rasmi' : 'Official'}<br />{isSw ? 'ya Kanisa' : 'Document'}
+              </div>
+            </div>
             <img className="cert-watermark" src="/zion_logo.png" alt="" aria-hidden="true" width={300} height={300} />
 
             <div className="cert-inner">
@@ -399,6 +412,18 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({ language }
 
               <footer className="cert-footer">
                 <div className="cert-rule cert-rule--full"><i /></div>
+                <div className="cert-sign-grid">
+                  <div className="cert-sign">
+                    <span className="cert-sign-line" />
+                    <span className="cert-sign-role">{isSw ? 'Mchungaji Kiongozi' : 'Senior Pastor'}</span>
+                    <span className="cert-sign-sub">{isSw ? 'Saini ya mkono' : 'Signed by hand'}</span>
+                  </div>
+                  <div className="cert-sign">
+                    <span className="cert-sign-line" />
+                    <span className="cert-sign-role">{isSw ? 'Katibu wa Kanisa' : 'Church Secretary'}</span>
+                    <span className="cert-sign-sub">{isSw ? 'Saini ya mkono' : 'Signed by hand'}</span>
+                  </div>
+                </div>
                 <div className="cert-meta">
                   {metaItems.map((item) => (
                     <div className="cert-meta-item" key={item.label}>

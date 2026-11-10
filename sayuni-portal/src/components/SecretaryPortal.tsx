@@ -919,8 +919,8 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
           </div>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>
             {isSw 
-              ? 'Thibitisha na uchapishe vyeti vya ubatizo, ndoa na wakfu kwa miundo miwili rasmi, bila saini wala muhuri.'
-              : 'Print official certificates in two polished designs — no seals or signing blocks.'}
+              ? 'Thibitisha na uchapishe vyeti vya ubatizo, ndoa na wakfu kwa miundo miwili rasmi, vyenye mistari ya kusainiwa kwa mkono.'
+              : 'Print official certificates in two polished designs with blank signing lines — no printed signature or seal.'}
           </p>
           <button onClick={() => setActiveTab('certificates')} className="btn-primary" style={{ marginTop: 'auto' }}>
             <Award size={15} />

@@ -80,8 +80,10 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
   const [bookmarkedVerses, setBookmarkedVerses] = useState<string[]>([]);
   const [copiedVerse, setCopiedVerse] = useState<string | null>(null);
 
-  // Tenzi za Rohoni State
+  // Tenzi za Rohoni State (+ Nyimbo za Kikristo index from MySongbooks)
   const [tenziList, setTenziList] = useState<TenziHymn[]>([]);
+  const [nyimboList, setNyimboList] = useState<TenziHymn[]>([]);
+  const [hymnCollection, setHymnCollection] = useState<'tenzi' | 'nyimbo'>('tenzi');
   const [selectedTenziNumber, setSelectedTenziNumber] = useState<number>(8); // Default: Chakutumaini Sina (8)
   const [tenziSearch, setTenziSearch] = useState<string>('');
   const [tenziCategory, setTenziCategory] = useState<string>('All');
@@ -127,6 +129,26 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
         setTenziList(data);
       })
       .catch(err => console.error('Error loading tenzi_za_rohoni.json', err));
+
+    // Nyimbo za Kikristo (221 titles indexed from MySongbooks).
+    // Titles + links only — no lyrics bundled (copyright).
+    fetch('/data/nyimbo_za_kikristo.json')
+      .then(res => res.json())
+      .then((data: Array<{ siteNumber: number; title: string; url: string; likes: number }>) => {
+        const normalized: TenziHymn[] = data.map(s => ({
+          number: s.siteNumber,
+          title: s.title,
+          category: 'Nyimbo za Kikristo',
+          key: '',
+          time_signature: '',
+          stanzas: [],
+          collection: 'nyimbo' as const,
+          externalUrl: s.url,
+          likes: s.likes,
+        }));
+        setNyimboList(normalized);
+      })
+      .catch(err => console.error('Error loading nyimbo_za_kikristo.json', err));
   }, []);
 
   // Cleanup audio on unmount
@@ -690,17 +712,27 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
     playVerseAudio(Math.max(0, current - 1));
   };
 
-  // Tenzi Filtering
-  const filteredTenzi = tenziList.filter(h => {
+  // Tenzi Filtering (active collection: Tenzi 46 vs Nyimbo 221)
+  const activeHymnList = hymnCollection === 'tenzi' ? tenziList : nyimboList;
+  const filteredTenzi = activeHymnList.filter(h => {
     const matchNum = String(h.number).includes(tenziSearch.trim());
     const matchTitle = h.title.toLowerCase().includes(tenziSearch.toLowerCase());
     const matchCategory = tenziCategory === 'All' || h.category === tenziCategory;
     return (matchNum || matchTitle) && matchCategory;
   });
 
-  const selectedHymn = tenziList.find(h => h.number === selectedTenziNumber) || tenziList[0];
+  const selectedHymn = activeHymnList.find(h => h.number === selectedTenziNumber) || activeHymnList[0];
 
   const copyTenziLyrics = (hymn: TenziHymn) => {
+    if (hymn.stanzas.length === 0) {
+      // Nyimbo index entries have no bundled lyrics — copy the link instead.
+      navigator.clipboard.writeText(
+        `*Nyimbo #${hymn.number} — ${hymn.title}*\n${hymn.externalUrl ?? ''}\n\n— Sayuni Jerusalem Church`
+      );
+      setCopiedHymn(true);
+      setTimeout(() => setCopiedHymn(false), 2000);
+      return;
+    }
     let text = `*Tenzi ya Rohoni #${hymn.number} — ${hymn.title}* (${hymn.key})\n\n`;
     hymn.stanzas.forEach(s => {
       text += `_Ubeti wa ${s.verse_number}:_\n${s.text}\n\n`;
@@ -715,6 +747,11 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
   };
 
   const reciteTenziAloud = async (hymn: TenziHymn) => {
+    if (hymn.stanzas.length === 0) {
+      // No bundled lyrics for Nyimbo index entries — nothing to recite.
+      setEngineNotice('Maneno ya wimbo huu hayajapakuliwa kwenye app. Fungua MySongbooks kusikiliza.');
+      return;
+    }
     stopAudio();
     const sessionId = ++playbackSessionRef.current;
     isPlayingRef.current = true;
@@ -1294,7 +1331,26 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
               />
             </div>
 
-            {/* Category Filter */}
+            {/* Collection Toggle: Tenzi (offline lyrics) vs Nyimbo (MySongbooks index) */}
+            <div style={{ display: 'flex', gap: '0.4rem' }}>
+              <button
+                onClick={() => { setHymnCollection('tenzi'); setSelectedTenziNumber(8); }}
+                className={`badge ${hymnCollection === 'tenzi' ? 'badge-purple' : 'badge-subtle'}`}
+                style={{ cursor: 'pointer', flex: 1, textAlign: 'center', fontSize: '0.72rem' }}
+              >
+                {isSw ? `Tenzi (${tenziList.length})` : `Tenzi (${tenziList.length})`}
+              </button>
+              <button
+                onClick={() => { setHymnCollection('nyimbo'); setSelectedTenziNumber(1); }}
+                className={`badge ${hymnCollection === 'nyimbo' ? 'badge-purple' : 'badge-subtle'}`}
+                style={{ cursor: 'pointer', flex: 1, textAlign: 'center', fontSize: '0.72rem' }}
+              >
+                {isSw ? `Nyimbo (${nyimboList.length})` : `Nyimbo (${nyimboList.length})`}
+              </button>
+            </div>
+
+            {/* Category Filter (Tenzi only) */}
+            {hymnCollection === 'tenzi' && (
             <div style={{ display: 'flex', gap: '0.35rem', overflowX: 'auto', paddingBottom: '0.3rem' }}>
               {['All', 'Sifa na Shukrani', 'Imani na Tumaini', 'Msalaba na Damu ya Yesu', 'Maombi na Urafiki na Yesu'].map(cat => (
                 <button
@@ -1307,6 +1363,7 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
                 </button>
               ))}
             </div>
+            )}
 
             {/* Hymns List */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', maxHeight: '480px', overflowY: 'auto' }}>
@@ -1350,7 +1407,7 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
                         {h.title}
                       </span>
                       <span style={{ display: 'block', fontSize: '0.68rem', opacity: 0.75 }}>
-                        {h.category} • {h.key}
+                        {h.collection === 'nyimbo' ? 'Nyimbo za Kikristo • MySongbooks' : `${h.category} • ${h.key}`}
                       </span>
                     </div>
                   </button>
@@ -1432,7 +1489,9 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
                     </button>
                     <button
                       onClick={() => {
-                        const text = `*Tenzi #${selectedHymn.number} — ${selectedHymn.title}*\n\n${selectedHymn.stanzas[0].text}\n\n_Sayuni Jerusalem Church_`;
+                        const text = selectedHymn.stanzas.length > 0
+                          ? `*Tenzi #${selectedHymn.number} — ${selectedHymn.title}*\n\n${selectedHymn.stanzas[0].text}\n\n_Sayuni Jerusalem Church_`
+                          : `*Nyimbo #${selectedHymn.number} — ${selectedHymn.title}*\n${selectedHymn.externalUrl ?? ''}\n\n_Sayuni Jerusalem Church_`;
                         window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
                       }}
                       className="btn-primary"
@@ -1443,6 +1502,29 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
                     </button>
                   </div>
                 </div>
+
+                {/* Nyimbo (MySongbooks index): external link, no bundled lyrics */}
+                {selectedHymn.collection === 'nyimbo' && selectedHymn.externalUrl && (
+                  <div className="church-card" style={{ maxWidth: '680px', marginBottom: '1.25rem' }}>
+                    <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1rem' }}>
+                      {isSw ? 'Nyimbo za Kikristo — MySongbooks' : 'Nyimbo za Kikristo — MySongbooks'}
+                    </h3>
+                    <p style={{ margin: '0 0 1rem 0', fontSize: '0.85rem', lineHeight: 1.6, color: 'var(--text-muted)' }}>
+                      {isSw
+                        ? 'Wimbo huu ni sehemu ya orodha ya Nyimbo za Kikristo (221 nyimbo) kutoka MySongbooks. Maneno kamili na sauti zinapatikana kupitia kiungo — hazijanakiliwa kwenye app (haki za miliki).'
+                        : 'This hymn is part of the Nyimbo za Kikristo index (221 songs) from MySongbooks. Full lyrics and audio are available via the link — they are not copied into the app (copyright).'}
+                    </p>
+                    <a
+                      href={selectedHymn.externalUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-primary"
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none', fontSize: '0.85rem' }}
+                    >
+                      {isSw ? 'Fungua Maneno kwenye MySongbooks' : 'Open Lyrics on MySongbooks'}
+                    </a>
+                  </div>
+                )}
 
                 {/* Stanzas & Chorus */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', maxWidth: '680px' }}>

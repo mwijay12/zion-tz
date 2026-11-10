@@ -12,6 +12,7 @@ class BibleService {
   List<BibleBook>? _cachedSwBooks;
   List<BibleBook>? _cachedKjvBooks;
   List<TenziHymn>? _cachedTenzi;
+  List<TenziHymn>? _cachedNyimbo;
   bool _isLoadingSw = false;
   bool _isLoadingKjv = false;
 
@@ -83,6 +84,30 @@ class BibleService {
     } catch (e) {
       return [];
     }
+  }
+
+  /// Nyimbo za Kikristo index (221 titles from MySongbooks).
+  /// Titles + links only — no lyrics bundled (see TenziHymn docs).
+  Future<List<TenziHymn>> loadNyimbo() async {
+    if (_cachedNyimbo != null) return _cachedNyimbo!;
+    try {
+      final jsonString = await rootBundle
+          .loadString('assets/hymns/nyimbo_za_kikristo.json');
+      final List<dynamic> list = json.decode(jsonString);
+      _cachedNyimbo = list
+          .map((h) => TenziHymn.fromJson(h as Map<String, dynamic>))
+          .toList();
+      return _cachedNyimbo!;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /// Combined hymn list: Tenzi (offline lyrics) first, then Nyimbo index.
+  Future<List<TenziHymn>> loadAllHymns() async {
+    final tenzi = await loadTenzi();
+    final nyimbo = await loadNyimbo();
+    return [...tenzi, ...nyimbo];
   }
 
   Future<void> saveLastRead({

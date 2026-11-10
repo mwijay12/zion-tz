@@ -126,7 +126,7 @@ Status key:
 |---|---|---|
 | Bible reading | Working | Bundled JSON assets; no login required |
 | Bible search and bookmarks | Working | Local reading experience |
-| Tenzi za Rohoni hymns | Working | Bundled offline hymn content |
+| Tenzi za Rohoni hymns | Working | 46 hymns with offline lyrics + 221 Nyimbo za Kikristo titles (MySongbooks index, lyrics via link) |
 | Personal notes | Working | Local notes with PDF/share export |
 | Text-to-speech reading | Partial | Device TTS; quality and controls vary by platform |
 | Christian radio | Working with internet | Radio Browser directory; needs better offline and error states |

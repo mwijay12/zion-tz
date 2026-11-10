@@ -27,7 +27,7 @@ class _BookHubScreenState extends State<BookHubScreen> {
     {
       'title': 'Tenzi',
       'icon': Icons.queue_music_rounded,
-      'badge': 'Nyimbo 161',
+      'badge': 'Nyimbo 78',
     },
     {
       'title': 'Madokezo',

@@ -17,18 +17,15 @@ class TenziStanza {
   }
 }
 
-/// A hymn in either collection:
-/// - **Tenzi za Rohoni** (`collection == 'tenzi'`): bundled offline with
-///   full lyrics (`stanzas` non-empty, `hasLyrics == true`).
-/// - **Nyimbo za Kikristo** (`collection == 'nyimbo'`): indexed from
-///   MySongbooks (mysongbooks.scaptedesigns.com) — title + link. Most
-///   entries are link-only (`stanzas` empty, `externalUrl` set), but a
-///   subset carries ORIGINAL Swahili translations of classic
-///   public-domain hymns (written for this project, marked with
-///   `lyricsNote`) so they work fully offline (`hasLyrics == true`).
+/// A hymn in either collection. Both collections ship **full offline
+/// lyrics** — the app never depends on an external hymn website.
 ///
-/// Lyrics are never copied from the website (copyright). The public-domain
-/// translations are new work, not scraped from any hymnal or blog.
+/// - **Tenzi za Rohoni** (`collection == 'tenzi'`): the original bundled
+///   Swahili hymnal (46 hymns).
+/// - **Nyimbo za Kikristo** (`collection == 'nyimbo'`): 32 fresh Swahili
+///   translations of classic public-domain hymns written for this project
+///   (marked with `lyricsNote`). No lyrics are copied from any website or
+///   modern hymnal, and there are no outbound links.
 class TenziHymn {
   final int number;
   final String title;
@@ -38,14 +35,8 @@ class TenziHymn {
   final List<TenziStanza> stanzas;
   final String? chorus;
 
-  /// 'tenzi' (offline lyrics) or 'nyimbo' (MySongbooks index).
+  /// 'tenzi' or 'nyimbo'.
   final String collection;
-
-  /// MySongbooks URL for Nyimbo entries (null for Tenzi).
-  final String? externalUrl;
-
-  /// Likes on MySongbooks (Nyimbo only, for "popular" sorting).
-  final int likes;
 
   const TenziHymn({
     required this.number,
@@ -56,8 +47,6 @@ class TenziHymn {
     required this.stanzas,
     this.chorus,
     this.collection = 'tenzi',
-    this.externalUrl,
-    this.likes = 0,
   });
 
   bool get hasLyrics => stanzas.isNotEmpty;
@@ -67,10 +56,11 @@ class TenziHymn {
   String get shortLabel => isNyimbo ? 'N$number' : 'T$number';
 
   factory TenziHymn.fromJson(Map<String, dynamic> json) {
-    // Nyimbo format: {siteNumber, title, slug, url, likes, source}
-    // A subset also carries `stanzas`/`chorus` (original public-domain
-    // translations) — parse them so those hymns work fully offline.
-    if (json.containsKey('siteNumber') || json.containsKey('url')) {
+    final isNyimbo = json['collection']?.toString() == 'nyimbo' ||
+        json.containsKey('siteNumber');
+
+    // Nyimbo format: {siteNumber, title, collection, stanzas, chorus?}
+    if (isNyimbo) {
       final rawStanzas = json['stanzas'] as List<dynamic>? ?? [];
       return TenziHymn(
         number: json['siteNumber'] is int
@@ -85,10 +75,6 @@ class TenziHymn {
             .toList(),
         chorus: json['chorus']?.toString(),
         collection: 'nyimbo',
-        externalUrl: json['url']?.toString(),
-        likes: json['likes'] is int
-            ? json['likes'] as int
-            : int.tryParse(json['likes'].toString()) ?? 0,
       );
     }
 

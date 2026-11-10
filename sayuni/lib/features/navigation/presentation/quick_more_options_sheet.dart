@@ -387,6 +387,10 @@ class QuickMoreOptionsSheet extends StatelessWidget {
                             AppHaptics.lightImpact();
                             final newMode =
                                 isDark ? ThemeMode.light : ThemeMode.dark;
+                            // Close this modal route first so the framework
+                            // does not rebuild MaterialApp while its Overlay
+                            // entry is still mounted (duplicate GlobalKey).
+                            Navigator.pop(context);
                             themeService.setThemeMode(newMode);
                           },
                           icon: Icon(

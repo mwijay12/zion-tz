@@ -66,9 +66,6 @@ dependencies:
   # (no fl_chart/rive needed) to keep the build lean and offline-safe.
   flutter_animate: ^4.5.2
   animations: ^2.0.11
-  # In-app browser for Nyimbo lyrics (MySongbooks) — keeps members inside
-  # the app instead of jumping to an external browser.
-  webview_flutter: ^4.10.0
 
 dev_dependencies:
   flutter_test:

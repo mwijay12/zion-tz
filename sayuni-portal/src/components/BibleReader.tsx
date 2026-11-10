@@ -80,7 +80,7 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
   const [bookmarkedVerses, setBookmarkedVerses] = useState<string[]>([]);
   const [copiedVerse, setCopiedVerse] = useState<string | null>(null);
 
-  // Tenzi za Rohoni State (+ Nyimbo za Kikristo index from MySongbooks)
+  // Tenzi za Rohoni + Nyimbo za Kikristo (both fully offline)
   const [tenziList, setTenziList] = useState<TenziHymn[]>([]);
   const [nyimboList, setNyimboList] = useState<TenziHymn[]>([]);
   const [hymnCollection, setHymnCollection] = useState<'tenzi' | 'nyimbo'>('tenzi');
@@ -130,27 +130,23 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
       })
       .catch(err => console.error('Error loading tenzi_za_rohoni.json', err));
 
-    // Nyimbo za Kikristo (221 titles indexed from MySongbooks).
-    // Most entries are titles + links only (no lyrics copied — copyright),
-    // but a subset carries ORIGINAL Swahili translations of classic
-    // public-domain hymns (written for this project) so they work offline.
+    // Nyimbo za Kikristo: 32 offline hymns with original Swahili
+    // translations of classic public-domain songs. No external links.
     fetch('/data/nyimbo_za_kikristo.json')
       .then(res => res.json())
-      .then((data: Array<{ siteNumber: number; title: string; url: string; likes: number; stanzas?: Array<{ verse_number: number; text: string }>; chorus?: string }>) => {
+      .then((data: Array<{ siteNumber: number; title: string; stanzas: Array<{ verse_number: number; text: string }>; chorus?: string }>) => {
         const normalized: TenziHymn[] = data.map(s => ({
           number: s.siteNumber,
           title: s.title,
           category: 'Nyimbo za Kikristo',
           key: '',
           time_signature: '',
-          stanzas: (s.stanzas ?? []).map(st => ({
+          stanzas: s.stanzas.map(st => ({
             verse_number: st.verse_number,
             text: st.text,
           })),
           chorus: s.chorus,
           collection: 'nyimbo' as const,
-          externalUrl: s.url,
-          likes: s.likes,
         }));
         setNyimboList(normalized);
       })
@@ -718,7 +714,7 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
     playVerseAudio(Math.max(0, current - 1));
   };
 
-  // Tenzi Filtering (active collection: Tenzi 46 vs Nyimbo 221)
+  // Tenzi Filtering (Tenzi 46 vs Nyimbo 32 — both offline)
   const activeHymnList = hymnCollection === 'tenzi' ? tenziList : nyimboList;
   const filteredTenzi = activeHymnList.filter(h => {
     const matchNum = String(h.number).includes(tenziSearch.trim());
@@ -730,23 +726,15 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
   const selectedHymn = activeHymnList.find(h => h.number === selectedTenziNumber) || activeHymnList[0];
 
   const copyTenziLyrics = (hymn: TenziHymn) => {
-    if (hymn.stanzas.length === 0) {
-      // Nyimbo index entries have no bundled lyrics — copy the link instead.
-      navigator.clipboard.writeText(
-        `*Nyimbo #${hymn.number} — ${hymn.title}*\n${hymn.externalUrl ?? ''}\n\n— Sayuni Jerusalem Church`
-      );
-      setCopiedHymn(true);
-      setTimeout(() => setCopiedHymn(false), 2000);
-      return;
-    }
-    let text = `*Tenzi ya Rohoni #${hymn.number} — ${hymn.title}* (${hymn.key})\n\n`;
+    const label = hymn.collection === 'nyimbo' ? 'Nyimbo' : 'Tenzi ya Rohoni';
+    let text = `*${label} #${hymn.number} — ${hymn.title}*${hymn.key ? ` (${hymn.key})` : ''}\n\n`;
     hymn.stanzas.forEach(s => {
       text += `_Ubeti wa ${s.verse_number}:_\n${s.text}\n\n`;
       if (hymn.chorus) {
         text += `_Kikwagizo:_\n${hymn.chorus}\n\n`;
       }
     });
-    text += `— Sayuni Jerusalem Church Hymnal`;
+    text += '— Sayuni Jerusalem Church Hymnal';
     navigator.clipboard.writeText(text);
     setCopiedHymn(true);
     setTimeout(() => setCopiedHymn(false), 2000);
@@ -754,8 +742,7 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
 
   const reciteTenziAloud = async (hymn: TenziHymn) => {
     if (hymn.stanzas.length === 0) {
-      // No bundled lyrics for Nyimbo index entries — nothing to recite.
-      setEngineNotice('Maneno ya wimbo huu hayajapakuliwa kwenye app. Fungua MySongbooks kusikiliza.');
+      setEngineNotice(isSw ? 'Maneno ya wimbo huu hayapatikani.' : 'Lyrics for this hymn are unavailable.');
       return;
     }
     stopAudio();
@@ -814,7 +801,7 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
             </span>
             <span className="badge badge-emerald">
               <Sparkles size={12} />
-              <span>{isSw ? 'Vitabu 66 Kamili + Tenzi 161' : 'Complete 66 Books + Hymns'}</span>
+              <span>{isSw ? 'Vitabu 66 + Nyimbo 78 (Offline)' : '66 Books + 78 Offline Hymns'}</span>
             </span>
           </div>
           <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-headline)', margin: 0 }}>
@@ -1036,9 +1023,9 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
           </div>
 
           {/* Main Bible Split Layout: Left Nav + Right Text */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'minmax(260px, 300px) 1fr', gap: '1.25rem', alignItems: 'start' }}>
+          <div className="reader-split">
             {/* Left Sidebar: Testament Filter, Books List, Chapter Grid */}
-            <div className="church-card" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '82vh', overflowY: 'auto' }}>
+            <div className="church-card reader-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {/* Search Filter */}
               <div style={{ position: 'relative' }}>
                 <Search size={15} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--on-surface-variant)' }} />
@@ -1091,6 +1078,7 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
                     return (
                       <button
                         key={b.number}
+                        className="pressable"
                         onClick={() => {
                           setSelectedBookNumber(b.number);
                           setSelectedChapterNumber('1');
@@ -1156,7 +1144,7 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
             </div>
 
             {/* Right Main Scripture Area */}
-            <div className="church-card" style={{ padding: '1.75rem', minHeight: '600px' }}>
+            <div className="church-card reader-content" style={{ padding: '1.75rem' }}>
               {isLoading ? (
                 <div style={{ padding: '4rem', textAlign: 'center' }}>
                   <Loader2 size={36} className="animate-spin" style={{ margin: '0 auto 1rem auto', color: 'var(--primary)' }} />
@@ -1216,6 +1204,7 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
                         <div
                           key={swVerse.verse_number}
                           ref={isVerseSpeaking ? activeVerseRef : null}
+                          className="verse-row"
                           style={{
                             display: 'flex',
                             gap: '0.85rem',
@@ -1246,7 +1235,7 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
                           {/* Verse Text (Single or Parallel) */}
                           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                             {translation === 'parallel' ? (
-                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                              <div className="parallel-verses" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                 <div>
                                   <span style={{ display: 'block', fontSize: '0.68rem', fontWeight: 700, color: 'var(--primary)', textTransform: 'uppercase' }}>Kiswahili (SUV)</span>
                                   <p style={{ margin: 0, color: 'var(--on-surface)' }}>{swVerse.verse_text}</p>
@@ -1268,7 +1257,7 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
                           </div>
 
                           {/* Verse Action Buttons */}
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', opacity: 0.85, flexShrink: 0 }}>
+                          <div className="verse-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', opacity: 0.85, flexShrink: 0 }}>
                             <button
                               onClick={() => {
                                 if (isVerseSpeaking) {
@@ -1321,9 +1310,9 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
           MODULE 2: TENZI ZA ROHONI (SWAHILI HYMNAL BOOK)
           ========================================================================= */}
       {activeModule === 'tenzi' && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 340px) 1fr', gap: '1.25rem', alignItems: 'start' }}>
+        <div className="reader-split reader-split--hymns">
           {/* Left: Hymns List & Search */}
-          <div className="church-card" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxHeight: '82vh', overflowY: 'auto' }}>
+          <div className="church-card reader-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {/* Search by Number or Title */}
             <div style={{ position: 'relative' }}>
               <Search size={15} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--on-surface-variant)' }} />
@@ -1337,7 +1326,7 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
               />
             </div>
 
-            {/* Collection Toggle: Tenzi (offline lyrics) vs Nyimbo (MySongbooks index) */}
+            {/* Collection Toggle: both collections ship full offline lyrics */}
             <div style={{ display: 'flex', gap: '0.4rem' }}>
               <button
                 onClick={() => { setHymnCollection('tenzi'); setSelectedTenziNumber(8); }}
@@ -1347,7 +1336,7 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
                 {isSw ? `Tenzi (${tenziList.length})` : `Tenzi (${tenziList.length})`}
               </button>
               <button
-                onClick={() => { setHymnCollection('nyimbo'); setSelectedTenziNumber(1); }}
+                onClick={() => { setHymnCollection('nyimbo'); setSelectedTenziNumber(nyimboList[0]?.number ?? 1); }}
                 className={`badge ${hymnCollection === 'nyimbo' ? 'badge-purple' : 'badge-subtle'}`}
                 style={{ cursor: 'pointer', flex: 1, textAlign: 'center', fontSize: '0.72rem' }}
               >
@@ -1378,6 +1367,7 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
                 return (
                   <button
                     key={h.number}
+                    className="pressable"
                     onClick={() => {
                       stopAudio();
                       setSelectedTenziNumber(h.number);
@@ -1413,7 +1403,7 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
                         {h.title}
                       </span>
                       <span style={{ display: 'block', fontSize: '0.68rem', opacity: 0.75 }}>
-                        {h.collection === 'nyimbo' ? 'Nyimbo za Kikristo • MySongbooks' : `${h.category} • ${h.key}`}
+                        {h.collection === 'nyimbo' ? 'Nyimbo za Kikristo • Maneno kamili' : `${h.category} • ${h.key}`}
                       </span>
                     </div>
                   </button>
@@ -1423,24 +1413,24 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
           </div>
 
           {/* Right: Selected Hymn View with Lyrics */}
-          <div className="church-card" style={{ padding: '2rem', minHeight: '600px' }}>
+          <div className="church-card reader-content" style={{ padding: '2rem' }}>
             {selectedHymn ? (
               <div>
                 {/* Hymn Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '1.25rem', marginBottom: '1.75rem', flexWrap: 'wrap', gap: '1rem' }}>
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
                       <span className="badge badge-purple" style={{ fontSize: '0.75rem' }}>
-                        Tenzi #{selectedHymn.number}
+                        {selectedHymn.collection === 'nyimbo' ? `Nyimbo #${selectedHymn.number}` : `Tenzi #${selectedHymn.number}`}
                       </span>
-                      <span className="badge badge-emerald">
-                        {selectedHymn.key}
-                      </span>
-                      <span className="badge badge-subtle">
-                        {selectedHymn.time_signature}
-                      </span>
+                      {selectedHymn.key ? (
+                        <span className="badge badge-emerald">{selectedHymn.key}</span>
+                      ) : null}
+                      {selectedHymn.time_signature ? (
+                        <span className="badge badge-subtle">{selectedHymn.time_signature}</span>
+                      ) : null}
                     </div>
-                    <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-headline)', margin: '0 0 0.25rem 0' }}>
+                    <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-headline)', margin: '0 0 0.25rem 0', overflowWrap: 'anywhere' }}>
                       {selectedHymn.title}
                     </h1>
                     <span style={{ fontSize: '0.82rem', color: 'var(--on-surface-variant)' }}>
@@ -1495,9 +1485,8 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
                     </button>
                     <button
                       onClick={() => {
-                        const text = selectedHymn.stanzas.length > 0
-                          ? `*Tenzi #${selectedHymn.number} — ${selectedHymn.title}*\n\n${selectedHymn.stanzas[0].text}\n\n_Sayuni Jerusalem Church_`
-                          : `*Nyimbo #${selectedHymn.number} — ${selectedHymn.title}*\n${selectedHymn.externalUrl ?? ''}\n\n_Sayuni Jerusalem Church_`;
+                        const label = selectedHymn.collection === 'nyimbo' ? 'Nyimbo' : 'Tenzi';
+                        const text = `*${label} #${selectedHymn.number} — ${selectedHymn.title}*\n\n${selectedHymn.stanzas[0]?.text ?? selectedHymn.title}\n\n_Sayuni Jerusalem Church_`;
                         window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
                       }}
                       className="btn-primary"
@@ -1508,37 +1497,6 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
                     </button>
                   </div>
                 </div>
-
-                {/* Nyimbo (MySongbooks index): external link for audio / full lyrics.
-                    Hymns with bundled public-domain translations show lyrics
-                    below AND keep this link for audio. */}
-                {selectedHymn.collection === 'nyimbo' && selectedHymn.externalUrl && (
-                  <div className="church-card" style={{ maxWidth: '680px', marginBottom: '1.25rem' }}>
-                    <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1rem' }}>
-                      {isSw ? 'Nyimbo za Kikristo — MySongbooks' : 'Nyimbo za Kikristo — MySongbooks'}
-                    </h3>
-                    <p style={{ margin: '0 0 1rem 0', fontSize: '0.85rem', lineHeight: 1.6, color: 'var(--text-muted)' }}>
-                      {selectedHymn.stanzas.length > 0
-                        ? (isSw
-                            ? 'Maneno kamili ya wimbo huu yapo hapa chini (tafsiri mpya ya wimbo wa zamani). Sauti na maelezo zaidi yanapatikana kwenye MySongbooks.'
-                            : 'Full lyrics for this hymn are below (a fresh translation of a classic public-domain hymn). Audio and more are on MySongbooks.')
-                        : (isSw
-                            ? 'Wimbo huu ni sehemu ya orodha ya Nyimbo za Kikristo (221 nyimbo) kutoka MySongbooks. Maneno kamili na sauti zinapatikana kupitia kiungo — hazijanakiliwa kwenye app (haki za miliki).'
-                            : 'This hymn is part of the Nyimbo za Kikristo index (221 songs) from MySongbooks. Full lyrics and audio are available via the link — they are not copied into the app (copyright).')}
-                    </p>
-                    <a
-                      href={selectedHymn.externalUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn-primary"
-                      style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none', fontSize: '0.85rem' }}
-                    >
-                      {selectedHymn.stanzas.length > 0
-                        ? (isSw ? 'Sikiliza kwenye MySongbooks' : 'Listen on MySongbooks')
-                        : (isSw ? 'Fungua Maneno kwenye MySongbooks' : 'Open Lyrics on MySongbooks')}
-                    </a>
-                  </div>
-                )}
 
                 {/* Stanzas & Chorus */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', maxWidth: '680px' }}>

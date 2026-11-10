@@ -385,7 +385,7 @@ class LocalFaithAiEngine {
     if (query.contains('tenzi') || query.contains('nyimbo za roho') || query.contains('mwamba wenye imara')) {
       return const LocalFaithAiResult(
         reply:
-            'Kitabu chetu cha Tenzi kina nyimbo 161 zenye maneno na sauti zinazofanya kazi 100% bila mtandao. Bonyeza hapa chini kuingia kwenye orodha kamili.',
+            'Tenzi 46 + Nyimbo 78, maneno kamili bila mtandao. Bonyeza hapa chini kuingia kwenye orodha.',
         actionType: CopilotActionType.openHymn,
         actionData: {'hymnNumber': 1},
       );

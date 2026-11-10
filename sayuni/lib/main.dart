@@ -102,10 +102,10 @@ class SayuniApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final isOnboarded = ChurchAuthService().isOnboarded;
     final themeService = ChurchThemeService();
-    final languageService = AppLanguageService();
-
+    // Only the theme affects MaterialApp. Language is handled by the
+    // screens themselves, so merging it here just caused extra rebuilds.
     return ListenableBuilder(
-      listenable: Listenable.merge([themeService, languageService]),
+      listenable: themeService,
       builder: (context, _) {
         return MaterialApp(
           title: 'Sayuni Jerusalem Church',

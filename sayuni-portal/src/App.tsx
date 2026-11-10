@@ -145,22 +145,9 @@ export function App() {
 
   return (
     <div className="portal-root">
-      {currentUser.isDemo && (
-        <div style={{
-          backgroundColor: '#fef3c7',
-          borderBottom: '2px solid #f59e0b',
-          color: '#92400e',
-          padding: '0.6rem 1rem',
-          textAlign: 'center',
-          fontSize: '0.82rem',
-          fontWeight: 700,
-          lineHeight: 1.5,
-        }}>
-          {isSw
-            ? '⚠️ HII NI DEMO YA NDANI TU — data yote ni ya sampuli, haihifadhiwi kwenye wingu, na haiwezi kuandika kwenye Firestore. Ingia kwa akaunti halisi ya Firebase kwa data halisi.'
-            : '⚠️ LOCAL DEMO ONLY — all data is sample, nothing is saved to the cloud, and Firestore writes are disabled. Sign in with a real Firebase account for real data.'}
-        </div>
-      )}
+      {/* NOTE: the demo notice is rendered INSIDE .portal-main-area, not here.
+          .portal-root is a flex row; an in-flow child here becomes a full-height
+          flex column that pushes the whole workspace off-screen. */}
       {/* App Header Navigation (Sidebar + Topbar) */}
       <Header
         activeTab={activeTab}
@@ -177,6 +164,16 @@ export function App() {
       {/* Main Workspace Canvas */}
       <div className="portal-content-wrap">
         <main className="portal-main-area">
+        {currentUser.isDemo && (
+          <div className="portal-demo-banner" role="status">
+            <span className="portal-demo-badge">DEMO</span>
+            <span className="portal-demo-banner-text">
+              {isSw
+                ? 'Akaunti ya majaribio: data ni sampuli tu, haihifadhiwi kwenye wingu. Ingia na akaunti halisi ya Firebase kwa data halisi.'
+                : 'Local demo session: sample data only, nothing is saved to the cloud. Use a real Firebase account for live data.'}
+            </span>
+          </div>
+        )}
         {canViewActiveTab ? (
           <>
         {activeTab === 'dashboard' && (

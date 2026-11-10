@@ -7,6 +7,7 @@ export const STORAGE_KEYS = {
   elderCases: 'zion_portal_elder_cases',
   departments: 'zion_portal_departments',
   pastoralPosters: 'zion_portal_pastoral_posters',
+  certificateSettings: 'zion_portal_certificate_settings',
 } as const;
 
 export function loadStored<T>(key: string, fallback: T): T {

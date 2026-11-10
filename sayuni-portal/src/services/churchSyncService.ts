@@ -306,6 +306,8 @@ class ChurchSyncService {
         type: notice.type || (notice.isUrgent ? 'urgent' : 'normal'),
         branch: notice.branch || 'Zote',
         targetAudience: notice.targetAudience || 'all',
+        targetUid: notice.targetUid,
+        targetJumuiya: notice.targetJumuiya,
         authorRole: notice.authorRole || 'Ofisi ya Katibu Mkuu',
         authorEmail: notice.authorEmail || 'katibu@zionjerusalem.org',
         priority: notice.isUrgent ? 'high' : 'normal'

@@ -281,7 +281,7 @@ class ChurchSyncService extends ChangeNotifier {
     final targetAudience = item['targetAudience']?.toString() ??
         (item['audience']?.toString() ?? 'all');
 
-    // Create ChurchAnnouncement model
+    // Create ChurchAnnouncement model (with personalized targeting)
     final announcement = ChurchAnnouncement(
       id: noticeId,
       title: item['title']?.toString() ?? 'Tangazo Jipya la Kanisa',
@@ -298,21 +298,45 @@ class ChurchSyncService extends ChangeNotifier {
           item['isUrgent'] == true || item['isHighPriority'] == true,
       targetAudience: targetAudience,
       isRead: false,
+      targetUid: item['targetUid']?.toString(),
+      targetJumuiya: item['targetJumuiya']?.toString(),
     );
+
+    // Personalized targeting: only the intended member/group (plus
+    // leaders/admins for oversight) should see/alert for this notice.
+    // NOTE: Firestore currently streams all announcements to all clients
+    // (public read rules) — this is UI-level filtering for the demo.
+    // Production must enforce targeting in firestore.rules + FCM topics.
+    final auth = ChurchAuthService();
+    final bool isTargetedToMe = announcement.targetUid != null &&
+        auth.uid != null &&
+        announcement.targetUid == auth.uid;
+    final bool isTargetedToMyJumuiya = announcement.targetJumuiya != null &&
+        announcement.targetJumuiya!.trim().toLowerCase() ==
+            auth.jumuiya.trim().toLowerCase();
+    final bool isRelevantToMe = announcement.targetAudience == 'all' ||
+        isTargetedToMe ||
+        isTargetedToMyJumuiya ||
+        auth.isAdmin ||
+        auth.isLeader;
+
+    if (!isRelevantToMe) {
+      // Not for this user — skip silently (already marked processed).
+      notifyListeners();
+      return;
+    }
 
     // 1. Add to Notifications Data Service so unread count increments immediately
     NotificationsDataService().addAnnouncementFromPortal(announcement);
 
     // 2. Trigger notifications if relevant to current user
-    final auth = ChurchAuthService();
-    final bool shouldAlertUser =
-        announcement.targetAudience == 'all' || auth.isAdmin || auth.isLeader;
+    final bool shouldAlertUser = isRelevantToMe;
 
     if (shouldAlertUser) {
       ChurchNotificationService().showLockScreenNotification(
         id: announcement.id.hashCode,
         title:
-            '${announcement.isForLeaders ? "[Viongozi] " : "[Tangazo] "}${announcement.title}',
+            '${announcement.isPersonalized ? "[Kwa Ajili Yako] " : announcement.isForLeaders ? "[Viongozi] " : "[Tangazo] "}${announcement.title}',
         body: announcement.summary.isNotEmpty
             ? announcement.summary
             : announcement.fullDetails,

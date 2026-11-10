@@ -232,7 +232,11 @@ export interface BulletinNotice {
   content: string;
   date: string;
   isUrgent?: boolean;
-  targetAudience?: 'all' | 'leaders' | 'elders' | 'choir';
+  targetAudience?: 'all' | 'leaders' | 'elders' | 'choir' | 'jumuiya' | 'member';
+  /** Firebase UID of one specific member (personalized message). */
+  targetUid?: string;
+  /** Jumuiya name for group targeting. */
+  targetJumuiya?: string;
   type?: 'normal' | 'urgent' | 'bereavement';
   branch?: string;
   authorRole?: string;

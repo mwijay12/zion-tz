@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_typography.dart';
@@ -11,6 +10,7 @@ import '../../../core/utils/haptics.dart';
 import '../../../core/utils/top_notification.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/empty_state_view.dart';
+import '../../../core/widgets/in_app_browser_sheet.dart';
 import '../models/bible_model.dart';
 import '../models/tenzi_model.dart';
 import '../services/bible_service.dart';
@@ -1755,13 +1755,12 @@ class _BibleScreenState extends State<BibleScreen> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
-                          onPressed: () async {
-                            AppHaptics.lightImpact();
-                            final uri = Uri.parse(hymn.externalUrl!);
-                            if (await canLaunchUrl(uri)) {
-                              await launchUrl(uri,
-                                  mode: LaunchMode.externalApplication);
-                            }
+                          onPressed: () {
+                            showInAppBrowser(
+                              context,
+                              url: hymn.externalUrl!,
+                              title: hymn.title,
+                            );
                           },
                           icon: const Icon(Icons.open_in_new_rounded),
                           label: const Text('Fungua Maneno kwenye MySongbooks'),

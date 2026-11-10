@@ -265,6 +265,12 @@ a {
   min-height: 100dvh;
   display: flex;
   background-color: var(--surface);
+  /* Guard: only .portal-content-wrap may be an in-flow flex child here. Any
+     other block (e.g. a full-width notice) must live inside the content wrap,
+     otherwise the row grows wider than the viewport and the page scrolls
+     sideways. `clip` (not `hidden`) keeps fixed sidebar/topbar/modals intact. */
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 /* Left Sidebar (w-72 / 288px on Desktop) */
@@ -548,6 +554,53 @@ a {
   padding: 80px 1.75rem 4rem 1.75rem;
   max-width: 1380px;
   width: 100%;
+}
+
+/* Local-demo notice. Rendered inside .portal-main-area so it sits below the
+   fixed 64px topbar and never becomes a full-height flex column of .portal-root. */
+.portal-demo-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 0 1.25rem 0;
+  padding: 0.7rem 1rem;
+  background-color: var(--amber-container);
+  border: 1px solid rgba(217, 119, 6, 0.32);
+  border-left: 4px solid var(--amber);
+  border-radius: var(--radius-sm);
+  color: var(--amber-text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.5;
+  box-shadow: var(--shadow-sm);
+}
+
+.portal-demo-banner-text {
+  min-width: 0;
+  flex: 1 1 240px;
+  overflow-wrap: anywhere;
+}
+
+.portal-demo-badge {
+  flex: none;
+  padding: 0.14rem 0.55rem;
+  border-radius: 999px;
+  background-color: var(--amber);
+  color: #ffffff;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 640px) {
+  .portal-demo-banner {
+    gap: 0.5rem;
+    padding: 0.65rem 0.8rem;
+    font-size: 0.78rem;
+  }
 }
 
 /* ==========================================================================

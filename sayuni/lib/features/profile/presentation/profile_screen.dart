@@ -833,144 +833,136 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildThemeSettingsCard() {
     final themeService = ChurchThemeService();
+    final isDark = themeService.isDarkMode;
+    final primaryColor = themeService.primaryColor;
 
-    return ListenableBuilder(
-      listenable: themeService,
-      builder: (context, _) {
-        final isDark = themeService.isDarkMode;
-        final primaryColor = themeService.primaryColor;
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildSectionHeader('MANDHARI — MWANGA AU GIZA'),
-            AppCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionHeader('MANDHARI'),
+        AppCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Dark Mode / Light Mode Selector
+              Row(
                 children: [
-                  // Dark Mode / Light Mode Selector
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: primaryColor.withOpacity(0.12),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          isDark
-                              ? Icons.dark_mode_rounded
-                              : Icons.light_mode_rounded,
-                          color: primaryColor,
-                          size: 20,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Hali ya Mwanga',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                fontSize: 13.5,
-                                color: isDark
-                                    ? Colors.white
-                                    : AppColors.textPrimaryLight,
-                              ),
-                            ),
-                            Text(
-                              isDark
-                                  ? 'Hali ya Giza'
-                                  : 'Hali ya Mwanga — maandishi yasomeka wazi',
-                              style: AppTypography.caption(
-                                color: isDark
-                                    ? const Color(0xFF94A3B8)
-                                    : AppColors.textSecondaryLight,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
                   Container(
-                    padding: const EdgeInsets.all(4),
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? const Color(0xFF111827)
-                          : AppColors.surfaceLowLight,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: isDark
-                            ? const Color(0xFF26354A)
-                            : AppColors.borderLight,
-                      ),
+                      color: primaryColor.withOpacity(0.12),
+                      shape: BoxShape.circle,
                     ),
-                    child: Row(
+                    child: Icon(
+                      isDark
+                          ? Icons.dark_mode_rounded
+                          : Icons.light_mode_rounded,
+                      color: primaryColor,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(
-                          child: _buildModeSegment(
-                            label: 'Mwanga',
-                            icon: Icons.light_mode_rounded,
-                            selected: !isDark,
-                            isDark: isDark,
-                            primaryColor: primaryColor,
-                            onTap: () {
-                              AppHaptics.selectionClick();
-                              themeService.setThemeMode(ThemeMode.light);
-                            },
+                        Text(
+                          'Hali ya Mwanga',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontSize: 13.5,
+                            color: isDark
+                                ? Colors.white
+                                : AppColors.textPrimaryLight,
                           ),
                         ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: _buildModeSegment(
-                            label: 'Giza',
-                            icon: Icons.dark_mode_rounded,
-                            selected: isDark,
-                            isDark: isDark,
-                            primaryColor: primaryColor,
-                            onTap: () {
-                              AppHaptics.selectionClick();
-                              themeService.setThemeMode(ThemeMode.dark);
-                            },
+                        Text(
+                          isDark ? 'Giza' : 'Mwanga',
+                          style: AppTypography.caption(
+                            color: isDark
+                                ? const Color(0xFF94A3B8)
+                                : AppColors.textSecondaryLight,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.visibility_rounded,
-                        size: 15,
+                ],
+              ),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? const Color(0xFF111827)
+                      : AppColors.surfaceLowLight,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                    color: isDark
+                        ? const Color(0xFF26354A)
+                        : AppColors.borderLight,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _buildModeSegment(
+                        label: 'Mwanga',
+                        icon: Icons.light_mode_rounded,
+                        selected: !isDark,
+                        isDark: isDark,
+                        primaryColor: primaryColor,
+                        onTap: () {
+                          AppHaptics.selectionClick();
+                          themeService.setThemeMode(ThemeMode.light);
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: _buildModeSegment(
+                        label: 'Giza',
+                        icon: Icons.dark_mode_rounded,
+                        selected: isDark,
+                        isDark: isDark,
+                        primaryColor: primaryColor,
+                        onTap: () {
+                          AppHaptics.selectionClick();
+                          themeService.setThemeMode(ThemeMode.dark);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(
+                    Icons.visibility_rounded,
+                    size: 15,
+                    color: isDark
+                        ? const Color(0xFF94A3B8)
+                        : AppColors.textMutedLight,
+                  ),
+                  const SizedBox(width: 7),
+                  Expanded(
+                    child: Text(
+                      'Buluu na dhahabu — mwanga au giza.',
+                      style: AppTypography.caption(
                         color: isDark
                             ? const Color(0xFF94A3B8)
                             : AppColors.textMutedLight,
                       ),
-                      const SizedBox(width: 7),
-                      Expanded(
-                        child: Text(
-                          'Mandhari moja tu: buluu na dhahabu. Maandishi, matafutaji, nyimbo na nyaraka husomeka wazi katika mwanga na katika giza.',
-                          style: AppTypography.caption(
-                            color: isDark
-                                ? const Color(0xFF94A3B8)
-                                : AppColors.textMutedLight,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ],
               ),
-            ),
-          ],
-        );
-      },
+            ],
+          ),
+        ),
+      ],
     );
   }
 

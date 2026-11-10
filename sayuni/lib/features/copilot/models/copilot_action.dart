@@ -38,7 +38,7 @@ class CopilotProductItem {
       title: 'Tenzi za Rohoni (Toleo Rasmi la Sayuni)',
       priceFormatted: 'TZS 10,000',
       priceTzs: 10000,
-      description: 'Kitabu kamili cha Tenzi zenye nyimbo zote 161 za kumsifu Mungu, maneno yote na maelekezo ya sauti.',
+      description: 'Tenzi 46 + Nyimbo 78 zenye maneno kamili bila mtandao.',
       category: 'Vitabu vya Nyimbo',
       coverAsset: 'assets/images/church_front.jpg',
     ),

@@ -6,21 +6,30 @@ import 'app_typography.dart';
 
 /// Single-theme controller for the whole app.
 ///
-/// There is exactly ONE brand theme — Electric Blue #0D52CD with gold accents.
-/// The only user choice left is Light mode or Dark mode, so nothing gets mixed up.
-class ChurchThemeService extends ChangeNotifier {
+/// One brand palette — Electric Blue #0D52CD with gold accents. The only
+/// choice is Light or Dark.
+///
+/// Extends [ValueNotifier] (which is also a [ChangeNotifier]), so existing
+/// [ListenableBuilder] widgets keep working.
+///
+/// Theme changes are applied on the NEXT frame. Rebuilding [MaterialApp] in
+/// the same frame that a settings route / bottom sheet is still settling made
+/// Flutter see its internal Overlay/Navigator GlobalKeys twice — the
+/// "Duplicate GlobalKey" crash when switching dark -> light in Settings.
+class ChurchThemeService extends ValueNotifier<ThemeMode> {
   static final ChurchThemeService _instance = ChurchThemeService._internal();
   factory ChurchThemeService() => _instance;
-  ChurchThemeService._internal();
+  ChurchThemeService._internal() : super(ThemeMode.light);
 
   static const String _keyThemeMode = 'setting_theme_mode';
 
-  ThemeMode _themeMode = ThemeMode.light;
   bool _isInitialized = false;
+  bool _notifyScheduled = false;
+  ThemeMode _pendingMode = ThemeMode.light;
 
-  ThemeMode get themeMode => _themeMode;
-  bool get isDarkMode => _themeMode == ThemeMode.dark;
-  bool get isLightMode => _themeMode == ThemeMode.light;
+  ThemeMode get themeMode => value;
+  bool get isDarkMode => value == ThemeMode.dark;
+  bool get isLightMode => value == ThemeMode.light;
 
   Future<void> init() async {
     if (_isInitialized) return;
@@ -28,26 +37,37 @@ class ChurchThemeService extends ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final modeStr = prefs.getString(_keyThemeMode);
       // Legacy values ("system", old palette names) collapse into light.
-      _themeMode = modeStr == 'dark' ? ThemeMode.dark : ThemeMode.light;
+      value = modeStr == 'dark' ? ThemeMode.dark : ThemeMode.light;
       _isInitialized = true;
-      notifyListeners();
     } catch (e) {
       debugPrint('Theme service init error: $e');
     }
   }
 
   Future<void> setThemeMode(ThemeMode mode) async {
-    _themeMode = mode == ThemeMode.dark ? ThemeMode.dark : ThemeMode.light;
-    notifyListeners();
+    final next = mode == ThemeMode.dark ? ThemeMode.dark : ThemeMode.light;
+    // Ignore repeated taps on the already-selected mode: no rebuild at all.
+    if (next == value && !_notifyScheduled) return;
+
+    _pendingMode = next;
+    if (!_notifyScheduled) {
+      _notifyScheduled = true;
+      // Let the current frame (and any open modal route) finish first.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _notifyScheduled = false;
+        if (value != _pendingMode) value = _pendingMode;
+      });
+    }
+
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(
-          _keyThemeMode, _themeMode == ThemeMode.dark ? 'dark' : 'light');
+          _keyThemeMode, next == ThemeMode.dark ? 'dark' : 'light');
     } catch (_) {}
   }
 
   Future<void> toggleDarkMode() => setThemeMode(
-      _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark);
+      value == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark);
 
   // ---- The one and only brand palette ----
   Color get primaryColor => AppColors.primary; // Electric Blue #0D52CD

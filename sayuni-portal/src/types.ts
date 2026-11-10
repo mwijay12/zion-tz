@@ -5,6 +5,7 @@ export type UserRole =
   | 'secretary' 
   | 'deacon'
   | 'treasurer'
+  | 'usher'
   | 'jumuiya_leader'
   | 'choir_leader' 
   | 'children_teacher'
@@ -245,6 +246,16 @@ export interface BulletinNotice {
   branch?: string;
   authorRole?: string;
   authorEmail?: string;
+  /** Leader asks the Super Admin for a poster design of this announcement. */
+  posterRequest?: boolean;
+  posterStatus?: 'none' | 'requested' | 'ready';
+  posterTheme?: string;
+  posterAuthor?: string;
+  /** Structured event details (used by the Poster Desk). */
+  eventDate?: string;
+  eventTime?: string;
+  venue?: string;
+  themeVerse?: string;
 }
 
 export interface SermonItem {

@@ -9,14 +9,22 @@ import {
   Square, 
   Quote,
   Share2,
-  Printer
+  Printer,
+  CalendarDays,
+  ClipboardList,
+  CheckCircle2,
+  Wand2
 } from 'lucide-react';
 import type { Language } from '../types';
+import { AuthService, type PortalUser } from '../services/authService';
+import { FirebaseChurchService, type ChurchEvent, type ChurchAnnouncement } from '../services/firebaseChurchService';
 import { CHURCH_PROFILE, INITIAL_BULLETIN_NOTICES } from '../data/mockData';
 import { PrintableOfficialReport } from './PrintableOfficialReport';
 
 interface MediaContentStudioProps {
   language: Language;
+  /** Signed-in portal user. Poster sign-off is limited to secretariat/root roles. */
+  currentUser?: PortalUser | null;
 }
 
 type AspectRatio = '1:1' | '9:16';
@@ -81,7 +89,7 @@ const TEMPLATES: TemplateOption[] = [
   },
 ];
 
-export const MediaContentStudio: React.FC<MediaContentStudioProps> = ({ language }) => {
+export const MediaContentStudio: React.FC<MediaContentStudioProps> = ({ language, currentUser }) => {
   const isSw = language === 'sw';
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -95,6 +103,191 @@ export const MediaContentStudio: React.FC<MediaContentStudioProps> = ({ language
   const [dateText, setDateText] = useState(TEMPLATES[0].dateInfo);
   const [copiedCaption, setCopiedCaption] = useState(false);
   const [showBulletinModal, setShowBulletinModal] = useState(false);
+
+  // ===== POSTER DESK =====
+  // Leaders (secretary, pastor, ushers, department leaders) write structured
+  // event details into Cloud Firestore `events`. Super Admin opens this studio,
+  // sees the live queue, turns one entry into a poster, and signs it off.
+  const [events, setEvents] = useState<ChurchEvent[]>([]);
+  const [announcements, setAnnouncements] = useState<ChurchAnnouncement[]>([]);
+  const [selectedSource, setSelectedSource] = useState<{ kind: 'event' | 'announcement'; id: string; title: string } | null>(null);
+  const [showEventForm, setShowEventForm] = useState(false);
+  const [isSavingEvent, setIsSavingEvent] = useState(false);
+  const [isMarkingPoster, setIsMarkingPoster] = useState(false);
+  const [copiedCanva, setCopiedCanva] = useState(false);
+  const [deskFeedback, setDeskFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [eventForm, setEventForm] = useState({
+    title: '', description: '', eventDate: '', eventTime: '', venue: '',
+    themeVerse: '', category: 'Ibada', needsPoster: true,
+  });
+
+  const canApprovePosters = AuthService.canApprovePosters(currentUser);
+  const canSubmitEvents = AuthService.canSubmitEvents(currentUser);
+
+  useEffect(() => {
+    const unsubEvents = FirebaseChurchService.subscribeToEvents(setEvents);
+    const unsubNotices = FirebaseChurchService.subscribeToAnnouncements(setAnnouncements);
+    return () => { unsubEvents(); unsubNotices(); };
+  }, []);
+
+  type QueueItem = {
+    key: string;
+    kind: 'event' | 'announcement';
+    id: string;
+    title: string;
+    detail: string;
+    author: string;
+    status: 'requested' | 'ready' | 'none';
+    needsPoster: boolean;
+    event?: ChurchEvent;
+    announcement?: ChurchAnnouncement;
+  };
+
+  const queue: QueueItem[] = [
+    ...events.map(ev => ({
+      key: `event-${ev.id}`,
+      kind: 'event' as const,
+      id: ev.id || '',
+      title: ev.title || (isSw ? 'Tukio la Kanisa' : 'Church Event'),
+      detail: [ev.eventDate, ev.eventTime, ev.venue].filter(Boolean).join(' • ') || ev.category || '',
+      author: ev.requestedBy || (isSw ? 'Kiongozi' : 'Leader'),
+      status: (ev.posterStatus || (ev.needsPoster === false ? 'none' : 'requested')) as QueueItem['status'],
+      needsPoster: ev.needsPoster !== false,
+      event: ev,
+    })),
+    ...announcements.slice(0, 12).map(a => ({
+      key: `ann-${a.id}`,
+      kind: 'announcement' as const,
+      id: a.id || '',
+      title: a.title || (isSw ? 'Tangazo' : 'Announcement'),
+      detail: [a.eventDate, a.eventTime, a.venue, a.category, a.branch].filter(Boolean).join(' • '),
+      author: a.author || a.authorRole || (isSw ? 'Ofisi ya Katibu' : 'Secretariat'),
+      status: (a.posterStatus || (a.posterRequest ? 'requested' : 'none')) as QueueItem['status'],
+      needsPoster: a.posterRequest === true,
+      announcement: a,
+    })),
+  ];
+
+  const buildPosterCaption = () =>
+    `✦ SAYUNI JERUSALEM CHURCH — MBAGALA KWA MATOPE ✦\n\n"${quoteText}"\n\n— ${speakerText}${scriptureText ? ` (${scriptureText})` : ''}\n\n🗓 ${dateText}\n📍 ${CHURCH_PROFILE.location}\n📞 ${CHURCH_PROFILE.phone}\n\n#SayuniJerusalem #MbagalaKwaMatope #NenoLaMungu`;
+
+  /** Pull a leader's event/announcement details straight into the poster. */
+  const applyToCanvas = (item: QueueItem) => {
+    const body = (item.event?.description || item.announcement?.body || item.announcement?.content || '').trim();
+    setQuoteText(body.slice(0, 420) || item.title);
+    setSpeakerText(item.title.slice(0, 90));
+    setScriptureText((item.event?.themeVerse || item.announcement?.themeVerse || '').slice(0, 120));
+    const parts = item.event
+      ? [item.event.eventDate, item.event.eventTime, item.event.venue].filter(Boolean)
+      : [item.announcement?.eventDate, item.announcement?.eventTime, item.announcement?.venue, item.announcement?.category].filter(Boolean);
+    setDateText((parts.join(' • ') || item.detail || CHURCH_PROFILE.location).slice(0, 140));
+    const cat = (item.event?.category || item.announcement?.category || '').toLowerCase();
+    if (cat.includes('mkesha') || cat.includes('maombi')) setTheme('sunset');
+    else if (cat.includes('kwaya') || cat.includes('jumuiya')) setTheme('emerald');
+    else if (cat.includes('ibada') || cat.includes('dharura') || cat.includes('msiba')) setTheme('gold_burgundy');
+    else setTheme('sanctuary');
+    setSelectedSource({ kind: item.kind, id: item.id, title: item.title });
+    setDeskFeedback({
+      type: 'success',
+      message: isSw
+        ? `✓ Maelezo ya "${item.title}" yameingizwa kwenye muundo. Chagua rangi, kisha pakua PNG, nakili prompt ya Canva, au shiriki WhatsApp.`
+        : `✓ Loaded "${item.title}" into the design. Pick a theme, then download the PNG, copy the Canva prompt, or share on WhatsApp.`
+    });
+  };
+
+  const handleSubmitEvent = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!eventForm.title.trim() || !eventForm.description.trim() || isSavingEvent) return;
+    if (!canSubmitEvents) {
+      setDeskFeedback({ type: 'error', message: isSw
+        ? 'Ingia kwa akaunti halisi ya Firebase (si demo) ili kuandika tukio kwenye wingu.'
+        : 'Sign in with a real Firebase account (not demo) to save an event to the cloud.' });
+      return;
+    }
+    setIsSavingEvent(true);
+    setDeskFeedback(null);
+    try {
+      await FirebaseChurchService.publishEvent({
+        title: eventForm.title,
+        description: eventForm.description,
+        category: eventForm.category,
+        eventDate: eventForm.eventDate,
+        eventTime: eventForm.eventTime,
+        venue: eventForm.venue,
+        themeVerse: eventForm.themeVerse,
+        needsPoster: eventForm.needsPoster,
+        requestedBy: currentUser?.name,
+        requestedByRole: currentUser?.role,
+        requestedByEmail: currentUser?.email,
+        branch: currentUser?.branch,
+      });
+      setEventForm({ title: '', description: '', eventDate: '', eventTime: '', venue: '', themeVerse: '', category: 'Ibada', needsPoster: true });
+      setShowEventForm(false);
+      setDeskFeedback({ type: 'success', message: isSw
+        ? '✓ Tukio limehifadhiwa kwenye Cloud Firestore. Super Admin ataliona kwenye folio mara moja (hata akiingia kutoka kifaa kingine).'
+        : '✓ Event saved to Cloud Firestore. The Super Admin will see it in the queue immediately, from any device.' });
+    } catch (err: any) {
+      setDeskFeedback({ type: 'error', message: isSw
+        ? `Tukio halijahifadhiwa kwenye wingu: ${err?.message || 'kagua muunganisho / ruhusa.'}`
+        : `Event was not saved to the cloud: ${err?.message || 'check connection / permissions.'}` });
+    } finally {
+      setIsSavingEvent(false);
+    }
+  };
+
+  /** A ready-to-paste brief for Canva Magic Design (or any human designer). */
+  const handleCopyCanvaBrief = () => {
+    const brief =
+      `${isSw ? 'Tengeneza poster ya tukio la kanisa' : 'Design a church event poster'} ` +
+      `(${ratio === '9:16' ? 'WhatsApp Status 1080x1920' : 'Instagram Post 1080x1080'}):\n\n` +
+      `• ${isSw ? 'Kichwa' : 'Headline'}: ${speakerText}\n` +
+      `• ${isSw ? 'Ujumbe mkuu' : 'Main message'}: ${quoteText}\n` +
+      `• ${isSw ? 'Tarehe / Saa / Mahali' : 'Date / Time / Venue'}: ${dateText}\n` +
+      (scriptureText ? `• ${isSw ? 'Mstari wa Biblia' : 'Scripture'}: ${scriptureText}\n` : '') +
+      `• ${isSw ? 'Rangi' : 'Palette'}: ${theme === 'minimal' ? 'nyeupe / navy' : `${theme} + dhahabu (#0A2540 / #E5B238)`}\n` +
+      `• ${isSw ? 'Maandishi ya chini' : 'Footer'}: SAYUNI JERUSALEM CHURCH • ${CHURCH_PROFILE.location} • ${CHURCH_PROFILE.phone}\n\n` +
+      `${isSw ? 'Caption ya kushiriki' : 'Share caption'}:\n${buildPosterCaption()}`;
+    void navigator.clipboard.writeText(brief);
+    setCopiedCanva(true);
+    setTimeout(() => setCopiedCanva(false), 2500);
+  };
+
+  /** Sign-off: write the design status back so the submitting leader sees it. */
+  const handleMarkPosterReady = async () => {
+    if (!selectedSource || isMarkingPoster) return;
+    if (!canApprovePosters) {
+      setDeskFeedback({ type: 'error', message: isSw
+        ? 'Ni Katibu, Mchungaji, Admin au Super Admin aliyeingia kwa akaunti halisi anayeweza kutia sahihi poster.'
+        : 'Only a signed-in Secretary, Pastor, Admin or Super Admin can sign off a poster.' });
+      return;
+    }
+    setIsMarkingPoster(true);
+    setDeskFeedback(null);
+    try {
+      const author = currentUser?.name || currentUser?.email || 'Super Admin';
+      if (selectedSource.kind === 'event') {
+        await FirebaseChurchService.markEventPosterReady(selectedSource.id, {
+          posterTheme: theme, posterFormat: ratio,
+          posterCaption: buildPosterCaption(), posterAuthor: author,
+        });
+        setEvents(prev => prev.map(ev => ev.id === selectedSource.id ? { ...ev, posterStatus: 'ready' } : ev));
+      } else {
+        await FirebaseChurchService.markAnnouncementPosterReady(selectedSource.id, {
+          posterTheme: theme, posterCaption: buildPosterCaption(), posterAuthor: author,
+        });
+        setAnnouncements(prev => prev.map(a => a.id === selectedSource.id ? { ...a, posterStatus: 'ready' } : a));
+      }
+      setDeskFeedback({ type: 'success', message: isSw
+        ? '✓ Poster imewekewa alama "Imetengenezwa" kwenye Firestore. Viongozi wataona hali hiyo; sasa pakua PNG na uitume kwenye makundi ya WhatsApp.'
+        : '✓ Poster marked as ready in Firestore. Leaders can see the status; download the PNG and send it to the WhatsApp groups.' });
+    } catch (err: any) {
+      setDeskFeedback({ type: 'error', message: isSw
+        ? `Hali ya poster haijasawazishwa: ${err?.message || 'kagua ruhusa za Firestore.'}`
+        : `Poster status was not synced: ${err?.message || 'check Firestore permissions.'}` });
+    } finally {
+      setIsMarkingPoster(false);
+    }
+  };
 
   // Apply template
   const applyTemplate = (t: TemplateOption) => {
@@ -356,8 +549,8 @@ export const MediaContentStudio: React.FC<MediaContentStudioProps> = ({ language
           </h1>
           <p style={{ margin: '0.4rem 0 0 0', opacity: 0.88, fontSize: '0.92rem', maxWidth: '640px' }}>
             {isSw 
-              ? 'Tengeneza kwa sekunde picha za HD kwa ajili ya WhatsApp Status (9:16) na Instagram (1:1) zenye nukuu za Askofu Mercy James na mistari ya ibada.'
-              : 'Generate high-res graphics for WhatsApp Status (9:16) and Instagram (1:1) featuring Bishop Mercy quotes and scripture in seconds.'}
+              ? 'Viongozi wanaandika matukio na matangazo kwenye mfumo; wewe kama Super Admin unayaona moja kwa moja, unatengeneza poster ya HD kwa sekunde (WhatsApp 9:16 / Instagram 1:1), unapakua PNG au kunakili prompt ya Canva, kisha unaituma.'
+              : 'Leaders log events and announcements in the system; as Super Admin you see them live, generate an HD poster in seconds (WhatsApp 9:16 / Instagram 1:1), download the PNG or copy a Canva prompt, then send it out.'}
           </p>
         </div>
 
@@ -432,6 +625,38 @@ export const MediaContentStudio: React.FC<MediaContentStudioProps> = ({ language
           </button>
 
           <button
+            onClick={handleCopyCanvaBrief}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '0.5rem',
+              padding: '0.65rem 1.15rem', borderRadius: 'var(--radius-md)',
+              border: '1px solid rgba(255, 255, 255, 0.25)',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)', color: '#ffffff',
+              fontSize: '0.88rem', fontWeight: 600, cursor: 'pointer'
+            }}
+            title={isSw ? 'Nakili maagizo yaliyo tayari kubandikwa kwenye Canva Magic Design' : 'Copy a ready-to-paste Canva Magic Design brief'}
+          >
+            {copiedCanva ? <Check size={16} style={{ color: '#10B981' }} /> : <Copy size={16} />}
+            <span>{copiedCanva ? (isSw ? 'Imenakiliwa!' : 'Copied!') : (isSw ? 'Prompt ya Canva' : 'Canva Prompt')}</span>
+          </button>
+
+          <button
+            onClick={handleMarkPosterReady}
+            disabled={!selectedSource || isMarkingPoster}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '0.5rem',
+              padding: '0.65rem 1.15rem', borderRadius: 'var(--radius-md)',
+              border: '1px solid rgba(255, 255, 255, 0.25)',
+              backgroundColor: 'rgba(16, 185, 129, 0.16)', color: '#ffffff',
+              fontSize: '0.88rem', fontWeight: 600, cursor: selectedSource ? 'pointer' : 'not-allowed',
+              opacity: selectedSource ? 1 : 0.55
+            }}
+            title={isSw ? 'Weka alama kwenye Firestore kwamba poster imetengenezwa' : 'Mark this poster as delivered in Firestore'}
+          >
+            <CheckCircle2 size={16} />
+            <span>{isMarkingPoster ? (isSw ? 'Inahifadhi...' : 'Saving...') : (isSw ? 'Weka: Imetengenezwa' : 'Mark as Ready')}</span>
+          </button>
+
+          <button
             onClick={handleDownloadImage}
             style={{
               display: 'flex',
@@ -454,6 +679,167 @@ export const MediaContentStudio: React.FC<MediaContentStudioProps> = ({ language
           </button>
         </div>
       </div>
+
+      {/* ===== POSTER DESK: leader-submitted events -> super admin designs ===== */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '1.25rem', alignItems: 'start' }}>
+        {/* A. Event / poster request form for leaders & ushers */}
+        <div className="church-card" style={{ padding: '1.25rem' }}>
+          <h3 style={{ fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-headline)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <CalendarDays size={18} style={{ color: 'var(--primary)' }} />
+            {isSw ? 'A. Andika Tukio / Omba Poster' : 'A. Submit Event / Request Poster'}
+          </h3>
+          <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.55, marginBottom: '0.85rem' }}>
+            {isSw
+              ? 'Viongozi, wakaribishaji (ushers), kwaya na jumuiya wanaandika maelezo ya tukio hapa. Yanaenda moja kwa moja kwenye Cloud Firestore — Super Admin atayaona hata akiingia kutoka simu au kompyuta nyingine.'
+              : 'Leaders, ushers, choir and jumuiya workers log event details here. They go straight to Cloud Firestore — the Super Admin sees them from any device.'}
+          </p>
+          <button
+            onClick={() => setShowEventForm(v => !v)}
+            className="btn-secondary"
+            style={{ width: '100%', justifyContent: 'center' }}
+          >
+            {showEventForm ? (isSw ? 'Funga Fomu' : 'Close Form') : (isSw ? '+ Andika Tukio Jipya' : '+ Add New Event')}
+          </button>
+
+          {showEventForm && (
+            <form onSubmit={handleSubmitEvent} style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+              <div>
+                <label className="form-label">{isSw ? 'Kichwa cha Tukio' : 'Event Title'} *</label>
+                <input className="form-input" required value={eventForm.title}
+                  placeholder={isSw ? 'mf. Mkesha wa Maombi ya Ijumaa' : 'e.g. Friday Prayer Vigil'}
+                  onChange={e => setEventForm(f => ({ ...f, title: e.target.value }))} />
+              </div>
+              <div>
+                <label className="form-label">{isSw ? 'Maelezo / Ujumbe wa Poster' : 'Details / Poster Message'} *</label>
+                <textarea className="form-textarea" rows={3} required value={eventForm.description}
+                  placeholder={isSw ? 'Andika ujumbe utakaoonekana kwenye poster...' : 'Write the message that will appear on the poster...'}
+                  onChange={e => setEventForm(f => ({ ...f, description: e.target.value }))} />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
+                <div>
+                  <label className="form-label">{isSw ? 'Tarehe' : 'Date'}</label>
+                  <input className="form-input" type="date" value={eventForm.eventDate}
+                    onChange={e => setEventForm(f => ({ ...f, eventDate: e.target.value }))} />
+                </div>
+                <div>
+                  <label className="form-label">{isSw ? 'Saa' : 'Time'}</label>
+                  <input className="form-input" value={eventForm.eventTime} placeholder="08:30 – 13:00"
+                    onChange={e => setEventForm(f => ({ ...f, eventTime: e.target.value }))} />
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
+                <div>
+                  <label className="form-label">{isSw ? 'Mahali' : 'Venue'}</label>
+                  <input className="form-input" value={eventForm.venue} placeholder={isSw ? 'Hekalu Kuu, Mbagala' : 'Main Sanctuary, Mbagala'}
+                    onChange={e => setEventForm(f => ({ ...f, venue: e.target.value }))} />
+                </div>
+                <div>
+                  <label className="form-label">{isSw ? 'Kategoria' : 'Category'}</label>
+                  <select className="form-select" value={eventForm.category}
+                    onChange={e => setEventForm(f => ({ ...f, category: e.target.value }))}>
+                    {['Ibada', 'Mkesha', 'Semina', 'Kwaya', 'Jumuiya', 'Taarifa Kuu', 'Ujenzi', 'Msiba'].map(c => (
+                      <option key={c} value={c}>{c}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="form-label">{isSw ? 'Mstari wa Biblia (hiari)' : 'Theme Verse (optional)'}</label>
+                <input className="form-input" value={eventForm.themeVerse} placeholder="Zaburi 122:1"
+                  onChange={e => setEventForm(f => ({ ...f, themeVerse: e.target.value }))} />
+              </div>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-main)', cursor: 'pointer' }}>
+                <input type="checkbox" checked={eventForm.needsPoster}
+                  onChange={e => setEventForm(f => ({ ...f, needsPoster: e.target.checked }))} />
+                {isSw ? 'Omba poster ya tukio hili (ionekane kwenye folio ya Super Admin)' : 'Request a poster for this event (show in Super Admin queue)'}
+              </label>
+              <button type="submit" className="btn-primary" disabled={isSavingEvent} style={{ opacity: isSavingEvent ? 0.7 : 1 }}>
+                {isSavingEvent ? (isSw ? 'Inatuma...' : 'Saving...') : (isSw ? 'Hifadhi Tukio kwenye Wingu' : 'Save Event to Cloud')}
+              </button>
+            </form>
+          )}
+        </div>
+
+        {/* B. Live queue */}
+        <div className="church-card" style={{ padding: '1.25rem' }}>
+          <h3 style={{ fontSize: '0.98rem', fontWeight: 700, color: 'var(--text-headline)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <ClipboardList size={18} style={{ color: 'var(--primary)' }} />
+            {isSw ? 'B. Folio ya Matukio & Matangazo (Live)' : 'B. Live Events & Announcements Queue'}
+          </h3>
+          <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: 1.55, marginBottom: '0.85rem' }}>
+            {isSw
+              ? 'Bofya "Tengeneza Poster" kwenye tukio lolote — maelezo yake yanajaza muundo kiotomatiki. Kisha pakua PNG, nakili prompt ya Canva, shiriki WhatsApp, na weka alama "Imetengenezwa".'
+              : 'Click "Build Poster" on any entry — its details fill the design automatically. Then download the PNG, copy the Canva prompt, share on WhatsApp, and mark it ready.'}
+          </p>
+          {queue.length === 0 ? (
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+              {isSw ? 'Hakuna matukio bado. Viongozi wakishaandika, yataonekana hapa mara moja.' : 'No events yet. Leader submissions will appear here instantly.'}
+            </p>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', maxHeight: 430, overflowY: 'auto' }}>
+              {queue.map(item => (
+                <div key={item.key} style={{
+                  border: '1px solid var(--border-color)', borderRadius: 10, padding: '0.7rem 0.8rem',
+                  background: selectedSource?.id === item.id ? 'rgba(13, 82, 205, 0.08)' : 'var(--surface)'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem' }}>
+                    <strong style={{ fontSize: '0.85rem', color: 'var(--text-headline)', lineHeight: 1.35 }}>{item.title}</strong>
+                    <span style={{
+                      flexShrink: 0, fontSize: '0.66rem', fontWeight: 700, padding: '0.2rem 0.5rem', borderRadius: 20,
+                      backgroundColor: item.status === 'ready' ? 'rgba(16,185,129,0.14)' : item.needsPoster ? 'rgba(234,88,12,0.12)' : 'rgba(100,116,139,0.12)',
+                      color: item.status === 'ready' ? '#059669' : item.needsPoster ? '#ea580c' : '#64748b'
+                    }}>
+                      {item.status === 'ready' ? (isSw ? '✓ Imetengenezwa' : '✓ Ready')
+                        : item.needsPoster ? (isSw ? 'Inasubiri Poster' : 'Poster Needed')
+                        : (isSw ? 'Taarifa tu' : 'Info only')}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.25rem', lineHeight: 1.45 }}>
+                    {item.kind === 'event' ? (isSw ? '📅 Tukio' : '📅 Event') : (isSw ? '📢 Tangazo' : '📢 Announcement')}
+                    {item.detail ? ` • ${item.detail}` : ''}{item.author ? ` • ${item.author}` : ''}
+                  </div>
+                  <button onClick={() => applyToCanvas(item)} style={{
+                    marginTop: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem',
+                    padding: '0.4rem 0.75rem', borderRadius: 8, border: '1px solid #0D52CD',
+                    background: 'rgba(13, 82, 205, 0.08)', color: '#0D52CD',
+                    fontSize: '0.76rem', fontWeight: 700, cursor: 'pointer'
+                  }}>
+                    <Wand2 size={14} />
+                    {isSw ? 'Tengeneza Poster' : 'Build Poster'}
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+          <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.7rem', lineHeight: 1.5 }}>
+            {isSw
+              ? 'Folio hii inasoma Cloud Firestore moja kwa moja (matukio + matangazo). Katika demo mode hakuna maandishi ya wingu — ingia kwa akaunti halisi.'
+              : 'This queue reads Cloud Firestore live (events + announcements). In demo mode cloud writes are disabled — sign in with a real account.'}
+          </p>
+        </div>
+      </div>
+
+      {selectedSource && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.75rem 1rem',
+          borderRadius: 'var(--radius-md)', border: '1px solid rgba(13, 82, 205, 0.3)',
+          background: 'rgba(13, 82, 205, 0.08)', fontSize: '0.83rem', fontWeight: 600, color: 'var(--text-headline)'
+        }}>
+          <CheckCircle2 size={17} style={{ color: '#0D52CD' }} />
+          {isSw ? `Muundo wa sasa umetokana na: ${selectedSource.title}` : `Current design is based on: ${selectedSource.title}`}
+        </div>
+      )}
+
+      {deskFeedback && (
+        <div style={{
+          padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', fontSize: '0.82rem', fontWeight: 600, lineHeight: 1.5,
+          border: `1px solid ${deskFeedback.type === 'success' ? '#10B981' : '#ef4444'}`,
+          background: deskFeedback.type === 'success' ? 'rgba(16,185,129,0.09)' : 'rgba(239,68,68,0.08)',
+          color: deskFeedback.type === 'success' ? '#047857' : '#b91c1c'
+        }}>
+          {deskFeedback.message}
+        </div>
+      )}
 
       {/* Main Studio Grid: Left Controls, Right Interactive Canvas Preview */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1.75rem', alignItems: 'start' }}>

@@ -65,6 +65,13 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
   const [branch, setBranch] = useState<string>('Zote');
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  // Event / poster-request details that the Super Admin picks up in the
+  // Poster Desk (Studio ya Poster & Matukio).
+  const [posterRequest, setPosterRequest] = useState(false);
+  const [eventDate, setEventDate] = useState('');
+  const [eventTime, setEventTime] = useState('');
+  const [venue, setVenue] = useState('');
+  const [themeVerse, setThemeVerse] = useState('');
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   // Load visitors from churchSync or localStorage
@@ -188,7 +195,13 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
           branch: item.branch || 'Zote',
           targetAudience: item.targetAudience || 'all',
           authorRole: item.authorRole || 'Ofisi ya Katibu Mkuu',
-          authorEmail: item.authorEmail || ''
+          authorEmail: item.authorEmail || '',
+          posterRequest: item.posterRequest,
+          posterStatus: item.posterStatus,
+          eventDate: item.eventDate,
+          eventTime: item.eventTime,
+          venue: item.venue,
+          themeVerse: item.themeVerse
         }));
         setNotices(mapped);
       }
@@ -229,6 +242,12 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
       targetAudience,
       targetUid: targetAudience === 'member' && targetUid.trim() ? targetUid.trim() : undefined,
       targetJumuiya: targetAudience === 'jumuiya' && targetJumuiya.trim() ? targetJumuiya.trim() : undefined,
+      posterRequest,
+      posterStatus: posterRequest ? 'requested' : 'none',
+      eventDate: eventDate || undefined,
+      eventTime: eventTime.trim() || undefined,
+      venue: venue.trim() || undefined,
+      themeVerse: themeVerse.trim() || undefined,
       authorRole: 'Ofisi ya Katibu Mkuu wa Kanisa',
       authorEmail: 'katibu@zionjerusalem.org'
     };
@@ -253,6 +272,11 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
         setTargetAudience('all');
         setTargetUid('');
         setTargetJumuiya('');
+        setPosterRequest(false);
+        setEventDate('');
+        setEventTime('');
+        setVenue('');
+        setThemeVerse('');
       }, 1400);
     } catch (err: any) {
       setNotices(churchSync.getNotices());
@@ -1158,6 +1182,42 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
                   {isSw
                     ? 'Ujumbe wa kibinafsi unaonekana kwenye app ya muumini huyo tu (wakati app iko online). Push wakati app imefungwa inahitaji FCM (production).'
                     : 'Personalized messages appear only in that member\'s app (when online). Push when the app is closed needs FCM (production).'}
+                </p>
+              </div>
+
+              {/* Event details + poster request for the Super Admin's Poster Desk */}
+              <div style={{
+                border: '1px solid rgba(13, 82, 205, 0.3)', borderRadius: 10,
+                padding: '0.9rem', background: 'rgba(13, 82, 205, 0.05)'
+              }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', fontSize: '0.84rem', fontWeight: 700, color: 'var(--text-headline)', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={posterRequest} onChange={e => setPosterRequest(e.target.checked)} disabled={isSubmitting} />
+                  {isSw ? '🎨 Omba Poster ya tukio hili (Super Admin ataiona kwenye Studio ya Poster)' : '🎨 Request a poster for this event (Super Admin will see it in the Poster Studio)'}
+                </label>
+                {posterRequest && (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.7rem', marginTop: '0.8rem' }}>
+                    <div>
+                      <label className="form-label">{isSw ? 'Tarehe ya Tukio' : 'Event Date'}</label>
+                      <input type="date" className="form-input" value={eventDate} onChange={e => setEventDate(e.target.value)} disabled={isSubmitting} />
+                    </div>
+                    <div>
+                      <label className="form-label">{isSw ? 'Saa' : 'Time'}</label>
+                      <input className="form-input" placeholder="08:30 – 13:00" value={eventTime} onChange={e => setEventTime(e.target.value)} disabled={isSubmitting} />
+                    </div>
+                    <div>
+                      <label className="form-label">{isSw ? 'Mahali' : 'Venue'}</label>
+                      <input className="form-input" placeholder="Hekalu Kuu, Mbagala" value={venue} onChange={e => setVenue(e.target.value)} disabled={isSubmitting} />
+                    </div>
+                    <div>
+                      <label className="form-label">{isSw ? 'Mstari wa Biblia' : 'Theme Verse'}</label>
+                      <input className="form-input" placeholder="Zaburi 122:1" value={themeVerse} onChange={e => setThemeVerse(e.target.value)} disabled={isSubmitting} />
+                    </div>
+                  </div>
+                )}
+                <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.55rem', lineHeight: 1.5 }}>
+                  {isSw
+                    ? 'Maelezo haya yanaenda Cloud Firestore pamoja na tangazo. Super Admin akiingia kwenye "Studio ya Poster & Matukio" atayaona, atatengeneza poster ya HD na kuiwekea alama "Imetengenezwa".'
+                    : 'These details go to Cloud Firestore with the announcement. In the Poster & Events Studio the Super Admin can generate an HD poster and mark it ready.'}
                 </p>
               </div>
 

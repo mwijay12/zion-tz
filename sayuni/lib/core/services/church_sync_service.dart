@@ -8,6 +8,7 @@ import '../../features/notifications/models/church_announcement.dart';
 import '../../features/notifications/services/notifications_data_service.dart';
 import '../utils/haptics.dart';
 import 'church_auth_service.dart';
+import 'church_customization_service.dart';
 import 'church_notification_service.dart';
 
 /// Central real-time and offline-first Synchronization Bridge between
@@ -63,6 +64,7 @@ class ChurchSyncService extends ChangeNotifier {
 
     // 1. Primary Cloud Realtime Stream via Firebase Cloud Firestore
     _initFirestoreStream();
+    _initLeadershipStream();
 
     // 2. Offline and dev fallbacks: Check local storage
     await _checkLocalCacheSync();
@@ -81,8 +83,47 @@ class ChurchSyncService extends ChangeNotifier {
 
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>?
       _sermonsSubscription;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>?
+      _leadershipSubscription;
 
   /// Sets up real-time stream listener to Cloud Firestore `announcements` and `sermons` collections
+  /// Leadership names / photo are owned by the portal (church_settings doc).
+  /// Listening here is what makes "picha ya viongozi" appear on every member
+  /// device instead of only on the browser where it was uploaded.
+  void _initLeadershipStream() {
+    try {
+      _leadershipSubscription = FirebaseFirestore.instance
+          .collection('church_settings')
+          .doc('leadership')
+          .snapshots()
+          .listen((snapshot) async {
+        final data = snapshot.data();
+        if (data == null) return;
+        final prefs = await SharedPreferences.getInstance();
+        const pairs = {
+          'bishopName': 'custom_bishop',
+          'coLeaderName': 'custom_co_leader',
+          'assistantPastor': 'custom_assistant',
+          'assistantPhone': 'custom_assistant_phone',
+          'leadershipPhotoUrl': 'custom_leadership_photo',
+        };
+        for (final entry in pairs.entries) {
+          final value = data[entry.key];
+          if (value is String && value.trim().isNotEmpty) {
+            await prefs.setString(entry.value, value.trim());
+          }
+        }
+        // Refresh the in-memory cache so the UI updates immediately.
+        await ChurchCustomizationService().reload();
+        notifyListeners();
+      }, onError: (Object err) {
+        debugPrint('Firestore leadership stream error: $err');
+      });
+    } catch (e) {
+      debugPrint('Leadership stream init error: $e');
+    }
+  }
+
   void _initFirestoreStream() {
     try {
       final announcementsRef = FirebaseFirestore.instance
@@ -480,6 +521,27 @@ class ChurchSyncService extends ChangeNotifier {
       if (photoUrl != null) {
         await prefs.setString('custom_leadership_photo', photoUrl);
       }
+
+      // Push the same profile to Cloud Firestore so the leadership portal and
+      // other member devices stay in sync (admin-only write in the rules).
+      final auth = ChurchAuthService();
+      if (auth.uid != null) {
+        try {
+          await FirebaseFirestore.instance
+              .collection('church_settings')
+              .doc('leadership')
+              .set({
+            if (bishop != null) 'bishopName': bishop,
+            if (coLeader != null) 'coLeaderName': coLeader,
+            if (assistant != null) 'assistantPastor': assistant,
+            if (assistantPhone != null) 'assistantPhone': assistantPhone,
+            if (photoUrl != null) 'leadershipPhotoUrl': photoUrl,
+            'updatedAt': FieldValue.serverTimestamp(),
+          }, SetOptions(merge: true));
+        } catch (e) {
+          debugPrint('Firestore leadership write skipped: $e');
+        }
+      }
       notifyListeners();
     } catch (e) {
       debugPrint('ChurchSyncService syncLeadershipInfo error: $e');
@@ -735,6 +797,7 @@ class ChurchSyncService extends ChangeNotifier {
   void dispose() {
     _firestoreSubscription?.cancel();
     _sermonsSubscription?.cancel();
+    _leadershipSubscription?.cancel();
     _syncTimer?.cancel();
     super.dispose();
   }

@@ -17,10 +17,14 @@ import type { Language, UserRole, ChurchMember } from '../types';
 import { INITIAL_MEMBERS, INITIAL_JUMUIYA_GROUPS } from '../data/mockData';
 import { createId } from '../utils/id';
 import { loadStored, saveStored, STORAGE_KEYS } from '../utils/storage';
+import { AuthService, type PortalUser } from '../services/authService';
+import { provisionLeaderRole, describeProvisionError } from '../services/churchRoleService';
 
 interface MembersModuleProps {
   language: Language;
   userRole: UserRole;
+  /** Needed to provision the real Firebase custom claim when adding a leader. */
+  currentUser?: PortalUser | null;
 }
 
 export interface LeaderAccount {
@@ -106,7 +110,8 @@ const INITIAL_LEADER_ACCOUNTS: LeaderAccount[] = [
 
 export const MembersModule: React.FC<MembersModuleProps> = ({
   language,
-  userRole
+  userRole,
+  currentUser
 }) => {
   const isSw = language === 'sw';
   const [activeSubTab, setActiveSubTab] = useState<'members' | 'leaders'>('members');
@@ -175,7 +180,7 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
     setShowAddModal(false);
   };
 
-  const handleAddLeader = (e: React.FormEvent) => {
+  const handleAddLeader = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!leaderName || !leaderEmail) return;
 
@@ -186,6 +191,7 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
       secretary: 'Katibu wa Kanisa',
       deacon: 'Mzee wa Kanisa / Shemasi',
       treasurer: 'Mhazini wa Kanisa',
+      usher: 'Mkaribishaji (Usher)',
       jumuiya_leader: 'Kiongozi wa Jumuiya',
       choir_leader: 'Kiongozi wa Kwaya',
       children_teacher: 'Mwalimu wa Watoto',
@@ -206,12 +212,40 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
     };
 
     setLeaders(prev => [newLeader, ...prev]);
+
+    // The registry entry alone is only a local note. Actually provision the
+    // Firebase custom claim (server-side) so this person can sign in with the
+    // role on any device. Demo sessions are explicitly excluded.
+    const canProvision = AuthService.canGrantRoles(currentUser) && !currentUser?.isDemo;
+    let provisionNote = isSw
+      ? ' (Kumbuka: ingia kwa akaunti halisi ya Super Admin ili kugawa ruhusa za Firebase.)'
+      : ' (Sign in as a real Super Admin to grant Firebase permissions.)';
+    if (canProvision) {
+      try {
+        await provisionLeaderRole({
+          email: newLeader.email,
+          role: newLeader.role,
+          branch: newLeader.branch,
+          reason: `Daftari la Waumini: ${newLeader.name}`,
+        });
+        provisionNote = isSw
+          ? ' ✓ Ruhusa halisi ya Firebase imewekwa — anaweza kuingia sasa kwenye portal na app.'
+          : ' ✓ Real Firebase role granted — they can now sign in on the portal and app.';
+      } catch (err) {
+        provisionNote = isSw
+          ? ` ⚠️ Jina limehifadhiwa, lakini ruhusa ya Firebase haijatolewa: ${describeProvisionError(err)}`
+          : ` ⚠️ Name saved, but Firebase role was not granted: ${describeProvisionError(err)}`;
+      }
+    }
+
     setLeaderName('');
     setLeaderEmail('');
     setLeaderPhone('');
     setShowAddLeaderModal(false);
-    setAccountActionMessage(isSw ? `✓ Akaunti ya ${newLeader.name} imeundwa na kuwezeshwa kwa wadhifa wa ${newLeader.roleTitleSw}` : `✓ Account created for ${newLeader.name}`);
-    setTimeout(() => setAccountActionMessage(null), 4000);
+    setAccountActionMessage(
+      (isSw ? `✓ Akaunti ya ${newLeader.name} imeundwa kwa wadhifa wa ${newLeader.roleTitleSw}` : `✓ Account created for ${newLeader.name}`) + provisionNote
+    );
+    setTimeout(() => setAccountActionMessage(null), 7000);
   };
 
   const handleToggleLeaderStatus = (id: string) => {
@@ -622,6 +656,7 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
                   <option value="secretary">{isSw ? 'Katibu wa Kanisa (Full Office & Records)' : 'General Secretary'}</option>
                   <option value="treasurer">{isSw ? 'Mhazini (Financial Ledger & Tithes)' : 'Treasurer'}</option>
                   <option value="deacon">{isSw ? 'Mzee wa Kanisa / Shemasi (Deacons & Elders)' : 'Elder / Deacon'}</option>
+                  <option value="usher">{isSw ? 'Mkaribishaji / Usher (Mapokezi ya Wageni)' : 'Usher (Visitor Reception)'}</option>
                   <option value="jumuiya_leader">{isSw ? 'Kiongozi wa Jumuiya (Home Cell Reports)' : 'Cell Leader'}</option>
                   <option value="choir_leader">{isSw ? 'Kiongozi wa Muziki na Kwaya' : 'Choir Director'}</option>
                   <option value="children_teacher">{isSw ? 'Mwalimu wa Watoto / Shule ya Jumapili' : 'Sunday School Teacher'}</option>

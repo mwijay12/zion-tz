@@ -31,6 +31,7 @@ const ROLE_TITLES: Record<UserRole, string> = {
   secretary: 'Katibu wa Kanisa',
   deacon: 'Mzee wa Kanisa',
   treasurer: 'Mehani wa Kanisa',
+  usher: 'Mkaribishaji (Usher)',
   jumuiya_leader: 'Kiongozi wa Jumuiya',
   choir_leader: 'Kiongozi wa Kwaya',
   children_teacher: 'Mwalimu wa Watoto',
@@ -45,6 +46,7 @@ const PORTAL_ROLES = new Set<UserRole>([
   'secretary',
   'deacon',
   'treasurer',
+  'usher',
   'jumuiya_leader',
   'choir_leader',
   'children_teacher',
@@ -215,13 +217,24 @@ export class AuthService {
     return this.hasAnyRole(user, ['admin', 'super_admin']);
   }
 
+  /** Who may sign off a generated poster as "delivered" to the leaders. */
+  static canApprovePosters(user: PortalUser | null | undefined): boolean {
+    return !!user && !user.isDemo &&
+      this.hasAnyRole(user, ['secretary', 'pastor', 'admin', 'super_admin']);
+  }
+
+  /** Who may write event details / request a poster. */
+  static canSubmitEvents(user: PortalUser | null | undefined): boolean {
+    return !!user && !user.isDemo && this.canRoleAccessTab(user.role, 'media_studio');
+  }
+
   private static readonly TAB_ROLES: Record<string, UserRole[] | 'all'> = {
     dashboard: 'all',
     analytics: ['pastor', 'secretary', 'treasurer', 'deacon', 'admin', 'super_admin'],
     media_studio: 'all',
     pastor_portal: ['pastor', 'admin', 'super_admin'],
     secretary_portal: ['secretary', 'pastor', 'admin', 'super_admin'],
-    deacons_portal: ['deacon', 'secretary', 'pastor', 'admin', 'super_admin'],
+    deacons_portal: ['usher', 'deacon', 'secretary', 'pastor', 'admin', 'super_admin'],
     elders_portal: ['deacon', 'pastor', 'admin', 'super_admin'],
     choir_portal: 'all',
     departments_portal: 'all',

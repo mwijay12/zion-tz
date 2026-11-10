@@ -208,7 +208,7 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   const memberAppSyncItems = [
-    { id: 'media_studio', label: isSw ? 'Studio ya App Sync (Media)' : 'Mobile App Sync Studio', icon: Sparkles },
+    { id: 'media_studio', label: isSw ? 'Studio ya Poster & Matukio' : 'Poster & Events Studio', icon: Sparkles },
     { id: 'jumuiya', label: isSw ? 'Jumuiya za Nyumbani' : 'Home Cells', icon: Users },
     { id: 'choir_portal', label: isSw ? 'Kwaya & Sifa' : 'Choirs & Music', icon: Music },
     { id: 'departments_portal', label: isSw ? 'Idara & Shule ya Jumapili' : 'Departments', icon: Heart },

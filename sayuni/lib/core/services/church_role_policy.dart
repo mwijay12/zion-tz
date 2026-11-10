@@ -11,6 +11,7 @@ library;
 enum ChurchRole {
   guest('guest', 0, 'Mgeni wa Heshima', 'Honorary Guest'),
   member('member', 10, 'Muumini wa Sayuni', 'Registered Member'),
+  usher('usher', 15, 'Mkaribishaji (Usher)', 'Usher / Reception'),
   jumuiyaLeader('jumuiya_leader', 20, 'Kiongozi wa Jumuiya', 'Cell Leader'),
   choirLeader('choir_leader', 20, 'Kiongozi wa Kwaya', 'Choir Leader'),
   childrenTeacher(
@@ -89,6 +90,7 @@ class ChurchRolePolicy {
   static const Set<ChurchRole> _allRoles = {
     ChurchRole.guest,
     ChurchRole.member,
+    ChurchRole.usher,
     ChurchRole.jumuiyaLeader,
     ChurchRole.choirLeader,
     ChurchRole.childrenTeacher,
@@ -101,6 +103,7 @@ class ChurchRolePolicy {
   };
   static const Set<ChurchRole> _registered = {
     ChurchRole.member,
+    ChurchRole.usher,
     ChurchRole.jumuiyaLeader,
     ChurchRole.choirLeader,
     ChurchRole.childrenTeacher,
@@ -112,6 +115,7 @@ class ChurchRolePolicy {
     ChurchRole.superAdmin,
   };
   static const Set<ChurchRole> _leadership = {
+    ChurchRole.usher,
     ChurchRole.jumuiyaLeader,
     ChurchRole.choirLeader,
     ChurchRole.childrenTeacher,
@@ -243,6 +247,10 @@ class ChurchRolePolicy {
       case 'mgeni':
       case 'visitor':
         return ChurchRole.guest;
+      case 'mkaribishaji':
+      case 'ukaribisho':
+      case 'reception':
+        return ChurchRole.usher;
       default:
         return null;
     }

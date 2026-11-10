@@ -133,16 +133,22 @@ class _NotesScreenState extends State<NotesScreen> {
                         ),
                         const SizedBox(height: 14),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              'Andika Dokezo Jipya',
-                              style: AppTypography.headlineMedium(
-                                  color: AppColors.textPrimary),
+                            Expanded(
+                              child: Text(
+                                'Andika Dokezo Jipya',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppTypography.headlineMedium(
+                                    color: AppColors.textPrimary),
+                              ),
                             ),
+                            const SizedBox(width: 8),
                             IconButton(
                               icon: const Icon(Icons.close_rounded),
                               onPressed: () => Navigator.pop(ctx),
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
                             ),
                           ],
                         ),
@@ -246,7 +252,9 @@ class _NotesScreenState extends State<NotesScreen> {
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(color: AppColors.border),
                           ),
-                          child: Row(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
                             children: [
                               IconButton(
                                 icon: const Icon(Icons.format_bold_rounded,
@@ -273,7 +281,7 @@ class _NotesScreenState extends State<NotesScreen> {
                                 tooltip: 'Nukuu ya Mstari',
                                 onPressed: () => insertFormatting('📖 '),
                               ),
-                              const Spacer(),
+                              const SizedBox(width: 8),
                               Text(
                                 'Markdown',
                                 style: TextStyle(
@@ -282,6 +290,7 @@ class _NotesScreenState extends State<NotesScreen> {
                                     fontWeight: FontWeight.bold),
                               ),
                             ],
+                            ),
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -540,16 +549,22 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                   ),
                   const SizedBox(height: 14),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Hariri Dokezo',
-                        style: AppTypography.headlineMedium(
-                            color: AppColors.textPrimaryOf(context)),
+                      Expanded(
+                        child: Text(
+                          'Hariri Dokezo',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.headlineMedium(
+                              color: AppColors.textPrimaryOf(context)),
+                        ),
                       ),
+                      const SizedBox(width: 8),
                       IconButton(
                         icon: const Icon(Icons.close_rounded),
                         onPressed: () => Navigator.pop(ctx),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
                       ),
                     ],
                   ),
@@ -845,25 +860,32 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 3),
-                                    decoration: BoxDecoration(
-                                      color:
-                                          AppColors.surfaceContainerOf(context),
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: Text(
-                                      note.scripture.isNotEmpty
-                                          ? note.scripture
-                                          : 'Somo la Ibada',
-                                      style: AppTypography.caption(
-                                          color: AppColors.primary),
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 3),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              AppColors.surfaceContainerOf(context),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                        ),
+                                        child: Text(
+                                          note.scripture.isNotEmpty
+                                              ? note.scripture
+                                              : 'Somo la Ibada',
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: AppTypography.caption(
+                                              color: AppColors.primary),
+                                        ),
+                                      ),
                                     ),
                                   ),
+                                  const SizedBox(width: 6),
                                   Row(
                                     children: [
                                       IconButton(
@@ -915,12 +937,16 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                               const SizedBox(height: 10),
                               Text(
                                 note.title,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                                 style: AppTypography.titleMedium(
                                     color: AppColors.textPrimaryOf(context)),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 'Mhubiri: ${note.preacher} • ${AppFormatters.formatSwahiliDate(note.date)}',
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                                 style: AppTypography.caption(
                                     color: AppColors.textMutedOf(context)),
                               ),

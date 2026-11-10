@@ -92,6 +92,50 @@ jobs:
           path: release-artifacts/*
           retention-days: 30
 
+      # Unsigned (debug) builds are published ONLY as a clearly labelled
+      # PRE-RELEASE under a separate tag, never as the official release.
+      # This gives the church a direct, always-current download link while
+      # the signing keystore secrets are not configured. The official
+      # v1.0.0-release tag remains signed-only.
+      - name: Publish DEBUG DEMO pre-release (unsigned builds only)
+        uses: softprops/action-gh-release@v2
+        if: steps.signing.outputs.signed == 'false'
+        with:
+          tag_name: v1.0.1-demo
+          name: 'DEBUG DEMO — Si Toleo Rasmi / Not an Official Release'
+          prerelease: true
+          body: |
+            ## ⚠️ Build ya maonyesho (DEBUG) — si toleo rasmi
+
+            APK hii imejengwa moja kwa moja kutoka `main` ya sasa (inajumuisha
+            Tenzi/Nyimbo 78 zenye maneno kamili, arifa za kibinafsi, Studio ya
+            Poster, n.k.), lakini **haijatiwa sahihi kwa keystore rasmi** kwa
+            sababu siri za kusaini bado hazijawekwa kwenye GitHub Secrets.
+
+            - Ni **prerelease / demo**, si `v1.0.0-release` rasmi.
+            - Usitumie data halisi ya wanachama wala kuusambaza kama toleo la
+              uzalishaji.
+            - Kusakinisha: pakua APK → fungua → ruhusu "Install from unknown
+              sources" kwenye simu yako ya Android.
+
+            Toleo rasmi lenye sahihi litachapishwa kwenye `v1.0.0-release`
+            mara tu `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`,
+            `ANDROID_KEY_ALIAS` na `ANDROID_KEY_PASSWORD` vitakapowekwa.
+
+            ---
+
+            ### ⚠️ DEBUG demo build — not an official release
+
+            Built from the current `main` (78 offline hymns, personalized
+            notifications, Poster Desk, etc.) but **not signed with the
+            official keystore**. Do not distribute as a production app or use
+            with real member data. Enable "Install from unknown sources" on
+            Android to install.
+          files: |
+            release-artifacts/Zion-Jerusalem-Debug-Demo.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       # Only publish a GitHub Release for SIGNED builds. Debug demo APKs
       # stay as workflow artifacts so nobody mistakes them for official.
       - name: Create or Update GitHub Release (signed builds only)

@@ -63,11 +63,39 @@ function isPortalRole(value: unknown): value is UserRole {
  *   is set in the deployment environment (e.g. Vercel env vars).
  * Demo sessions NEVER call Firebase Auth and NEVER write to Firestore.
  */
+/**
+ * Local-only demo credentials. These are NOT a Firebase account: the pair is
+ * checked in the browser and only ever opens a `isDemo: true` session that
+ * cannot write to Firestore (see FirebaseChurchService.requireAuth).
+ * They are safe to display publicly because they grant no cloud access.
+ */
+export const DEMO_CREDENTIALS = {
+  email: 'demo@sayuni.local',
+  password: 'SayuniDemo2026',
+} as const;
+
 export const DEMO_MODE_ENABLED: boolean =
   import.meta.env.DEV || import.meta.env.VITE_DEMO_MODE === 'true';
 
 export class AuthService {
-  static async login(email: string, password: string): Promise<PortalUser> {
+  /** True when the typed pair is the local demo pair (no Firebase call). */
+  static isDemoCredentialPair(email: string, password: string): boolean {
+    return DEMO_MODE_ENABLED &&
+      email.trim().toLowerCase() === DEMO_CREDENTIALS.email &&
+      password === DEMO_CREDENTIALS.password;
+  }
+
+  static async login(
+    email: string,
+    password: string,
+    demoRole: UserRole = 'super_admin',
+  ): Promise<PortalUser> {
+    // Demo credentials are handled entirely locally — never sent to Firebase
+    // Auth, never able to write to Firestore.
+    if (this.isDemoCredentialPair(email, password)) {
+      return this.loginAsDemo(demoRole);
+    }
+
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = await this.toPortalUser(userCredential.user);
 

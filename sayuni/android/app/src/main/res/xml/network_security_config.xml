@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cleartext (HTTP) is allowed ONLY for local development hosts:
+     the Vite dev bridge on localhost / Android emulator (10.0.2.2).
+     All other traffic must be HTTPS. The Flutter sync service only
+     calls these hosts in kDebugMode, so release builds never use them. -->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">10.0.2.2</domain>
+    </domain-config>
+    <base-config cleartextTrafficPermitted="false" />
+</network-security-config>

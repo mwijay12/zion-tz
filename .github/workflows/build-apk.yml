@@ -40,26 +40,63 @@ jobs:
         working-directory: ./sayuni
         run: flutter pub get
 
-      - name: Build Android APK
+      # Release signing: `flutter build apk --release` FAILS without a
+      # keystore (no key.properties in the repo — by design, secrets are
+      # never committed). If the signing secrets are configured in GitHub
+      # (ANDROID_KEYSTORE_BASE64, ANDROID_KEYSTORE_PASSWORD,
+      # ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD), decode them and build a
+      # properly signed release. Otherwise build a DEBUG apk and label it
+      # clearly — never publish a debug build as "Release".
+      - name: Set up release signing (if secrets configured)
+        id: signing
+        working-directory: ./sayuni/android
+        run: |
+          if [ -n "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
+            echo "Signing secrets found — configuring release keystore."
+            echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > app/release.jks
+            cat > key.properties <<EOF
+          storePassword=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.ANDROID_KEY_PASSWORD }}
+          keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}
+          storeFile=release.jks
+          EOF
+            echo "signed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No signing secrets — will build DEBUG apk (demo only)."
+            echo "signed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build Android APK (signed release if secrets present)
         working-directory: ./sayuni
-        run: flutter build apk --release
+        run: |
+          if [ "${{ steps.signing.outputs.signed }}" = "true" ]; then
+            flutter build apk --release
+          else
+            flutter build apk --debug
+          fi
 
       - name: Prepare APK Artifacts
         run: |
           mkdir -p release-artifacts
-          cp sayuni/build/app/outputs/flutter-apk/app-release.apk release-artifacts/Zion-Jerusalem-Release.apk
-          cp sayuni/build/app/outputs/flutter-apk/app-release.apk release-artifacts/Zion-Jerusalem-v1.0.0.apk
+          if [ "${{ steps.signing.outputs.signed }}" = "true" ]; then
+            cp sayuni/build/app/outputs/flutter-apk/app-release.apk release-artifacts/Zion-Jerusalem-Release.apk
+            cp sayuni/build/app/outputs/flutter-apk/app-release.apk release-artifacts/Zion-Jerusalem-v1.0.0.apk
+          else
+            cp sayuni/build/app/outputs/flutter-apk/app-debug.apk release-artifacts/Zion-Jerusalem-Debug-Demo.apk
+          fi
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Zion-Jerusalem-Release-APK
-          path: release-artifacts/Zion-Jerusalem-Release.apk
+          name: Zion-Jerusalem-APK
+          path: release-artifacts/*
           retention-days: 30
 
-      - name: Create or Update GitHub Release
+      # Only publish a GitHub Release for SIGNED builds. Debug demo APKs
+      # stay as workflow artifacts so nobody mistakes them for official.
+      - name: Create or Update GitHub Release (signed builds only)
         uses: softprops/action-gh-release@v2
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && steps.signing.outputs.signed == 'true'
         with:
           tag_name: v1.0.0-release
           name: Zion Jerusalem Mobile App (Release v1.0.0)

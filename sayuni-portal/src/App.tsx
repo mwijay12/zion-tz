@@ -135,6 +135,22 @@ export function App() {
 
   return (
     <div className="portal-root">
+      {currentUser.isDemo && (
+        <div style={{
+          backgroundColor: '#fef3c7',
+          borderBottom: '2px solid #f59e0b',
+          color: '#92400e',
+          padding: '0.6rem 1rem',
+          textAlign: 'center',
+          fontSize: '0.82rem',
+          fontWeight: 700,
+          lineHeight: 1.5,
+        }}>
+          {isSw
+            ? '⚠️ HII NI DEMO YA NDANI TU — data yote ni ya sampuli, haihifadhiwi kwenye wingu, na haiwezi kuandika kwenye Firestore. Ingia kwa akaunti halisi ya Firebase kwa data halisi.'
+            : '⚠️ LOCAL DEMO ONLY — all data is sample, nothing is saved to the cloud, and Firestore writes are disabled. Sign in with a real Firebase account for real data.'}
+        </div>
+      )}
       {/* App Header Navigation (Sidebar + Topbar) */}
       <Header
         activeTab={activeTab}

@@ -62,11 +62,19 @@ service cloud.firestore {
     // --- Helper Functions ---
     //
     // ROLE SOURCE OF TRUTH
-    // Authentication authority is derived from verified Firebase Auth tokens (custom claims)
-    // or bootstrapped administrative emails. Client-supplied profile fields are never trusted.
+    // Authentication authority comes ONLY from verified Firebase Auth
+    // custom claims (set by functions/setUserRole via Admin SDK).
+    // No email allowlist — anyone can register any email address, so an
+    // email check without email_verified would be a privilege escalation.
+    // Client-supplied profile fields are never trusted.
 
     function isSignedIn() {
       return request.auth != null;
+    }
+
+    /// Privileged access requires a verified email address.
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
     }
 
     /// True when the account has actually been assigned a church role or admin claim.
@@ -82,38 +90,30 @@ service cloud.firestore {
         (hasRoleClaim() && request.auth.token.admin == true ? 'admin' : 'member'));
     }
 
-    /// Administrator verification: checks custom claim role, admin boolean flag, or verified bootstrap emails.
+    /// Administrator verification: custom claim role or legacy admin flag only.
+    /// Requires verified email — unverified accounts get no privilege.
     function isAdmin() {
-      return isSignedIn() && (
+      return isVerified() && (
         request.auth.token.role in ['admin', 'super_admin'] ||
-        request.auth.token.admin == true ||
-        request.auth.token.email in [
-          'mwijaydavie@gmail.com',
-          'davidbyanmwijage@gmail.com',
-          'admin@zionjerusalem.org',
-          'super_admin@zionjerusalem.org'
-        ]
+        request.auth.token.admin == true
       );
     }
 
-    /// Pastoral verification: administrator, pastor role, or verified pastor email.
+    /// Pastoral verification: administrator or pastor claim only.
     function isPastor() {
-      return isAdmin() ||
-        getUserRole() == 'pastor' ||
-        (isSignedIn() && request.auth.token.email == 'pastor@zionjerusalem.org');
+      return isAdmin() || (isVerified() && getUserRole() == 'pastor');
     }
 
-    /// Secretary (Katibu) verification: administrator, pastor, secretary role, or verified secretariat email.
+    /// Secretary (Katibu) verification: administrator, pastor, or secretary claim only.
     function isSecretary() {
       return isAdmin() ||
         isPastor() ||
-        getUserRole() == 'secretary' ||
-        (isSignedIn() && request.auth.token.email == 'katibu@zionjerusalem.org');
+        (isVerified() && getUserRole() == 'secretary');
     }
 
     /// Deacon verification: secretary, pastor, admin, or deacon role.
     function isDeacon() {
-      return isSecretary() || getUserRole() == 'deacon';
+      return isSecretary() || (isVerified() && getUserRole() == 'deacon');
     }
 
     // --- Data Validation Functions ---
@@ -177,24 +177,26 @@ service cloud.firestore {
 
     // --- Collection Security Rules ---
 
-    // 1. Announcements (Public Read, Authorized Leaders or Validated Authenticated Users Write)
+    // 1. Announcements (Public Read, Secretary/Admin Write only)
+    // Previously ANY signed-in user could create — that let every member
+    // publish church-wide notices. Now leaders only.
     match /announcements/{announcementId} {
       allow read: if true;
-      allow create: if (isSecretary() || isAdmin() || (isSignedIn() && isValidAnnouncement(request.resource.data)));
+      allow create: if (isSecretary() && isValidAnnouncement(request.resource.data));
       allow update, delete: if isSecretary() || isAdmin();
     }
 
-    // 2. Sermons & Pastoral Media (Public Read, Pastors/Admin or Validated Authenticated Users Write)
+    // 2. Sermons & Pastoral Media (Public Read, Pastor/Admin Write only)
     match /sermons/{sermonId} {
       allow read: if true;
-      allow create, update: if (isPastor() || isAdmin() || (isSignedIn() && isValidSermon(request.resource.data)));
+      allow create, update: if (isPastor() && isValidSermon(request.resource.data));
       allow delete: if isAdmin() || isPastor();
     }
 
-    // 3. Church Choir Songs & Audio (Public Read, Choir Leaders/Admin or Validated Authenticated Users Write)
+    // 3. Church Choir Songs & Audio (Public Read, Choir Leader/Admin Write only)
     match /choir_songs/{songId} {
       allow read: if true;
-      allow create, update: if (isAdmin() || getUserRole() == 'choir_leader' || (isSignedIn() && isValidChoirSong(request.resource.data)));
+      allow create, update: if ((isAdmin() || (isVerified() && getUserRole() == 'choir_leader')) && isValidChoirSong(request.resource.data));
       allow delete: if isAdmin();
     }
 
@@ -208,7 +210,7 @@ service cloud.firestore {
     // 5. Sunday School / Watoto Content (Public Read, Teachers/Admin Write)
     match /sunday_school_content/{contentId} {
       allow read: if true;
-      allow create, update: if isAdmin() || getUserRole() == 'children_teacher';
+      allow create, update: if isAdmin() || (isVerified() && getUserRole() == 'children_teacher');
       allow delete: if isAdmin();
     }
 
@@ -221,8 +223,8 @@ service cloud.firestore {
 
     // 7. Jumuiya Reports (CONFIDENTIAL: Jumuiya Leaders, Pastors, Secretary, Admin Only)
     match /jumuiya_reports/{reportId} {
-      allow read: if isSecretary() || getUserRole() == 'jumuiya_leader' || isAdmin();
-      allow create, update: if isSecretary() || getUserRole() == 'jumuiya_leader' || isAdmin() || (isSignedIn() && isValidJumuiyaReport(request.resource.data));
+      allow read: if isSecretary() || (isVerified() && getUserRole() == 'jumuiya_leader') || isAdmin();
+      allow create, update: if (isSecretary() || (isVerified() && getUserRole() == 'jumuiya_leader') || isAdmin()) && isValidJumuiyaReport(request.resource.data);
       allow delete: if isAdmin() || isPastor();
     }
 

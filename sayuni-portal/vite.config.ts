@@ -1,6 +1,16 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
 
+/**
+ * DEV-ONLY sync bridge (localhost showcase).
+ * WARNING: This plugin runs ONLY in `vite dev` (configureServer).
+ * It does NOT exist in production builds (Vercel/Firebase Hosting) and
+ * has NO authentication — anyone on the local network can read/write
+ * notices, sermons, visitors and prayers while the dev server runs.
+ * Never expose `vite dev` to the internet. Production sync must go
+ * through Firestore (see FirebaseChurchService) with real Auth.
+ * The Flutter app only calls this bridge in kDebugMode.
+ */
 function churchSyncPlugin(): Plugin {
   let sseClients: any[] = [];
   let storedNotices: any[] = [];
@@ -13,8 +23,19 @@ function churchSyncPlugin(): Plugin {
     name: 'church-sync-api',
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
-        // Enable CORS for Flutter Web & other ports
-        res.setHeader('Access-Control-Allow-Origin', '*');
+        // CORS: localhost origins only (Flutter Web / emulator / dev browser).
+        // Previously '*' allowed any website to read/write church data
+        // while the dev server was running.
+        const origin = req.headers.origin || '';
+        const allowedOrigins = [
+          'http://localhost:5173',
+          'http://127.0.0.1:5173',
+          'http://localhost:8080',
+          'http://127.0.0.1:8080',
+        ];
+        if (allowedOrigins.includes(origin)) {
+          res.setHeader('Access-Control-Allow-Origin', origin);
+        }
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 

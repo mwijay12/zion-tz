@@ -60,6 +60,12 @@ dependencies:
   audio_session: any
   rxdart: any
   file_picker: ^8.1.2
+  # Immersive motion (see lib/core/widgets/motion/):
+  # flutter_animate = declarative staggered reveals; animations = shared
+  # axis / fade-through transitions. Charts/gauges use CustomPainter
+  # (no fl_chart/rive needed) to keep the build lean and offline-safe.
+  flutter_animate: ^4.5.2
+  animations: ^2.0.11
 
 dev_dependencies:
   flutter_test:

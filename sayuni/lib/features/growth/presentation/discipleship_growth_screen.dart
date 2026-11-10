@@ -6,6 +6,7 @@ import '../../../core/theme/church_theme_service.dart';
 import '../../../core/utils/haptics.dart';
 import '../../../core/utils/top_notification.dart';
 import '../../../core/widgets/app_card.dart';
+import '../../../core/widgets/motion/motion.dart';
 import '../../../core/widgets/module_decor.dart';
 
 class DiscipleshipGrowthScreen extends StatefulWidget {
@@ -198,6 +199,13 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
               ),
               const SizedBox(height: 18),
 
+              // Morphing attendance chart (weekly <-> monthly, no spinner)
+              const StaggeredReveal(
+                index: 1,
+                child: JumuiyaAttendanceChart(),
+              ),
+              const SizedBox(height: 18),
+
               // Growth Ring Progress Card
               Container(
                 padding: const EdgeInsets.all(20),
@@ -218,28 +226,44 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
                 ),
                 child: Row(
                   children: [
-                    // Circular Progress Indicator
+                    // Animated circular progress (counts up on change)
                     Stack(
                       alignment: Alignment.center,
                       children: [
                         SizedBox(
                           width: 76,
                           height: 76,
-                          child: CircularProgressIndicator(
-                            value: progress,
-                            strokeWidth: 8,
-                            backgroundColor: Colors.white.withOpacity(0.15),
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                                AppColors.primaryLight),
+                          child: TweenAnimationBuilder<double>(
+                            tween: Tween<double>(begin: 0.0, end: progress),
+                            duration: const Duration(milliseconds: 800),
+                            curve: Curves.easeOutCubic,
+                            builder: (context, animatedProgress, _) {
+                              return CircularProgressIndicator(
+                                value: animatedProgress,
+                                strokeWidth: 8,
+                                backgroundColor:
+                                    Colors.white.withOpacity(0.15),
+                                valueColor:
+                                    const AlwaysStoppedAnimation<Color>(
+                                        AppColors.primaryLight),
+                              );
+                            },
                           ),
                         ),
-                        Text(
-                          '${(progress * 100).toInt()}%',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
+                        TweenAnimationBuilder<double>(
+                          tween: Tween<double>(begin: 0.0, end: progress),
+                          duration: const Duration(milliseconds: 800),
+                          curve: Curves.easeOutCubic,
+                          builder: (context, animatedProgress, _) {
+                            return Text(
+                              '${(animatedProgress * 100).toInt()}%',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -338,7 +362,9 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
                 final isLast = idx == _milestones.length - 1;
                 final stepColor = ModuleAccents.at(idx);
 
-                return Row(
+                return StaggeredReveal(
+                  index: idx + 2,
+                  child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Node Column (Circle + Vertical line)
@@ -446,6 +472,7 @@ class _DiscipleshipGrowthScreenState extends State<DiscipleshipGrowthScreen> {
                       ),
                     ),
                   ],
+                  ),
                 );
               }),
             ],

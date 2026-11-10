@@ -1,15 +1,5 @@
 import React, { useState } from 'react';
-import {
-  AlertCircle,
-  Award,
-  Download,
-  FileEdit,
-  ImagePlus,
-  Loader2,
-  PenLine,
-  Settings2,
-  Trash2
-} from 'lucide-react';
+import { AlertCircle, Award, Check, Download, FileEdit, Loader2, Palette } from 'lucide-react';
 import type { Language, UserRole, CertificateType } from '../types';
 import { CHURCH_PROFILE } from '../data/mockData';
 import {
@@ -19,95 +9,39 @@ import {
   certificateTitle
 } from '../data/certificateContent';
 import {
+  CERTIFICATE_DESIGNS,
+  CERTIFICATE_VARIANT_ORDER,
+  certificateCssVars,
+  type CertificateVariant
+} from '../data/certificateDesign';
+import {
   createCertificateSerial,
   downloadCertificatePdf,
   formatCertificateDate
 } from '../services/certificatePdfService';
-import {
-  loadCertificateSettings,
-  readSignatureImage,
-  saveCertificateSettings,
-  type CertificateSettings
-} from '../services/certificateSettingsService';
-
-
-interface SignatureUploadProps {
-  label: string;
-  hint: string;
-  value: string | null;
-  isSw: boolean;
-  onChange: (file?: File | null) => void;
-  onRemove: () => void;
-}
-
-const SignatureUpload: React.FC<SignatureUploadProps> = ({
-  label,
-  hint,
-  value,
-  isSw,
-  onChange,
-  onRemove
-}) => (
-  <div className="cert-upload">
-    <div className="cert-upload-label">
-      {label}
-      <small>{hint}</small>
-    </div>
-    <div className="cert-upload-row">
-      {value ? (
-        <>
-          <img className="cert-upload-thumb" src={value} alt="" />
-          <button
-            type="button"
-            className="nav-item"
-            onClick={onRemove}
-            style={{ fontSize: '0.74rem', padding: '0.35rem 0.8rem' }}
-          >
-            <Trash2 size={13} />
-            <span>{isSw ? 'Ondoa' : 'Remove'}</span>
-          </button>
-        </>
-      ) : (
-        <span className="cert-empty-mark">
-          {isSw ? 'Hakuna saini — mstari tupu unachapishwa' : 'No signature — a blank line is printed'}
-        </span>
-      )}
-    </div>
-    <label className="cert-upload-row" style={{ cursor: 'pointer' }}>
-      <ImagePlus size={14} style={{ color: 'var(--primary)' }} />
-      <span style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--primary)' }}>
-        {isSw ? 'Chagua picha (PNG / JPG, max 1.5 MB)' : 'Choose image (PNG / JPG, max 1.5 MB)'}
-      </span>
-      <input
-        type="file"
-        accept="image/png,image/jpeg"
-        className="cert-file-input"
-        onChange={(event) => {
-          onChange(event.target.files?.[0]);
-          event.target.value = '';
-        }}
-      />
-    </label>
-  </div>
-);
+import { loadStored, saveStored, STORAGE_KEYS } from '../utils/storage';
 
 interface CertificateStudioProps {
   language: Language;
   userRole: UserRole;
 }
 
-export const CertificateStudio: React.FC<CertificateStudioProps> = ({
-  language
-}) => {
+function initialDesign(): CertificateVariant {
+  const saved = loadStored<string>(STORAGE_KEYS.certificateDesign, 'classic');
+  return saved === 'modern' ? 'modern' : 'classic';
+}
+
+export const CertificateStudio: React.FC<CertificateStudioProps> = ({ language }) => {
   const isSw = language === 'sw';
   const today = new Date();
   const issuedLabel = formatCertificateDate(
     `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
     language
   );
+
+  const [variant, setVariant] = useState<CertificateVariant>(initialDesign);
   const [selectedType, setSelectedType] = useState<CertificateType>('baptism');
-  
-  // Active Form Fields
+
   const [recipientName, setRecipientName] = useState('');
   const [spouseName, setSpouseName] = useState('');
   const [parentNames, setParentNames] = useState('');
@@ -117,9 +51,9 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
   const [certificateSerial, setCertificateSerial] = useState(() => createCertificateSerial('baptism'));
   const [isGenerating, setIsGenerating] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  const [settings, setSettings] = useState<CertificateSettings>(() => loadCertificateSettings());
-  const [showSignatureSettings, setShowSignatureSettings] = useState(false);
-  const [signatureError, setSignatureError] = useState<string | null>(null);
+
+  const eventDateLabel = formatCertificateDate(eventDate, language);
+  const design = CERTIFICATE_DESIGNS[variant];
 
   const handleTypeChange = (type: CertificateType) => {
     setSelectedType(type);
@@ -128,46 +62,16 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
     setFormError(null);
   };
 
-
-  const updateSignature = async (key: keyof CertificateSettings, file?: File | null) => {
-    if (!file) return;
-    setSignatureError(null);
-    try {
-      const dataUrl = await readSignatureImage(file);
-      const next: CertificateSettings =
-        key === 'pastorSignature'
-          ? { ...settings, pastorSignature: dataUrl }
-          : { ...settings, secretarySignature: dataUrl };
-      setSettings(next);
-      saveCertificateSettings(next);
-    } catch (error) {
-      setSignatureError(
-        error instanceof Error && error.message === 'too-large'
-          ? (isSw ? 'Picha ni kubwa mno (kikomo 1.5 MB).' : 'Image is too large (1.5 MB limit).')
-          : (isSw ? 'Tumia picha ya PNG au JPG.' : 'Please use a PNG or JPG image.')
-      );
-    }
-  };
-
-  const removeSignature = (key: keyof CertificateSettings) => {
-    const next: CertificateSettings =
-      key === 'pastorSignature'
-        ? { ...settings, pastorSignature: null }
-        : { ...settings, secretarySignature: null };
-    setSettings(next);
-    saveCertificateSettings(next);
-    setSignatureError(null);
+  const handleVariantChange = (next: CertificateVariant) => {
+    setVariant(next);
+    saveStored(STORAGE_KEYS.certificateDesign, next);
   };
 
   const handleDownload = async () => {
     const missingFields: string[] = [];
 
-    if (!recipientName.trim()) {
-      missingFields.push(isSw ? 'jina la mpokeaji' : 'recipient name');
-    }
-    if (!eventDate) {
-      missingFields.push(isSw ? 'tarehe ya tukio' : 'event date');
-    }
+    if (!recipientName.trim()) missingFields.push(isSw ? 'jina la mpokeaji' : 'recipient name');
+    if (!eventDate) missingFields.push(isSw ? 'tarehe ya tukio' : 'event date');
     if (selectedType === 'marriage' && !spouseName.trim()) {
       missingFields.push(isSw ? 'jina la mwanandoa' : 'spouse name');
     }
@@ -176,9 +80,7 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
     }
 
     if (missingFields.length > 0) {
-      setFormError(
-        `${isSw ? 'Tafadhali jaza' : 'Please fill in'} ${missingFields.join(', ')}.`
-      );
+      setFormError(`${isSw ? 'Tafadhali jaza' : 'Please fill in'} ${missingFields.join(', ')}.`);
       return;
     }
 
@@ -196,8 +98,7 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
         notes: notes.trim(),
         serialNumber: certificateSerial,
         language,
-        pastorSignature: settings.pastorSignature,
-        secretarySignature: settings.secretarySignature
+        variant
       });
     } catch {
       setFormError(
@@ -210,6 +111,12 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
     }
   };
 
+  const metaItems = [
+    { label: isSw ? 'Imetolewa' : 'Issued', value: issuedLabel },
+    { label: isSw ? 'Tarehe ya Tukio' : 'Date of Event', value: eventDateLabel },
+    { label: isSw ? 'Namba ya Uthibitisho' : 'Verification No.', value: certificateSerial }
+  ];
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {/* Top Header */}
@@ -219,7 +126,7 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
             <Award size={13} />
             <span>{isSw ? 'Utoaji wa Nyaraka Rasmi' : 'Official Credentials Studio'}</span>
           </span>
-          <h2 style={{ fontFamily: 'var(--font-cinzel)', fontSize: '1.65rem', fontWeight: 800, color: 'var(--text-headline)' }}>
+          <h2 style={{ fontFamily: "'Cinzel', Georgia, serif", fontSize: '1.65rem', fontWeight: 800, color: 'var(--text-headline)' }}>
             {isSw ? 'Studio ya Kutengeneza Vyeti vya Kanisa' : 'Church Certificate Studio'}
           </h2>
         </div>
@@ -228,7 +135,6 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
           <span className="badge badge-gold" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
             {isSw ? 'PDF ya Vekta • A4 Landscape' : 'Vector PDF • A4 Landscape'}
           </span>
-
           <button
             type="button"
             onClick={handleDownload}
@@ -265,68 +171,54 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
         ))}
       </div>
 
-      {/* Optional signature settings: blank physical lines by default */}
-      <div className="church-card no-print cert-settings-card">
-        <div className="cert-settings-head">
-          <div style={{ minWidth: 0, flex: '1 1 320px' }}>
-            <div className="cert-settings-title">
-              <Settings2 size={16} style={{ color: 'var(--primary)' }} />
-              <span>{isSw ? 'Mipangilio ya Saini za Vyeti' : 'Certificate Signature Settings'}</span>
+      {/* Design picker: two serious, two-colour layouts. No signature / seal UI. */}
+      <div className="church-card no-print cert-design-card">
+        <div className="cert-design-head">
+          <div style={{ minWidth: 0, flex: '1 1 300px' }}>
+            <div className="cert-design-title">
+              <Palette size={16} style={{ color: 'var(--primary)' }} />
+              <span>{isSw ? 'Muundo wa Cheti' : 'Certificate Design'}</span>
             </div>
-            <p className="cert-settings-desc">
+            <p className="cert-design-desc">
               {isSw
-                ? 'Kwa sasa vyeti HAVINA saini iliyochapishwa — kuna mstari tupu wa kusainiwa kwa mkono. Ukitaka saini ionekane, pakia picha hapa (inahifadhiwa kwenye kifaa hiki tu).'
-                : 'Certificates currently print NO signature — just a clean line for signing by hand. If you want one printed, upload an image here (stored on this device only).'}
+                ? 'Chagua muundo rasmi. Yote miwili hutumia rangi mbili tu, haina saini wala muhuri, na inalingana kabisa na PDF utakayopakua.'
+                : 'Choose an official layout. Both use two ink colours only, carry no signature or seal, and match the downloaded PDF exactly.'}
             </p>
           </div>
-          <button
-            type="button"
-            className={`nav-item ${showSignatureSettings ? 'active' : ''}`}
-            onClick={() => setShowSignatureSettings((open) => !open)}
-            style={{ fontSize: '0.8rem', padding: '0.45rem 0.95rem', whiteSpace: 'nowrap' }}
-          >
-            <PenLine size={14} />
-            <span>
-              {showSignatureSettings
-                ? (isSw ? 'Funga' : 'Hide')
-                : (isSw ? 'Ongeza saini' : 'Add signature')}
-            </span>
-          </button>
+          <span className="cert-design-count">{isSw ? 'Miundo 2' : '2 designs'}</span>
         </div>
 
-        {showSignatureSettings && (
-          <div className="cert-settings-body">
-            <SignatureUpload
-              label={isSw ? 'Saini ya Mchungaji Kiongozi' : 'Senior Pastor Signature'}
-              hint={isSw ? 'Upande wa kushoto wa cheti' : 'Left side of the certificate'}
-              value={settings.pastorSignature}
-              isSw={isSw}
-              onChange={(file) => void updateSignature('pastorSignature', file)}
-              onRemove={() => removeSignature('pastorSignature')}
-            />
-            <SignatureUpload
-              label={isSw ? 'Saini ya Katibu wa Kanisa' : 'Church Secretary Signature'}
-              hint={isSw ? 'Upande wa kulia wa cheti' : 'Right side of the certificate'}
-              value={settings.secretarySignature}
-              isSw={isSw}
-              onChange={(file) => void updateSignature('secretarySignature', file)}
-              onRemove={() => removeSignature('secretarySignature')}
-            />
-            {signatureError && (
-              <div className="cert-settings-error" role="alert" style={{ gridColumn: '1 / -1' }}>
-                {signatureError}
-              </div>
-            )}
-            <div className="cert-settings-note" style={{ gridColumn: '1 / -1' }}>
-              <PenLine size={14} style={{ flexShrink: 0, marginTop: '2px' }} />
-              <span>
-                {isSw
-                  ? 'Ukiacha sehemu hizi wazi, PDF na onyesho vitakuwa na mistari miwili tupu tu ya kusainiwa kimwili baada ya kuchapisha.'
-                  : 'Leave these empty and both the preview and the PDF keep two blank lines to be signed physically after printing.'}
-              </span>
-            </div>
-          </div>
-        )}
+        <div className="cert-design-options">
+          {CERTIFICATE_VARIANT_ORDER.map((id) => {
+            const option = CERTIFICATE_DESIGNS[id];
+            const active = id === variant;
+            return (
+              <button
+                key={id}
+                type="button"
+                className={`cert-design-option ${active ? 'is-active' : ''}`}
+                onClick={() => handleVariantChange(id)}
+                aria-pressed={active}
+                style={{ '--swatch-paper': option.palette.paper, '--swatch-ink': option.palette.ink, '--swatch-accent': option.palette.accent } as React.CSSProperties}
+              >
+                <span className={`cert-design-swatch cert-design-swatch--${id}`} aria-hidden="true">
+                  <span className="cert-design-swatch-frame" />
+                  <span className="cert-design-swatch-line" />
+                  <span className="cert-design-swatch-line cert-design-swatch-line--short" />
+                  <span className="cert-design-swatch-name" />
+                  <span className="cert-design-swatch-rule" />
+                </span>
+                <span className="cert-design-copy">
+                  <strong>{isSw ? option.labelSw : option.labelEn}</strong>
+                  <small>{isSw ? option.descriptionSw : option.descriptionEn}</small>
+                </span>
+                <span className="cert-design-check" aria-hidden="true">
+                  {active && <Check size={14} strokeWidth={3} />}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Studio Layout: Left Controls + Right Live Preview */}
@@ -342,15 +234,9 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
             <div
               role="alert"
               style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                gap: '0.5rem',
-                padding: '0.7rem 0.8rem',
-                borderRadius: '8px',
-                background: 'var(--error-container)',
-                color: 'var(--error)',
-                fontSize: '0.8rem',
-                lineHeight: 1.45
+                display: 'flex', alignItems: 'flex-start', gap: '0.5rem', padding: '0.7rem 0.8rem',
+                borderRadius: '8px', background: 'var(--error-container)', color: 'var(--error)',
+                fontSize: '0.8rem', lineHeight: 1.45
               }}
             >
               <AlertCircle size={16} style={{ flexShrink: 0, marginTop: '1px' }} />
@@ -360,8 +246,8 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
 
           <div className="form-group">
             <label className="form-label">{isSw ? 'Jina Kamili la Mpokeaji' : 'Recipient Full Name'}</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               className="form-input"
               value={recipientName}
               onChange={(e) => setRecipientName(e.target.value)}
@@ -373,8 +259,8 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
           {selectedType === 'marriage' && (
             <div className="form-group">
               <label className="form-label">{isSw ? 'Jina la Mwanandoa Mwingine' : 'Spouse Full Name'}</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 className="form-input"
                 value={spouseName}
                 onChange={(e) => setSpouseName(e.target.value)}
@@ -387,8 +273,8 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
           {selectedType === 'dedication' && (
             <div className="form-group">
               <label className="form-label">{isSw ? 'Majina ya Wazazi' : 'Parents Names'}</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 className="form-input"
                 value={parentNames}
                 onChange={(e) => setParentNames(e.target.value)}
@@ -400,17 +286,12 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
 
           <div className="form-group">
             <label className="form-label">{isSw ? 'Tarehe ya Tukio' : 'Date of Event'}</label>
-            <input 
-              type="date" 
-              className="form-input"
-              value={eventDate}
-              onChange={(e) => setEventDate(e.target.value)}
-            />
+            <input type="date" className="form-input" value={eventDate} onChange={(e) => setEventDate(e.target.value)} />
           </div>
 
           <div className="form-group">
             <label className="form-label">{isSw ? 'Fungu la Biblia' : 'Scripture Verse'}</label>
-            <textarea 
+            <textarea
               className="form-textarea"
               rows={3}
               value={scripture}
@@ -421,8 +302,8 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
 
           <div className="form-group">
             <label className="form-label">{isSw ? 'Maelezo ya Ziada / Mahali' : 'Location / Special Notes'}</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               className="form-input"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -445,31 +326,38 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
           </button>
           <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', lineHeight: 1.45, textAlign: 'center', margin: 0 }}>
             {isSw
-              ? 'PDF halisi ya vekta (A4 landscape), si picha ya skrini.'
-              : 'True vector PDF (A4 landscape), not a screen capture.'}
+              ? `PDF ya vekta (A4 landscape) · Muundo: ${design.labelSw} · Hakuna saini wala muhuri.`
+              : `Vector PDF (A4 landscape) · Design: ${design.labelEn} · No signature or seal.`}
           </p>
         </div>
 
-        {/* Right Live Preview — refined engraved certificate, no printed signature */}
+        {/* Right Live Preview — matches the PDF for the chosen design */}
         <div className="certificate-preview-scroll-wrapper">
-          <div className="certificate-render-wrapper cert-sheet">
+          <div
+            className="certificate-render-wrapper cert-sheet"
+            data-variant={variant}
+            style={certificateCssVars(variant) as React.CSSProperties}
+          >
             <div className="cert-frame" aria-hidden="true">
               <span className="cert-corner cert-corner--tl" />
               <span className="cert-corner cert-corner--tr" />
               <span className="cert-corner cert-corner--bl" />
               <span className="cert-corner cert-corner--br" />
             </div>
+            <div className="cert-edge" aria-hidden="true" />
             <img className="cert-watermark" src="/zion_logo.png" alt="" aria-hidden="true" width={300} height={300} />
 
             <div className="cert-inner">
               <header className="cert-header">
-                <div className="cert-logo">
-                  <img src="/zion_logo.png" alt="Zion Jerusalem Church" width={54} height={54} />
-                </div>
-                <div className="cert-church-name">{CHURCH_PROFILE.name}</div>
-                <div className="cert-motto">{CHURCH_PROFILE.motto}</div>
-                <div className="cert-contact">
-                  {CHURCH_PROFILE.location} • {CHURCH_PROFILE.phone}
+                <div className="cert-brand">
+                  <div className="cert-logo">
+                    <img src="/zion_logo.png" alt={CHURCH_PROFILE.name} width={54} height={54} />
+                  </div>
+                  <div className="cert-brand-text">
+                    <div className="cert-church-name">{CHURCH_PROFILE.name}</div>
+                    <div className="cert-motto">{isSw ? CHURCH_PROFILE.motto : CHURCH_PROFILE.mottoEn}</div>
+                    <div className="cert-contact">{CHURCH_PROFILE.location} • {CHURCH_PROFILE.phone}</div>
+                  </div>
                 </div>
                 <div className="cert-rule"><i /></div>
                 <div className="cert-eyebrow">
@@ -510,47 +398,21 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
               </div>
 
               <footer className="cert-footer">
-                <div className="cert-sign">
-                  <div className="cert-sign-space">
-                    {settings.pastorSignature ? (
-                      <img className="cert-sign-img" src={settings.pastorSignature} alt="" />
-                    ) : (
-                      <span className="cert-sign-hint">{isSw ? 'Saini hapa' : 'Sign here'}</span>
-                    )}
-                  </div>
-                  <div className="cert-sign-role">{isSw ? 'Mchungaji Kiongozi' : 'Senior Pastor'}</div>
-                  <div className="cert-sign-sub">{isSw ? 'Kusainiwa kwa mkono' : 'To be signed by hand'}</div>
+                <div className="cert-rule cert-rule--full"><i /></div>
+                <div className="cert-meta">
+                  {metaItems.map((item) => (
+                    <div className="cert-meta-item" key={item.label}>
+                      <span className="cert-meta-label">{item.label}</span>
+                      <span className="cert-meta-value">{item.value}</span>
+                    </div>
+                  ))}
                 </div>
-
-                <div className="cert-seal-wrap">
-                  <div className="cert-seal">
-                    <span className="cert-seal-monogram">ZJ</span>
-                    <span className="cert-seal-label">{isSw ? 'Muhuri Rasmi' : 'Official Seal'}</span>
-                    <span className="cert-seal-place">Mbagala HQ</span>
-                  </div>
-                  <div className="cert-serial">{certificateSerial}</div>
-                </div>
-
-                <div className="cert-sign">
-                  <div className="cert-sign-space">
-                    {settings.secretarySignature ? (
-                      <img className="cert-sign-img" src={settings.secretarySignature} alt="" />
-                    ) : (
-                      <span className="cert-sign-hint">{isSw ? 'Saini hapa' : 'Sign here'}</span>
-                    )}
-                  </div>
-                  <div className="cert-sign-role">{isSw ? 'Katibu wa Kanisa' : 'Church Secretary'}</div>
-                  <div className="cert-sign-sub">
-                    {isSw ? 'Tarehe ya Tukio' : 'Event Date'}: {eventDate}
-                  </div>
+                <div className="cert-bottom">
+                  <span>{CHURCH_PROFILE.name}</span>
+                  <span>{CHURCH_PROFILE.email} • {CHURCH_PROFILE.phone}</span>
+                  <span>{isSw ? 'Hati Rasmi' : 'Official Document'}</span>
                 </div>
               </footer>
-
-              <div className="cert-bottom">
-                <span>{isSw ? 'Imetolewa' : 'Issued'}: {issuedLabel}</span>
-                <span>{CHURCH_PROFILE.email}</span>
-                <span>{isSw ? 'Namba ya uthibitisho' : 'Verification No.'}: {certificateSerial}</span>
-              </div>
             </div>
           </div>
         </div>

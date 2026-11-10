@@ -2292,6 +2292,9 @@ a {
   footer,
   aside,
   nav {
+    display: none !important;
+  }
+
   /* 100% BULLETPROOF PRINT ISOLATION:
      When printing an official report sheet or bulletin, only .printable-document-sheet is visible.
      All other DOM elements are completely hidden from print output. */
@@ -2514,6 +2517,28 @@ a {
    Scoped to .cert-sheet so the rest of the portal keeps its own typography.
    Signing areas are deliberately EMPTY lines for physical signing.
    ========================================================================== */
+
+/* Screen layout for the studio. The preview keeps its A4 proportion in a
+   scrollable column instead of stretching the grid past the viewport. */
+.cert-studio-grid {
+  display: grid;
+  grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+.certificate-preview-scroll-wrapper {
+  max-width: 100%;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+/* Hard guard: no image inside the sheet may ever exceed the sheet, even if a
+   future CSS regression drops the .cert-* rules. */
+.cert-sheet img { max-width: 100%; }
+
+@media (max-width: 1024px) {
+  .cert-studio-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
 .cert-sheet {
   /* These two design tokens were referenced everywhere but never defined,
      so certificate headings silently fell back to Inter. Scope the fix here. */

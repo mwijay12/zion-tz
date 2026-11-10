@@ -330,7 +330,7 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
       </div>
 
       {/* Studio Layout: Left Controls + Right Live Preview */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 380px) 1fr', gap: '1.5rem', alignItems: 'start' }}>
+      <div className="cert-studio-grid">
         {/* Left Controls Form (Hidden on Print) */}
         <div className="church-card no-print" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-headline)', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
@@ -459,12 +459,12 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
               <span className="cert-corner cert-corner--bl" />
               <span className="cert-corner cert-corner--br" />
             </div>
-            <img className="cert-watermark" src="/zion_logo.png" alt="" aria-hidden="true" />
+            <img className="cert-watermark" src="/zion_logo.png" alt="" aria-hidden="true" width={300} height={300} />
 
             <div className="cert-inner">
               <header className="cert-header">
                 <div className="cert-logo">
-                  <img src="/zion_logo.png" alt="Zion Jerusalem Church" />
+                  <img src="/zion_logo.png" alt="Zion Jerusalem Church" width={54} height={54} />
                 </div>
                 <div className="cert-church-name">{CHURCH_PROFILE.name}</div>
                 <div className="cert-motto">{CHURCH_PROFILE.motto}</div>

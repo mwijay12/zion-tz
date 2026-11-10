@@ -15,6 +15,7 @@ import {
 import type { Language, VisitorRecord } from '../types';
 import { PrintableOfficialReport } from './PrintableOfficialReport';
 import { churchSync } from '../services/churchSyncService';
+import { FirebaseChurchService } from '../services/firebaseChurchService';
 import { createId } from '../utils/id';
 
 interface DeaconsPortalProps {
@@ -85,6 +86,37 @@ export const DeaconsPortal: React.FC<DeaconsPortalProps> = ({ language }) => {
       }
       localStorage.setItem(seedKey, '1');
     }
+  }, []);
+
+  // Connect-card applications submitted from the member app land in Cloud
+  // Firestore `visitors_registry`. Merge them with locally-entered records so
+  // ushers / deacons see new visitors without refreshing or exporting data.
+  useEffect(() => {
+    const unsubscribeCloud = FirebaseChurchService.subscribeToVisitors((cloudItems) => {
+      if (!cloudItems.length) return;
+      const cloudRecords: VisitorRecord[] = cloudItems.map((raw: any) => ({
+        id: raw.id,
+        fullName: raw.fullName || 'Mgeni',
+        phone: raw.phone || '',
+        residence: raw.residence || 'Mbagala',
+        firstVisitDate: raw.createdAt?.toDate
+          ? raw.createdAt.toDate().toLocaleDateString('sw-TZ')
+          : (raw.firstVisitDate || ''),
+        invitedBy: raw.invitedBy,
+        prayerRequest: raw.prayerRequest,
+        assignedJumuiya: raw.assignedJumuiya || 'Mbagala Kuu',
+        followUpStatus: (raw.followUpStatus as VisitorRecord['followUpStatus']) || 'Mpya',
+        welfareNeeds: raw.welfareNeeds,
+        registeredByDeacon: raw.registeredByDeacon || 'App ya Muumini',
+        createdAt: raw.createdAt?.toDate ? raw.createdAt.toDate().toISOString() : undefined,
+      }));
+      setVisitors(prev => {
+        const byId = new Map(prev.map(v => [v.id, v]));
+        cloudRecords.forEach(r => byId.set(r.id, r));
+        return Array.from(byId.values());
+      });
+    });
+    return unsubscribeCloud;
   }, []);
 
   useEffect(() => {

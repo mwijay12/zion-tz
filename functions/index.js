@@ -58,6 +58,7 @@ const ROLES = [
   'choir_leader',
   'children_teacher',
   'treasurer',
+  'usher',
   'deacon',
   'secretary',
   'pastor',

@@ -268,6 +268,12 @@ function churchSyncPlugin(): Plugin {
 export default defineConfig({
   plugins: [react(), churchSyncPlugin()],
   server: {
-    cors: true
+    cors: true,
+    // Arena live preview proxies the dev server under a generated e2b.app
+    // host. Dev-only: production builds never use this server.
+    allowedHosts: ['.e2b.app']
+  },
+  preview: {
+    allowedHosts: ['.e2b.app']
   }
 })

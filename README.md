@@ -39,6 +39,7 @@
 - [Two experiences, one church](#two-experiences-one-church)
 - [Feature status](#feature-status)
 - [Architecture](#architecture)
+- [System connections & Poster Desk](./docs/POSTER_WORKFLOW.md)
 - [Technology](#technology)
 - [Quick start](#quick-start)
 - [Configuration](#configuration)
@@ -132,6 +133,7 @@ Status key:
 | Christian radio | Working with internet | Radio Browser directory; needs better offline and error states |
 | Sermons and media | Partial | Media hub is primarily custom/admin content; no in-app video player |
 | Announcements and events | Partial | Portal and app surfaces exist; production write path is not reliable |
+| Poster & events workflow | Working (prototype) | Leaders/ushers log events in the portal or app → Cloud Firestore → Super Admin's live Poster Desk generates HD PNG / Canva prompt, shares to WhatsApp and marks it ready. See [docs/POSTER_WORKFLOW.md](./docs/POSTER_WORKFLOW.md) |
 | Prayer requests | Partial | Privacy model needs to be fixed before real use |
 | Jumuiya/discipleship growth | Partial | Milestones are stored as local flags |
 | Offline audio downloads | Planned | Current Bible "download" only stores a SharedPreferences flag |

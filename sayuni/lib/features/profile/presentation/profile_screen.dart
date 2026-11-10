@@ -13,6 +13,7 @@ import '../../../core/widgets/app_card.dart';
 import '../../auth/presentation/onboarding_auth_screen.dart';
 import '../../giving/presentation/giving_screen.dart';
 import '../../jumuiya/presentation/connect_card_screen.dart';
+import '../../notifications/presentation/event_request_screen.dart';
 import 'church_admin_screen.dart';
 import 'pdpa_rights_screen.dart';
 import 'privacy_policy_screen.dart';
@@ -1395,6 +1396,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           const SizedBox(height: 2),
                           Text(
                             'Hariri picha za viongozi, majina, na pakia mahubiri',
+                            style: AppTypography.caption(
+                              color: isDark
+                                  ? const Color(0xFF94A3B8)
+                                  : AppColors.textSecondaryLight,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16,
+                      color: isDark
+                          ? const Color(0xFF64748B)
+                          : AppColors.textMutedLight,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // Church workers (ushers, choir, jumuiya leaders, secretary...)
+              // submit event details / poster requests from the member app.
+              AppCard(
+                borderColor: AppColors.primary.withOpacity(0.45),
+                onTap: () {
+                  AppHaptics.mediumImpact();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const EventRequestScreen()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.gold.withOpacity(0.14),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.event_note_rounded,
+                          color: AppColors.goldDark, size: 24),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Tuma Tukio / Omba Poster',
+                            style: AppTypography.titleSmall(
+                              color: isDark
+                                  ? Colors.white
+                                  : AppColors.textPrimaryLight,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Andika maelezo ya ibada, mkesha au semina — Super Admin atatengeneza poster',
                             style: AppTypography.caption(
                               color: isDark
                                   ? const Color(0xFF94A3B8)

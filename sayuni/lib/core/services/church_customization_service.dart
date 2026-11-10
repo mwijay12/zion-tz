@@ -110,6 +110,14 @@ class ChurchCustomizationService extends ChangeNotifier {
 
   List<CustomSermonItem> get customSermons => List.unmodifiable(_customSermons);
 
+  /// Re-reads SharedPreferences after a cloud leadership sync (e.g. a super
+  /// admin changed the leaders' photo on the portal). `init()` stays guarded
+  /// so this is the explicit way to refresh a running app.
+  Future<void> reload() async {
+    _isInitialized = false;
+    await init();
+  }
+
   Future<void> init() async {
     if (_isInitialized) return;
     try {

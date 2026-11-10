@@ -1,6 +1,7 @@
 import type { SermonItem, BulletinNotice, VisitorRecord } from '../types';
 import { INITIAL_SERMONS, INITIAL_BULLETIN_NOTICES, CHURCH_PROFILE } from '../data/mockData';
 import { createId } from '../utils/id';
+import { FirebaseChurchService } from './firebaseChurchService';
 
 export interface WarRoomPrayerRequest {
   id: string;
@@ -245,17 +246,15 @@ class ChurchSyncService {
     }
 
     // Push to Firebase Firestore for Cloud Sync
-    import('./firebaseChurchService').then(({ FirebaseChurchService }) => {
-      FirebaseChurchService.publishSermon({
-        title: sermon.title,
-        preacher: sermon.preacher,
-        scripture: sermon.scripture || '',
-        type: sermon.mediaType === 'audio' ? 'audio' : 'video',
-        category: sermon.category || 'Mahubiri',
-        mediaUrl: sermon.mediaUrl || '',
-        description: sermon.summary
-      }).catch(err => console.warn('Could not post sermon to Firebase Firestore:', err));
-    }).catch(() => {});
+    void FirebaseChurchService.publishSermon({
+      title: sermon.title,
+      preacher: sermon.preacher,
+      scripture: sermon.scripture || '',
+      type: sermon.mediaType === 'audio' ? 'audio' : 'video',
+      category: sermon.category || 'Mahubiri',
+      mediaUrl: sermon.mediaUrl || '',
+      description: sermon.summary
+    }).catch(err => console.warn('Could not post sermon to Firebase Firestore:', err));
 
     // Broadcast
     this.broadcast('SERMON_ADDED', sermon);
@@ -297,7 +296,6 @@ class ChurchSyncService {
 
     // Primary Cloud Sync: Publish to Firestore
     try {
-      const { FirebaseChurchService } = await import('./firebaseChurchService');
       const docId = await FirebaseChurchService.publishAnnouncement({
         title: notice.title,
         body: notice.content,
@@ -308,6 +306,11 @@ class ChurchSyncService {
         targetAudience: notice.targetAudience || 'all',
         targetUid: notice.targetUid,
         targetJumuiya: notice.targetJumuiya,
+        posterRequest: notice.posterRequest,
+        eventDate: notice.eventDate,
+        eventTime: notice.eventTime,
+        venue: notice.venue,
+        themeVerse: notice.themeVerse,
         authorRole: notice.authorRole || 'Ofisi ya Katibu Mkuu',
         authorEmail: notice.authorEmail || 'katibu@zionjerusalem.org',
         priority: notice.isUrgent ? 'high' : 'normal'
@@ -367,6 +370,38 @@ class ChurchSyncService {
       console.warn('Error saving leadership:', e);
     }
 
+    // Mirror to Cloud Firestore so the member app and every other portal
+    // device show the same leaders' names and photo (admin writes only).
+    void FirebaseChurchService.saveLeadershipSettings({
+      bishopName: data.bishopName,
+      coLeaderName: data.coLeaderName,
+      assistantPastor: data.assistantPastor,
+      assistantPhone: data.assistantPhone,
+      leadershipPhotoUrl: data.leadershipPhotoUrl,
+    }).catch((err) => console.warn('Leadership cloud sync skipped:', err));
+
+    this.broadcast('LEADERSHIP_UPDATED', data);
+  }
+
+  /** Applies a cloud leadership snapshot locally (no echo write back). */
+  public applyCloudLeadership(data: Record<string, string>): void {
+    const keys: Record<string, string> = {
+      bishopName: 'custom_bishop',
+      coLeaderName: 'custom_co_leader',
+      assistantPastor: 'custom_assistant',
+      assistantPhone: 'custom_assistant_phone',
+      leadershipPhotoUrl: 'custom_leadership_photo',
+    };
+    try {
+      Object.entries(keys).forEach(([cloudKey, localKey]) => {
+        if (data[cloudKey]) {
+          localStorage.setItem(localKey, data[cloudKey]);
+          localStorage.setItem(`flutter.${localKey}`, data[cloudKey]);
+        }
+      });
+    } catch (e) {
+      console.warn('Error applying cloud leadership:', e);
+    }
     this.broadcast('LEADERSHIP_UPDATED', data);
   }
 

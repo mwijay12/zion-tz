@@ -116,6 +116,27 @@ service cloud.firestore {
       return isSecretary() || (isVerified() && getUserRole() == 'deacon');
     }
 
+    /// Ushers (wakaribishaji) handle visitor reception and may log events.
+    function isUsher() {
+      return isVerified() && getUserRole() == 'usher';
+    }
+
+    /// Any recognised church worker (portal-eligible role) may log an event.
+    function isChurchWorker() {
+      return isSecretary() || isDeacon() || isUsher() ||
+        (isVerified() && getUserRole() in ['treasurer', 'jumuiya_leader',
+          'choir_leader', 'children_teacher']);
+    }
+
+    function isValidEvent(data) {
+      return data.keys().hasAny(['title']) && data.title is string &&
+             data.title.size() >= 1 && data.title.size() <= 300 &&
+             data.keys().hasAny(['description']) && data.description is string &&
+             data.description.size() >= 1 && data.description.size() <= 10000 &&
+             (!data.keys().hasAny(['posterStatus']) ||
+               data.posterStatus in ['none', 'requested', 'ready']);
+    }
+
     // --- Data Validation Functions ---
 
     function isValidAnnouncement(data) {
@@ -202,7 +223,8 @@ service cloud.firestore {
 
     // 4. Visitors & Guest Reception (CONFIDENTIAL: Deacons, Secretary, Pastors, Admin Only)
     match /visitors_registry/{visitorId} {
-      allow read: if isDeacon();
+      // Ushers receive visitors at the door, so they may read the registry.
+      allow read: if isDeacon() || isUsher();
       allow create: if isValidVisitor(request.resource.data);
       allow update, delete: if isDeacon();
     }
@@ -267,7 +289,16 @@ service cloud.firestore {
       allow write: if false;
     }
 
-    // 13. Mirror of the auth claims, written by setUserRole / onMemberCreate
+    // 13. Events / poster requests: written by church workers on any device,
+    //     read by the whole portal, signed off by secretariat/root only.
+    match /events/{eventId} {
+      allow read: if true;
+      allow create: if isChurchWorker() && isValidEvent(request.resource.data);
+      allow update: if (isSecretary() || isAdmin()) && isValidEvent(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // 14. Mirror of the auth claims, written by setUserRole / onMemberCreate
     match /members/{userId} {
       allow get: if isSignedIn() && (request.auth.uid == userId || isSecretary());
       allow list: if isSecretary();

@@ -21,6 +21,8 @@ import { LeadershipAnalyticsView } from './components/LeadershipAnalyticsView';
 import type { UserRole, Language, FinancialRecord, FinancialProject, ChurchExpense, JumuiyaReport, JumuiyaGroup } from './types';
 import { AuthService, type PortalUser } from './services/authService';
 import { PrivacyAnalyticsService } from './services/privacyAnalyticsService';
+import { FirebaseChurchService } from './services/firebaseChurchService';
+import { churchSync } from './services/churchSyncService';
 import { loadStored, saveStored, STORAGE_KEYS } from './utils/storage';
 import { AuthModal } from './components/AuthModal';
 import { 
@@ -56,6 +58,14 @@ export function App() {
 
   useEffect(() => {
     PrivacyAnalyticsService.recordEvent('app_launch');
+  }, []);
+
+  // Leadership names & photo live in Cloud Firestore, not in one browser's
+  // localStorage. Every signed-in leader device now renders the same profile.
+  useEffect(() => {
+    return FirebaseChurchService.subscribeToLeadership((data) => {
+      churchSync.applyCloudLeadership(data);
+    });
   }, []);
 
   // Shared Application State
@@ -231,7 +241,7 @@ export function App() {
         )}
 
         {activeTab === 'media_studio' && (
-          <MediaContentStudio language={language} />
+          <MediaContentStudio language={language} currentUser={currentUser} />
         )}
 
         {activeTab === 'pastor_portal' && (
@@ -324,6 +334,7 @@ export function App() {
           <MembersModule
             language={language}
             userRole={userRole}
+            currentUser={currentUser}
           />
         )}
           </>

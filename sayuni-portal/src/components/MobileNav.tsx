@@ -63,6 +63,8 @@ export const MobileNav: React.FC<MobileNavProps> = ({
         return { tab: 'departments_portal', tooltip: isSw ? 'Idara za Kanisa' : 'Church Departments', icon: Users };
       case 'treasurer':
         return { tab: 'finance', tooltip: isSw ? 'Hazina & Sadaka' : 'Treasury & Giving', icon: Wallet };
+      case 'usher':
+        return { tab: 'deacons_portal', tooltip: isSw ? 'Mapokezi & Wageni' : 'Reception & Visitors', icon: UserCheck };
       case 'jumuiya_leader':
         return { tab: 'jumuiya', tooltip: isSw ? 'Jumuiya' : 'Home Cells', icon: Home };
       default:

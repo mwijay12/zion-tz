@@ -211,7 +211,17 @@ button {
 }
 
 button:active:not(:disabled) {
-  transform: scale(0.97);
+  transform: scale(0.985);
+}
+
+/* Clear keyboard focus without changing the mouse/touch feel. */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -551,7 +561,9 @@ a {
   border-radius: var(--radius-md);
   padding: 1.5rem;
   box-shadow: var(--shadow-sm);
-  transition: all var(--transition-normal);
+  /* Only animate the properties that actually change: `all` caused layout
+     jitter on long scrollable pages. */
+  transition: box-shadow var(--transition-normal), border-color var(--transition-normal);
 }
 
 .church-card:hover,
@@ -2326,4 +2338,120 @@ a {
 }
 
 
+/* ==========================================================================
+   SAYUNI READER — responsive layout & calm button feedback
+   Added while removing external hymn links: screens now stack cleanly on
+   phones, long text never overflows, and press feedback is consistent.
+   ========================================================================== */
 
+.reader-split {
+  display: grid;
+  grid-template-columns: minmax(260px, 300px) 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.reader-split--hymns {
+  grid-template-columns: minmax(280px, 340px) 1fr;
+}
+
+.reader-sidebar {
+  max-height: 82vh;
+  overflow-y: auto;
+  min-width: 0;
+}
+
+.reader-content {
+  min-height: 600px;
+  min-width: 0;
+}
+
+.verse-row {
+  min-width: 0;
+}
+
+.verse-row > div {
+  min-width: 0;
+}
+
+.verse-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.parallel-verses > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.role-switcher-segmented {
+  flex-wrap: wrap;
+}
+
+/* Small, deliberate lift/press instead of the old global scale on every
+   button (which made filter chips and badges jump). */
+.pressable {
+  transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1),
+              background-color var(--transition-fast),
+              color var(--transition-fast),
+              box-shadow var(--transition-fast);
+}
+
+.pressable:hover {
+  transform: translateY(-1px);
+}
+
+.pressable:active:not(:disabled) {
+  transform: scale(0.985);
+}
+
+@media (max-width: 900px) {
+  .reader-split,
+  .reader-split--hymns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .reader-sidebar {
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .reader-content {
+    min-height: unset;
+  }
+
+  .parallel-verses {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .parallel-verses > div {
+    border-left: none !important;
+    padding-left: 0 !important;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 0.75rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .verse-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .verse-actions {
+    align-self: flex-end;
+    justify-content: flex-start;
+  }
+
+  .reader-content {
+    padding: 1.15rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pressable,
+  .pressable:hover,
+  .pressable:active:not(:disabled) {
+    transform: none;
+  }
+}

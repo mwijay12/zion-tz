@@ -10,7 +10,7 @@ import '../../../core/utils/haptics.dart';
 import '../../../core/utils/top_notification.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/empty_state_view.dart';
-import '../../../core/widgets/in_app_browser_sheet.dart';
+import '../../../core/widgets/motion/motion.dart';
 import '../models/bible_model.dart';
 import '../models/tenzi_model.dart';
 import '../services/bible_service.dart';
@@ -862,10 +862,14 @@ class _BibleScreenState extends State<BibleScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Tenzi za Rohoni + Nyimbo za Kikristo',
-                        style: AppTypography.titleMedium(
-                            color: AppColors.textPrimary),
+                      Expanded(
+                        child: Text(
+                          'Tenzi za Rohoni + Nyimbo za Kikristo',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.titleMedium(
+                              color: AppColors.textPrimary),
+                        ),
                       ),
                       IconButton(
                         icon: const Icon(Icons.close_rounded),
@@ -899,7 +903,7 @@ class _BibleScreenState extends State<BibleScreen> {
                           const Divider(height: 1),
                       itemBuilder: (context, idx) {
                         final hymn = filtered[idx];
-                        final isSel = _selectedTenzi?.number == hymn.number;
+                        final isSel = _selectedTenzi?.shortLabel == hymn.shortLabel;
 
                         return ListTile(
                           leading: CircleAvatar(
@@ -921,11 +925,13 @@ class _BibleScreenState extends State<BibleScreen> {
                                   : AppColors.textPrimary,
                             ),
                           ),
-                          subtitle: Text(hymn.isNyimbo
-                              ? (hymn.hasLyrics
-                                  ? 'Nyimbo za Kikristo • Maneno kamili'
-                                  : 'Nyimbo za Kikristo • MySongbooks')
-                              : '${hymn.category} • ${hymn.key}'),
+                          subtitle: Text(
+                            hymn.isNyimbo
+                                ? 'Nyimbo za Kikristo • Maneno kamili'
+                                : '${hymn.category} • ${hymn.key}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           onTap: () {
                             AppHaptics.lightImpact();
                             _stopAudio();
@@ -1667,17 +1673,26 @@ class _BibleScreenState extends State<BibleScreen> {
                 ),
               ),
               const SizedBox(width: 8),
-              IconButton(
-                icon: const Icon(Icons.share_rounded),
-                onPressed: () {
-                  AppHaptics.lightImpact();
-                  final firstVerse =
-                      hymn.hasLyrics ? hymn.stanzas.first.text : '';
-                  final text = hymn.hasLyrics
-                      ? '*Tenzi #${hymn.number} — ${hymn.title}* (${hymn.key})\n\n$firstVerse\n\n_Sayuni Jerusalem Church_'
-                      : '*Nyimbo #${hymn.number} — ${hymn.title}*\n${hymn.externalUrl ?? ''}\n\n_Sayuni Jerusalem Church_';
-                  Share.share(text);
-                },
+              Tooltip(
+                message: 'Sambaza wimbo',
+                child: TapBounce(
+                  onTap: () {
+                    AppHaptics.lightImpact();
+                    final firstVerse =
+                        hymn.hasLyrics ? hymn.stanzas.first.text : hymn.title;
+                    final label = hymn.isNyimbo ? 'Nyimbo' : 'Tenzi';
+                    final text =
+                        '*$label #${hymn.number} — ${hymn.title}*\n\n$firstVerse\n\n_Sayuni Jerusalem Church_';
+                    Share.share(text);
+                  },
+                  child: Container(
+                    width: 44,
+                    height: 44,
+                    alignment: Alignment.center,
+                    child: const Icon(Icons.share_rounded,
+                        color: AppColors.primary),
+                  ),
+                ),
               ),
             ],
           ),
@@ -1694,7 +1709,10 @@ class _BibleScreenState extends State<BibleScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 6,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -1704,25 +1722,29 @@ class _BibleScreenState extends State<BibleScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            hymn.isNyimbo ? 'Nyimbo #${hymn.number}' : 'Tenzi #${hymn.number}',
+                            hymn.isNyimbo
+                                ? 'Nyimbo #${hymn.number}'
+                                : 'Tenzi #${hymn.number}',
                             style: const TextStyle(
                                 color: AppColors.textWhite,
                                 fontWeight: FontWeight.bold),
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        Text(hymn.key,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: AppColors.primary)),
-                        const SizedBox(width: 8),
-                        Text(hymn.timeSignature,
-                            style: TextStyle(color: AppColors.textSecondary)),
+                        if (hymn.key.isNotEmpty)
+                          Text(hymn.key,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.primary)),
+                        if (hymn.timeSignature.isNotEmpty)
+                          Text(hymn.timeSignature,
+                              style: TextStyle(color: AppColors.textSecondary)),
                       ],
                     ),
                     const SizedBox(height: 8),
                     Text(
                       hymn.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: AppTypography.headlineMedium(
                           color: AppColors.textPrimary),
                     ),
@@ -1735,52 +1757,6 @@ class _BibleScreenState extends State<BibleScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-
-              // Nyimbo (MySongbooks index): link out for audio / full lyrics.
-              // Hymns with bundled public-domain translations show the
-              // lyrics below AND keep this link for audio.
-              if (hymn.externalUrl != null)
-                AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Nyimbo za Kikristo — MySongbooks',
-                        style: AppTypography.titleMedium(
-                            color: AppColors.textPrimary),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        hymn.hasLyrics
-                            ? 'Maneno kamili ya wimbo huu yapo hapa chini (tafsiri mpya ya wimbo wa zamani). Sauti na maelezo zaidi yanapatikana kwenye MySongbooks.'
-                            : 'Wimbo huu ni sehemu ya orodha ya Nyimbo za Kikristo (221 nyimbo) kutoka MySongbooks. Maneno kamili na sauti zinapatikana kupitia kiungo — hazijanakiliwa kwenye app (haki za miliki).',
-                        style: AppTypography.bodySmall(
-                            color: AppColors.textSecondary),
-                      ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            showInAppBrowser(
-                              context,
-                              url: hymn.externalUrl!,
-                              title: hymn.title,
-                            );
-                          },
-                          icon: const Icon(Icons.open_in_new_rounded),
-                          label: Text(hymn.hasLyrics
-                              ? 'Sikiliza kwenye MySongbooks'
-                              : 'Fungua Maneno kwenye MySongbooks'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            foregroundColor: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
 
               // Stanzas (Tenzi with offline lyrics)
               ...hymn.stanzas.map((stanza) {

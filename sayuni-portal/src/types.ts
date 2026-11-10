@@ -186,22 +186,16 @@ export interface TenziHymn {
   time_signature: string;
   stanzas: TenziStanza[];
   chorus?: string;
-  /** 'tenzi' (offline lyrics) or 'nyimbo' (MySongbooks index). */
+  /** 'tenzi' or 'nyimbo' — both ship full offline lyrics. */
   collection?: 'tenzi' | 'nyimbo';
-  /** MySongbooks URL for Nyimbo entries (no lyrics bundled). */
-  externalUrl?: string;
-  likes?: number;
 }
 
 export interface NyimboSong {
   siteNumber: number;
   title: string;
-  slug: string;
-  url: string;
-  likes: number;
-  source: string;
-  /** Original Swahili translations of public-domain hymns (subset only). */
-  stanzas?: TenziStanza[];
+  collection: 'nyimbo';
+  /** Original Swahili translations of classic public-domain hymns. */
+  stanzas: TenziStanza[];
   chorus?: string;
   lyricsNote?: string;
 }

@@ -86,8 +86,8 @@ class BibleService {
     }
   }
 
-  /// Nyimbo za Kikristo index (221 titles from MySongbooks).
-  /// Titles + links only — no lyrics bundled (see TenziHymn docs).
+  /// Nyimbo za Kikristo: 32 offline hymns with full Swahili lyrics
+  /// (fresh translations of classic public-domain songs). No external links.
   Future<List<TenziHymn>> loadNyimbo() async {
     if (_cachedNyimbo != null) return _cachedNyimbo!;
     try {
@@ -103,7 +103,7 @@ class BibleService {
     }
   }
 
-  /// Combined hymn list: Tenzi (offline lyrics) first, then Nyimbo index.
+  /// Combined hymn list: Tenzi (46) then Nyimbo (32), all fully offline.
   Future<List<TenziHymn>> loadAllHymns() async {
     final tenzi = await loadTenzi();
     final nyimbo = await loadNyimbo();

@@ -255,6 +255,7 @@ class _NotesScreenState extends State<NotesScreen> {
                           child: SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
                             child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
                                 icon: const Icon(Icons.format_bold_rounded,
@@ -524,14 +525,18 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
       builder: (ctx) {
         return SafeArea(
           top: true,
-          child: Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
-              left: 20,
-              right: 20,
-              top: 14,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(ctx).size.height * 0.88,
             ),
-            child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+                left: 20,
+                right: 20,
+                top: 14,
+              ),
+              child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -647,6 +652,7 @@ Sayuni Jerusalem Church — Mbagala Kwa Matope
                     ),
                   ),
                 ],
+              ),
               ),
             ),
           ),

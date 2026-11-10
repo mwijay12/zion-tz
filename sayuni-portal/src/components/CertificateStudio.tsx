@@ -355,7 +355,7 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({ language }
                 <small>{CHURCH_PROFILE.location} • {CHURCH_PROFILE.phone}</small>
               </div>
               <div className="cert-masthead-tag">
-                {isSw ? 'Hati Rasmi' : 'Official'}<br />{isSw ? 'ya Kanisa' : 'Document'}
+                {isSw ? 'Hati Rasmi ya Kanisa' : 'Official Church Document'}<br />{isSw ? 'Sayuni Yerusalemu' : 'Zion Jerusalem'}
               </div>
             </div>
             <img className="cert-watermark" src="/zion_logo.png" alt="" aria-hidden="true" width={300} height={300} />
@@ -374,7 +374,9 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({ language }
                 </div>
                 <div className="cert-rule"><i /></div>
                 <div className="cert-eyebrow">
-                  {isSw ? 'Hati Rasmi ya Kanisa' : 'Official Church Document'}
+                  {variant === 'modern'
+                    ? (isSw ? 'Hati Rasmi' : 'Official Document')
+                    : (isSw ? 'Hati Rasmi ya Kanisa' : 'Official Church Document')}
                 </div>
                 <h1 className="cert-title">{certificateTitle(selectedType, language)}</h1>
                 <div className="cert-rule cert-rule--short"><i /></div>

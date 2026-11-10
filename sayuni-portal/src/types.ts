@@ -185,6 +185,24 @@ export interface TenziHymn {
   time_signature: string;
   stanzas: TenziStanza[];
   chorus?: string;
+  /** 'tenzi' (offline lyrics) or 'nyimbo' (MySongbooks index). */
+  collection?: 'tenzi' | 'nyimbo';
+  /** MySongbooks URL for Nyimbo entries (no lyrics bundled). */
+  externalUrl?: string;
+  likes?: number;
+}
+
+export interface NyimboSong {
+  siteNumber: number;
+  title: string;
+  slug: string;
+  url: string;
+  likes: number;
+  source: string;
+  /** Original Swahili translations of public-domain hymns (subset only). */
+  stanzas?: TenziStanza[];
+  chorus?: string;
+  lyricsNote?: string;
 }
 
 
@@ -218,7 +236,11 @@ export interface BulletinNotice {
   content: string;
   date: string;
   isUrgent?: boolean;
-  targetAudience?: 'all' | 'leaders' | 'elders' | 'choir';
+  targetAudience?: 'all' | 'leaders' | 'elders' | 'choir' | 'jumuiya' | 'member';
+  /** Firebase UID of one specific member (personalized message). */
+  targetUid?: string;
+  /** Jumuiya name for group targeting. */
+  targetJumuiya?: string;
   type?: 'normal' | 'urgent' | 'bereavement';
   branch?: string;
   authorRole?: string;

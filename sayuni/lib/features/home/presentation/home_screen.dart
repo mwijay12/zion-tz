@@ -50,20 +50,14 @@ class _HomeScreenState extends State<HomeScreen> {
         ? '\n🎵 *Wimbo wa Tenzi wa Leo:* Tenzi #${devotional.recommendedHymnNumber} — ${devotional.recommendedHymnTitle}\n'
         : '';
     final text = '''
-*NENO LA SIKU — ZION JERUSALEM CHURCH*
-Kwa Matope, Mbagala, Dar es Salaam
-(100% Inafanya Kazi Bila Bando / Offline)
-
-📖 *${devotional.reference}*
+📖 *NENO LA SIKU — ${devotional.reference}*
 "${devotional.scriptureText}"
 
-💡 *Tafakari:*
-${devotional.reflection}
+💡 ${devotional.reflection}
 
-🙏 *Maombi:*
-${devotional.prayer}
+🙏 ${devotional.prayer}
 $hymnText
-Ubarikiwe na Mungu wa Sayuni!
+— Sayuni Jerusalem Church
 ''';
     Share.share(text);
   }

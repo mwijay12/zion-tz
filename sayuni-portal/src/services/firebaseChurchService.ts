@@ -39,7 +39,9 @@ export interface ChurchAnnouncement {
   type: 'normal' | 'urgent' | 'bereavement';
   category: string;
   branch: string;
-  targetAudience: 'all' | 'leaders' | 'elders' | 'choir';
+  targetAudience: 'all' | 'leaders' | 'elders' | 'choir' | 'jumuiya' | 'member';
+  targetUid?: string;
+  targetJumuiya?: string;
   authorRole: string;
   authorEmail: string;
   author?: string;
@@ -106,6 +108,8 @@ export class FirebaseChurchService {
         category: announcement.category || 'Taarifa Kuu',
         branch: announcement.branch || 'Zote',
         targetAudience: announcement.targetAudience || 'all',
+        ...(announcement.targetUid ? { targetUid: announcement.targetUid } : {}),
+        ...(announcement.targetJumuiya ? { targetJumuiya: announcement.targetJumuiya } : {}),
         authorRole: announcement.authorRole || 'Ofisi ya Katibu Mkuu',
         authorEmail: announcement.authorEmail || auth.currentUser?.email || '',
         author: announcement.author || announcement.authorRole || 'Ofisi ya Katibu Mkuu',

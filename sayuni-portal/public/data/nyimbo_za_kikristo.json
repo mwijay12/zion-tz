@@ -1,0 +1,2281 @@
+[
+  {
+    "siteNumber": 1,
+    "title": "Ahadi Tamu",
+    "slug": "ahadi-tamu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ahadi-tamu",
+    "likes": 67,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 2,
+    "title": "Alilipa Bei",
+    "slug": "alilipa-bei",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/alilipa-bei",
+    "likes": 59,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 3,
+    "title": "Anakuja Bwana Yesu",
+    "slug": "anakuja-bwana-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/anakuja-bwana-yesu",
+    "likes": 24,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Yesu anakuja, mawingu yamechanika,\nYesu anakuja, tarumbeta imelia;\nYesu anakuja, watakatifu wameamka,\nYesu anakuja, wafu watafufuliwa."
+      },
+      {
+        "verse_number": 2,
+        "text": "Yesu anakuja, kama alivyoahidi,\nYesu anakuja, kwa nguvu na utukufu;\nYesu anakuja, tujiandae sasa,\nYesu anakuja, Bwana wa mabwana."
+      },
+      {
+        "verse_number": 3,
+        "text": "Yesu anakuja, furaha kubwa,\nYesu anakuja, kwa wote waliokoka;\nYesu anakuja, tumtazame,\nYesu anakuja, milele na milele."
+      }
+    ],
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 4,
+    "title": "Anakuja Upesi",
+    "slug": "anakuja-upesi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/anakuja-upesi",
+    "likes": 46,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 5,
+    "title": "Anipenda Ni Kweli",
+    "slug": "anipenda-ni-kweli",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/anipenda-ni-kweli",
+    "likes": 25,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 6,
+    "title": "Anisikiaye",
+    "slug": "anisikiaye",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/anisikiaye",
+    "likes": 9,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 7,
+    "title": "Asubuhi",
+    "slug": "asubuhi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/asubuhi",
+    "likes": 16,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 8,
+    "title": "Ati Tuonane Mtoni",
+    "slug": "ati-tuonane-mtoni",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ati-tuonane-mtoni",
+    "likes": 29,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 9,
+    "title": "Ati, Kuna Mvua Njema",
+    "slug": "ati-kuna-mvua-njema",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ati-kuna-mvua-njema",
+    "likes": 17,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 10,
+    "title": "Baba Twakujia",
+    "slug": "baba-twakujia",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/baba-twakujia",
+    "likes": 10,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 11,
+    "title": "Baba Yetu Aliye Mbunguni",
+    "slug": "baba-yetu-aliye-mbunguni",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/baba-yetu-aliye-mbunguni",
+    "likes": 13,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 12,
+    "title": "Bubujiko",
+    "slug": "bubujiko",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/bubujiko",
+    "likes": 5,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 13,
+    "title": "Bwana Nami",
+    "slug": "bwana-nami",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/bwana-nami",
+    "likes": 9,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Bwana awe nawe mpaka tuonane tena;\nKwa mashauri yake akuongoze,\nKama kondoo wake akukusanye;\nBwana awe nawe mpaka tuonane tena."
+      },
+      {
+        "verse_number": 2,
+        "text": "Bwana awe nawe mpaka tuonane tena;\nAkuokoe na mabaya yote,\nAkuweke katika njia yake;\nBwana awe nawe mpaka tuonane tena."
+      },
+      {
+        "verse_number": 3,
+        "text": "Bwana awe nawe mpaka tuonane tena;\nAkupe amani ya moyo,\nAkupe furaha ya mbingu;\nBwana awe nawe mpaka tuonane tena."
+      }
+    ],
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 14,
+    "title": "Bwana Ni Mchunga",
+    "slug": "bwana-ni-mchunga",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/bwana-ni-mchunga",
+    "likes": 13,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Bwana ni mchunga wangu, sitapungukiwa;\nAnilaza katika malisho ya kijani,\nAniongoza karibu na maji tulivu;\nBwana ni mchunga wangu, sitapungukiwa."
+      },
+      {
+        "verse_number": 2,
+        "text": "Ananihuisha roho yangu,\nAniongoza katika njia za haki;\nNa hata nipite katika bonde la mauti,\nSitaogopa mabaya, Wewe uko nami."
+      },
+      {
+        "verse_number": 3,
+        "text": "Wema na fadhili zitanifuata,\nSiku zote za maisha yangu;\nNitakaa nyumbani mwa Bwana,\nMilele na milele, amina."
+      }
+    ],
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 15,
+    "title": "Bwana, Uniongoze Juu",
+    "slug": "bwana-uniongoze-juu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/bwana-uniongoze-juu",
+    "likes": 22,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 16,
+    "title": "Cha Kutumaini Sina",
+    "slug": "cha-kutumaini-sina",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/cha-kutumaini-sina",
+    "likes": 15,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 17,
+    "title": "Chini ya Msalaba",
+    "slug": "chini-ya-msalaba",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/chini-ya-msalaba",
+    "likes": 18,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Chini ya msalaba wa Yesu,\nNingependa kusimama;\nKama kivuli cha mwamba mkuu,\nKatika nchi yenye uchovu;\nNyumba katikati ya jangwa,\nPumziko njiani;\nKutokana na joto la mchana,\nNa mzigo wa siku."
+      },
+      {
+        "verse_number": 2,
+        "text": "Hapo napata neema,\nHapo napata amani;\nMsalaba wa Mwokozi,\nNi fahari yangu yote;\nSitajivuna kwa jambo jingine,\nIla kwa msalaba wa Bwana;\nKwa huo ulimwengu umesulubishwa,\nNa mimi kwa ulimwengu."
+      },
+      {
+        "verse_number": 3,
+        "text": "Chini ya msalaba wa Yesu,\nMoyo wangu unapumzika;\nNa kwa damu yake takatifu,\nDhambi zangu zimeoshwa;\nAsante, Mwokozi mpendwa,\nKwa upendo wako mkuu;\nNitakuabudu milele,\nChini ya msalaba wako."
+      }
+    ],
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 18,
+    "title": "Ewe Roho wa Mbinguni",
+    "slug": "ewe-roho-wa-mbinguni",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ewe-roho-wa-mbinguni",
+    "likes": 8,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 19,
+    "title": "Ewe Skuli ya Sabato",
+    "slug": "ewe-skuli-ya-sabato",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ewe-skuli-ya-sabato",
+    "likes": 24,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 20,
+    "title": "Fanyeni Kazi Zenu",
+    "slug": "fanyeni-kazi-zenu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/fanyeni-kazi-zenu",
+    "likes": 6,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 21,
+    "title": "Fikira Moja Tu",
+    "slug": "fikira-moja-tu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/fikira-moja-tu",
+    "likes": 17,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 22,
+    "title": "Furaha Gani!",
+    "slug": "furaha-gani",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/furaha-gani",
+    "likes": 26,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 23,
+    "title": "Furaha kwa Ulimwengu",
+    "slug": "furaha-kwa-ulimwengu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/furaha-kwa-ulimwengu",
+    "likes": 14,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Furaha kwa ulimwengu! Bwana amekuja:\nDunia impokee Mfalme wake;\nKila moyo uandae mahali pake,\nNa mbingu na mazingira ziimbe."
+      },
+      {
+        "verse_number": 2,
+        "text": "Furaha kwa ulimwengu! Mwokozi amezaliwa:\nMalaika wameimba kwa furaha;\nWaimbaji wa mbinguni,\nWameimba: 'Hosana kwa juu!'"
+      },
+      {
+        "verse_number": 3,
+        "text": "Hakuna dhambi wala huzuni,\nWala miiba katika ardhi;\nKwa baraka za Mwokozi,\nDunia imebarikiwa."
+      },
+      {
+        "verse_number": 4,
+        "text": "Yeye hutawala ulimwengu,\nKwa haki na neema;\nMfalme wa milele,\nAnakuja na baraka."
+      }
+    ],
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 24,
+    "title": "Habari Za Usiku",
+    "slug": "habari-za-usiku",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/habari-za-usiku",
+    "likes": 5,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 25,
+    "title": "Hacha, Maneno Mabaya Yasitoke",
+    "slug": "hacha-maneno-mabaya-yasitoke",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/hacha-maneno-mabaya-yasitoke",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 26,
+    "title": "Hadithi Kisa Yesu",
+    "slug": "hadithi-kisa-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/hadithi-kisa-yesu",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Niambie hadithi ya Yesu,\nIandike moyoni mwangu kila neno;\nNiambie hadithi ya Yesu,\nTamu kuliko zote zilizosikika."
+      },
+      {
+        "verse_number": 2,
+        "text": "Niambie jinsi alivyokuja,\nKutoka mbinguni juu;\nNiambie jinsi alivyokufa,\nMsalabani kwa ajili yangu."
+      },
+      {
+        "verse_number": 3,
+        "text": "Niambie jinsi alivyofufuka,\nNa kupaa mbinguni;\nNiambie jinsi atakavyorudi,\nKwa wote waliokoka."
+      }
+    ],
+    "chorus": "Niambie hadithi ya Yesu,\nTamu kuliko zote;\nNiambie hadithi ya Yesu,\nMoyo wangu unapenda.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 27,
+    "title": "Haja Nawe",
+    "slug": "haja-nawe",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/haja-nawe",
+    "likes": 7,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Nahitaji Wewe kila saa,\nBwana mwenye neema;\nHakuna sauti nyororo kama Yako,\nInayoweza kutoa amani."
+      },
+      {
+        "verse_number": 2,
+        "text": "Nahitaji Wewe kila saa,\nNahitaji Wewe;\nO Yesu, karibu nami,\nNahitaji Wewe kila saa."
+      },
+      {
+        "verse_number": 3,
+        "text": "Nahitaji Wewe kila saa,\nKatika furaha na huzuni;\nWewe ni faraja yangu,\nWewe ni tumaini langu."
+      }
+    ],
+    "chorus": "Nahitaji Wewe, Bwana,\nNahitaji Wewe;\nO Yesu, karibu nami,\nNahitaji Wewe kila saa.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 28,
+    "title": "Hapana Giza",
+    "slug": "hapana-giza",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/hapana-giza",
+    "likes": 16,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 29,
+    "title": "Hatujui Saa",
+    "slug": "hatujui-saa",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/hatujui-saa",
+    "likes": 13,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 30,
+    "title": "Hatutaagana Tena",
+    "slug": "hatutaagana-tena",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/hatutaagana-tena",
+    "likes": 6,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Tukifika mbinguni sote,\nSiku gani ya furaha!\nTukimwona Yesu,\nTutaomba na kushangilia ushindi."
+      },
+      {
+        "verse_number": 2,
+        "text": "Kwa neema ya Mwokozi,\nTutafika salama;\nKwenye nchi ya uzima,\nTutakaa milele."
+      },
+      {
+        "verse_number": 3,
+        "text": "Huko hakuna maumivu,\nHuko hakuna machozi;\nFuraha ya milele,\nItakuwa kwetu sote."
+      }
+    ],
+    "chorus": "Tukifika mbinguni,\nSiku ya furaha!\nTukimwona Yesu,\nTutaomba na kushangilia.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 31,
+    "title": "Hivi Nilivyo Unitwae",
+    "slug": "hivi-nilivyo-unitwae",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/hivi-nilivyo-unitwae",
+    "likes": 17,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Hivi nilivyo, bila hoja,\nIla damu Yako iliyomwagika kwa ajili yangu;\nNa kwamba umeniita nije Kwako,\nEe Mwana Kondoo wa Mungu, ninakuja."
+      },
+      {
+        "verse_number": 2,
+        "text": "Hivi nilivyo, bila kuchelewa,\nNa bila kuondoa giza langu;\nKwa sababu umenipenda,\nEe Mwana Kondoo wa Mungu, ninakuja."
+      },
+      {
+        "verse_number": 3,
+        "text": "Hivi nilivyo, yote nimeyatoa,\nKwako, Mwana Kondoo wa Mungu;\nNimekuja sasa,\nEe Mwana Kondoo wa Mungu, ninakuja."
+      }
+    ],
+    "chorus": "Ee Mwana Kondoo wa Mungu,\nNinakuja, ninakuja.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 32,
+    "title": "Hukumu",
+    "slug": "hukumu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/hukumu",
+    "likes": 4,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 33,
+    "title": "Huna Kitu kwa Yesu",
+    "slug": "huna-kitu-kwa-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/huna-kitu-kwa-yesu",
+    "likes": 8,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 34,
+    "title": "Huniongoza Mwokozi",
+    "slug": "huniongoza-mwokozi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/huniongoza-mwokozi",
+    "likes": 36,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Mwokozi, kama mchunga utuongoze,\nTunahitaji sana utunzaji Wako;\nKatika malisho Yako ya kupendeza utulize,\nKwa ajili yetu zizi Zako umeandaa."
+      },
+      {
+        "verse_number": 2,
+        "text": "Tunaomba utuongoze,\nKatika njia ya haki;\nTusiende mbali nawe,\nMchungaji wa roho zetu."
+      },
+      {
+        "verse_number": 3,
+        "text": "Tukikuona kwa macho ya imani,\nTutafurahi sana;\nKwa sababu Wewe ni mchunga,\nNa sisi ni kondoo Wako."
+      }
+    ],
+    "chorus": "Mwokozi, mchunga mwema,\nTukuze jina Lako;\nTunaomba utuongoze,\nMilele na milele.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 35,
+    "title": "Hunipenda Pia",
+    "slug": "hunipenda-pia",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/hunipenda-pia",
+    "likes": 6,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 36,
+    "title": "Ikumbuke Sabato",
+    "slug": "ikumbuke-sabato",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ikumbuke-sabato",
+    "likes": 12,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 37,
+    "title": "Jenga Juu ya Mwamba",
+    "slug": "jenga-juu-ya-mwamba",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/jenga-juu-ya-mwamba",
+    "likes": 8,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 38,
+    "title": "Jina La Bwana Li Heri",
+    "slug": "jina-la-bwana-li-heri",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/jina-la-bwana-li-heri",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 39,
+    "title": "Jina La Thamani",
+    "slug": "jina-la-thamani",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/jina-la-thamani",
+    "likes": 10,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 40,
+    "title": "Jina La Yesu Salamu",
+    "slug": "jina-la-yesu-salamu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/jina-la-yesu-salamu",
+    "likes": 80,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Chukua jina la Yesu pamoja nawe,\nMtoto wa huzuni na maumivu;\nLitakupa furaha na faraja,\nLichukue popote uendapo."
+      },
+      {
+        "verse_number": 2,
+        "text": "Chukua jina la Yesu pamoja nawe,\nKama ngao dhidi ya majaribu;\nLitakusaidia na kukuokoa,\nKatika hatari zote za njia."
+      },
+      {
+        "verse_number": 3,
+        "text": "Chukua jina la Yesu pamoja nawe,\nLitakuwa furaha yako;\nLitakupa amani ya moyo,\nKatika siku za huzuni."
+      }
+    ],
+    "chorus": "Jina tamu, jina la thamani,\nTumaini la kila moyo;\nJina tamu, jina la thamani,\nJina la Yesu.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 41,
+    "title": "Jina Lake Yesu Tamu",
+    "slug": "jina-lake-yesu-tamu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/jina-lake-yesu-tamu",
+    "likes": 55,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 42,
+    "title": "Jina Langu Limeandikwa Je",
+    "slug": "jina-langu-limeandikwa-je",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/jina-langu-limeandikwa-je",
+    "likes": 26,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 43,
+    "title": "Jua La Rohoni Mwangu",
+    "slug": "jua-la-rohoni-mwangu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/jua-la-rohoni-mwangu",
+    "likes": 16,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Jua la roho yangu, Wewe Nuru ya Mungu,\nKaribu na njia yangu yenye giza;\nUnajua, Bwana, kwamba mimi ni Wako,\nUsiku na mchana."
+      },
+      {
+        "verse_number": 2,
+        "text": "Nakuomba uniongoze,\nKatika giza la usiku;\nNuru Yako inatosha,\nKunionyesha njia ya mbingu."
+      },
+      {
+        "verse_number": 3,
+        "text": "Nitakaa karibu nawe,\nMilele na milele;\nJua la roho yangu,\nWewe ni furaha yangu."
+      }
+    ],
+    "chorus": "Jua la roho yangu,\nNuru ya Mungu;\nUnajua kwamba mimi ni Wako,\nUsiku na mchana.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 44,
+    "title": "Kaa Nami",
+    "slug": "kaa-nami",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/kaa-nami",
+    "likes": 60,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 45,
+    "title": "Karibu na Wewe, Mungu Wangu",
+    "slug": "karibu-na-wewe-mungu-wangu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/karibu-na-wewe-mungu-wangu",
+    "likes": 72,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 46,
+    "title": "Karibu Sana",
+    "slug": "karibu-sana",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/karibu-sana",
+    "likes": 6,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 47,
+    "title": "Katika Wenye Dhambi",
+    "slug": "katika-wenye-dhambi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/katika-wenye-dhambi",
+    "likes": 22,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 48,
+    "title": "Kaza Sana Macho",
+    "slug": "kaza-sana-macho",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/kaza-sana-macho",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 49,
+    "title": "Kazi Yangu Ikiisha",
+    "slug": "kazi-yangu-ikiisha",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/kazi-yangu-ikiisha",
+    "likes": 38,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 50,
+    "title": "Kesha Roho Yangu",
+    "slug": "kesha-roho-yangu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/kesha-roho-yangu",
+    "likes": 4,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 51,
+    "title": "Kesheni Kaombeni",
+    "slug": "kesheni-kaombeni",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/kesheni-kaombeni",
+    "likes": 17,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 52,
+    "title": "Kristo wa Neema Yote",
+    "slug": "kristo-wa-neema-yote",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/kristo-wa-neema-yote",
+    "likes": 272,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 53,
+    "title": "Kufariki Naye Yesu",
+    "slug": "kufariki-naye-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/kufariki-naye-yesu",
+    "likes": 4,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 54,
+    "title": "Kumekucha kwa Uzuri",
+    "slug": "kumekucha-kwa-uzuri",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/kumekucha-kwa-uzuri",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 55,
+    "title": "Kumtegemea Mwokozi",
+    "slug": "kumtegemea-mwokozi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/kumtegemea-mwokozi",
+    "likes": 39,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 56,
+    "title": "Kuwa na Yesu Mwokozi",
+    "slug": "kuwa-na-yesu-mwokozi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/kuwa-na-yesu-mwokozi",
+    "likes": 7,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 57,
+    "title": "Kuwa na Yesu Nyumbani",
+    "slug": "kuwa-na-yesu-nyumbani",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/kuwa-na-yesu-nyumbani",
+    "likes": 7,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 58,
+    "title": "Kuwa Wake Yesu",
+    "slug": "kuwa-wake-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/kuwa-wake-yesu",
+    "likes": 18,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 59,
+    "title": "Kuwatafuta Wasioweza",
+    "slug": "kuwatafuta-wasioweza",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/kuwatafuta-wasioweza",
+    "likes": 20,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Waokoe wanaopotea, watunze wanaokufa,\nWatoe kwa huruma kutoka dhambi na kaburi;\nWalia kwa wanaokosea, wainue walioanguka,\nWaambie kuhusu Mwenye Nguvu wa kuokoa."
+      },
+      {
+        "verse_number": 2,
+        "text": "Ingawa wamepotea, Yesu anawapenda,\nAnawatafuta kwa upendo;\nTuwahubirie habari njema,\nYa Mwokozi aliyekuja."
+      },
+      {
+        "verse_number": 3,
+        "text": "Siku moja wataokoka,\nNa kuimba kwa furaha;\nKwa sababu Yesu alikufa,\nIli wawe huru milele."
+      }
+    ],
+    "chorus": "Waokoe wanaopotea,\nYesu anawapenda;\nWaambie habari njema,\nYa Mwokozi aliyekuja.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 60,
+    "title": "Kwa Heri",
+    "slug": "kwa-heri",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/kwa-heri",
+    "likes": 0,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 61,
+    "title": "Kwa Mahitaji ya Kesho",
+    "slug": "kwa-mahitaji-ya-kesho",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/kwa-mahitaji-ya-kesho",
+    "likes": 1,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Siku kwa siku, na kila dakika inayopita,\nNapata nguvu za kukabili majaribu yangu;\nNikimtumaini Baba yangu mwenye hekima,\nYesu anatawala maisha yangu, sitaogopa."
+      },
+      {
+        "verse_number": 2,
+        "text": "Mungu anajua mahitaji yangu yote,\nAnanipatia kwa wakati;\nSitaogopa kesho,\nKwa sababu Bwana yuko nami."
+      },
+      {
+        "verse_number": 3,
+        "text": "Nitamwamini siku zote,\nKatika furaha na huzuni;\nYesu ni mchunga wangu,\nSitanipungukiwa kamwe."
+      }
+    ],
+    "chorus": "Siku kwa siku,\nBwana yuko nami;\nSitaogopa kesho,\nYesu ananitosha.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 62,
+    "title": "Kwa Maombi Nachangamka",
+    "slug": "kwa-maombi-nachangamka",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/kwa-maombi-nachangamka",
+    "likes": 72,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Saa tamu ya sala, saa tamu ya sala,\nInayonita kutoka dunia ya wasiwasi;\nKuenda katika mikono ya Baba yangu;\nNa mizigo yangu yote, huzuni na dhambi,\nNamwaga kwake anayejali,\nNaye ananishikilia katika mikono yake."
+      },
+      {
+        "verse_number": 2,
+        "text": "Saa tamu ya sala, saa tamu ya sala,\nMoyo wangu unapata pumziko;\nKwa sababu Yesu ananisikia,\nNa kunijibu kwa wakati."
+      },
+      {
+        "verse_number": 3,
+        "text": "Saa tamu ya sala, saa tamu ya sala,\nNitakuja kwako daima;\nWewe ni faraja yangu,\nWewe ni tumaini langu."
+      }
+    ],
+    "chorus": "Saa tamu ya sala,\nMoyo wangu unapumzika;\nKwa sababu Yesu ananisikia,\nNa kunijibu kwa wakati.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 63,
+    "title": "Magharibi Jua",
+    "slug": "magharibi-jua",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/magharibi-jua",
+    "likes": 4,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 64,
+    "title": "Mali Yako Sasa",
+    "slug": "mali-yako-sasa",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mali-yako-sasa",
+    "likes": 10,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Yote namtolea Yesu,\nYote kwake natoa kwa uhuru;\nNitampenda na kumtumaini daima,\nKatika uwepo wake nitaishi kila siku."
+      },
+      {
+        "verse_number": 2,
+        "text": "Yote namtolea Yesu,\nYote, bila kubaki;\nNimefanya agano nawe,\nBwana, ni wako milele."
+      },
+      {
+        "verse_number": 3,
+        "text": "Yote namtolea Yesu,\nMoyo wangu, roho yangu;\nNimekuja kwako sasa,\nBwana, nitumie kwa utukufu Wako."
+      }
+    ],
+    "chorus": "Natoa yote, Bwana,\nYote ni wako;\nNimefanya agano nawe,\nBwana, ni wako milele.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 65,
+    "title": "Mapya Ni Mapenzi",
+    "slug": "mapya-ni-mapenzi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mapya-ni-mapenzi",
+    "likes": 18,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 66,
+    "title": "Mchungaji Mpenzi",
+    "slug": "mchungaji-mpenzi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mchungaji-mpenzi",
+    "likes": 20,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 67,
+    "title": "Mfalme Ajapo",
+    "slug": "mfalme-ajapo",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mfalme-ajapo",
+    "likes": 8,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 68,
+    "title": "Mfalme Yu Mlangoni",
+    "slug": "mfalme-yu-mlangoni",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mfalme-yu-mlangoni",
+    "likes": 15,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 69,
+    "title": "Miguuni Pake Yesu",
+    "slug": "miguuni-pake-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/miguuni-pake-yesu",
+    "likes": 34,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 70,
+    "title": "Mishale ya Nuru",
+    "slug": "mishale-ya-nuru",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mishale-ya-nuru",
+    "likes": 1,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 71,
+    "title": "Mkate wa Mbingu",
+    "slug": "mkate-wa-mbingu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mkate-wa-mbingu",
+    "likes": 1,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 72,
+    "title": "Mlango Pa Moyo",
+    "slug": "mlango-pa-moyo",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mlango-pa-moyo",
+    "likes": 11,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 73,
+    "title": "Mlango Wazi",
+    "slug": "mlango-wazi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mlango-wazi",
+    "likes": 14,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 74,
+    "title": "Moyo Safi",
+    "slug": "moyo-safi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/moyo-safi",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 75,
+    "title": "Moyoni",
+    "slug": "moyoni",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/moyoni",
+    "likes": 4,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 76,
+    "title": "Moyoni Nijaze",
+    "slug": "moyoni-nijaze",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/moyoni-nijaze",
+    "likes": 1,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 77,
+    "title": "Mpaka Lini Bwana",
+    "slug": "mpaka-lini-bwana",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mpaka-lini-bwana",
+    "likes": 5,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 78,
+    "title": "Mrithi Ufalme",
+    "slug": "mrithi-ufalme",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mrithi-ufalme",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 79,
+    "title": "Msalaba wa Yesu",
+    "slug": "msalaba-wa-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/msalaba-wa-yesu",
+    "likes": 19,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 80,
+    "title": "Msalabani Pa Mwokozi",
+    "slug": "msalabani-pa-mwokozi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/msalabani-pa-mwokozi",
+    "likes": 14,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 81,
+    "title": "Msifu Mungu",
+    "slug": "msifu-mungu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/msifu-mungu",
+    "likes": 5,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 82,
+    "title": "Msifu Mungu Ee Watoto",
+    "slug": "msifu-mungu-ee-watoto",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/msifu-mungu-ee-watoto",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 83,
+    "title": "Msingi wa Kanisa",
+    "slug": "msingi-wa-kanisa",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/msingi-wa-kanisa",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Msingi mmoja wa kanisa,\nNi Yesu Kristo Bwana wake;\nYeye ni uumbaji mpya,\nKwa maji na neno."
+      },
+      {
+        "verse_number": 2,
+        "text": "Kanisa ni mwili wa Kristo,\nWanaokoka wote ni viungo vyake;\nYeye ni kichwa cha kanisa,\nNa sisi ni mwili wake."
+      },
+      {
+        "verse_number": 3,
+        "text": "Kanisa litasimama imara,\nHata milango ya kuzimu;\nKwa sababu Yesu ni msingi,\nNa hakuna anayeweza kuubomoa."
+      }
+    ],
+    "chorus": "Kanisa ni la Kristo,\nMwokozi wetu;\nYeye ni msingi wake,\nMilele na milele.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 84,
+    "title": "Msini Imara, Ninyi wa Bwana",
+    "slug": "msini-imara-ninyi-wa-bwana",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/msini-imara-ninyi-wa-bwana",
+    "likes": 1,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 85,
+    "title": "Mtakatifu, Mtakatifu, Mtakatifu",
+    "slug": "mtakatifu-mtakatifu-mtakatifu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mtakatifu-mtakatifu-mtakatifu",
+    "likes": 0,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 86,
+    "title": "Mtazame Mwokozi",
+    "slug": "mtazame-mwokozi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mtazame-mwokozi",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 87,
+    "title": "Mungu Afanya Upinde",
+    "slug": "mungu-afanya-upinde",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mungu-afanya-upinde",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 88,
+    "title": "Mungu Atukuzwe",
+    "slug": "mungu-atukuzwe",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mungu-atukuzwe",
+    "likes": 33,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 89,
+    "title": "Mungu Msaada Wetu",
+    "slug": "mungu-msaada-wetu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mungu-msaada-wetu",
+    "likes": 4,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Mungu ni ngome yetu yenye nguvu,\nMsaada usiokosekana;\nYeye ni msaada wetu,\nKatika gharika ya magonjwa ya dunia."
+      },
+      {
+        "verse_number": 2,
+        "text": "Kwa neno lake moja,\nShetani ataanguka;\nKwa sababu Mungu yuko upande wetu,\nNani atatushinda?"
+      },
+      {
+        "verse_number": 3,
+        "text": "Tukimtumaini Bwana,\nTutashinda kila vita;\nKwa sababu Yeye ni Mfalme,\nNa sisi ni askari wake."
+      }
+    ],
+    "chorus": "Mungu ni ngome yetu,\nMsaada wetu;\nTutamtumaini daima,\nMilele na milele.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 90,
+    "title": "Mungu Nawe Nanyi Daima",
+    "slug": "mungu-nawe-nanyi-daima",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mungu-nawe-nanyi-daima",
+    "likes": 9,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 91,
+    "title": "Mungu Wetu Yeye Mwamba",
+    "slug": "mungu-wetu-yeye-mwamba",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mungu-wetu-yeye-mwamba",
+    "likes": 19,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 92,
+    "title": "Mungu, Mapenzi Makamilifu",
+    "slug": "mungu-mapenzi-makamilifu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mungu-mapenzi-makamilifu",
+    "likes": 4,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 93,
+    "title": "Mwamba Wenye Imara",
+    "slug": "mwamba-wenye-imara",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mwamba-wenye-imara",
+    "likes": 8,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 94,
+    "title": "Mwanga Umo Moyoni",
+    "slug": "mwanga-umo-moyoni",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mwanga-umo-moyoni",
+    "likes": 15,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 95,
+    "title": "Mwokozi Wangu Anipenda",
+    "slug": "mwokozi-wangu-anipenda",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mwokozi-wangu-anipenda",
+    "likes": 1,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 96,
+    "title": "Mwokozi, Kama Mchunga",
+    "slug": "mwokozi-kama-mchunga",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mwokozi-kama-mchunga",
+    "likes": 13,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 97,
+    "title": "Mwumbaji, Mfalme",
+    "slug": "mwumbaji-mfalme",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/mwumbaji-mfalme",
+    "likes": 25,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 98,
+    "title": "Na Tumwabudu Mfalme Mtukufu",
+    "slug": "na-tumwabudu-mfalme-mtukufu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/na-tumwabudu-mfalme-mtukufu",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 99,
+    "title": "Naamini",
+    "slug": "naamini",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/naamini",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 100,
+    "title": "Naendea Msalaba",
+    "slug": "naendea-msalaba",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/naendea-msalaba",
+    "likes": 19,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 101,
+    "title": "Nakupenda Sana Kufika",
+    "slug": "nakupenda-sana-kufika",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/nakupenda-sana-kufika",
+    "likes": 0,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 102,
+    "title": "Namtaka Bwana Yesu",
+    "slug": "namtaka-bwana-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/namtaka-bwana-yesu",
+    "likes": 11,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 103,
+    "title": "Nani Afanya Maua",
+    "slug": "nani-afanya-maua",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/nani-afanya-maua",
+    "likes": 0,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 104,
+    "title": "Napenda Kitabu Chake",
+    "slug": "napenda-kitabu-chake",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/napenda-kitabu-chake",
+    "likes": 6,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 105,
+    "title": "Napenda Kuhubiri",
+    "slug": "napenda-kuhubiri",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/napenda-kuhubiri",
+    "likes": 5,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 106,
+    "title": "Nasifu Shani ya Mungu",
+    "slug": "nasifu-shani-ya-mungu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/nasifu-shani-ya-mungu",
+    "likes": 21,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Naimba nguvu kuu za Mungu,\nZilizosimamisha milima;\nZilizotawanya bahari,\nNa kujenga mbingu za juu."
+      },
+      {
+        "verse_number": 2,
+        "text": "Naimba hekima ya Mungu,\nInayoongoza ulimwengu;\nKila kiumbe kinamwabudu,\nKwa sababu Yeye ni Mfalme."
+      },
+      {
+        "verse_number": 3,
+        "text": "Naimba upendo wa Mungu,\nUnaotusaidia kila siku;\nKila baraka kutoka kwake,\nInastahili sifa zote."
+      }
+    ],
+    "chorus": "Naimba nguvu za Mungu,\nNaimba hekima yake;\nNaimba upendo wake,\nMilele na milele.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 107,
+    "title": "Nasikia Sauti Yako",
+    "slug": "nasikia-sauti-yako",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/nasikia-sauti-yako",
+    "likes": 8,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 108,
+    "title": "Nataka Imani Hii",
+    "slug": "nataka-imani-hii",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/nataka-imani-hii",
+    "likes": 5,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 109,
+    "title": "Nataka Nimjue Yesu",
+    "slug": "nataka-nimjue-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/nataka-nimjue-yesu",
+    "likes": 54,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 110,
+    "title": "Nataka Niwe Tayari",
+    "slug": "nataka-niwe-tayari",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/nataka-niwe-tayari",
+    "likes": 0,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 111,
+    "title": "Nena Mungu",
+    "slug": "nena-mungu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/nena-mungu",
+    "likes": 7,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 112,
+    "title": "Ni Heri Kifungo",
+    "slug": "ni-heri-kifungo",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ni-heri-kifungo",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 113,
+    "title": "Ni Salama Rohoni Mwangu",
+    "slug": "ni-salama-rohoni-mwangu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ni-salama-rohoni-mwangu",
+    "likes": 8,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 114,
+    "title": "Ni Siku ya Furaha",
+    "slug": "ni-siku-ya-furaha",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ni-siku-ya-furaha",
+    "likes": 6,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 115,
+    "title": "Ni Wako Bwana",
+    "slug": "ni-wako-bwana",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ni-wako-bwana",
+    "likes": 13,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Ni wako, Bwana, nimekutafuta,\nUmeninunua, nitakuwa Wako;\nUmenitafuta, ningependa kukutafuta,\nUmenipata, ningependa kuwa Wako."
+      },
+      {
+        "verse_number": 2,
+        "text": "Nimekuja kwako, Bwana,\nKwa sababu umenipenda;\nNimekuja kwako sasa,\nBwana, ni wako milele."
+      },
+      {
+        "verse_number": 3,
+        "text": "Nitamwabudu Bwana,\nKatika siku zote za maisha yangu;\nKwa sababu Yeye ni Mfalme,\nNa mimi ni mtumishi wake."
+      }
+    ],
+    "chorus": "Ni wako, Bwana,\nNi wako milele;\nUmeninunua kwa damu Yako,\nBwana, ni wako.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 116,
+    "title": "Niambie, Ee Mlinzi",
+    "slug": "niambie-ee-mlinzi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/niambie-ee-mlinzi",
+    "likes": 12,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 117,
+    "title": "Niimbe Pendo Lake",
+    "slug": "niimbe-pendo-lake",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/niimbe-pendo-lake",
+    "likes": 27,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 118,
+    "title": "Nijaze Sasa",
+    "slug": "nijaze-sasa",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/nijaze-sasa",
+    "likes": 6,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 119,
+    "title": "Nilikupa Wewe",
+    "slug": "nilikupa-wewe",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/nilikupa-wewe",
+    "likes": 14,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 120,
+    "title": "Nilipotoka Kabisa",
+    "slug": "nilipotoka-kabisa",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/nilipotoka-kabisa",
+    "likes": 15,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 121,
+    "title": "Nimekombolewa na Yesu",
+    "slug": "nimekombolewa-na-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/nimekombolewa-na-yesu",
+    "likes": 15,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 122,
+    "title": "Ninakuhitaji",
+    "slug": "ninakuhitaji",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ninakuhitaji",
+    "likes": 5,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 123,
+    "title": "Ninakupenda Zaidi",
+    "slug": "ninakupenda-zaidi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ninakupenda-zaidi",
+    "likes": 5,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 124,
+    "title": "Ninaye Rafiki",
+    "slug": "ninaye-rafiki",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ninaye-rafiki",
+    "likes": 46,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 125,
+    "title": "Nipe Biblia",
+    "slug": "nipe-biblia",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/nipe-biblia",
+    "likes": 30,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 126,
+    "title": "Nitakuandama Kote",
+    "slug": "nitakuandama-kote",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/nitakuandama-kote",
+    "likes": 8,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 127,
+    "title": "Nitakwenda Utakaponituma",
+    "slug": "nitakwenda-utakaponituma",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/nitakwenda-utakaponituma",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 128,
+    "title": "Nitembee Nawe",
+    "slug": "nitembee-nawe",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/nitembee-nawe",
+    "likes": 16,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 129,
+    "title": "Niuonapo Msalaba",
+    "slug": "niuonapo-msalaba",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/niuonapo-msalaba",
+    "likes": 0,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Niuonapo msalaba wa ajabu,\nAmbapo Mfalme wa utukufu alikufa;\nFaida yangu kubwa ni hasara,\nNa kumwaga dharau juu ya kiburi changu."
+      },
+      {
+        "verse_number": 2,
+        "text": "Kwa ajili yangu alikufa,\nMsalabani kwa aibu;\nIli anipatie uzima,\nNa kunifanya mtoto wa Mungu."
+      },
+      {
+        "verse_number": 3,
+        "text": "Sitajivuna kwa jambo jingine,\nIla kwa msalaba wa Bwana;\nKwa huo ulimwengu umesulubishwa,\nNa mimi kwa ulimwengu."
+      }
+    ],
+    "chorus": "Niuonapo msalaba,\nMoyo wangu unapenda;\nKwa sababu Yesu alikufa,\nIli niwe huru.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 130,
+    "title": "Niwe Kama Yesu",
+    "slug": "niwe-kama-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/niwe-kama-yesu",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 131,
+    "title": "Niwe Nao Uzuri wa Mwokozi",
+    "slug": "niwe-nao-uzuri-wa-mwokozi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/niwe-nao-uzuri-wa-mwokozi",
+    "likes": 4,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 132,
+    "title": "Njiani Huniongoza",
+    "slug": "njiani-huniongoza",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/njiani-huniongoza",
+    "likes": 12,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Niongoze, Nuru yenye upendo,\nKatika giza linalonizunguka;\nNiongoze Wewe;\nUsiku ni giza, na mimi ni mbali na nyumbani;\nNiongoze Wewe."
+      },
+      {
+        "verse_number": 2,
+        "text": "Siku zilizopita hazikunirudisha,\nNa sijaomba kuona siku zijazo;\nHatua moja kwa wakati inatosha,\nNiongoze Wewe."
+      },
+      {
+        "verse_number": 3,
+        "text": "Nimekuwa mbali na nyumbani,\nLakini sijaachwa nawe;\nNuru Yako inaniongoza,\nMpaka nifike nyumbani."
+      }
+    ],
+    "chorus": "Niongoze, Nuru yenye upendo,\nNiongoze Wewe;\nUsiku ni giza,\nNiongoze Wewe.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 133,
+    "title": "Njoni Kwangu",
+    "slug": "njoni-kwangu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/njoni-kwangu",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 134,
+    "title": "Omba Sana Asubuhi",
+    "slug": "omba-sana-asubuhi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/omba-sana-asubuhi",
+    "likes": 4,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 135,
+    "title": "Pambazuka Nuru",
+    "slug": "pambazuka-nuru",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/pambazuka-nuru",
+    "likes": 0,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 136,
+    "title": "Pana Mahali Pazuri Mno",
+    "slug": "pana-mahali-pazuri-mno",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/pana-mahali-pazuri-mno",
+    "likes": 52,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Pana mahali pazuri kuliko mchana,\nNa kwa imani tunaweza kuona mbali;\nKwa sababu nyumba ya Baba iko njiani,\nKuwakaribisha watoto wake."
+      },
+      {
+        "verse_number": 2,
+        "text": "Huko hakuna usiku wala giza,\nHuko hakuna maumivu wala machozi;\nFuraha ya milele itakuwa,\nKwa wote waliokoka."
+      },
+      {
+        "verse_number": 3,
+        "text": "Tukifika huko siku moja,\nTutaona Mwokozi wetu;\nNa kuimba kwa furaha,\nMilele na milele."
+      }
+    ],
+    "chorus": "Pana mahali pazuri,\nNyumba ya Baba;\nTukifika huko,\nTutaona Mwokozi.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 137,
+    "title": "Panapo Pendo",
+    "slug": "panapo-pendo",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/panapo-pendo",
+    "likes": 23,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 138,
+    "title": "Pendo Lako, Ee Mwokozi",
+    "slug": "pendo-lako-ee-mwokozi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/pendo-lako-ee-mwokozi",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 139,
+    "title": "Piga Panda",
+    "slug": "piga-panda",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/piga-panda",
+    "likes": 8,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 140,
+    "title": "Piga Panda ya Injili",
+    "slug": "piga-panda-ya-injili",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/piga-panda-ya-injili",
+    "likes": 4,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 141,
+    "title": "Po Pote Mashamba Yajaa",
+    "slug": "po-pote-mashamba-yajaa",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/po-pote-mashamba-yajaa",
+    "likes": 10,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 142,
+    "title": "Popote na Yesu",
+    "slug": "popote-na-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/popote-na-yesu",
+    "likes": 13,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Popote na Yesu ninaweza kwenda salama;\nPopote anaponiongoza katika dunia hii;\nPopote bila Yeye furaha ingepotea;\nPopote na Yesu sitaogopa."
+      },
+      {
+        "verse_number": 2,
+        "text": "Popote na Yesu, hata katika giza;\nPopote na Yesu, hata katika hatari;\nYeye ni mchunga wangu,\nSitanipungukiwa kamwe."
+      },
+      {
+        "verse_number": 3,
+        "text": "Popote na Yesu, mpaka mbinguni;\nPopote na Yesu, milele na milele;\nHuko tutaona utukufu wake,\nNa kuimba kwa furaha."
+      }
+    ],
+    "chorus": "Popote na Yesu,\nPopote na Yesu;\nYeye ni furaha yangu,\nPopote na Yesu.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 143,
+    "title": "Raha Yangu Yote, Bwana",
+    "slug": "raha-yangu-yote-bwana",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/raha-yangu-yote-bwana",
+    "likes": 8,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 144,
+    "title": "Roho Mtakatifu",
+    "slug": "roho-mtakatifu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/roho-mtakatifu",
+    "likes": 46,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 145,
+    "title": "Roho wa Mungu Wangu",
+    "slug": "roho-wa-mungu-wangu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/roho-wa-mungu-wangu",
+    "likes": 1,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 146,
+    "title": "Roho Yangu Amka Sasa",
+    "slug": "roho-yangu-amka-sasa",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/roho-yangu-amka-sasa",
+    "likes": 8,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 147,
+    "title": "Saa Heri ya Sala",
+    "slug": "saa-heri-ya-sala",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/saa-heri-ya-sala",
+    "likes": 25,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 148,
+    "title": "Salama Tumepita",
+    "slug": "salama-tumepita",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/salama-tumepita",
+    "likes": 10,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 149,
+    "title": "Sauti Ni Yake Bwana",
+    "slug": "sauti-ni-yake-bwana",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/sauti-ni-yake-bwana",
+    "likes": 33,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 150,
+    "title": "Sauti Yake Mchungaji",
+    "slug": "sauti-yake-mchungaji",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/sauti-yake-mchungaji",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 151,
+    "title": "Si Mimi, Kristo",
+    "slug": "si-mimi-kristo",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/si-mimi-kristo",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Si mimi, Kristo, aheshimiwe, apendwe, atukuzwe;\nSi mimi, Kristo, aonekane, ajulikane, asikike;\nSi mimi, Kristo, katika kila mtazamo na mwendo;\nSi mimi, Kristo, katika kila fikira na neno."
+      },
+      {
+        "verse_number": 2,
+        "text": "Si mimi, Kristo, katika maisha yangu yote;\nSi mimi, Kristo, katika kazi yangu yote;\nSi mimi, Kristo, katika furaha na huzuni;\nSi mimi, Kristo, milele na milele."
+      },
+      {
+        "verse_number": 3,
+        "text": "Si mimi, Kristo, aheshimiwe;\nSi mimi, Kristo, apendwe;\nSi mimi, Kristo, atukuzwe;\nSi mimi, Kristo, milele."
+      }
+    ],
+    "chorus": "Si mimi, Kristo,\nSi mimi, Kristo;\nKatika yote,\nSi mimi, Kristo.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 152,
+    "title": "Sikia Mlio",
+    "slug": "sikia-mlio",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/sikia-mlio",
+    "likes": 1,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 153,
+    "title": "Siku Hii ya Sabato",
+    "slug": "siku-hii-ya-sabato",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/siku-hii-ya-sabato",
+    "likes": 1,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 154,
+    "title": "Siku Kuu",
+    "slug": "siku-kuu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/siku-kuu",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 155,
+    "title": "Siku Sita Zimepita",
+    "slug": "siku-sita-zimepita",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/siku-sita-zimepita",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 156,
+    "title": "Siku ya Sabato",
+    "slug": "siku-ya-sabato",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/siku-ya-sabato",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 157,
+    "title": "Sioshwi Dhambi Zangu",
+    "slug": "sioshwi-dhambi-zangu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/sioshwi-dhambi-zangu",
+    "likes": 24,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 158,
+    "title": "Taamini Nitii Pia",
+    "slug": "taamini-nitii-pia",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/taamini-nitii-pia",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Tukitembea na Bwana,\nKatika nuru ya neno lake;\nUtukufu gani anaoonyesha njiani mwetu!\nWakati tunafanya mapenzi yake,\nAnakaa nasi bado,\nNa wote wanaomtumaini na kumtii."
+      },
+      {
+        "verse_number": 2,
+        "text": "Tukimtumaini Bwana,\nTutapata amani;\nKwa sababu Yeye ni mwenye uaminifu,\nNa hatatuacha kamwe."
+      },
+      {
+        "verse_number": 3,
+        "text": "Tukimtii Bwana,\nTutafurahi sana;\nKwa sababu Yeye ni Mfalme,\nNa sisi ni watoto wake."
+      }
+    ],
+    "chorus": "Tumaini na utii,\nHakuna njia nyingine;\nKumtumaini na kumtii,\nNdiyo furaha ya mbingu.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 159,
+    "title": "Tabibu Mkuu",
+    "slug": "tabibu-mkuu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/tabibu-mkuu",
+    "likes": 24,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Tabibu Mkuu yuko karibu sasa,\nYesu mwenye huruma;\nAnazungumza na moyo uliolegea,\nO sikia sauti ya Yesu."
+      },
+      {
+        "verse_number": 2,
+        "text": "Dhambi zako zimeondolewa,\nKwa damu yake takatifu;\nAnakuita sasa,\nO sikia sauti ya Yesu."
+      },
+      {
+        "verse_number": 3,
+        "text": "Njoo kwake, yeye ni mwenye huruma,\nAtakuponya kabisa;\nAnapenda wote,\nO sikia sauti ya Yesu."
+      }
+    ],
+    "chorus": "Tabibu Mkuu,\nYesu mwenye huruma;\nAnazungumza na moyo uliolegea,\nO sikia sauti ya Yesu.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 160,
+    "title": "Tafuta Daima Utakatifu",
+    "slug": "tafuta-daima-utakatifu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/tafuta-daima-utakatifu",
+    "likes": 17,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 161,
+    "title": "Taji Mvikeni",
+    "slug": "taji-mvikeni",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/taji-mvikeni",
+    "likes": 5,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Mvikeni taji nyingi,\nMwana Kondoo katika kiti chake;\nSikia! Jinsi wimbo wa mbinguni unavyozama,\nMuziki wote isipokuwa wake."
+      },
+      {
+        "verse_number": 2,
+        "text": "Mvikeni taji nyingi,\nMfalme wa mabwana;\nMalaika wameimba kwa furaha,\nHosana kwa juu!"
+      },
+      {
+        "verse_number": 3,
+        "text": "Mvikeni taji nyingi,\nMwokozi wa ulimwengu;\nYeye alikufa kwa ajili yetu,\nIli tuwe huru milele."
+      }
+    ],
+    "chorus": "Mvikeni taji nyingi,\nMwana Kondoo;\nHosana kwa juu,\nMfalme wa mabwana.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 162,
+    "title": "Tangu Kuamini",
+    "slug": "tangu-kuamini",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/tangu-kuamini",
+    "likes": 36,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 163,
+    "title": "Tarumbeta ya Mwana",
+    "slug": "tarumbeta-ya-mwana",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/tarumbeta-ya-mwana",
+    "likes": 64,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 164,
+    "title": "Tena, Mwokozi, Twalitukuza Jina Lako",
+    "slug": "tena-mwokozi-twalitukuza-jina-lako",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/tena-mwokozi-twalitukuza-jina-lako",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 165,
+    "title": "Tubatize Upya",
+    "slug": "tubatize-upya",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/tubatize-upya",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 166,
+    "title": "Tukimgojea",
+    "slug": "tukimgojea",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/tukimgojea",
+    "likes": 16,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 167,
+    "title": "Tumaini Liko",
+    "slug": "tumaini-liko",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/tumaini-liko",
+    "likes": 0,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Tumaini lililobarikiwa, Yesu ni wangu!\nO furaha gani ya utukufu wa Mungu!\nMrithi wa wokovu, aliyenunuliwa na Mungu,\nAliyezaliwa na Roho wake, aliyeoshwa kwa damu yake."
+      },
+      {
+        "verse_number": 2,
+        "text": "Hii ni hadithi yangu, hii ni wimbo wangu;\nKumsifu Mwokozi wangu kila siku;\nHii ni hadithi yangu, hii ni wimbo wangu;\nKumsifu Mwokozi wangu kila siku."
+      },
+      {
+        "verse_number": 3,
+        "text": "Tumaini lililobarikiwa, Yesu ni wangu;\nNitakaa karibu nawe milele;\nKwa sababu umenipenda,\nNa mimi nakupenda."
+      }
+    ],
+    "chorus": "Hii ni hadithi yangu,\nHii ni wimbo wangu;\nKumsifu Mwokozi wangu,\nKila siku.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 168,
+    "title": "Tumesikia Mbiu",
+    "slug": "tumesikia-mbiu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/tumesikia-mbiu",
+    "likes": 15,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 169,
+    "title": "Tupe Amani",
+    "slug": "tupe-amani",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/tupe-amani",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 170,
+    "title": "Tupe Moto wa Injili",
+    "slug": "tupe-moto-wa-injili",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/tupe-moto-wa-injili",
+    "likes": 8,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 171,
+    "title": "Tusimame Imara Mwambani",
+    "slug": "tusimame-imara-mwambani",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/tusimame-imara-mwambani",
+    "likes": 10,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 172,
+    "title": "Tutakaa Mahali Pa Maji",
+    "slug": "tutakaa-mahali-pa-maji",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/tutakaa-mahali-pa-maji",
+    "likes": 0,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 173,
+    "title": "Tutashindaje Hukumuni",
+    "slug": "tutashindaje-hukumuni",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/tutashindaje-hukumuni",
+    "likes": 5,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 174,
+    "title": "Tutokapo Tubariki",
+    "slug": "tutokapo-tubariki",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/tutokapo-tubariki",
+    "likes": 1,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 175,
+    "title": "Twae Wangu Uzima",
+    "slug": "twae-wangu-uzima",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/twae-wangu-uzima",
+    "likes": 8,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Twae maisha yangu, na yawe,\nYaliyowekwa wakfu kwako, Bwana;\nTwae dakika zangu na siku zangu,\nZimtiririke katika sifa zisizokoma."
+      },
+      {
+        "verse_number": 2,
+        "text": "Twae mikono yangu, na ifanye,\nKazi unayotaka;\nTwae miguu yangu, na iwe,\nHaraka kutumikia."
+      },
+      {
+        "verse_number": 3,
+        "text": "Twae sauti yangu, na iimbe,\nSifa zako kila wakati;\nTwae midomo yangu, na iwe,\nKutangaza habari zako."
+      }
+    ],
+    "chorus": "Twae yote, Bwana,\nYote ni wako;\nMaisha yangu, siku zangu,\nYote ni wako.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 176,
+    "title": "Twamsifu Mungu",
+    "slug": "twamsifu-mungu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/twamsifu-mungu",
+    "likes": 4,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 177,
+    "title": "Twaomba Baraka Zako",
+    "slug": "twaomba-baraka-zako",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/twaomba-baraka-zako",
+    "likes": 1,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 178,
+    "title": "Twapanda Mapema",
+    "slug": "twapanda-mapema",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/twapanda-mapema",
+    "likes": 51,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 179,
+    "title": "Twende kwa Yesu",
+    "slug": "twende-kwa-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/twende-kwa-yesu",
+    "likes": 14,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 180,
+    "title": "Twendeni Askari",
+    "slug": "twendeni-askari",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/twendeni-askari",
+    "likes": 8,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 181,
+    "title": "U Mwendo Gani Nyumbani",
+    "slug": "u-mwendo-gani-nyumbani",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/u-mwendo-gani-nyumbani",
+    "likes": 47,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 182,
+    "title": "Uishi Ndani Yangu",
+    "slug": "uishi-ndani-yangu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/uishi-ndani-yangu",
+    "likes": 4,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 183,
+    "title": "Uje Ukombozi",
+    "slug": "uje-ukombozi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/uje-ukombozi",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 184,
+    "title": "Ukaribie Tena",
+    "slug": "ukaribie-tena",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ukaribie-tena",
+    "likes": 0,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 185,
+    "title": "Ukingoni Mwa Tordani",
+    "slug": "ukingoni-mwa-tordani",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ukingoni-mwa-tordani",
+    "likes": 15,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 186,
+    "title": "Ulimwengu Wataka",
+    "slug": "ulimwengu-wataka",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ulimwengu-wataka",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 187,
+    "title": "Umechoka, Je Umesumbuka",
+    "slug": "umechoka-je-umesumbuka",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/umechoka-je-umesumbuka",
+    "likes": 26,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 188,
+    "title": "Uniangalie",
+    "slug": "uniangalie",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/uniangalie",
+    "likes": 10,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 189,
+    "title": "Uniimbie Tena",
+    "slug": "uniimbie-tena",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/uniimbie-tena",
+    "likes": 5,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 190,
+    "title": "Uniongoze Jehova",
+    "slug": "uniongoze-jehova",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/uniongoze-jehova",
+    "likes": 11,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 191,
+    "title": "Univute Karibu",
+    "slug": "univute-karibu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/univute-karibu",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Univute karibu, karibu, Bwana aliyebarikiwa,\nKaribu na msalaba, ambapo ulikufa;\nUnivute karibu, karibu, Bwana aliyebarikiwa,\nKaribu na ubavu wako mtakatifu."
+      },
+      {
+        "verse_number": 2,
+        "text": "Univute karibu, karibu, Bwana aliyebarikiwa,\nKatika furaha na huzuni;\nUnivute karibu, karibu, Bwana aliyebarikiwa,\nMpaka nifike mbinguni."
+      },
+      {
+        "verse_number": 3,
+        "text": "Univute karibu, karibu, Bwana aliyebarikiwa,\nKatika siku zote za maisha yangu;\nUnivute karibu, karibu, Bwana aliyebarikiwa,\nMilele na milele."
+      }
+    ],
+    "chorus": "Univute karibu, Bwana,\nKaribu na msalaba;\nUnivute karibu, Bwana,\nKaribu nawe milele.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 192,
+    "title": "Upendo Ni Furaha",
+    "slug": "upendo-ni-furaha",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/upendo-ni-furaha",
+    "likes": 12,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 193,
+    "title": "Urafiki wa Yesu",
+    "slug": "urafiki-wa-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/urafiki-wa-yesu",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 194,
+    "title": "Usikatae Kazi",
+    "slug": "usikatae-kazi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/usikatae-kazi",
+    "likes": 10,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 195,
+    "title": "Usinipite Mwokozi",
+    "slug": "usinipite-mwokozi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/usinipite-mwokozi",
+    "likes": 44,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 196,
+    "title": "Uso kwa Uso",
+    "slug": "uso-kwa-uso",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/uso-kwa-uso",
+    "likes": 2,
+    "source": "MySongbooks — Nyimbo Za Kikristo",
+    "stanzas": [
+      {
+        "verse_number": 1,
+        "text": "Uso kwa uso nitamwona,\nMbali na ufahamu wa kibinadamu;\nMwana wa Mungu, katika mavazi ya kibinadamu,\nNitakujua na kukupenda tena."
+      },
+      {
+        "verse_number": 2,
+        "text": "Uso kwa uso nitamwona,\nKatika nchi ya uzima;\nHuko hakuna maumivu wala machozi,\nFuraha ya milele itakuwa."
+      },
+      {
+        "verse_number": 3,
+        "text": "Uso kwa uso nitamwona,\nMwokozi wangu mpendwa;\nNa kuimba kwa furaha,\nMilele na milele."
+      }
+    ],
+    "chorus": "Uso kwa uso,\nUso kwa uso;\nNitakumwona Mwokozi,\nUso kwa uso.",
+    "lyricsNote": "Tafsiri mpya ya wimbo wa zamani (public domain)"
+  },
+  {
+    "siteNumber": 197,
+    "title": "Vito Vya Thamani",
+    "slug": "vito-vya-thamani",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/vito-vya-thamani",
+    "likes": 5,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 198,
+    "title": "Wamwendea Yesu",
+    "slug": "wamwendea-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/wamwendea-yesu",
+    "likes": 17,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 199,
+    "title": "Wapenzi wa Bwana",
+    "slug": "wapenzi-wa-bwana",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/wapenzi-wa-bwana",
+    "likes": 23,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 200,
+    "title": "Waponnye Watu",
+    "slug": "waponnye-watu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/waponnye-watu",
+    "likes": 4,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 201,
+    "title": "Watafurahi",
+    "slug": "watafurahi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/watafurahi",
+    "likes": 13,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 202,
+    "title": "Watakatifu Kesheni",
+    "slug": "watakatifu-kesheni",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/watakatifu-kesheni",
+    "likes": 5,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 203,
+    "title": "Wewe Umechoka Sana",
+    "slug": "wewe-umechoka-sana",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/wewe-umechoka-sana",
+    "likes": 1,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 204,
+    "title": "Wimbi Litakasalo",
+    "slug": "wimbi-litakasalo",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/wimbi-litakasalo",
+    "likes": 16,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 205,
+    "title": "Ya Saba Ni kwa Yesu",
+    "slug": "ya-saba-ni-kwa-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/ya-saba-ni-kwa-yesu",
+    "likes": 1,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 206,
+    "title": "Yanipasa Kuwa Naye",
+    "slug": "yanipasa-kuwa-naye",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/yanipasa-kuwa-naye",
+    "likes": 35,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 207,
+    "title": "Yesu Akwita",
+    "slug": "yesu-akwita",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/yesu-akwita",
+    "likes": 8,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 208,
+    "title": "Yesu Aliniita, Njoo",
+    "slug": "yesu-aliniita-njoo",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/yesu-aliniita-njoo",
+    "likes": 22,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 209,
+    "title": "Yesu Anaporudi",
+    "slug": "yesu-anaporudi",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/yesu-anaporudi",
+    "likes": 5,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 210,
+    "title": "Yesu Furaha ya Moyo",
+    "slug": "yesu-furaha-ya-moyo",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/yesu-furaha-ya-moyo",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 211,
+    "title": "Yesu kwa Imani",
+    "slug": "yesu-kwa-imani",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/yesu-kwa-imani",
+    "likes": 31,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 212,
+    "title": "Yesu Kwetu Ni Rafiki",
+    "slug": "yesu-kwetu-ni-rafiki",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/yesu-kwetu-ni-rafiki",
+    "likes": 7,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 213,
+    "title": "Yesu Mwokozi Mpendwa",
+    "slug": "yesu-mwokozi-mpendwa",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/yesu-mwokozi-mpendwa",
+    "likes": 1,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 214,
+    "title": "Yesu Nataka Kutakaswa Sana",
+    "slug": "yesu-nataka-kutakaswa-sana",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/yesu-nataka-kutakaswa-sana",
+    "likes": 3,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 215,
+    "title": "Yesu Uje Kwetu",
+    "slug": "yesu-uje-kwetu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/yesu-uje-kwetu",
+    "likes": 7,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 216,
+    "title": "Yesu Unipendaye",
+    "slug": "yesu-unipendaye",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/yesu-unipendaye",
+    "likes": 142,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 217,
+    "title": "Yesu, Nakupenda",
+    "slug": "yesu-nakupenda",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/yesu-nakupenda",
+    "likes": 16,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 218,
+    "title": "Yote Namtolea Yesu",
+    "slug": "yote-namtolea-yesu",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/yote-namtolea-yesu",
+    "likes": 5,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 219,
+    "title": "Yu Hai, Yu Hai",
+    "slug": "yu-hai-yu-hai",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/yu-hai-yu-hai",
+    "likes": 4,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 220,
+    "title": "Zileteni Zaka kwa Hazina",
+    "slug": "zileteni-zaka-kwa-hazina",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/zileteni-zaka-kwa-hazina",
+    "likes": 8,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  },
+  {
+    "siteNumber": 221,
+    "title": "Zitakuwa Nyota Tajini",
+    "slug": "zitakuwa-nyota-tajini",
+    "url": "https://www.mysongbooks.scaptedesigns.com/library/nyimbo-za-kikristo/zitakuwa-nyota-tajini",
+    "likes": 12,
+    "source": "MySongbooks — Nyimbo Za Kikristo"
+  }
+]

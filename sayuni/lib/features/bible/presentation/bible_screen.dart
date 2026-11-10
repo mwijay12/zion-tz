@@ -10,6 +10,7 @@ import '../../../core/utils/haptics.dart';
 import '../../../core/utils/top_notification.dart';
 import '../../../core/widgets/app_card.dart';
 import '../../../core/widgets/empty_state_view.dart';
+import '../../../core/widgets/in_app_browser_sheet.dart';
 import '../models/bible_model.dart';
 import '../models/tenzi_model.dart';
 import '../services/bible_service.dart';
@@ -392,7 +393,7 @@ class _BibleScreenState extends State<BibleScreen> {
 
     final sw = await _bibleService.loadBible(translation: 'sw');
     final kjv = await _bibleService.loadBible(translation: 'kjv');
-    final tenzi = await _bibleService.loadTenzi();
+    final tenzi = await _bibleService.loadAllHymns();
 
     setState(() {
       _swBooks = sw;
@@ -862,7 +863,7 @@ class _BibleScreenState extends State<BibleScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Kitabu cha Tenzi za Rohoni',
+                        'Tenzi za Rohoni + Nyimbo za Kikristo',
                         style: AppTypography.titleMedium(
                             color: AppColors.textPrimary),
                       ),
@@ -908,7 +909,7 @@ class _BibleScreenState extends State<BibleScreen> {
                             foregroundColor: isSel
                                 ? AppColors.textWhite
                                 : AppColors.textPrimary,
-                            child: Text('${hymn.number}'),
+                            child: Text(hymn.shortLabel),
                           ),
                           title: Text(
                             hymn.title,
@@ -920,7 +921,11 @@ class _BibleScreenState extends State<BibleScreen> {
                                   : AppColors.textPrimary,
                             ),
                           ),
-                          subtitle: Text('${hymn.category} • ${hymn.key}'),
+                          subtitle: Text(hymn.isNyimbo
+                              ? (hymn.hasLyrics
+                                  ? 'Nyimbo za Kikristo • Maneno kamili'
+                                  : 'Nyimbo za Kikristo • MySongbooks')
+                              : '${hymn.category} • ${hymn.key}'),
                           onTap: () {
                             AppHaptics.lightImpact();
                             _stopAudio();
@@ -1650,7 +1655,7 @@ class _BibleScreenState extends State<BibleScreen> {
                   onPressed: _showTenziSelector,
                   icon: const Icon(Icons.music_note_rounded, size: 16),
                   label: Text(
-                    'Tenzi #${hymn.number} — ${hymn.title}',
+                    '${hymn.isNyimbo ? 'Nyimbo' : 'Tenzi'} #${hymn.number} — ${hymn.title}',
                     overflow: TextOverflow.ellipsis,
                   ),
                   style: OutlinedButton.styleFrom(
@@ -1666,8 +1671,11 @@ class _BibleScreenState extends State<BibleScreen> {
                 icon: const Icon(Icons.share_rounded),
                 onPressed: () {
                   AppHaptics.lightImpact();
-                  final text =
-                      '*Tenzi #${hymn.number} — ${hymn.title}* (${hymn.key})\n\n${hymn.stanzas.first.text}\n\n_Sayuni Jerusalem Church_';
+                  final firstVerse =
+                      hymn.hasLyrics ? hymn.stanzas.first.text : '';
+                  final text = hymn.hasLyrics
+                      ? '*Tenzi #${hymn.number} — ${hymn.title}* (${hymn.key})\n\n$firstVerse\n\n_Sayuni Jerusalem Church_'
+                      : '*Nyimbo #${hymn.number} — ${hymn.title}*\n${hymn.externalUrl ?? ''}\n\n_Sayuni Jerusalem Church_';
                   Share.share(text);
                 },
               ),
@@ -1696,7 +1704,7 @@ class _BibleScreenState extends State<BibleScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            'Tenzi #${hymn.number}',
+                            hymn.isNyimbo ? 'Nyimbo #${hymn.number}' : 'Tenzi #${hymn.number}',
                             style: const TextStyle(
                                 color: AppColors.textWhite,
                                 fontWeight: FontWeight.bold),
@@ -1728,7 +1736,53 @@ class _BibleScreenState extends State<BibleScreen> {
               ),
               const SizedBox(height: 16),
 
-              // Stanzas
+              // Nyimbo (MySongbooks index): link out for audio / full lyrics.
+              // Hymns with bundled public-domain translations show the
+              // lyrics below AND keep this link for audio.
+              if (hymn.externalUrl != null)
+                AppCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Nyimbo za Kikristo — MySongbooks',
+                        style: AppTypography.titleMedium(
+                            color: AppColors.textPrimary),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        hymn.hasLyrics
+                            ? 'Maneno kamili ya wimbo huu yapo hapa chini (tafsiri mpya ya wimbo wa zamani). Sauti na maelezo zaidi yanapatikana kwenye MySongbooks.'
+                            : 'Wimbo huu ni sehemu ya orodha ya Nyimbo za Kikristo (221 nyimbo) kutoka MySongbooks. Maneno kamili na sauti zinapatikana kupitia kiungo — hazijanakiliwa kwenye app (haki za miliki).',
+                        style: AppTypography.bodySmall(
+                            color: AppColors.textSecondary),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            showInAppBrowser(
+                              context,
+                              url: hymn.externalUrl!,
+                              title: hymn.title,
+                            );
+                          },
+                          icon: const Icon(Icons.open_in_new_rounded),
+                          label: Text(hymn.hasLyrics
+                              ? 'Sikiliza kwenye MySongbooks'
+                              : 'Fungua Maneno kwenye MySongbooks'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+              // Stanzas (Tenzi with offline lyrics)
               ...hymn.stanzas.map((stanza) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 16),

@@ -13,8 +13,16 @@ class ChurchAnnouncement {
   final String fullDetails;
   final String preacherOrLeader;
   final bool isHighPriority;
-  final String targetAudience; // 'all' | 'leaders' | 'elders' | 'choir'
+  final String targetAudience; // 'all' | 'leaders' | 'elders' | 'choir' | 'jumuiya' | 'member'
   bool isRead;
+
+  /// Personalized targeting (set by the leaders portal):
+  /// - [targetUid]: Firebase UID of one specific member, or null.
+  /// - [targetJumuiya]: Jumuiya name for group targeting, or null.
+  /// When either is set, only that member/group (plus leaders/admins
+  /// for oversight) should see/alert for this announcement.
+  final String? targetUid;
+  final String? targetJumuiya;
 
   ChurchAnnouncement({
     required this.id,
@@ -31,16 +39,21 @@ class ChurchAnnouncement {
     this.isHighPriority = false,
     this.targetAudience = 'all',
     this.isRead = false,
+    this.targetUid,
+    this.targetJumuiya,
   });
 
   bool get isForLeaders =>
       targetAudience == 'leaders' || targetAudience == 'elders';
   bool get isPublic => targetAudience == 'all';
+  bool get isPersonalized => targetUid != null || targetJumuiya != null;
   bool get isBereavement => type == 'bereavement';
   bool get isUrgent => type == 'urgent' || isHighPriority;
   bool get isNormal => type == 'normal' && !isHighPriority;
 
   String get audienceLabel {
+    if (targetUid != null) return '👤 Ujumbe wa Kibinafsi';
+    if (targetJumuiya != null) return '🏠 Jumuiya: $targetJumuiya';
     switch (targetAudience) {
       case 'leaders':
         return '🔒 Viongozi Pekee';
@@ -48,6 +61,10 @@ class ChurchAnnouncement {
         return '🔒 Wazee wa Kanisa';
       case 'choir':
         return '🎵 Wanakwaya';
+      case 'jumuiya':
+        return '🏠 Jumuiya';
+      case 'member':
+        return '👤 Muumini Maalum';
       case 'all':
       default:
         return '📢 Waumini Wote';
@@ -69,6 +86,8 @@ class ChurchAnnouncement {
         'isHighPriority': isHighPriority,
         'targetAudience': targetAudience,
         'isRead': isRead,
+        if (targetUid != null) 'targetUid': targetUid,
+        if (targetJumuiya != null) 'targetJumuiya': targetJumuiya,
       };
 
   factory ChurchAnnouncement.fromJson(Map<String, dynamic> json) =>
@@ -97,5 +116,7 @@ class ChurchAnnouncement {
         targetAudience: json['targetAudience']?.toString() ??
             (json['audience']?.toString() ?? 'all'),
         isRead: json['isRead'] == true,
+        targetUid: json['targetUid']?.toString(),
+        targetJumuiya: json['targetJumuiya']?.toString(),
       );
 }

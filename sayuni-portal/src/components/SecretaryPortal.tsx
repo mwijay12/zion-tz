@@ -58,7 +58,9 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
   const [activeReportModal, setActiveReportModal] = useState<'visitors' | 'groups' | 'bulletin' | null>(null);
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<any>('Taarifa Kuu');
-  const [targetAudience, setTargetAudience] = useState<'all' | 'leaders' | 'elders' | 'choir'>('all');
+  const [targetAudience, setTargetAudience] = useState<'all' | 'leaders' | 'elders' | 'choir' | 'jumuiya' | 'member'>('all');
+  const [targetUid, setTargetUid] = useState('');
+  const [targetJumuiya, setTargetJumuiya] = useState('');
   const [noticeType, setNoticeType] = useState<'normal' | 'urgent' | 'bereavement'>('normal');
   const [branch, setBranch] = useState<string>('Zote');
   const [content, setContent] = useState('');
@@ -225,6 +227,8 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
       type: noticeType,
       branch,
       targetAudience,
+      targetUid: targetAudience === 'member' && targetUid.trim() ? targetUid.trim() : undefined,
+      targetJumuiya: targetAudience === 'jumuiya' && targetJumuiya.trim() ? targetJumuiya.trim() : undefined,
       authorRole: 'Ofisi ya Katibu Mkuu wa Kanisa',
       authorEmail: 'katibu@zionjerusalem.org'
     };
@@ -247,6 +251,8 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
         setNoticeType('normal');
         setBranch('Zote');
         setTargetAudience('all');
+        setTargetUid('');
+        setTargetJumuiya('');
       }, 1400);
     } catch (err: any) {
       setNotices(churchSync.getNotices());
@@ -934,6 +940,56 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
               {isSw ? 'Andika Tangazo Jipya la Kanisa' : 'Draft New Church Announcement'}
             </h3>
 
+            {/* Quick worship-reminder templates */}
+            <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.6rem' }}>
+              <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', alignSelf: 'center' }}>
+                {isSw ? '⚡ Vikumbusho vya Haraka:' : '⚡ Quick reminders:'}
+              </span>
+              <button
+                type="button"
+                className="badge badge-blue"
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  setTitle(isSw ? 'Kumbusha: Ibada Kuu ya Jumapili' : 'Reminder: Sunday Main Service');
+                  setCategory('Ibada');
+                  setContent(isSw
+                    ? 'Wapendwa, kesho ni Ibada Kuu ya Sayuni saa 02:30 Asubuhi Hekalu Kuu la Mbagala Kwa Matope. Lete familia na marafiki. Ubarikiwe!'
+                    : 'Beloved, tomorrow is the Sayuni Main Service at 02:30 AM at Mbagala Kwa Matope. Bring family and friends. God bless you!');
+                }}
+              >
+                {isSw ? '🙏 Ibada ya Jumapili' : '🙏 Sunday Service'}
+              </button>
+              <button
+                type="button"
+                className="badge badge-blue"
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  setTitle(isSw ? 'Kumbusha: Mkesha wa Ijumaa' : 'Reminder: Friday Night Vigil');
+                  setCategory('Mkesha');
+                  setContent(isSw
+                    ? 'Wapendwa, Ijumaa saa 04:00 usiku ni Mkesha wa maombi Hekaluni. Tafadhali hudhuria na ulete wageni.'
+                    : 'Beloved, Friday at 10:00 PM is the night vigil at church. Please attend and bring guests.');
+                }}
+              >
+                {isSw ? '🌙 Mkesha' : '🌙 Vigil'}
+              </button>
+              <button
+                type="button"
+                className="badge badge-blue"
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  setTitle(isSw ? 'Kumbusha: Jumuiya ya Nyumbani' : 'Reminder: Home Cell (Jumuiya)');
+                  setCategory('Jumuiya');
+                  setTargetAudience('jumuiya');
+                  setContent(isSw
+                    ? 'Wapendwa wa Jumuiya, wiki hii tunakutana nyumbani kwa maombi na neno. Tafadhali thibitisha mahudhurio yako.'
+                    : 'Beloved Jumuiya, we meet at home this week for prayer and the Word. Please confirm your attendance.');
+                }}
+              >
+                {isSw ? '🏠 Jumuiya' : '🏠 Jumuiya'}
+              </button>
+            </div>
+
             <form onSubmit={handleCreateNotice} style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
               {feedback && (
                 <div style={{
@@ -1073,7 +1129,36 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
                   <option value="leaders">{isSw ? '🔒 Viongozi Pekee (Wachungaji, Wazee, Mashemasi)' : 'Church Leadership Only'}</option>
                   <option value="elders">{isSw ? '🔒 Wazee wa Kanisa Pekee' : 'Church Elders Only'}</option>
                   <option value="choir">{isSw ? '🎵 Wanakwaya Pekee' : 'Choir Members Only'}</option>
+                  <option value="jumuiya">{isSw ? '🏠 Jumuiya Maalum (chagua jumuiya chini)' : 'Specific Jumuiya (choose below)'}</option>
+                  <option value="member">{isSw ? '👤 Muumini Maalum (weka UID chini)' : 'Specific Member (enter UID below)'}</option>
                 </select>
+                {targetAudience === 'jumuiya' && (
+                  <input
+                    type="text"
+                    className="form-input"
+                    style={{ marginTop: '0.5rem' }}
+                    placeholder={isSw ? 'Jina la Jumuiya (k.m. Mbagala Kijichi)' : 'Jumuiya name (e.g. Mbagala Kijichi)'}
+                    value={targetJumuiya}
+                    onChange={(e) => setTargetJumuiya(e.target.value)}
+                    disabled={isSubmitting}
+                  />
+                )}
+                {targetAudience === 'member' && (
+                  <input
+                    type="text"
+                    className="form-input"
+                    style={{ marginTop: '0.5rem' }}
+                    placeholder={isSw ? 'Firebase UID ya muumini (kutoka Members)' : 'Member Firebase UID (from Members)'}
+                    value={targetUid}
+                    onChange={(e) => setTargetUid(e.target.value)}
+                    disabled={isSubmitting}
+                  />
+                )}
+                <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.4rem', lineHeight: 1.5 }}>
+                  {isSw
+                    ? 'Ujumbe wa kibinafsi unaonekana kwenye app ya muumini huyo tu (wakati app iko online). Push wakati app imefungwa inahitaji FCM (production).'
+                    : 'Personalized messages appear only in that member\'s app (when online). Push when the app is closed needs FCM (production).'}
+                </p>
               </div>
 
               <div>

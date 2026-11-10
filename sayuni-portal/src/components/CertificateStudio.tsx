@@ -4,7 +4,11 @@ import {
   Award,
   Download,
   FileEdit,
-  Loader2
+  ImagePlus,
+  Loader2,
+  PenLine,
+  Settings2,
+  Trash2
 } from 'lucide-react';
 import type { Language, UserRole, CertificateType } from '../types';
 import { CHURCH_PROFILE } from '../data/mockData';
@@ -16,8 +20,76 @@ import {
 } from '../data/certificateContent';
 import {
   createCertificateSerial,
-  downloadCertificatePdf
+  downloadCertificatePdf,
+  formatCertificateDate
 } from '../services/certificatePdfService';
+import {
+  loadCertificateSettings,
+  readSignatureImage,
+  saveCertificateSettings,
+  type CertificateSettings
+} from '../services/certificateSettingsService';
+
+
+interface SignatureUploadProps {
+  label: string;
+  hint: string;
+  value: string | null;
+  isSw: boolean;
+  onChange: (file?: File | null) => void;
+  onRemove: () => void;
+}
+
+const SignatureUpload: React.FC<SignatureUploadProps> = ({
+  label,
+  hint,
+  value,
+  isSw,
+  onChange,
+  onRemove
+}) => (
+  <div className="cert-upload">
+    <div className="cert-upload-label">
+      {label}
+      <small>{hint}</small>
+    </div>
+    <div className="cert-upload-row">
+      {value ? (
+        <>
+          <img className="cert-upload-thumb" src={value} alt="" />
+          <button
+            type="button"
+            className="nav-item"
+            onClick={onRemove}
+            style={{ fontSize: '0.74rem', padding: '0.35rem 0.8rem' }}
+          >
+            <Trash2 size={13} />
+            <span>{isSw ? 'Ondoa' : 'Remove'}</span>
+          </button>
+        </>
+      ) : (
+        <span className="cert-empty-mark">
+          {isSw ? 'Hakuna saini — mstari tupu unachapishwa' : 'No signature — a blank line is printed'}
+        </span>
+      )}
+    </div>
+    <label className="cert-upload-row" style={{ cursor: 'pointer' }}>
+      <ImagePlus size={14} style={{ color: 'var(--primary)' }} />
+      <span style={{ fontSize: '0.74rem', fontWeight: 700, color: 'var(--primary)' }}>
+        {isSw ? 'Chagua picha (PNG / JPG, max 1.5 MB)' : 'Choose image (PNG / JPG, max 1.5 MB)'}
+      </span>
+      <input
+        type="file"
+        accept="image/png,image/jpeg"
+        className="cert-file-input"
+        onChange={(event) => {
+          onChange(event.target.files?.[0]);
+          event.target.value = '';
+        }}
+      />
+    </label>
+  </div>
+);
 
 interface CertificateStudioProps {
   language: Language;
@@ -28,6 +100,11 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
   language
 }) => {
   const isSw = language === 'sw';
+  const today = new Date();
+  const issuedLabel = formatCertificateDate(
+    `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`,
+    language
+  );
   const [selectedType, setSelectedType] = useState<CertificateType>('baptism');
   
   // Active Form Fields
@@ -40,12 +117,46 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
   const [certificateSerial, setCertificateSerial] = useState(() => createCertificateSerial('baptism'));
   const [isGenerating, setIsGenerating] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [settings, setSettings] = useState<CertificateSettings>(() => loadCertificateSettings());
+  const [showSignatureSettings, setShowSignatureSettings] = useState(false);
+  const [signatureError, setSignatureError] = useState<string | null>(null);
 
   const handleTypeChange = (type: CertificateType) => {
     setSelectedType(type);
     setScripture(CERTIFICATE_DEFINITIONS[type].defaultVerse);
     setCertificateSerial(createCertificateSerial(type));
     setFormError(null);
+  };
+
+
+  const updateSignature = async (key: keyof CertificateSettings, file?: File | null) => {
+    if (!file) return;
+    setSignatureError(null);
+    try {
+      const dataUrl = await readSignatureImage(file);
+      const next: CertificateSettings =
+        key === 'pastorSignature'
+          ? { ...settings, pastorSignature: dataUrl }
+          : { ...settings, secretarySignature: dataUrl };
+      setSettings(next);
+      saveCertificateSettings(next);
+    } catch (error) {
+      setSignatureError(
+        error instanceof Error && error.message === 'too-large'
+          ? (isSw ? 'Picha ni kubwa mno (kikomo 1.5 MB).' : 'Image is too large (1.5 MB limit).')
+          : (isSw ? 'Tumia picha ya PNG au JPG.' : 'Please use a PNG or JPG image.')
+      );
+    }
+  };
+
+  const removeSignature = (key: keyof CertificateSettings) => {
+    const next: CertificateSettings =
+      key === 'pastorSignature'
+        ? { ...settings, pastorSignature: null }
+        : { ...settings, secretarySignature: null };
+    setSettings(next);
+    saveCertificateSettings(next);
+    setSignatureError(null);
   };
 
   const handleDownload = async () => {
@@ -84,7 +195,9 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
         scripture: scripture.trim(),
         notes: notes.trim(),
         serialNumber: certificateSerial,
-        language
+        language,
+        pastorSignature: settings.pastorSignature,
+        secretarySignature: settings.secretarySignature
       });
     } catch {
       setFormError(
@@ -113,7 +226,7 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
 
         <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
           <span className="badge badge-gold" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-            {isSw ? 'PDF ya Vekta â€¢ A4 Landscape' : 'Vector PDF â€¢ A4 Landscape'}
+            {isSw ? 'PDF ya Vekta • A4 Landscape' : 'Vector PDF • A4 Landscape'}
           </span>
 
           <button
@@ -150,6 +263,70 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
             </span>
           </button>
         ))}
+      </div>
+
+      {/* Optional signature settings: blank physical lines by default */}
+      <div className="church-card no-print cert-settings-card">
+        <div className="cert-settings-head">
+          <div style={{ minWidth: 0, flex: '1 1 320px' }}>
+            <div className="cert-settings-title">
+              <Settings2 size={16} style={{ color: 'var(--primary)' }} />
+              <span>{isSw ? 'Mipangilio ya Saini za Vyeti' : 'Certificate Signature Settings'}</span>
+            </div>
+            <p className="cert-settings-desc">
+              {isSw
+                ? 'Kwa sasa vyeti HAVINA saini iliyochapishwa — kuna mstari tupu wa kusainiwa kwa mkono. Ukitaka saini ionekane, pakia picha hapa (inahifadhiwa kwenye kifaa hiki tu).'
+                : 'Certificates currently print NO signature — just a clean line for signing by hand. If you want one printed, upload an image here (stored on this device only).'}
+            </p>
+          </div>
+          <button
+            type="button"
+            className={`nav-item ${showSignatureSettings ? 'active' : ''}`}
+            onClick={() => setShowSignatureSettings((open) => !open)}
+            style={{ fontSize: '0.8rem', padding: '0.45rem 0.95rem', whiteSpace: 'nowrap' }}
+          >
+            <PenLine size={14} />
+            <span>
+              {showSignatureSettings
+                ? (isSw ? 'Funga' : 'Hide')
+                : (isSw ? 'Ongeza saini' : 'Add signature')}
+            </span>
+          </button>
+        </div>
+
+        {showSignatureSettings && (
+          <div className="cert-settings-body">
+            <SignatureUpload
+              label={isSw ? 'Saini ya Mchungaji Kiongozi' : 'Senior Pastor Signature'}
+              hint={isSw ? 'Upande wa kushoto wa cheti' : 'Left side of the certificate'}
+              value={settings.pastorSignature}
+              isSw={isSw}
+              onChange={(file) => void updateSignature('pastorSignature', file)}
+              onRemove={() => removeSignature('pastorSignature')}
+            />
+            <SignatureUpload
+              label={isSw ? 'Saini ya Katibu wa Kanisa' : 'Church Secretary Signature'}
+              hint={isSw ? 'Upande wa kulia wa cheti' : 'Right side of the certificate'}
+              value={settings.secretarySignature}
+              isSw={isSw}
+              onChange={(file) => void updateSignature('secretarySignature', file)}
+              onRemove={() => removeSignature('secretarySignature')}
+            />
+            {signatureError && (
+              <div className="cert-settings-error" role="alert" style={{ gridColumn: '1 / -1' }}>
+                {signatureError}
+              </div>
+            )}
+            <div className="cert-settings-note" style={{ gridColumn: '1 / -1' }}>
+              <PenLine size={14} style={{ flexShrink: 0, marginTop: '2px' }} />
+              <span>
+                {isSw
+                  ? 'Ukiacha sehemu hizi wazi, PDF na onyesho vitakuwa na mistari miwili tupu tu ya kusainiwa kimwili baada ya kuchapisha.'
+                  : 'Leave these empty and both the preview and the PDF keep two blank lines to be signed physically after printing.'}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Studio Layout: Left Controls + Right Live Preview */}
@@ -273,278 +450,106 @@ export const CertificateStudio: React.FC<CertificateStudioProps> = ({
           </p>
         </div>
 
-        {/* Right Live Preview: Majestic Ornate Certificate */}
-        <div className="certificate-preview-scroll-wrapper" style={{ overflowX: 'auto', paddingBottom: '1rem' }}>
-          <div 
-            className="certificate-render-wrapper"
-            style={{
-              width: '820px',
-              minHeight: '560px',
-              background: '#fffdfa',
-              color: '#0f172a',
-              padding: '24px',
-              margin: '0 auto',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
-              borderRadius: '8px',
-              position: 'relative',
-              boxSizing: 'border-box'
-            }}
-          >
-            {/* Double Ornate Border with Gold Foil Styling */}
-            <div 
-              style={{
-                border: '4px double #d97706',
-                padding: '20px',
-                minHeight: '504px',
-                position: 'relative',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                background: 'radial-gradient(ellipse at center, rgba(255,255,255,1) 0%, rgba(254,249,235,0.7) 100%)'
-              }}
-            >
-              {/* Ornate Corner Elements */}
-              <div style={{ position: 'absolute', top: '8px', left: '8px', width: '26px', height: '26px', borderTop: '3px solid #b45309', borderLeft: '3px solid #b45309' }} />
-              <div style={{ position: 'absolute', top: '8px', right: '8px', width: '26px', height: '26px', borderTop: '3px solid #b45309', borderRight: '3px solid #b45309' }} />
-              <div style={{ position: 'absolute', bottom: '8px', left: '8px', width: '26px', height: '26px', borderBottom: '3px solid #b45309', borderLeft: '3px solid #b45309' }} />
-              <div style={{ position: 'absolute', bottom: '8px', right: '8px', width: '26px', height: '26px', borderBottom: '3px solid #b45309', borderRight: '3px solid #b45309' }} />
+        {/* Right Live Preview — refined engraved certificate, no printed signature */}
+        <div className="certificate-preview-scroll-wrapper">
+          <div className="certificate-render-wrapper cert-sheet">
+            <div className="cert-frame" aria-hidden="true">
+              <span className="cert-corner cert-corner--tl" />
+              <span className="cert-corner cert-corner--tr" />
+              <span className="cert-corner cert-corner--bl" />
+              <span className="cert-corner cert-corner--br" />
+            </div>
+            <img className="cert-watermark" src="/zion_logo.png" alt="" aria-hidden="true" />
 
-              {/* Watermark in center */}
-              <div 
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  transform: 'translate(-50%, -50%)',
-                  opacity: 0.05,
-                  pointerEvents: 'none',
-                  textAlign: 'center'
-                }}
-              >
-                <img 
-                  src="/zion_logo.png" 
-                  alt="ZFC Watermark" 
-                  style={{ width: '280px', height: '280px', objectFit: 'contain' }} 
-                />
-              </div>
-
-              {/* Certificate Header */}
-              <div style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
-                <div style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '64px',
-                  height: '64px',
-                  borderRadius: '50%',
-                  margin: '0 auto 8px auto',
-                  overflow: 'hidden',
-                  border: '2px solid #f59e0b',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
-                }}>
-                  <img 
-                    src="/zion_logo.png" 
-                    alt="Zion Fellowship Church Logo" 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                  />
+            <div className="cert-inner">
+              <header className="cert-header">
+                <div className="cert-logo">
+                  <img src="/zion_logo.png" alt="Zion Jerusalem Church" />
                 </div>
-
-                <h1 style={{
-                  fontFamily: 'var(--font-cinzel)',
-                  fontSize: '1.45rem',
-                  fontWeight: 900,
-                  color: '#1e3a8a',
-                  letterSpacing: '2px',
-                  margin: '0 0 2px 0'
-                }}>
-                  {CHURCH_PROFILE.name}
-                </h1>
-
-                <div style={{
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
-                  color: '#d97706',
-                  letterSpacing: '1px',
-                  textTransform: 'uppercase'
-                }}>
-                  {CHURCH_PROFILE.motto}
+                <div className="cert-church-name">{CHURCH_PROFILE.name}</div>
+                <div className="cert-motto">{CHURCH_PROFILE.motto}</div>
+                <div className="cert-contact">
+                  {CHURCH_PROFILE.location} • {CHURCH_PROFILE.phone}
                 </div>
-
-                <div style={{
-                  fontSize: '0.75rem',
-                  color: '#64748b',
-                  marginBottom: '10px'
-                }}>
-                  {CHURCH_PROFILE.location} â€¢ {CHURCH_PROFILE.phone}
+                <div className="cert-rule"><i /></div>
+                <div className="cert-eyebrow">
+                  {isSw ? 'Hati Rasmi ya Kanisa' : 'Official Church Document'}
                 </div>
+                <h1 className="cert-title">{certificateTitle(selectedType, language)}</h1>
+                <div className="cert-rule cert-rule--short"><i /></div>
+              </header>
 
-                {/* Ribbon Title */}
-                <div style={{
-                  display: 'inline-block',
-                  background: 'linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%)',
-                  color: '#ffffff',
-                  padding: '6px 28px',
-                  borderRadius: '20px',
-                  border: '1.5px solid #f59e0b',
-                  boxShadow: '0 4px 10px rgba(30, 58, 138, 0.2)'
-                }}>
-                  <span style={{
-                    fontFamily: 'var(--font-cinzel)',
-                    fontSize: '1rem',
-                    fontWeight: 800,
-                    letterSpacing: '1.5px',
-                    color: '#fef3c7'
-                  }}>
-                    {certificateTitle(selectedType, language)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Certificate Body */}
-              <div style={{ textAlign: 'center', padding: '16px 20px', position: 'relative', zIndex: 2 }}>
-                <p style={{ fontFamily: 'var(--font-scripture)', fontSize: '0.95rem', color: '#475569', fontStyle: 'italic', marginBottom: '8px' }}>
+              <div className="cert-body">
+                <p className="cert-intro">
                   {isSw ? 'Hati hii inathibitisha kwamba:' : 'This certifies that:'}
                 </p>
-
-                {/* Recipient Name in Calligraphic Bold */}
-                <div style={{
-                  fontFamily: 'var(--font-cinzel)',
-                  fontSize: '1.9rem',
-                  fontWeight: 900,
-                  color: '#1e3a8a',
-                  borderBottom: '2px solid #f59e0b',
-                  display: 'inline-block',
-                  padding: '2px 35px',
-                  margin: '4px 0 10px 0'
-                }}>
-                  {recipientName}
+                <div className="cert-name">
+                  {recipientName.trim() || (isSw ? 'Jina la Mpokeaji' : 'Recipient Name')}
                 </div>
 
                 {selectedType === 'marriage' && (
-                  <div style={{ fontSize: '1rem', color: '#334155', margin: '4px 0 8px 0' }}>
-                    {isSw ? 'Na' : 'And'}{' '}
-                    <strong style={{ fontFamily: 'var(--font-cinzel)', fontSize: '1.35rem', color: '#1e3a8a' }}>
-                      {spouseName}
-                    </strong>
+                  <div className="cert-subline">
+                    {isSw ? 'Na' : 'And'} <strong>{spouseName.trim() || '—'}</strong>
                   </div>
                 )}
-
                 {selectedType === 'dedication' && (
-                  <div style={{ fontSize: '0.88rem', color: '#475569', margin: '4px 0 8px 0' }}>
-                    {isSw ? 'Mtoto wa' : 'Child of'}: <strong>{parentNames}</strong>
+                  <div className="cert-subline">
+                    {isSw ? 'Mtoto wa' : 'Child of'}: <strong>{parentNames.trim() || '—'}</strong>
                   </div>
                 )}
 
-                <p style={{
-                  maxWidth: '650px',
-                  margin: '6px auto 14px auto',
-                  fontSize: '0.88rem',
-                  lineHeight: '1.5',
-                  color: '#334155'
-                }}>
-                  {certificateBody(selectedType, language)}
-                </p>
+                <p className="cert-text">{certificateBody(selectedType, language)}</p>
 
                 {notes.trim() && (
-                  <div style={{ fontSize: '0.72rem', color: '#64748b', marginBottom: '8px' }}>
+                  <div className="cert-notes">
                     <strong>{isSw ? 'Mahali / Maelezo' : 'Location / Notes'}:</strong> {notes}
                   </div>
                 )}
 
-                {/* Scripture Reference Quote */}
-                <div style={{
-                  fontFamily: 'var(--font-scripture)',
-                  fontSize: '0.82rem',
-                  fontStyle: 'italic',
-                  color: '#64748b',
-                  background: 'rgba(245, 158, 11, 0.08)',
-                  padding: '6px 14px',
-                  borderRadius: '6px',
-                  display: 'inline-block',
-                  maxWidth: '680px',
-                  border: '1px solid rgba(245, 158, 11, 0.25)'
-                }}>
-                  "{scripture}"
-                </div>
+                <div className="cert-verse">“{scripture.replace(/"/g, '')}”</div>
               </div>
 
-              {/* Certificate Signatures & Official Seal Footer */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-end',
-                padding: '0 20px 8px 20px',
-                position: 'relative',
-                zIndex: 2
-              }}>
-                {/* Pastor Signature */}
-                <div style={{ textAlign: 'center', width: '220px' }}>
-                  <div style={{
-                    fontFamily: "'Great Vibes', 'Dancing Script', cursive",
-                    fontSize: '1.55rem',
-                    color: '#0A2540',
-                    height: '34px',
-                    lineHeight: '34px',
-                    marginBottom: '2px',
-                    textShadow: '0 1px 1px rgba(0,0,0,0.08)'
-                  }}>
-                    Askofu Mercy James
+              <footer className="cert-footer">
+                <div className="cert-sign">
+                  <div className="cert-sign-space">
+                    {settings.pastorSignature ? (
+                      <img className="cert-sign-img" src={settings.pastorSignature} alt="" />
+                    ) : (
+                      <span className="cert-sign-hint">{isSw ? 'Saini hapa' : 'Sign here'}</span>
+                    )}
                   </div>
-                  <div style={{ borderBottom: '1.5px solid #0f172a', width: '100%', marginBottom: '4px' }} />
-                  <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#1e3a8a', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    {isSw ? 'Mchungaji Kiongozi' : 'Senior Pastor'}
-                  </div>
+                  <div className="cert-sign-role">{isSw ? 'Mchungaji Kiongozi' : 'Senior Pastor'}</div>
+                  <div className="cert-sign-sub">{isSw ? 'Kusainiwa kwa mkono' : 'To be signed by hand'}</div>
                 </div>
 
-                {/* Official Church Seal */}
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{
-                    width: '84px',
-                    height: '84px',
-                    borderRadius: '50%',
-                    border: '2.5px solid #c59b27',
-                    background: 'radial-gradient(circle, #fffbf0 30%, #fef3c7 100%)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '2px',
-                    margin: '0 auto 4px auto',
-                    boxShadow: '0 4px 12px rgba(197, 155, 39, 0.25), inset 0 0 0 2px rgba(197, 155, 39, 0.3)'
-                  }}>
-                    <span style={{ fontFamily: 'var(--font-cinzel)', fontSize: '0.92rem', fontWeight: 900, color: '#92400e', letterSpacing: '1px' }}>
-                      ZJ
-                    </span>
-                    <span style={{ fontSize: '0.44rem', fontWeight: 800, color: '#b45309', letterSpacing: '0.6px', textTransform: 'uppercase', textAlign: 'center', lineHeight: 1.1 }}>
-                      OFFICIAL SEAL
-                    </span>
+                <div className="cert-seal-wrap">
+                  <div className="cert-seal">
+                    <span className="cert-seal-monogram">ZJ</span>
+                    <span className="cert-seal-label">{isSw ? 'Muhuri Rasmi' : 'Official Seal'}</span>
+                    <span className="cert-seal-place">Mbagala HQ</span>
                   </div>
-                  <div style={{ fontSize: '0.68rem', fontFamily: 'monospace', color: '#64748b', fontWeight: 600 }}>
-                    {certificateSerial}
-                  </div>
+                  <div className="cert-serial">{certificateSerial}</div>
                 </div>
 
-                {/* Secretary Signature & Date */}
-                <div style={{ textAlign: 'center', width: '220px' }}>
-                  <div style={{
-                    fontFamily: "'Great Vibes', 'Dancing Script', cursive",
-                    fontSize: '1.55rem',
-                    color: '#0A2540',
-                    height: '34px',
-                    lineHeight: '34px',
-                    marginBottom: '2px',
-                    textShadow: '0 1px 1px rgba(0,0,0,0.08)'
-                  }}>
-                    Sekretarieti ya Kanisa
+                <div className="cert-sign">
+                  <div className="cert-sign-space">
+                    {settings.secretarySignature ? (
+                      <img className="cert-sign-img" src={settings.secretarySignature} alt="" />
+                    ) : (
+                      <span className="cert-sign-hint">{isSw ? 'Saini hapa' : 'Sign here'}</span>
+                    )}
                   </div>
-                  <div style={{ borderBottom: '1.5px solid #0f172a', width: '100%', marginBottom: '4px' }} />
-                  <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#1e3a8a', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                    {isSw ? 'Katibu wa Kanisa' : 'Church Secretary'}
-                  </div>
-                  <div style={{ fontSize: '0.68rem', color: '#64748b', marginTop: '2px' }}>
-                    {isSw ? 'Tarehe ya Tukio:' : 'Event Date:'} {eventDate}
+                  <div className="cert-sign-role">{isSw ? 'Katibu wa Kanisa' : 'Church Secretary'}</div>
+                  <div className="cert-sign-sub">
+                    {isSw ? 'Tarehe ya Tukio' : 'Event Date'}: {eventDate}
                   </div>
                 </div>
+              </footer>
+
+              <div className="cert-bottom">
+                <span>{isSw ? 'Imetolewa' : 'Issued'}: {issuedLabel}</span>
+                <span>{CHURCH_PROFILE.email}</span>
+                <span>{isSw ? 'Namba ya uthibitisho' : 'Verification No.'}: {certificateSerial}</span>
               </div>
             </div>
           </div>

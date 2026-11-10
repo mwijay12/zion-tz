@@ -95,3 +95,6 @@ flutter_church_app_ui-master/
 
 # Generated media output (AI image generations) — not product assets
 /media-output/
+
+# Generated local render of a certificate PDF (design preview only)
+certificate-preview.png

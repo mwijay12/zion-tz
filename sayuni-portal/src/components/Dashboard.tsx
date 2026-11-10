@@ -616,15 +616,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 {isSw ? 'Studio ya Vyeti Rasmi vya Kanisa' : 'Official Certificate Studio'}
               </h4>
               <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                {isSw ? 'Vilivyosainiwa na Askofu Mercy James' : 'Endorsed by Bishop Mercy James'}
+                {isSw ? 'Vyeti vyenye namba ya uthibitisho' : 'Certificates with verification numbers'}
               </span>
             </div>
           </div>
 
           <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.5 }}>
             {isSw 
-              ? 'Tengeneza na uchapishe vyeti rasmi vya Ubatizo, Ndoa ya Kikristo, na Wakfu wa Watoto vyenye nembo rasmi ya Sayuni Yerusalemu, sahihi ya kichungaji na nambari ya uthibitisho kwa kubofya mara moja.'
-              : 'Generate and print verified baptism, wedding, and dedication certificates with Zion Jerusalem emblem and unique serial verification.'}
+              ? 'Tengeneza na uchapishe vyeti rasmi vya Ubatizo, Ndoa ya Kikristo, na Wakfu wa Watoto vyenye nembo rasmi, nambari ya uthibitisho na mistari ya kusainiwa kwa mkono kwa kubofya mara moja.'
+              : 'Generate and print verified baptism, wedding, and dedication certificates with the Zion Jerusalem emblem, a unique serial number and blank lines for physical signing.'}
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>

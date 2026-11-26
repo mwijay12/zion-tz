@@ -114,27 +114,42 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
   const [chapterStorageSize, setChapterStorageSize] = useState<string | null>(null);
   const downloadAbortRef = useRef<boolean>(false);
 
+  // Surfaces a readable failure instead of rendering against empty data.
+  const [libraryError, setLibraryError] = useState<string | null>(null);
+
+  const loadJson = async (url: string): Promise<unknown> => {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+    return response.json();
+  };
+
   // Load Bible Index & Tenzi on mount
   useEffect(() => {
-    fetch('/data/bible_index.json')
-      .then(res => res.json())
+    loadJson('/data/bible_index.json')
       .then(data => {
-        setBibleIndex(data);
+        // Guard the shape: every downstream view assumes an array of books.
+        if (Array.isArray(data) && data.length > 0) {
+          setBibleIndex(data as BibleIndexItem[]);
+        } else {
+          setLibraryError('bible_index');
+        }
       })
-      .catch(err => console.error('Error loading bible_index.json', err));
+      .catch(err => {
+        console.error('Error loading bible_index.json', err);
+        setLibraryError('bible_index');
+      });
 
-    fetch('/data/tenzi_za_rohoni.json')
-      .then(res => res.json())
+    loadJson('/data/tenzi_za_rohoni.json')
       .then(data => {
-        setTenziList(data);
+        setTenziList(Array.isArray(data) ? (data as TenziHymn[]) : []);
       })
       .catch(err => console.error('Error loading tenzi_za_rohoni.json', err));
 
     // Nyimbo za Kikristo: 32 offline hymns with original Swahili
     // translations of classic public-domain songs. No external links.
-    fetch('/data/nyimbo_za_kikristo.json')
-      .then(res => res.json())
-      .then((data: Array<{ siteNumber: number; title: string; stanzas: Array<{ verse_number: number; text: string }>; chorus?: string }>) => {
+    loadJson('/data/nyimbo_za_kikristo.json')
+      .then((raw) => {
+        const data = Array.isArray(raw) ? raw as Array<{ siteNumber: number; title: string; stanzas: Array<{ verse_number: number; text: string }>; chorus?: string }> : [];
         const normalized: TenziHymn[] = data.map(s => ({
           number: s.siteNumber,
           title: s.title,
@@ -169,18 +184,25 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
 
     // Load Swahili version
     promises.push(
-      fetch(`/data/books/sw/${selectedBookNumber}.json`)
-        .then(res => res.json())
-        .then(data => setSwBook(data))
-        .catch(err => console.error('Error loading swahili book', err))
+      loadJson(`/data/books/sw/${selectedBookNumber}.json`)
+        .then(data => {
+          const book = data as BibleBook;
+          if (book && Array.isArray(book.CHAPTER)) setSwBook(book);
+        })
+        .catch(err => {
+          console.error('Error loading swahili book', err);
+          setLibraryError('book');
+        })
     );
 
     // If English or Parallel, load KJV
     const englishSource = translation === 'web' ? 'web' : 'kjv';
     promises.push(
-      fetch(`/data/books/${englishSource}/${selectedBookNumber}.json`)
-        .then(res => res.json())
-        .then(data => setEnBook(data))
+      loadJson(`/data/books/${englishSource}/${selectedBookNumber}.json`)
+        .then(data => {
+          const book = data as BibleBook;
+          if (book && Array.isArray(book.CHAPTER)) setEnBook(book);
+        })
         .catch(err => console.error('Error loading english book', err))
     );
 
@@ -190,9 +212,13 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
   }, [selectedBookNumber, translation]);
 
   // Current Chapter Verses
-  const currentSwChapter = swBook?.CHAPTER.find(c => c.chapter_number === selectedChapterNumber) || swBook?.CHAPTER[0];
-  const currentEnChapter = enBook?.CHAPTER.find(c => c.chapter_number === selectedChapterNumber) || enBook?.CHAPTER[0];
+  const swChapters = Array.isArray(swBook?.CHAPTER) ? swBook!.CHAPTER : [];
+  const enChapters = Array.isArray(enBook?.CHAPTER) ? enBook!.CHAPTER : [];
+  const currentSwChapter = swChapters.find(c => c.chapter_number === selectedChapterNumber) || swChapters[0];
+  const currentEnChapter = enChapters.find(c => c.chapter_number === selectedChapterNumber) || enChapters[0];
   const activeBookMeta = bibleIndex.find(b => b.number === selectedBookNumber);
+  // A missing index or book must never blank the page: show why, offer reload.
+  const libraryUnavailable = libraryError === 'bible_index' || (!isLoading && !currentSwChapter);
 
   useEffect(() => {
     if (isLoading || !currentSwChapter) return;
@@ -788,6 +814,31 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
       fallbackToNative(0, fullText, sessionId);
     }
   };
+
+  if (libraryUnavailable) {
+    return (
+      <div className="church-card" style={{ padding: '2rem', maxWidth: '560px', margin: '1.5rem auto', textAlign: 'center' }}>
+        <div style={{
+          width: '46px', height: '46px', margin: '0 auto 0.8rem auto',
+          borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'var(--amber-container)', color: 'var(--amber-text)'
+        }}>
+          <BookOpen size={22} />
+        </div>
+        <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-headline)', marginBottom: '0.4rem' }}>
+          {isSw ? 'Maktaba ya Biblia haijapakiwa' : 'The Bible library did not load'}
+        </h2>
+        <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', lineHeight: 1.6, marginBottom: '1rem' }}>
+          {isSw
+            ? 'Faili za maandiko (bible_index.json / vitabu) hazikuweza kupatikana. Kagua muunganisho wako kisha ujaribu tena — hakuna data iliyopotea.'
+            : 'The scripture files (bible_index.json / book JSON) could not be fetched. Check your connection and retry — no data was lost.'}
+        </p>
+        <button type="button" className="btn-primary" onClick={() => window.location.reload()}>
+          {isSw ? 'Pakia Upya' : 'Reload'}
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', paddingBottom: isPlayingAudio ? '5rem' : '1rem' }}>
@@ -1666,11 +1717,11 @@ export const BibleReader: React.FC<BibleReaderProps> = ({
               }}
               title="Chagua Sauti ya AI"
             >
-              <option value="gemini-charon" style={{ color: '#000' }}>✨ Gemini Charon (Sauti ya Hekaluni)</option>
-              <option value="gemini-aoede" style={{ color: '#000' }}>✨ Gemini Aoede (Kiliturjia)</option>
-              <option value="gemini-kore" style={{ color: '#000' }}>✨ Gemini Kore (Upole na Faraja)</option>
-              <option value="puter" style={{ color: '#000' }}>☁️ Puter Cloud AI</option>
-              <option value="native" style={{ color: '#000' }}>🔊 Sauti ya Kifaa (Offline)</option>
+              <option value="gemini-charon" style={{ color: '#000' }}>Gemini Charon (Sauti ya Hekaluni)</option>
+              <option value="gemini-aoede" style={{ color: '#000' }}>Gemini Aoede (Kiliturjia)</option>
+              <option value="gemini-kore" style={{ color: '#000' }}>Gemini Kore (Upole na Faraja)</option>
+              <option value="puter" style={{ color: '#000' }}>Puter Cloud AI</option>
+              <option value="native" style={{ color: '#000' }}>Sauti ya Kifaa (Offline)</option>
             </select>
           </div>
 

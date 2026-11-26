@@ -22,9 +22,12 @@ import {
   CHURCH_PROFILE, 
   CHURCH_CHOIRS, 
   SUNDAY_SCHEDULE, 
-  INITIAL_BULLETIN_NOTICES 
+  INITIAL_BULLETIN_NOTICES,
+  INITIAL_JUMUIYA_GROUPS
 } from '../data/mockData';
-import { generateBulletinPdf } from '../services/officialPdfService';
+import { useMembers, baptizedShare } from '../services/memberStore';
+import { SampleDataBadge } from './ui/States';
+import { useToast } from './ui/toastStore';
 
 import { AuthService } from '../services/authService';
 import { PrivacyAnalyticsService } from '../services/privacyAnalyticsService';
@@ -49,6 +52,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
   totalIncome
 }) => {
   const isSw = language === 'sw';
+  const { push: toast } = useToast();
+  // Read the live register instead of a hard-coded figure, so the head-count
+  // on the dashboard always agrees with the Members registry.
+  const [members] = useMembers();
   const canJumuiya = AuthService.canRoleAccessTab(userRole, 'jumuiya');
   const canFinance = AuthService.canRoleAccessTab(userRole, 'finance');
   const canCertificates = AuthService.canRoleAccessTab(userRole, 'certificates');
@@ -92,6 +99,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const handlePrint = async (mode: 'open' | 'download' = 'open') => {
     setIsGeneratingPdf(true);
     try {
+      // Loaded on demand: jsPDF is a large library and most dashboard visits
+      // never print a bulletin.
+      const { generateBulletinPdf } = await import('../services/officialPdfService');
       await generateBulletinPdf(INITIAL_BULLETIN_NOTICES, {
         includeSchedule: true,
         finance: {
@@ -103,6 +113,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
       });
     } catch (err) {
       console.error('Failed to generate bulletin PDF:', err);
+      toast({
+        tone: 'error',
+        title: isSw ? 'PDF haikufanikiwa' : 'PDF failed',
+        message: isSw
+          ? 'Imeshindikana kutengeneza kijarida. Kagua muunganisho kisha ujaribu tena.'
+          : 'The bulletin could not be generated. Check your connection and try again.',
+      });
     } finally {
       setIsGeneratingPdf(false);
     }
@@ -214,10 +231,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {isSw ? 'WAUMINI WALIOORODHESHWA' : 'REGISTERED CONGREGANTS'}
             </span>
             <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--text-headline)' }}>
-              142
+              {members.length.toLocaleString()}
             </div>
             <span style={{ fontSize: '0.78rem', color: 'var(--emerald-600)', fontWeight: 600 }}>
-              {isSw ? 'Mbagala Kwa Matope' : 'Kwa Matope Parish'}
+              {isSw
+                ? `Wamebatizwa ${baptizedShare(members)}%`
+                : `${baptizedShare(members)}% baptized`}
             </span>
           </div>
         </div>
@@ -237,8 +256,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <Calendar size={26} />
           </div>
           <div>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
               {isSw ? 'MAHUDHURIO YA JUMAPILI' : 'SUNDAY ATTENDANCE'}
+              <SampleDataBadge label={isSw ? 'Sampuli' : 'Sample'} />
             </span>
             <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--text-headline)' }}>
               118
@@ -295,10 +315,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {isSw ? 'VIKUNDI VYA MAOMBI (NYUMBA)' : 'HOME PRAYER CELLS'}
             </span>
             <div style={{ fontSize: '1.65rem', fontWeight: 800, color: 'var(--text-headline)' }}>
-              5 / 5
+              {INITIAL_JUMUIYA_GROUPS.length}
             </div>
             <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-              {isSw ? 'Mbagala & Majumbani' : 'All reporting regularly'}
+              {isSw ? 'Mbagala & Majumbani' : 'Mbagala & surrounding homes'}
             </span>
           </div>
         </div>

@@ -305,6 +305,27 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // 15. Connection self-test (portal "Kagua Muunganisho wa Wingu").
+    //
+    //     Proves that auth + custom claims + these rules accept writes for
+    //     this exact account. It is deliberately tiny and self-owned:
+    //       - a signed-in, verified user may create ONLY a doc stamped with
+    //         their own uid,
+    //       - nobody can read or list the collection (it holds no data worth
+    //         reading, and "allow read: if false" keeps it out of sight),
+    //       - the client deletes its own probe immediately, and delete is
+    //         restricted to the owner so nobody can wipe another's probe.
+    //     Without this, "is Firebase working?" could only be answered by
+    //     attempting a real church record and hitting permission-denied.
+    match /health_probe/{probeId} {
+      allow read, list: if false;
+      allow create: if isVerified() &&
+                       request.resource.data.uid == request.auth.uid &&
+                       request.resource.data.keys().hasOnly(['uid', 'email', 'clientAt', 'createdAt']);
+      allow delete: if isVerified() && resource.data.uid == request.auth.uid;
+      allow update: if false;
+    }
+
     // Default deny for all other paths
     match /{document=**} {
       allow read, write: if false;

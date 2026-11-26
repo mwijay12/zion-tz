@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import type { Language } from '../types';
 import { AuthService, type PortalUser } from '../services/authService';
+import { describeFirebaseError } from '../services/firestoreErrors';
 import { FirebaseChurchService, type ChurchEvent, type ChurchAnnouncement } from '../services/firebaseChurchService';
 import { CHURCH_PROFILE, INITIAL_BULLETIN_NOTICES } from '../data/mockData';
 import { PrintableOfficialReport } from './PrintableOfficialReport';
@@ -190,8 +191,8 @@ export const MediaContentStudio: React.FC<MediaContentStudioProps> = ({ language
     setDeskFeedback({
       type: 'success',
       message: isSw
-        ? `✓ Maelezo ya "${item.title}" yameingizwa kwenye muundo. Chagua rangi, kisha pakua PNG, nakili prompt ya Canva, au shiriki WhatsApp.`
-        : `✓ Loaded "${item.title}" into the design. Pick a theme, then download the PNG, copy the Canva prompt, or share on WhatsApp.`
+        ? `Maelezo ya "${item.title}" yameingizwa kwenye muundo. Chagua rangi, kisha pakua PNG, nakili prompt ya Canva, au shiriki WhatsApp.`
+        : `Loaded "${item.title}" into the design. Pick a theme, then download the PNG, copy the Canva prompt, or share on WhatsApp.`
     });
   };
 
@@ -224,12 +225,12 @@ export const MediaContentStudio: React.FC<MediaContentStudioProps> = ({ language
       setEventForm({ title: '', description: '', eventDate: '', eventTime: '', venue: '', themeVerse: '', category: 'Ibada', needsPoster: true });
       setShowEventForm(false);
       setDeskFeedback({ type: 'success', message: isSw
-        ? '✓ Tukio limehifadhiwa kwenye Cloud Firestore. Super Admin ataliona kwenye folio mara moja (hata akiingia kutoka kifaa kingine).'
-        : '✓ Event saved to Cloud Firestore. The Super Admin will see it in the queue immediately, from any device.' });
-    } catch (err: any) {
-      setDeskFeedback({ type: 'error', message: isSw
-        ? `Tukio halijahifadhiwa kwenye wingu: ${err?.message || 'kagua muunganisho / ruhusa.'}`
-        : `Event was not saved to the cloud: ${err?.message || 'check connection / permissions.'}` });
+        ? 'Tukio limehifadhiwa kwenye Cloud Firestore. Super Admin ataliona kwenye folio mara moja (hata akiingia kutoka kifaa kingine).'
+        : 'Event saved to Cloud Firestore. The Super Admin will see it in the queue immediately, from any device.' });
+    } catch (err) {
+      setDeskFeedback({ type: 'error', message:
+        (isSw ? 'Tukio HALIJAHIFADHIWA kwenye wingu. ' : 'The event was NOT saved to the cloud. ') +
+        describeFirebaseError(err, isSw) });
     } finally {
       setIsSavingEvent(false);
     }
@@ -278,12 +279,12 @@ export const MediaContentStudio: React.FC<MediaContentStudioProps> = ({ language
         setAnnouncements(prev => prev.map(a => a.id === selectedSource.id ? { ...a, posterStatus: 'ready' } : a));
       }
       setDeskFeedback({ type: 'success', message: isSw
-        ? '✓ Poster imewekewa alama "Imetengenezwa" kwenye Firestore. Viongozi wataona hali hiyo; sasa pakua PNG na uitume kwenye makundi ya WhatsApp.'
-        : '✓ Poster marked as ready in Firestore. Leaders can see the status; download the PNG and send it to the WhatsApp groups.' });
-    } catch (err: any) {
-      setDeskFeedback({ type: 'error', message: isSw
-        ? `Hali ya poster haijasawazishwa: ${err?.message || 'kagua ruhusa za Firestore.'}`
-        : `Poster status was not synced: ${err?.message || 'check Firestore permissions.'}` });
+        ? 'Poster imewekewa alama "Imetengenezwa" kwenye Firestore. Viongozi wataona hali hiyo; sasa pakua PNG na uitume kwenye makundi ya WhatsApp.'
+        : 'Poster marked as ready in Firestore. Leaders can see the status; download the PNG and send it to the WhatsApp groups.' });
+    } catch (err) {
+      setDeskFeedback({ type: 'error', message:
+        (isSw ? 'Hali ya poster HAijasawazishwa — viongozi wengine hawataiona. ' : 'Poster status was NOT synced — other leaders will not see it. ') +
+        describeFirebaseError(err, isSw) });
     } finally {
       setIsMarkingPoster(false);
     }
@@ -789,13 +790,13 @@ export const MediaContentStudio: React.FC<MediaContentStudioProps> = ({ language
                       backgroundColor: item.status === 'ready' ? 'rgba(16,185,129,0.14)' : item.needsPoster ? 'rgba(234,88,12,0.12)' : 'rgba(100,116,139,0.12)',
                       color: item.status === 'ready' ? '#059669' : item.needsPoster ? '#ea580c' : '#64748b'
                     }}>
-                      {item.status === 'ready' ? (isSw ? '✓ Imetengenezwa' : '✓ Ready')
+                      {item.status === 'ready' ? (isSw ? 'Imetengenezwa' : 'Ready')
                         : item.needsPoster ? (isSw ? 'Inasubiri Poster' : 'Poster Needed')
                         : (isSw ? 'Taarifa tu' : 'Info only')}
                     </span>
                   </div>
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.25rem', lineHeight: 1.45 }}>
-                    {item.kind === 'event' ? (isSw ? '📅 Tukio' : '📅 Event') : (isSw ? '📢 Tangazo' : '📢 Announcement')}
+                    {item.kind === 'event' ? (isSw ? 'Tukio' : 'Event') : (isSw ? 'Tangazo' : 'Announcement')}
                     {item.detail ? ` • ${item.detail}` : ''}{item.author ? ` • ${item.author}` : ''}
                   </div>
                   <button onClick={() => applyToCanvas(item)} style={{

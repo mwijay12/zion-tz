@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/church_profile.dart';
+import '../../../core/constants/core_links.dart';
 import '../../../core/services/church_auth_service.dart';
 import '../../../core/services/church_customization_service.dart';
 import '../../../core/theme/app_colors.dart';
@@ -2011,8 +2012,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ElevatedButton.icon(
                   onPressed: () async {
                     AppHaptics.mediumImpact();
-                    final uri =
-                        Uri.parse('https://sayuni-portal.vercel.app');
+                    final uri = Uri.parse(CoreLinks.portalHome);
                     if (await canLaunchUrl(uri)) {
                       await launchUrl(uri,
                           mode: LaunchMode.externalApplication);

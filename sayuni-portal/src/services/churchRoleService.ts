@@ -14,6 +14,7 @@ import type { UserRole } from "../types";
  */
 const functions = getFunctions(app, "africa-south1");
 const setUserRoleCallable = httpsCallable(functions, "setUserRole");
+const revokeUserRoleCallable = httpsCallable(functions, "revokeUserRole");
 
 export interface RoleProvisionResult {
   uid: string;
@@ -40,6 +41,22 @@ export async function provisionLeaderRole(input: {
     reason: input.reason || "Imetolewa kupitia Daftari la Waumini (portal)",
   });
   return result.data as RoleProvisionResult;
+}
+
+/**
+ * Removes a leader's privileged claim (the Cloud Function downgrades them to
+ * `member`). Used by "Suspend" in the Members registry: suspending a leader
+ * must actually close the door, not just grey out a row in localStorage.
+ */
+export async function revokeLeaderRole(input: {
+  email: string;
+  reason?: string;
+}): Promise<{ uid: string; email: string; role: string; previousRole?: string }> {
+  const result = await revokeUserRoleCallable({
+    targetEmail: input.email.trim(),
+    reason: input.reason || "Imesitishwa kupitia Daftari la Waumini (portal)",
+  });
+  return result.data as { uid: string; email: string; role: string; previousRole?: string };
 }
 
 /** Human-readable message for the most common provisioning failures. */

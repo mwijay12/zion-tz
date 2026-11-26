@@ -233,6 +233,17 @@ export class AuthService {
     return this.hasAnyRole(user, ['choir_leader', 'admin', 'super_admin']);
   }
 
+  /**
+   * Deleting a song is narrower than editing one, and must mirror
+   * `firestore.rules`: `choir_songs.allow delete: if isAdmin();`.
+   * The choir portal used to offer Delete to choir leaders, so the local list
+   * dropped the song while the cloud copy survived — it reappeared on the next
+   * device. UI permission now matches the rule that enforces it.
+   */
+  static canDeleteSongs(user: PortalUser | null | undefined): boolean {
+    return this.hasAnyRole(user, ['admin', 'super_admin']);
+  }
+
   static canManageFinances(user: PortalUser | null | undefined): boolean {
     return this.hasAnyRole(user, ['treasurer', 'secretary', 'pastor', 'admin', 'super_admin']);
   }

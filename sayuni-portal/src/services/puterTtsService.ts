@@ -23,6 +23,37 @@ export function isPuterAvailable(): boolean {
   return typeof window !== 'undefined' && !!window.puter && !!window.puter.ai;
 }
 
+let puterLoader: Promise<void> | null = null;
+
+/**
+ * Loads the Puter SDK on first use.
+ *
+ * The script used to be a hard <script> tag in index.html, so every leader
+ * downloaded and executed a third-party bundle on every page view — even
+ * though Puter only powers one optional Bible voice. Loading it on demand
+ * keeps that code (and any tracking it carries) off the portal entirely until
+ * someone actually picks that voice.
+ */
+export function ensurePuterLoaded(): Promise<void> {
+  if (typeof window === 'undefined') return Promise.resolve();
+  if (isPuterAvailable()) return Promise.resolve();
+  if (puterLoader) return puterLoader;
+
+  puterLoader = new Promise<void>((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://js.puter.com/v2/';
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => {
+      puterLoader = null;
+      reject(new Error('Imeshindikana kupakia Puter.js. Kagua muunganisho wako.'));
+    };
+    document.head.appendChild(script);
+  });
+
+  return puterLoader;
+}
+
 /**
  * Checks if the user is currently signed in to Puter.
  */
@@ -39,6 +70,7 @@ export function isPuterSignedIn(): boolean {
  * Prompts the user to connect their Puter account.
  */
 export async function connectPuter(): Promise<boolean> {
+  await ensurePuterLoaded();
   if (!isPuterAvailable()) {
     throw new Error('Puter.js haijapakiwa kwenye kivinjari.');
   }
@@ -59,6 +91,7 @@ export async function synthesizePuterSpeech(
   text: string,
   options: PuterVoiceOptions = { provider: 'gemini' }
 ): Promise<HTMLAudioElement> {
+  await ensurePuterLoaded();
   if (!isPuterAvailable()) {
     throw new Error('Puter SDK haipatikani.');
   }

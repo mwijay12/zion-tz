@@ -47,8 +47,63 @@ class ChurchSyncService extends ChangeNotifier {
   static final ValueNotifier<List<Map<String, dynamic>>> livePrayersNotifier =
       ValueNotifier([]);
 
-  /// Set of IDs we have already alerted the user about
-  final Set<String> _processedNoticeIds = {};
+  /// Fingerprint of every notice already delivered to this device, keyed by id.
+  ///
+  /// Two things depend on this being a *content* fingerprint rather than a set
+  /// of ids:
+  ///   * a notice the secretary edits must re-render on the phone, and
+  ///   * the same stream callbacks must not stack duplicate lock-screen alerts.
+  final Map<String, String> _processedNoticeIds = {};
+
+  /// Marker for "already on this device before this session" — any real
+  /// fingerprint differs from it, so an edited notice still re-renders.
+  static const String _sentinelAlreadyKnown = 'seed';
+
+  static const String _processedNoticeIdsKey = 'zion_processed_notice_fingerprints';
+
+  /// Loads the alert history persisted on this device.
+  Future<void> _loadProcessedFingerprints() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getString(_processedNoticeIdsKey);
+      if (raw == null || raw.isEmpty) return;
+      final decoded = jsonDecode(raw);
+      if (decoded is! Map) return;
+      decoded.forEach((key, value) {
+        final id = key?.toString() ?? '';
+        if (id.isNotEmpty) {
+          _processedNoticeIds[id] = value?.toString() ?? '';
+        }
+      });
+    } catch (e) {
+      debugPrint('Could not restore notice fingerprints: $e');
+    }
+  }
+
+  /// Persists the alert history so a cold start does not replay old notices.
+  /// Capped so the preference cannot grow without bound.
+  Future<void> _saveProcessedFingerprints() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final entries = _processedNoticeIds.entries.toList();
+      final overflow = entries.length - _maxRememberedNotices;
+      if (overflow > 0) {
+        // Newest inserts are last; drop the oldest tail of the map.
+        for (final e in entries.take(overflow)) {
+          _processedNoticeIds.remove(e.key);
+        }
+      }
+      await prefs.setString(
+        _processedNoticeIdsKey,
+        jsonEncode(_processedNoticeIds),
+      );
+    } catch (e) {
+      debugPrint('Could not persist notice fingerprints: $e');
+    }
+  }
+
+  static const int _maxRememberedNotices = 500;
+
 
   bool get isInitialized => _isInitialized;
 
@@ -56,10 +111,15 @@ class ChurchSyncService extends ChangeNotifier {
     if (_isInitialized) return;
     _isInitialized = true;
 
+    // Store what this device has already been alerted about. Without this the
+    // map lived only in memory, so every cold start re-announced *every*
+    // announcement in the collection on the lock screen.
+    await _loadProcessedFingerprints();
+
     // Seed processed IDs with pre-existing announcement IDs so we only alert for NEW incoming items
     final existing = NotificationsDataService().announcements;
     for (final a in existing) {
-      _processedNoticeIds.add(a.id);
+      _processedNoticeIds.putIfAbsent(a.id, () => _sentinelAlreadyKnown);
     }
 
     // 1. Primary Cloud Realtime Stream via Firebase Cloud Firestore
@@ -136,14 +196,25 @@ class ChurchSyncService extends ChangeNotifier {
           isPortalConnected.value = true;
           syncStatusMessage.value = 'Imeunganishwa na Seva ya Kanisa';
 
+          final liveIds = <String>{};
           for (final doc in snapshot.docs) {
             final data = doc.data();
             data['id'] = doc.id;
+            liveIds.add(doc.id);
             if (data['createdAt'] is Timestamp) {
               final date = (data['createdAt'] as Timestamp).toDate();
               data['date'] = '${date.day}/${date.month}/${date.year}';
             }
             _processIncomingNotice(data);
+          }
+
+          // A notice the secretariat DELETED (wrong venue, cancelled service)
+          // used to keep showing on every phone forever, because the app only
+          // ever added. Prune against the authoritative server list — but never
+          // against a local-cache snapshot, which can be empty before the
+          // server answers and would wipe every cached notice on a cold start.
+          if (!snapshot.metadata.isFromCache) {
+            NotificationsDataService().pruneMissingPortalNotices(liveIds);
           }
         },
         onError: (err) {
@@ -308,35 +379,107 @@ class ChurchSyncService extends ChangeNotifier {
     }
   }
 
-  /// Handles an incoming notice payload from Katibu / Admin
+  /// Reads a string field, treating blank/whitespace values as missing.
+  ///
+  /// The portal writes `body` *and* `content` (same value) and sometimes only
+  /// one of them; a plain `??` chain stops at the first key that exists even
+  /// when its value is an empty string, which is how an announcement arrived
+  /// on the phone with a blank body.
+  static String? _firstNonEmpty(Map<String, dynamic> item, List<String> keys) {
+    for (final key in keys) {
+      final value = item[key]?.toString().trim() ?? '';
+      if (value.isNotEmpty) return value;
+    }
+    return null;
+  }
+
+  /// Builds the immutable, content-addressed fingerprint used to decide
+  /// whether a notice really is "new" for this device.
+  ///
+  /// Keying only on the document id was a bug: when the secretary *edited* an
+  /// announcement (corrected the venue, escalated it to urgent), the id was
+  /// already in `_processedNoticeIds`, so the phone silently kept showing the
+  /// old text forever. A changed fingerprint now re-renders the notice in
+  /// place instead of being dropped.
+  static String _noticeFingerprint(Map<String, dynamic> item) => [
+        item['title'],
+        item['body'],
+        item['content'],
+        item['summary'],
+        item['fullDetails'],
+        item['category'],
+        item['type'],
+        item['priority'],
+        item['branch'],
+        item['isUrgent'],
+        item['isHighPriority'],
+        item['targetAudience'],
+        item['audience'],
+        item['targetUid'],
+        item['targetJumuiya'],
+        item['eventDate'],
+        item['date'],
+        item['eventTime'],
+        item['time'],
+        item['venue'],
+        item['location'],
+        item['authorRole'],
+      ].map((v) => v?.toString() ?? '').join('\u0001');
+
   void _processIncomingNotice(Map<String, dynamic> item) {
     final noticeId = item['id']?.toString() ?? '';
     if (noticeId.isEmpty) return;
 
-    if (_processedNoticeIds.contains(noticeId)) {
-      return; // Already processed
+    final fingerprint = _noticeFingerprint(item);
+    if (_processedNoticeIds[noticeId] == fingerprint) {
+      return; // Identical content already delivered to this device.
     }
-
-    _processedNoticeIds.add(noticeId);
+    final bool isEdit = _processedNoticeIds.containsKey(noticeId);
+    _processedNoticeIds[noticeId] = fingerprint;
 
     final targetAudience = item['targetAudience']?.toString() ??
         (item['audience']?.toString() ?? 'all');
+
+    // The portal's canonical fields are `body`/`content` plus the structured
+    // `eventDate` / `eventTime` / `venue` trio. Older clients and the demo
+    // seed use `summary` / `date` / `time` / `location`. Read both, and never
+    // let a blank value win over a populated one.
+    final body = _firstNonEmpty(item, ['body', 'content', 'summary']);
+    final summary =
+        _firstNonEmpty(item, ['summary', 'body', 'content']) ?? '';
+    final fullDetails =
+        _firstNonEmpty(item, ['fullDetails', 'body', 'content']) ?? summary;
+
+    // `type` carries the urgency in Firestore (`normal|urgent|bereavement`).
+    // The app used to look only at `isUrgent`/`isHighPriority`, which the
+    // portal never writes, so every urgent notice arrived as a quiet normal
+    // one: no lock-screen alert, no red banner.
+    final rawType = item['type']?.toString();
+    final bool urgent =
+        rawType == 'urgent' || item['priority']?.toString() == 'high';
+    final String type = switch (rawType) {
+      'urgent' => 'urgent',
+      'bereavement' => 'bereavement',
+      _ => (urgent ? 'urgent' : 'normal'),
+    };
 
     // Create ChurchAnnouncement model (with personalized targeting)
     final announcement = ChurchAnnouncement(
       id: noticeId,
       title: item['title']?.toString() ?? 'Tangazo Jipya la Kanisa',
       category: item['category']?.toString() ?? 'Taarifa Kuu',
-      date: item['date']?.toString() ?? 'Leo',
-      time: item['time']?.toString() ?? 'Saa za Ibada',
-      location: item['location']?.toString() ?? 'Hekalu Kuu la Sayuni',
-      summary:
-          item['summary']?.toString() ?? (item['content']?.toString() ?? ''),
-      fullDetails: item['content']?.toString() ??
-          (item['fullDetails']?.toString() ?? ''),
-      preacherOrLeader: 'Ofisi ya Katibu Mkuu wa Kanisa',
-      isHighPriority:
-          item['isUrgent'] == true || item['isHighPriority'] == true,
+      type: type,
+      branch: _firstNonEmpty(item, ['branch']) ?? 'Zote',
+      date: _firstNonEmpty(item, ['eventDate', 'date']) ?? 'Leo',
+      time: _firstNonEmpty(item, ['eventTime', 'time']) ?? 'Saa za Ibada',
+      location:
+          _firstNonEmpty(item, ['venue', 'location']) ?? 'Hekalu Kuu la Sayuni',
+      summary: summary.isNotEmpty ? summary : (body ?? ''),
+      fullDetails: fullDetails,
+      preacherOrLeader:
+          _firstNonEmpty(item, ['preacherOrLeader', 'authorRole']) ??
+              'Ofisi ya Katibu Mkuu wa Kanisa',
+      isHighPriority: urgent || item['isHighPriority'] == true,
       targetAudience: targetAudience,
       isRead: false,
       targetUid: item['targetUid']?.toString(),
@@ -370,10 +513,12 @@ class ChurchSyncService extends ChangeNotifier {
     // 1. Add to Notifications Data Service so unread count increments immediately
     NotificationsDataService().addAnnouncementFromPortal(announcement);
 
-    // 2. Trigger notifications if relevant to current user
-    final bool shouldAlertUser = isRelevantToMe;
-
-    if (shouldAlertUser) {
+    // 2. Trigger notifications if relevant to current user.
+    //
+    // An *edited* announcement must update the list but must not buzz the phone
+    // again for something the member already read — only genuinely new notices
+    // interrupt.
+    if (!isEdit) {
       ChurchNotificationService().showLockScreenNotification(
         id: announcement.id.hashCode,
         title:
@@ -388,6 +533,10 @@ class ChurchSyncService extends ChangeNotifier {
       currentInAppNotice.value = announcement;
       AppHaptics.heavyImpact();
     }
+
+    // Remember that this device has seen this exact revision, so a cold start
+    // or a re-emitted snapshot does not replay it.
+    _saveProcessedFingerprints();
 
     notifyListeners();
   }

@@ -38,6 +38,8 @@ import { FirebaseChurchService } from '../services/firebaseChurchService';
 import { createId } from '../utils/id';
 
 import { PrintableOfficialReport } from './PrintableOfficialReport';
+import { useConfirm } from './ui/useConfirm';
+import { describeFirebaseError } from '../services/firestoreErrors';
 
 interface SecretaryPortalProps {
   language: Language;
@@ -52,6 +54,7 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
   groups,
   setActiveTab
 }) => {
+  const [confirm, confirmDialog] = useConfirm();
   const isSw = language === 'sw';
   const [notices, setNotices] = useState<BulletinNotice[]>(() => churchSync.getNotices());
   const [showNoticeModal, setShowNoticeModal] = useState(false);
@@ -133,14 +136,22 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
     } catch {}
   }, [memberSkills]);
 
-  const handleDeleteNotice = (id: string) => {
-    if (confirm(isSw ? 'Je, una uhakika unataka kufuta tangazo hili?' : 'Are you sure you want to delete this notice?')) {
-      const updated = notices.filter(n => n.id !== id);
-      setNotices(updated);
-      try {
-        localStorage.setItem('zion_bulletin_notices', JSON.stringify(updated));
-      } catch {}
-    }
+  const handleDeleteNotice = async (id: string) => {
+    const notice = notices.find(n => n.id === id);
+    const ok = await confirm({
+      title: isSw ? 'Futa tangazo hili?' : 'Delete this notice?',
+      message: isSw
+        ? `"${notice?.title ?? ''}" itaondolewa kwenye ubao wa matangazo. Hatua hii haiwezi kutenduliwa.`
+        : `"${notice?.title ?? ''}" will be removed from the notice board. This cannot be undone.`,
+      confirmLabel: isSw ? 'Futa tangazo' : 'Delete notice',
+    });
+    if (!ok) return;
+
+    const updated = notices.filter(n => n.id !== id);
+    setNotices(updated);
+    try {
+      localStorage.setItem('zion_bulletin_notices', JSON.stringify(updated));
+    } catch {}
   };
 
   const handleToggleNoticeUrgent = (id: string) => {
@@ -157,7 +168,9 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
     setIsEditingFasting(false);
     setFeedback({
       type: 'success',
-      message: isSw ? '✓ Taarifa za mfungo wa kanisa zimehifadhiwa na kusawazishwa!' : '✓ Fasting campaign saved and synced!'
+      message: isSw
+        ? 'Taarifa za mfungo zimehifadhiwa kwenye kifaa hiki. (Usawazishaji wa wingu kwa mfungo bado haujawekwa.)'
+        : 'Fasting campaign saved on this device. (Cloud sync for the campaign is not wired yet.)'
     });
     setTimeout(() => setFeedback(null), 3000);
   };
@@ -174,10 +187,16 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
     setMemberSkills(prev => prev.map(s => s.id === id ? { ...s, isVerifiedMember: !s.isVerifiedMember } : s));
   };
 
-  const handleDeleteSkill = (id: string) => {
-    if (confirm(isSw ? 'Je, una uhakika unataka kuondoa ujuzi huu kwenye orodha?' : 'Are you sure you want to remove this skill listing?')) {
-      setMemberSkills(prev => prev.filter(s => s.id !== id));
-    }
+  const handleDeleteSkill = async (id: string) => {
+    const ok = await confirm({
+      title: isSw ? 'Ondoa ujuzi huu?' : 'Remove this skill?',
+      message: isSw
+        ? 'Ujuzi huu utaondolewa kwenye orodha ya vipaji vya waumini.'
+        : 'This listing will be removed from the member skills directory.',
+      confirmLabel: isSw ? 'Ondoa' : 'Remove',
+    });
+    if (!ok) return;
+    setMemberSkills(prev => prev.filter(s => s.id !== id));
   };
 
   useEffect(() => {
@@ -255,11 +274,12 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
     try {
       await churchSync.addNotice(newNotice);
       setNotices(churchSync.getNotices());
+      // Only reached when the Firestore write actually resolved.
       setFeedback({
         type: 'success',
         message: isSw
-          ? '✓ Tangazo limechapishwa kwenye Cloud Firestore na litaonekana kwenye simu zote za waumini!'
-          : '✓ Announcement published to Cloud Firestore and synced with member devices!'
+          ? 'Tangazo limechapishwa kwenye Cloud Firestore na litaonekana kwenye simu zote za waumini.'
+          : 'Announcement published to Cloud Firestore and synced with member devices.'
       });
 
       setTimeout(() => {
@@ -278,13 +298,14 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
         setVenue('');
         setThemeVerse('');
       }, 1400);
-    } catch (err: any) {
+    } catch (err) {
       setNotices(churchSync.getNotices());
       setFeedback({
         type: 'error',
-        message: isSw
-          ? `Tangazo limehifadhiwa kwenye kifaa hiki, lakini halijasawazishwa na Cloud Firestore: ${err?.message || 'Kagua muunganisho wa internet au sheria za usalama.'}`
-          : `The notice was saved on this device but not synced to Cloud Firestore: ${err?.message || 'Check network connection or Firestore security rules.'}`
+        message: (isSw
+          ? 'Tangazo limehifadhiwa kwenye KIFAA HIKI PEKEE — halijafika kwenye simu za waumini. '
+          : 'The notice is saved on THIS DEVICE ONLY — it did not reach member devices. ') +
+          describeFirebaseError(err, isSw)
       });
     } finally {
       setIsSubmitting(false);
@@ -476,10 +497,10 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
                     style={{ fontSize: '0.72rem', fontWeight: 700 }}
                   >
                     {notice.targetAudience === 'leaders' 
-                      ? '🔒 Viongozi Tu' 
+                      ? 'Viongozi Tu' 
                       : (notice.targetAudience === 'elders' 
                           ? '🔒 Wazee Tu' 
-                          : (notice.targetAudience === 'choir' ? '🎵 Kwaya' : '📢 Waumini Wote'))}
+                          : (notice.targetAudience === 'choir' ? 'Kwaya' : 'Waumini Wote'))}
                   </span>
                   <strong style={{ fontSize: '1.05rem', color: 'var(--text-headline)' }}>
                     {notice.title}
@@ -504,7 +525,7 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
                     <AlertTriangle size={15} />
                   </button>
                   <button
-                    onClick={() => handleDeleteNotice(notice.id)}
+                    onClick={() => void handleDeleteNotice(notice.id)}
                     title="Futa Tangazo"
                     style={{
                       background: 'none',
@@ -847,7 +868,7 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
                       {item.category}
                     </span>
                     <span className={`badge ${item.isApproved ? 'badge-green' : 'badge-gold'}`} style={{ fontSize: '0.72rem' }}>
-                      {item.isApproved ? '✓ Imethibitishwa Kuonyeshwa' : '⏳ Inasubiri Idhini'}
+                      {item.isApproved ? 'Imethibitishwa Kuonyeshwa' : 'Inasubiri Idhini'}
                     </span>
                   </div>
 
@@ -860,9 +881,9 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
                   </p>
 
                   <div style={{ display: 'flex', gap: '1rem', fontSize: '0.78rem', color: 'var(--text-muted)', flexWrap: 'wrap' }}>
-                    <span>📍 {item.location} ({item.jumuiya})</span>
-                    <span>📞 {item.phone}</span>
-                    <span>🕒 {item.createdAt}</span>
+                    <span>{item.location} ({item.jumuiya})</span>
+                    <span>{item.phone}</span>
+                    <span>{item.createdAt}</span>
                   </div>
                 </div>
 
@@ -888,7 +909,7 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
                   </button>
 
                   <button
-                    onClick={() => handleDeleteSkill(item.id)}
+                    onClick={() => void handleDeleteSkill(item.id)}
                     title="Futa Ujuzi Huu"
                     style={{
                       background: 'none',
@@ -967,7 +988,7 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
             {/* Quick worship-reminder templates */}
             <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.6rem' }}>
               <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-muted)', alignSelf: 'center' }}>
-                {isSw ? '⚡ Vikumbusho vya Haraka:' : '⚡ Quick reminders:'}
+                {isSw ? 'Vikumbusho vya Haraka:' : 'Quick reminders:'}
               </span>
               <button
                 type="button"
@@ -981,7 +1002,7 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
                     : 'Beloved, tomorrow is the Sayuni Main Service at 02:30 AM at Mbagala Kwa Matope. Bring family and friends. God bless you!');
                 }}
               >
-                {isSw ? '🙏 Ibada ya Jumapili' : '🙏 Sunday Service'}
+                {isSw ? 'Ibada ya Jumapili' : 'Sunday Service'}
               </button>
               <button
                 type="button"
@@ -995,7 +1016,7 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
                     : 'Beloved, Friday at 10:00 PM is the night vigil at church. Please attend and bring guests.');
                 }}
               >
-                {isSw ? '🌙 Mkesha' : '🌙 Vigil'}
+                {isSw ? 'Mkesha' : 'Vigil'}
               </button>
               <button
                 type="button"
@@ -1010,7 +1031,7 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
                     : 'Beloved Jumuiya, we meet at home this week for prayer and the Word. Please confirm your attendance.');
                 }}
               >
-                {isSw ? '🏠 Jumuiya' : '🏠 Jumuiya'}
+                {isSw ? 'Jumuiya' : 'Jumuiya'}
               </button>
             </div>
 
@@ -1051,7 +1072,7 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
                       cursor: 'pointer'
                     }}
                   >
-                    📢 {isSw ? 'Kawaida' : 'Normal'}
+                    {isSw ? 'Kawaida' : 'Normal'}
                   </button>
                   <button
                     type="button"
@@ -1067,7 +1088,7 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
                       cursor: 'pointer'
                     }}
                   >
-                    ⚡ {isSw ? 'Dharura' : 'Urgent'}
+                    {isSw ? 'Dharura' : 'Urgent'}
                   </button>
                   <button
                     type="button"
@@ -1083,7 +1104,7 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
                       cursor: 'pointer'
                     }}
                   >
-                    🕊️ {isSw ? 'Msiba / Maombolezo' : 'Bereavement'}
+                    {isSw ? 'Msiba / Maombolezo' : 'Bereavement'}
                   </button>
                 </div>
               </div>
@@ -1192,7 +1213,7 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
               }}>
                 <label style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', fontSize: '0.84rem', fontWeight: 700, color: 'var(--text-headline)', cursor: 'pointer' }}>
                   <input type="checkbox" checked={posterRequest} onChange={e => setPosterRequest(e.target.checked)} disabled={isSubmitting} />
-                  {isSw ? '🎨 Omba Poster ya tukio hili (Super Admin ataiona kwenye Studio ya Poster)' : '🎨 Request a poster for this event (Super Admin will see it in the Poster Studio)'}
+                  {isSw ? 'Omba Poster ya tukio hili (Super Admin ataiona kwenye Studio ya Poster)' : '🎨 Request a poster for this event (Super Admin will see it in the Poster Studio)'}
                 </label>
                 {posterRequest && (
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.7rem', marginTop: '0.8rem' }}>
@@ -1288,6 +1309,8 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
           onClose={() => setActiveReportModal(null)}
         />
       )}
+
+      {confirmDialog}
     </div>
   );
 };

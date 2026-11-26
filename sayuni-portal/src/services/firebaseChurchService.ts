@@ -9,6 +9,7 @@ import {
   addDoc,
   query,
   orderBy,
+  limit,
   onSnapshot,
   serverTimestamp,
   type Unsubscribe
@@ -106,6 +107,23 @@ export interface ChurchSermon {
   createdAt?: any;
 }
 
+/**
+ * A prayer request submitted from the member app (`prayer_requests`).
+ * Field names come from `ChurchSyncService.syncNewPrayerRequest` in the Flutter
+ * app — they must stay in step.
+ */
+export interface PrayerRequestDoc {
+  id: string;
+  title?: string;
+  senderName?: string;
+  requestText?: string;
+  content?: string;
+  urgency?: string;
+  userId?: string;
+  isAnswered?: boolean;
+  createdAt?: any;
+}
+
 export interface JumuiyaWeeklyReport {
   id?: string;
   jumuiyaName: string;
@@ -191,9 +209,22 @@ export class FirebaseChurchService {
   static async publishSermon(sermon: ChurchSermon): Promise<string> {
     try {
       const uid = this.requireAuth();
+      // Explicit fields only. Spreading the whole object used to leak UI-only
+      // keys (likesCount, takeaways, readTime) into Firestore and made the
+      // rules' field expectations unpredictable.
       const docRef = await addDoc(collection(db, "sermons"), {
-        ...sermon,
+        title: sermon.title.trim().slice(0, 300),
+        preacher: (sermon.preacher || '').slice(0, 200),
+        scripture: sermon.scripture || '',
+        mediaUrl: (sermon.mediaUrl || '').slice(0, 1000),
+        description: sermon.description || '',
+        duration: sermon.duration || '',
+        type: sermon.type,
+        category: sermon.category || 'Mahubiri',
         createdBy: uid,
+        // Firestore rules (isValidSermon) require a mediaUrl/media_url string,
+        // which a text-only sermon has no reason to provide.
+        ...(sermon.mediaUrl ? {} : { mediaType: sermon.type }),
         createdAt: serverTimestamp()
       });
       return docRef.id;
@@ -203,6 +234,16 @@ export class FirebaseChurchService {
     }
   }
 
+  /*
+   * NOTE ON ORDERING FIELDS
+   * `orderBy("createdAt")` silently drops every document that has no
+   * `createdAt` value. `publishSermon` used to write `...sermon` without one,
+   * so each sermon the pastor uploaded was invisible to this subscription,
+   * to the app, and to anyone on another device — while still appearing
+   * locally, which made it look like sync worked. A sermon must now always
+   * carry `createdAt`, and the listener merges on `publishedAt` first for
+   * documents created by other clients (the member app).
+   */
   static subscribeToSermons(onUpdate: (items: ChurchSermon[]) => void): Unsubscribe {
     const q = query(collection(db, "sermons"), orderBy("createdAt", "desc"));
     return onSnapshot(q, (snapshot) => {
@@ -319,6 +360,31 @@ export class FirebaseChurchService {
       onUpdate(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
     }, (error) => {
       console.error("Error listening to visitors registry:", error);
+    });
+  }
+
+  // 2e. PRAYER REQUESTS — submitted from the member app's War Room
+  //
+  // The app writes `prayer_requests` with `requestText` (see
+  // `ChurchSyncService.syncNewPrayerRequest`). The pastor portal used to read
+  // the War Room ONLY from localStorage, which can never contain a prayer sent
+  // from someone else's phone — so the "Live believer prayer requests" panel
+  // showed invented seed data while real requests sat unseen in Firestore.
+  //
+  // Rules: read is limited to the submitting member and to pastors, so this
+  // subscription fails closed for anyone else.
+  static subscribeToPrayerRequests(
+    onUpdate: (items: PrayerRequestDoc[]) => void,
+    onError?: (error: unknown) => void
+  ): Unsubscribe {
+    const q = query(collection(db, "prayer_requests"), orderBy("createdAt", "desc"), limit(50));
+    return onSnapshot(q, (snapshot) => {
+      onUpdate(snapshot.docs.map(d => ({ id: d.id, ...d.data() } as PrayerRequestDoc)));
+    }, (error) => {
+      // Rules deny this collection to anyone who is not a pastor, so a denial
+      // is a normal outcome, not a crash. Let the caller say so honestly.
+      console.error("Error listening to prayer requests:", error);
+      onError?.(error);
     });
   }
 

@@ -113,6 +113,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({
                 setActiveTab(item.id);
               }}
               className={`mobile-dock-btn ${isActive ? 'active' : ''}`}
+              aria-current={isActive ? 'page' : undefined}
               title={item.tooltip}
               aria-label={item.tooltip}
             >

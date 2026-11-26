@@ -14,11 +14,14 @@ import {
   Lock
 } from 'lucide-react';
 import type { Language, UserRole, ChurchMember } from '../types';
-import { INITIAL_MEMBERS, INITIAL_JUMUIYA_GROUPS } from '../data/mockData';
+import { INITIAL_JUMUIYA_GROUPS } from '../data/mockData';
 import { createId } from '../utils/id';
-import { loadStored, saveStored, STORAGE_KEYS } from '../utils/storage';
+import { useMembers } from '../services/memberStore';
 import { AuthService, type PortalUser } from '../services/authService';
-import { provisionLeaderRole, describeProvisionError } from '../services/churchRoleService';
+import { provisionLeaderRole, revokeLeaderRole, describeProvisionError } from '../services/churchRoleService';
+import { Modal } from './ui/Modal';
+import { useToast } from './ui/toastStore';
+import { EmptyState } from './ui/States';
 
 interface MembersModuleProps {
   language: Language;
@@ -114,8 +117,9 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
   currentUser
 }) => {
   const isSw = language === 'sw';
+  const { push: toast } = useToast();
   const [activeSubTab, setActiveSubTab] = useState<'members' | 'leaders'>('members');
-  const [members, setMembers] = useState<ChurchMember[]>(() => loadStored(STORAGE_KEYS.members, INITIAL_MEMBERS));
+  const [members, setMembers] = useMembers();
   const [leaders, setLeaders] = useState<LeaderAccount[]>(() => {
     try {
       const saved = localStorage.getItem('zion_portal_leader_accounts');
@@ -129,7 +133,6 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
   const [selectedJumuiya, setSelectedJumuiya] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
   const [showAddLeaderModal, setShowAddLeaderModal] = useState(false);
-  const [accountActionMessage, setAccountActionMessage] = useState<string | null>(null);
 
   // New leader form state
   const [leaderName, setLeaderName] = useState('');
@@ -148,23 +151,45 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
   const [baptized, setBaptized] = useState(true);
 
   useEffect(() => {
-    saveStored(STORAGE_KEYS.members, members);
-  }, [members]);
-
-  useEffect(() => {
     try {
       localStorage.setItem('zion_portal_leader_accounts', JSON.stringify(leaders));
     } catch {}
   }, [leaders]);
 
+  /** Accepts +255…, 0755…, 255… and 7xxxxxxxx; returns a canonical 07… form. */
+  const normaliseTzPhone = (raw: string): string | null => {
+    const digits = raw.replace(/[^0-9]/g, '');
+    if (!digits) return null;
+    let local = digits;
+    if (local.startsWith('255')) local = local.slice(3);
+    if (local.startsWith('0')) local = local.slice(1);
+    // Tanzanian mobile numbers are 9 digits after the leading 0.
+    return local.length === 9 ? local : null;
+  };
+
   const handleAddMember = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name) return;
+    if (!name.trim()) return;
+
+    // A phone number is how the church actually reaches a member (SMS,
+    // WhatsApp, care follow-up). Accepting a placeholder silently poisons the
+    // register, so validate instead of defaulting to "+255 700 000 000".
+    const localPhone = normaliseTzPhone(phone);
+    if (phone.trim() && !localPhone) {
+      toast({
+        tone: 'error',
+        title: isSw ? 'Namba ya simu si sahihi' : 'Invalid phone number',
+        message: isSw
+          ? 'Tumia namba ya Tanzania, mfano 0754 112 233 au +255 754 112 233.'
+          : 'Use a Tanzanian number, e.g. 0754 112 233 or +255 754 112 233.',
+      });
+      return;
+    }
 
     const newM: ChurchMember = {
       id: createId('mem'),
-      fullName: name,
-      phone: phone || '+255 700 000 000',
+      fullName: name.trim(),
+      phone: localPhone ? `+255 ${localPhone.slice(0, 3)} ${localPhone.slice(3, 6)} ${localPhone.slice(6)}` : (isSw ? 'Haijatolewa' : 'Not provided'),
       gender: gender,
       ageGroup: ageGroup,
       jumuiyaId: jumId,
@@ -173,11 +198,16 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
       joinedDate: new Date().toISOString().split('T')[0]
     };
 
-    setMembers(prev => [newM, ...prev]);
+    setMembers([newM, ...members]);
     setName('');
     setPhone('');
     setRoleTitle('');
     setShowAddModal(false);
+    toast({
+      tone: 'success',
+      title: isSw ? 'Muumini amesajiliwa' : 'Member registered',
+      message: isSw ? `${newM.fullName} ameongezwa kwenye daftari la kanisa.` : `${newM.fullName} was added to the church register.`,
+    });
   };
 
   const handleAddLeader = async (e: React.FormEvent) => {
@@ -217,9 +247,10 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
     // Firebase custom claim (server-side) so this person can sign in with the
     // role on any device. Demo sessions are explicitly excluded.
     const canProvision = AuthService.canGrantRoles(currentUser) && !currentUser?.isDemo;
+    let provisioned = false;
     let provisionNote = isSw
-      ? ' (Kumbuka: ingia kwa akaunti halisi ya Super Admin ili kugawa ruhusa za Firebase.)'
-      : ' (Sign in as a real Super Admin to grant Firebase permissions.)';
+      ? ' Ingia kwa akaunti halisi ya Super Admin ili kugawa ruhusa za Firebase.'
+      : ' Sign in as a real Super Admin to grant Firebase permissions.';
     if (canProvision) {
       try {
         await provisionLeaderRole({
@@ -228,13 +259,14 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
           branch: newLeader.branch,
           reason: `Daftari la Waumini: ${newLeader.name}`,
         });
+        provisioned = true;
         provisionNote = isSw
-          ? ' ✓ Ruhusa halisi ya Firebase imewekwa — anaweza kuingia sasa kwenye portal na app.'
-          : ' ✓ Real Firebase role granted — they can now sign in on the portal and app.';
+          ? ' Ruhusa halisi ya Firebase imewekwa — anaweza kuingia sasa kwenye portal na app.'
+          : ' Real Firebase role granted — they can now sign in on the portal and app.';
       } catch (err) {
         provisionNote = isSw
-          ? ` ⚠️ Jina limehifadhiwa, lakini ruhusa ya Firebase haijatolewa: ${describeProvisionError(err)}`
-          : ` ⚠️ Name saved, but Firebase role was not granted: ${describeProvisionError(err)}`;
+          ? ` Jina limehifadhiwa, lakini ruhusa ya Firebase haijatolewa: ${describeProvisionError(err)}`
+          : ` Name saved, but the Firebase role was not granted: ${describeProvisionError(err)}`;
       }
     }
 
@@ -242,25 +274,97 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
     setLeaderEmail('');
     setLeaderPhone('');
     setShowAddLeaderModal(false);
-    setAccountActionMessage(
-      (isSw ? `✓ Akaunti ya ${newLeader.name} imeundwa kwa wadhifa wa ${newLeader.roleTitleSw}` : `✓ Account created for ${newLeader.name}`) + provisionNote
-    );
-    setTimeout(() => setAccountActionMessage(null), 7000);
+
+    toast({
+      tone: provisioned ? 'success' : 'warning',
+      title: isSw ? `Akaunti ya ${newLeader.name}` : `${newLeader.name}'s account`,
+      message: (isSw
+        ? `Imeundwa kwa wadhifa wa ${newLeader.roleTitleSw}.`
+        : `Created with the ${newLeader.roleTitleSw} role.`) + provisionNote,
+      durationMs: provisioned ? 5000 : 11000,
+    });
   };
 
-  const handleToggleLeaderStatus = (id: string) => {
-    setLeaders(prev => prev.map(lead => {
-      if (lead.id === id) {
-        const nextStatus = lead.status === 'active' ? 'suspended' : 'active';
-        return { ...lead, status: nextStatus };
+  const [pendingLeaderId, setPendingLeaderId] = useState<string | null>(null);
+
+  const handleToggleLeaderStatus = async (lead: LeaderAccount) => {
+    const suspending = lead.status === 'active';
+
+    setLeaders(prev => prev.map(item =>
+      item.id === lead.id ? { ...item, status: suspending ? 'suspended' : 'active' } : item
+    ));
+
+    const canProvision = AuthService.canGrantRoles(currentUser) && !currentUser?.isDemo;
+
+    // Suspension only means something if the cloud claim goes away too.
+    // Re-activation restores the role from the registry entry.
+    if (!canProvision) {
+      toast({
+        tone: 'warning',
+        title: isSw ? 'Hali imebadilika (kifaa hiki pekee)' : 'Status changed (this device only)',
+        message: isSw
+          ? 'Ili kuzuia au kurudisha ufikiaji wa Firebase, ingia kwa akaunti halisi ya Super Admin.'
+          : 'Sign in with a real Super Admin account to suspend or restore Firebase access.',
+      });
+      return;
+    }
+
+    setPendingLeaderId(lead.id);
+    try {
+      if (suspending) {
+        await revokeLeaderRole({
+          email: lead.email,
+          reason: `Imesitishwa: ${lead.name} (Daftari la Waumini)`,
+        });
+        toast({
+          tone: 'success',
+          title: isSw ? `${lead.name} amesitishwa` : `${lead.name} suspended`,
+          message: isSw
+            ? 'Wadhifa wake kwenye Firebase umeondolewa. Hatafungua portal tena.'
+            : 'Their Firebase role was revoked. They can no longer open the portal.',
+        });
+      } else {
+        await provisionLeaderRole({
+          email: lead.email,
+          role: lead.role,
+          branch: lead.branch,
+          reason: `Amewezeshwa tena: ${lead.name} (Daftari la Waumini)`,
+        });
+        toast({
+          tone: 'success',
+          title: isSw ? `${lead.name} amewezeshwa` : `${lead.name} reactivated`,
+          message: isSw
+            ? 'Wadhifa wake umerudishwa kwenye Firebase.'
+            : 'Their Firebase role has been restored.',
+        });
       }
-      return lead;
-    }));
+    } catch (err) {
+      // Roll the optimistic toggle back — the cloud never changed.
+      setLeaders(prev => prev.map(item =>
+        item.id === lead.id ? { ...item, status: lead.status } : item
+      ));
+      toast({
+        tone: 'error',
+        title: isSw ? 'Mabadiliko hayakufanikiwa' : 'Change failed',
+        message: describeProvisionError(err),
+        durationMs: 10000,
+      });
+    } finally {
+      setPendingLeaderId(null);
+    }
   };
 
   const handleResetPassword = (lead: LeaderAccount) => {
-    setAccountActionMessage(isSw ? `✓ Kiungo cha kuweka upya nenosiri kimetumwa kwa ${lead.email}` : `✓ Password reset link sent to ${lead.email}`);
-    setTimeout(() => setAccountActionMessage(null), 4000);
+    // Honest copy: the portal cannot send a reset mail yet (that needs the
+    // Firebase Admin SDK behind a callable), so we do not claim it did.
+    toast({
+      tone: 'info',
+      title: isSw ? 'Weka upya nenosiri' : 'Password reset',
+      message: isSw
+        ? `Tuma kiungo cha Firebase kwa ${lead.email}. Kupanga upya nenosiri moja kwa moja kutoka portal bado hakujawekwa.`
+        : `Send a Firebase reset link to ${lead.email}. In-portal password reset is not wired yet.`,
+      durationMs: 7000,
+    });
   };
 
   const filteredMembers = members.filter((m) => {
@@ -352,20 +456,6 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
           <span>{isSw ? `Akaunti za Viongozi (${leaders.length})` : `Leader Accounts (${leaders.length})`}</span>
         </button>
       </div>
-
-      {accountActionMessage && (
-        <div style={{
-          padding: '0.8rem 1.1rem',
-          borderRadius: '8px',
-          background: 'rgba(16, 185, 129, 0.12)',
-          border: '1px solid #10b981',
-          color: '#047857',
-          fontWeight: 700,
-          fontSize: '0.85rem'
-        }}>
-          {accountActionMessage}
-        </div>
-      )}
 
       {activeSubTab === 'members' ? (
         <>
@@ -466,6 +556,27 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
                 </tbody>
               </table>
             </div>
+
+            {filteredMembers.length === 0 && (
+              <EmptyState
+                icon={<Users size={20} />}
+                title={isSw ? 'Hakuna muumini anayelingana' : 'No matching member'}
+                hint={isSw
+                  ? 'Badilisha neno la utafutaji au chagua jumuiya nyingine.'
+                  : 'Try a different search term or choose another home cell.'}
+                action={
+                  (searchTerm || selectedJumuiya !== 'all') ? (
+                    <button
+                      type="button"
+                      className="btn-secondary btn-sm"
+                      onClick={() => { setSearchTerm(''); setSelectedJumuiya('all'); }}
+                    >
+                      {isSw ? 'Ondoa vichujio' : 'Clear filters'}
+                    </button>
+                  ) : undefined
+                }
+              />
+            )}
           </div>
         </>
       ) : (
@@ -565,7 +676,9 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
 
                         {lead.role !== 'super_admin' && (
                           <button
-                            onClick={() => handleToggleLeaderStatus(lead.id)}
+                            onClick={() => void handleToggleLeaderStatus(lead)}
+                            disabled={pendingLeaderId === lead.id}
+                            aria-busy={pendingLeaderId === lead.id}
                             style={{
                               padding: '0.35rem 0.65rem',
                               fontSize: '0.74rem',
@@ -587,234 +700,225 @@ export const MembersModule: React.FC<MembersModuleProps> = ({
               </tbody>
             </table>
           </div>
+
+          {leaders.length === 0 && (
+            <EmptyState
+              icon={<ShieldCheck size={20} />}
+              title={isSw ? 'Hakuna akaunti ya kiongozi' : 'No leader accounts yet'}
+              hint={isSw
+                ? 'Sajili akaunti ya kwanza ya kiongozi ili mtu aweze kuingia kwenye portal.'
+                : 'Register the first leader account so someone can sign in to the portal.'}
+            />
+          )}
         </div>
       )}
       {/* Modal: Add New Leader Account */}
-      {showAddLeaderModal && (
-        <div style={{
-          position: 'fixed',
-          top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 100,
-          padding: '1rem'
-        }}>
-          <div className="church-card" style={{ maxWidth: '520px', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.35rem', color: 'var(--text-headline)' }}>
-              {isSw ? 'Sajili Akaunti Mpya ya Kiongozi (RBAC)' : 'New Leadership Credentials'}
-            </h3>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
-              {isSw ? 'Unda kitambulisho rasmi cha kuingilia mfumo wa viongozi kwa ajili ya kanisa' : 'Grant official portal access credentials'}
-            </p>
-
-            <form onSubmit={handleAddLeader}>
-              <div className="form-group">
-                <label className="form-label">{isSw ? 'Jina Kamili la Kiongozi' : 'Leader Full Name'} *</label>
-                <input 
-                  type="text" 
-                  className="form-input"
-                  placeholder="Mfano: Mchungaji / Shemasi..."
-                  value={leaderName}
-                  onChange={(e) => setLeaderName(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">{isSw ? 'Barua Pepe Rasmi (Email/Login)' : 'Official Email'} *</label>
-                <input 
-                  type="email" 
-                  className="form-input"
-                  placeholder="kiongozi@zionjerusalem.org"
-                  value={leaderEmail}
-                  onChange={(e) => setLeaderEmail(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">{isSw ? 'Namba ya Simu (WhatsApp)' : 'Phone Number'}</label>
-                <input 
-                  type="text" 
-                  className="form-input"
-                  placeholder="+255 7..."
-                  value={leaderPhone}
-                  onChange={(e) => setLeaderPhone(e.target.value)}
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">{isSw ? 'Wadhifa & Ruhusa za Mfumo (Role)' : 'Role & Access Level'}</label>
-                <select 
-                  className="form-select"
-                  value={leaderRole}
-                  onChange={(e) => setLeaderRole(e.target.value as any)}
-                >
-                  <option value="pastor">{isSw ? 'Mchungaji / Askofu (Pastoral Access)' : 'Pastor / Bishop'}</option>
-                  <option value="secretary">{isSw ? 'Katibu wa Kanisa (Full Office & Records)' : 'General Secretary'}</option>
-                  <option value="treasurer">{isSw ? 'Mhazini (Financial Ledger & Tithes)' : 'Treasurer'}</option>
-                  <option value="deacon">{isSw ? 'Mzee wa Kanisa / Shemasi (Deacons & Elders)' : 'Elder / Deacon'}</option>
-                  <option value="usher">{isSw ? 'Mkaribishaji / Usher (Mapokezi ya Wageni)' : 'Usher (Visitor Reception)'}</option>
-                  <option value="jumuiya_leader">{isSw ? 'Kiongozi wa Jumuiya (Home Cell Reports)' : 'Cell Leader'}</option>
-                  <option value="choir_leader">{isSw ? 'Kiongozi wa Muziki na Kwaya' : 'Choir Director'}</option>
-                  <option value="children_teacher">{isSw ? 'Mwalimu wa Watoto / Shule ya Jumapili' : 'Sunday School Teacher'}</option>
-                  <option value="admin">{isSw ? 'Msimamizi wa Mfumo (Admin)' : 'Administrator'}</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">{isSw ? 'Tawi la Kanisa' : 'Church Branch'}</label>
-                <input 
-                  type="text" 
-                  className="form-input"
-                  value={leaderBranch}
-                  onChange={(e) => setLeaderBranch(e.target.value)}
-                />
-              </div>
-
-              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
-                <button type="submit" className="btn-primary" style={{ flex: 1 }}>
-                  {isSw ? 'Unda & Wezesha Akaunti' : 'Create & Enable Account'}
-                </button>
-                <button 
-                  type="button" 
-                  onClick={() => setShowAddLeaderModal(false)}
-                  className="btn-secondary"
-                >
-                  {isSw ? 'Ghairi' : 'Cancel'}
-                </button>
-              </div>
-            </form>
+      <Modal
+        open={showAddLeaderModal}
+        onClose={() => setShowAddLeaderModal(false)}
+        width={540}
+        title={isSw ? 'Sajili Akaunti Mpya ya Kiongozi' : 'New Leader Account'}
+        subtitle={isSw
+          ? 'Unda kitambulisho rasmi cha kuingia mfumo. Mhusika lazima awe amejisajili kwanza kwenye app ili wadhifa utumike kwenye Firebase.'
+          : 'Create official portal access. The person must have signed up in the member app first for the role to apply in Firebase.'}
+      >
+        <form onSubmit={handleAddLeader}>
+          <div className="form-group">
+            <label className="form-label" htmlFor="lead-name">{isSw ? 'Jina Kamili la Kiongozi' : 'Leader Full Name'} *</label>
+            <input
+              id="lead-name"
+              type="text"
+              className="form-input"
+              placeholder="Mfano: Mchungaji / Shemasi..."
+              value={leaderName}
+              onChange={(e) => setLeaderName(e.target.value)}
+              required
+            />
           </div>
-        </div>
-      )}
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="lead-email">{isSw ? 'Barua Pepe Rasmi (Email/Login)' : 'Official Email'} *</label>
+            <input
+              id="lead-email"
+              type="email"
+              className="form-input"
+              placeholder="kiongozi@zionjerusalem.org"
+              value={leaderEmail}
+              onChange={(e) => setLeaderEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="lead-phone">{isSw ? 'Namba ya Simu (WhatsApp)' : 'Phone Number'}</label>
+            <input
+              id="lead-phone"
+              type="text"
+              className="form-input"
+              placeholder="+255 7..."
+              value={leaderPhone}
+              onChange={(e) => setLeaderPhone(e.target.value)}
+            />
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="lead-role">{isSw ? 'Wadhifa & Ruhusa za Mfumo (Role)' : 'Role & Access Level'}</label>
+            <select
+              id="lead-role"
+              className="form-select"
+              value={leaderRole}
+              onChange={(e) => setLeaderRole(e.target.value as UserRole)}
+            >
+              <option value="pastor">{isSw ? 'Mchungaji / Askofu (Pastoral Access)' : 'Pastor / Bishop'}</option>
+              <option value="secretary">{isSw ? 'Katibu wa Kanisa (Full Office & Records)' : 'General Secretary'}</option>
+              <option value="treasurer">{isSw ? 'Mhazini (Financial Ledger & Tithes)' : 'Treasurer'}</option>
+              <option value="deacon">{isSw ? 'Mzee wa Kanisa / Shemasi (Deacons & Elders)' : 'Elder / Deacon'}</option>
+              <option value="usher">{isSw ? 'Mkaribishaji / Usher (Mapokezi ya Wageni)' : 'Usher (Visitor Reception)'}</option>
+              <option value="jumuiya_leader">{isSw ? 'Kiongozi wa Jumuiya (Home Cell Reports)' : 'Cell Leader'}</option>
+              <option value="choir_leader">{isSw ? 'Kiongozi wa Muziki na Kwaya' : 'Choir Director'}</option>
+              <option value="children_teacher">{isSw ? 'Mwalimu wa Watoto / Shule ya Jumapili' : 'Sunday School Teacher'}</option>
+              <option value="admin">{isSw ? 'Msimamizi wa Mfumo (Admin)' : 'Administrator'}</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="lead-branch">{isSw ? 'Tawi la Kanisa' : 'Church Branch'}</label>
+            <input
+              id="lead-branch"
+              type="text"
+              className="form-input"
+              value={leaderBranch}
+              onChange={(e) => setLeaderBranch(e.target.value)}
+            />
+          </div>
+
+          <div className="ui-modal-footer">
+            <button type="submit" className="btn-primary">
+              {isSw ? 'Unda & Wezesha Akaunti' : 'Create & Enable Account'}
+            </button>
+            <button type="button" onClick={() => setShowAddLeaderModal(false)} className="btn-secondary">
+              {isSw ? 'Ghairi' : 'Cancel'}
+            </button>
+          </div>
+        </form>
+      </Modal>
 
       {/* Modal: Add New Member */}
-      {showAddModal && (
-        <div style={{
-          position: 'fixed',
-          top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(0, 0, 0, 0.7)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 100,
-          padding: '1rem'
-        }}>
-          <div className="church-card" style={{ maxWidth: '520px', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.35rem', color: 'var(--text-headline)' }}>
-              {isSw ? 'Sajili Mshirika Mpya wa Sayuni' : 'Register New Member'}
-            </h3>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
-              {isSw ? 'Ingiza taarifa za muumini kwenye kanzidata rasmi ya kanisa' : 'Enter member details into the official church roster'}
-            </p>
-
-            <form onSubmit={handleAddMember}>
-              <div className="form-group">
-                <label className="form-label">{isSw ? 'Jina Kamili' : 'Full Name'}</label>
-                <input 
-                  type="text" 
-                  className="form-input"
-                  placeholder="Mfano: Daudi Emanuel Mwita"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">{isSw ? 'Namba ya Simu' : 'Phone Number'}</label>
-                <input 
-                  type="text" 
-                  className="form-input"
-                  placeholder="Mfano: +255 754 112 233"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-                <div className="form-group">
-                  <label className="form-label">{isSw ? 'Jinsia' : 'Gender'}</label>
-                  <select 
-                    className="form-select"
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value as any)}
-                  >
-                    <option value="Male">{isSw ? 'Mwanaume' : 'Male'}</option>
-                    <option value="Female">{isSw ? 'Mwanamke' : 'Female'}</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">{isSw ? 'Kundi la Umri' : 'Age Group'}</label>
-                  <select 
-                    className="form-select"
-                    value={ageGroup}
-                    onChange={(e) => setAgeGroup(e.target.value as any)}
-                  >
-                    <option value="Adult">{isSw ? 'Mtu Mzima' : 'Adult'}</option>
-                    <option value="Youth">{isSw ? 'Kijana' : 'Youth'}</option>
-                    <option value="Child">{isSw ? 'Mtoto / Sunday School' : 'Child'}</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">{isSw ? 'Jumuiya ya Nyumbani' : 'Home Cell Group'}</label>
-                <select 
-                  className="form-select"
-                  value={jumId}
-                  onChange={(e) => setJumId(e.target.value)}
-                >
-                  {INITIAL_JUMUIYA_GROUPS.map(g => (
-                    <option key={g.id} value={g.id}>{g.name} ({g.location})</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label className="form-label">{isSw ? 'Wadhifa au Idara ya Huduma' : 'Ministry Role'}</label>
-                <input 
-                  type="text" 
-                  className="form-input"
-                  placeholder={isSw ? 'Mfano: Mwimbaji wa Kwaya, Mwalimu, Uamsho' : 'e.g. Choir, Usher, Intercessor'}
-                  value={roleTitle}
-                  onChange={(e) => setRoleTitle(e.target.value)}
-                />
-              </div>
-
-              <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <input 
-                  type="checkbox" 
-                  id="baptized-check"
-                  checked={baptized}
-                  onChange={(e) => setBaptized(e.target.checked)}
-                  style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-                />
-                <label htmlFor="baptized-check" style={{ cursor: 'pointer', fontWeight: 600, fontSize: '0.88rem' }}>
-                  {isSw ? 'Ameshapokea Ubatizo wa Maji Tele' : 'Has received water baptism'}
-                </label>
-              </div>
-
-              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.5rem' }}>
-                <button type="submit" className="btn-primary" style={{ flex: 1 }}>
-                  {isSw ? 'Kamilisha Usajili' : 'Register Member'}
-                </button>
-                <button 
-                  type="button" 
-                  onClick={() => setShowAddModal(false)}
-                  className="btn-secondary"
-                >
-                  {isSw ? 'Ghairi' : 'Cancel'}
-                </button>
-              </div>
-            </form>
+      <Modal
+        open={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        width={520}
+        title={isSw ? 'Sajili Mshirika Mpya wa Sayuni' : 'Register New Member'}
+        subtitle={isSw
+          ? 'Ingiza taarifa za muumini kwenye kanzidata rasmi ya kanisa.'
+          : 'Enter member details into the official church roster.'}
+      >
+        <form onSubmit={handleAddMember}>
+          <div className="form-group">
+            <label className="form-label" htmlFor="mem-name">{isSw ? 'Jina Kamili' : 'Full Name'} *</label>
+            <input
+              id="mem-name"
+              type="text"
+              className="form-input"
+              placeholder="Mfano: Daudi Emanuel Mwita"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
           </div>
-        </div>
-      )}
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="mem-phone">{isSw ? 'Namba ya Simu' : 'Phone Number'}</label>
+            <input
+              id="mem-phone"
+              type="tel"
+              inputMode="tel"
+              className="form-input"
+              placeholder="Mfano: 0754 112 233"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+            <div className="form-group">
+              <label className="form-label" htmlFor="mem-gender">{isSw ? 'Jinsia' : 'Gender'}</label>
+              <select
+                id="mem-gender"
+                className="form-select"
+                value={gender}
+                onChange={(e) => setGender(e.target.value as 'Male' | 'Female')}
+              >
+                <option value="Male">{isSw ? 'Mwanaume' : 'Male'}</option>
+                <option value="Female">{isSw ? 'Mwanamke' : 'Female'}</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label" htmlFor="mem-age">{isSw ? 'Kundi la Umri' : 'Age Group'}</label>
+              <select
+                id="mem-age"
+                className="form-select"
+                value={ageGroup}
+                onChange={(e) => setAgeGroup(e.target.value as 'Adult' | 'Youth' | 'Child')}
+              >
+                <option value="Adult">{isSw ? 'Mtu Mzima' : 'Adult'}</option>
+                <option value="Youth">{isSw ? 'Kijana' : 'Youth'}</option>
+                <option value="Child">{isSw ? 'Mtoto / Sunday School' : 'Child'}</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="mem-jumuiya">{isSw ? 'Jumuiya ya Nyumbani' : 'Home Cell Group'}</label>
+            <select
+              id="mem-jumuiya"
+              className="form-select"
+              value={jumId}
+              onChange={(e) => setJumId(e.target.value)}
+            >
+              {INITIAL_JUMUIYA_GROUPS.map(g => (
+                <option key={g.id} value={g.id}>{g.name} ({g.location})</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label className="form-label" htmlFor="mem-role">{isSw ? 'Wadhifa au Idara ya Huduma' : 'Ministry Role'}</label>
+            <input
+              id="mem-role"
+              type="text"
+              className="form-input"
+              placeholder={isSw ? 'Mfano: Mwimbaji wa Kwaya, Mwalimu, Uamsho' : 'e.g. Choir, Usher, Intercessor'}
+              value={roleTitle}
+              onChange={(e) => setRoleTitle(e.target.value)}
+            />
+          </div>
+
+          <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <input
+              type="checkbox"
+              id="baptized-check"
+              checked={baptized}
+              onChange={(e) => setBaptized(e.target.checked)}
+              style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+            />
+            <label htmlFor="baptized-check" style={{ cursor: 'pointer', fontWeight: 600, fontSize: '0.88rem' }}>
+              {isSw ? 'Ameshapokea Ubatizo wa Maji Tele' : 'Has received water baptism'}
+            </label>
+          </div>
+
+          <div className="ui-modal-footer">
+            <button type="submit" className="btn-primary">
+              {isSw ? 'Kamilisha Usajili' : 'Register Member'}
+            </button>
+            <button type="button" onClick={() => setShowAddModal(false)} className="btn-secondary">
+              {isSw ? 'Ghairi' : 'Cancel'}
+            </button>
+          </div>
+        </form>
+      </Modal>
+
     </div>
   );
 };

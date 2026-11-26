@@ -263,7 +263,21 @@ export const LeadershipAnalyticsView: React.FC<LeadershipAnalyticsViewProps> = (
               : 'Aggregated spiritual engagement metrics that empower church leadership without infringing member privacy under Tanzania Personal Data Protection Act.'}
           </p>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#CBD5E1', fontSize: '0.8rem', fontWeight: 600 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#CBD5E1', fontSize: '0.8rem', fontWeight: 600, flexWrap: 'wrap' }}>
+            <span
+              style={{
+                backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                border: '1px solid rgba(245, 158, 11, 0.45)',
+                color: '#FCD34D',
+                padding: '0.15rem 0.6rem',
+                borderRadius: '999px',
+                fontSize: '0.7rem',
+                fontWeight: 800,
+                letterSpacing: '0.4px'
+              }}
+            >
+              {isSw ? 'DATA YA SAMPULI + KIFAA HIKI' : 'SAMPLE DATA + THIS DEVICE'}
+            </span>
             <Calendar size={14} style={{ color: '#E5B238' }} />
             <span>
               {lastRecordedLabel
@@ -339,7 +353,13 @@ export const LeadershipAnalyticsView: React.FC<LeadershipAnalyticsViewProps> = (
             {metrics.scriptureReadsCount > 0 ? (
               <>
                 <TrendingUp size={14} style={{ flexShrink: 0, marginTop: '2px' }} />
-                <span>+18% {isSw ? 'mwezi huu (Zaburi 23 inaongoza)' : 'this month (Psalm 23 leading)'}</span>
+                <span>
+                  {metrics.popularScriptures[0]
+                    ? (isSw
+                        ? `${metrics.popularScriptures[0].reference} inaongoza`
+                        : `${metrics.popularScriptures[0].reference} leads`)
+                    : (isSw ? 'Bado hakuna mwenendo' : 'No trend yet')}
+                </span>
               </>
             ) : (
               <span>{isSw ? 'Hakuna usomaji uliorekodiwa bado' : 'No reads recorded yet'}</span>
@@ -382,7 +402,11 @@ export const LeadershipAnalyticsView: React.FC<LeadershipAnalyticsViewProps> = (
             {metrics.sermonsListenedCount > 0 ? (
               <>
                 <TrendingUp size={14} style={{ flexShrink: 0, marginTop: '2px' }} />
-                <span>+24% {isSw ? 'mafundisho ya Askofu Mercy James' : 'Bishop Mercy James messages'}</span>
+                <span>
+                  {metrics.popularSermons[0]
+                    ? metrics.popularSermons[0].title
+                    : (isSw ? 'Bado hakuna mahubiri yaliyofunguliwa' : 'No sermons opened yet')}
+                </span>
               </>
             ) : (
               <span>{isSw ? 'Hakuna mahubiri yaliyosikilizwa bado' : 'No sermons played yet'}</span>
@@ -702,7 +726,8 @@ export const LeadershipAnalyticsView: React.FC<LeadershipAnalyticsViewProps> = (
               {isSw ? 'Kilele cha Wiki: Jumapili ya Ibada Kuu' : 'Weekly Peak: Sunday Worship Service'}
             </span>
             <span style={{ fontWeight: 800, color: '#D97706' }}>
-              ⚡ 1,240 {isSw ? 'vipindi' : 'sessions'}
+              {(metrics.dailyActiveEngagement ?? []).reduce((peak, entry) => Math.max(peak, entry.anonymousSessions), 0).toLocaleString()}{' '}
+              {isSw ? 'vipindi' : 'sessions'}
             </span>
           </div>
         </div>

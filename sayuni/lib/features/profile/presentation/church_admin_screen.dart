@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/church_profile.dart';
+import '../../../core/constants/core_links.dart';
 import '../../../core/services/church_auth_service.dart';
 import '../../../core/services/church_customization_service.dart';
 import '../../../core/services/church_sync_service.dart';
@@ -443,6 +445,8 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
               // Trust-source banner: says out loud whether the authority on this
               // device came from Firebase claims or only from a local cache.
               _buildTrustSourceBanner(),
+              const SizedBox(height: 10),
+              _buildPortalLinkCard(),
               const SizedBox(height: 10),
               // ================= SECTION 1: LEADERSHIP PHOTO & INFO =================
               _buildSectionTitle('1. PICHA NA TAARIFA ZA UONGOZI WA KANISA'),
@@ -1530,6 +1534,108 @@ class _ChurchAdminScreenState extends State<ChurchAdminScreen> {
   /// Firestore only honours `request.auth.token.role`, so a role cached on this
   /// device is a convenience — never access. This widget states that in plain
   /// Swahili and updates itself the moment the cloud claims land.
+  /// The admin portal link, made explicit and testable.
+  ///
+  /// Leaders kept asking "where do I open the portal?" — the answer used to be
+  /// a button buried deep in the profile tab, with the URL typed inline. This
+  /// card states the exact host that this build of the APK will open, and
+  /// copies it, so a mismatch between the APK and the deployed portal is
+  /// visible instead of mysterious.
+  Widget _buildPortalLinkCard() {
+    return AppCard(
+      backgroundColor: AppColors.surface,
+      borderColor: AppColors.border,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.open_in_new_rounded,
+                  color: AppColors.primary, size: 18),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Portal ya Viongozi (Admin Portal)',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 14,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Tovuti kamili ya uongozi: matangazo, mahubiri, ripoti, vyeti na '
+            'usimamizi wa waumini. Data hii hii ndiyo inayoshabihiana na app '
+            'kupitia Cloud Firestore.',
+            style: TextStyle(fontSize: 12, height: 1.35, color: AppColors.textSecondary),
+          ),
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceLow,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.link_rounded,
+                    size: 15, color: AppColors.textSecondary),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    CoreLinks.portalHost,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: 'monospace',
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () async {
+                AppHaptics.mediumImpact();
+                final uri = Uri.parse(CoreLinks.portalHome);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                } else if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Imeshindikana kufungua ${CoreLinks.portalHost}'),
+                      backgroundColor: AppColors.error,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+              },
+              icon: const Icon(Icons.launch_rounded, size: 16),
+              label: const Text('Fungua Portal'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildTrustSourceBanner() {
     return AnimatedBuilder(
       animation: ChurchAuthService(),

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
+  X,
   BookOpen, 
   Video, 
   Music, 
@@ -21,10 +22,13 @@ import {
 import type { Language, SermonItem, PastoralPoster, JumuiyaReport } from '../types';
 import { CHURCH_PROFILE, INITIAL_POSTERS } from '../data/mockData';
 import { churchSync, type WarRoomPrayerRequest } from '../services/churchSyncService';
+import { auth, FirebaseChurchService, type PrayerRequestDoc } from '../services/firebaseChurchService';
 import { PrivacyAnalyticsService } from '../services/privacyAnalyticsService';
 import { createId } from '../utils/id';
 import { loadStored, saveStored, STORAGE_KEYS } from '../utils/storage';
 import leadershipImg from '../assets/pastoral_leadership.jpg';
+import { useToast } from './ui/toastStore';
+import { describeFirebaseError } from '../services/firestoreErrors';
 
 interface PastorsPortalProps {
   language: Language;
@@ -36,6 +40,8 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
   recentReports
 }) => {
   const isSw = language === 'sw';
+  const { push: toast } = useToast();
+  const [isPublishingSermon, setIsPublishingSermon] = useState(false);
   const [activeSubTab, setActiveSubTab] = useState<'sermons' | 'posters' | 'prayers'>('sermons');
   
   // Sermons state synced with mobile app
@@ -70,7 +76,7 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
     saveStored(STORAGE_KEYS.pastoralPosters, posters);
   }, [posters]);
 
-  // Synchronize with mobile app updates in real-time
+  // Synchronize with mobile app updates in real-time (same-browser bus)
   useEffect(() => {
     const unsubscribe = churchSync.subscribe((msg) => {
       if (msg.type === 'SERMON_ADDED' || msg.type === 'SERMONS_UPDATED') {
@@ -82,6 +88,46 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
     });
     return unsubscribe;
   }, []);
+
+  // Real prayer requests submitted from members' phones.
+  //
+  // The panel used to be fed only by `churchSync.getPrayers()` (localStorage),
+  // so it could never show a request that arrived from another device. These
+  // are the authoritative Firestore records; they are merged with the local
+  // cache so an offline demo still renders, but the cloud rows win on id.
+  const [cloudPrayers, setCloudPrayers] = useState<PrayerRequestDoc[]>([]);
+  const [cloudPrayerError, setCloudPrayerError] = useState(false);
+  useEffect(() => {
+    // No Firebase session (demo mode) means no cloud reads are possible; the
+    // panel then shows only the local cache and says nothing about the cloud.
+    if (!auth.currentUser) return;
+    return FirebaseChurchService.subscribeToPrayerRequests(
+      (items) => {
+        setCloudPrayers(items);
+        setCloudPrayerError(false);
+      },
+      () => setCloudPrayerError(true)
+    );
+  }, []);
+
+  const prayerRows: WarRoomPrayerRequest[] = React.useMemo(() => {
+    const fromCloud: WarRoomPrayerRequest[] = cloudPrayers.map((p) => ({
+      id: p.id,
+      title: p.title || (p.requestText ? p.requestText.slice(0, 60) : 'Ombi la Maombi'),
+      author: p.senderName || 'Muumini',
+      urgency: (p.urgency === 'Critical' || p.urgency === 'High'
+        ? p.urgency
+        : 'Normal') as WarRoomPrayerRequest['urgency'],
+      description: p.requestText || p.content || '',
+      date: p.createdAt?.toDate
+        ? p.createdAt.toDate().toLocaleDateString(language === 'sw' ? 'sw-TZ' : 'en-US')
+        : 'Hivi karibuni',
+      intercessors: 0,
+      pastorInterceded: p.isAnswered === true,
+    }));
+    const seen = new Set(fromCloud.map((p) => p.id));
+    return [...fromCloud, ...warRoomPrayers.filter((p) => !seen.has(p.id))];
+  }, [cloudPrayers, warRoomPrayers, language]);
 
   // Prayer needs from Jumuiya reports
   const prayerNeeds = recentReports.filter(r => r.sickOrWelfareNeeds || r.prayerRequests);
@@ -120,7 +166,7 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
     setShowSermonModal(true);
   };
 
-  const handleCreateSermon = (e: React.FormEvent) => {
+  const handleCreateSermon = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!sermonTitle || !scripture) return;
 
@@ -143,16 +189,39 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
       imageUrl: editingSermon?.imageUrl
     };
 
-    // Save to sync bridge so mobile and portal update immediately
-    churchSync.addSermon(sermonToSave);
-    const updated = churchSync.getSermons();
-    setSermons(updated);
-    if (readingArticle && readingArticle.id === sermonToSave.id) {
-      setReadingArticle(sermonToSave);
+    // Save locally first so the portal and the member app on this device update
+    // immediately — then tell the pastor the truth about the cloud copy.
+    setIsPublishingSermon(true);
+    try {
+      await churchSync.addSermon(sermonToSave);
+      setSermons(churchSync.getSermons());
+      if (readingArticle && readingArticle.id === sermonToSave.id) {
+        setReadingArticle(sermonToSave);
+      }
+      setShowSermonModal(false);
+      setEditingSermon(null);
+      toast({
+        tone: 'success',
+        title: isSw ? 'Mahubiri yamehifadhiwa' : 'Sermon saved',
+        message: isSw
+          ? 'Yamehifadhiwa kwenye kifaa hiki na kwenye Cloud Firestore — yataonekana kwenye simu za waumini.'
+          : 'Saved on this device and in Cloud Firestore — it will appear in the member app.',
+      });
+    } catch (err) {
+      setSermons(churchSync.getSermons());
+      // Keep the form open with the pastor's text: closing it here would lose
+      // a sermon they may have spent an hour writing.
+      toast({
+        tone: 'error',
+        title: isSw ? 'Mahubiri hayajafika wingu' : 'Sermon did not reach the cloud',
+        message: (isSw
+          ? 'Yamehifadhiwa kwenye kifaa hiki PEKEE. '
+          : 'Saved on THIS DEVICE ONLY. ') + describeFirebaseError(err, isSw),
+        durationMs: 14000,
+      });
+    } finally {
+      setIsPublishingSermon(false);
     }
-
-    setShowSermonModal(false);
-    setEditingSermon(null);
   };
 
   const renderArticleMarkdown = (content: string) => {
@@ -567,12 +636,19 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                 </span>
               </div>
               <span className="badge badge-gold" style={{ fontSize: '0.72rem' }}>
-                {warRoomPrayers.length} {isSw ? 'Maombi Yapo Hewani' : 'Active Prayers'}
+                {prayerRows.length} {isSw ? 'Maombi Yapo Hewani' : 'Active Prayers'}
               </span>
             </div>
 
+            {cloudPrayerError && (
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', margin: '0 0 0.6rem' }}>
+                {isSw
+                  ? 'Maombi ya wingu hayapatikani kwa sasa — unaona yaliyohifadhiwa kwenye kifaa hiki.'
+                  : 'Cloud prayers are unavailable right now — showing what is cached on this device.'}
+              </p>
+            )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-              {warRoomPrayers.map((prayer) => {
+              {prayerRows.map((prayer) => {
                 const isCritical = prayer.urgency === 'Critical';
                 const isHigh = prayer.urgency === 'High';
                 const pastorInterceded = prayer.pastorInterceded;
@@ -622,7 +698,7 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                         <span>Kutoka: <strong style={{ color: 'var(--text-headline)' }}>{prayer.author}</strong></span>
                         <span>•</span>
-                        <span>🛡️ {prayer.intercessors} {isSw ? 'Waombezi Wamesimama' : 'Intercessors'}</span>
+                        <span>{prayer.intercessors} {isSw ? 'Waombezi Wamesimama' : 'Intercessors'}</span>
                       </div>
 
                       <button
@@ -631,7 +707,7 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                         style={{ padding: '0.35rem 0.9rem', fontSize: '0.78rem' }}
                       >
                         <CheckCircle2 size={14} style={{ color: pastorInterceded ? '#10b981' : undefined }} />
-                        <span>{pastorInterceded ? (isSw ? '✓ Mchungaji Ameombea' : '✓ Prayed by Pastor') : (isSw ? 'Simama Kwenye Pengo (Ombea)' : 'Stand in the Gap')}</span>
+                        <span>{pastorInterceded ? (isSw ? 'Mchungaji Ameombea' : '✓ Prayed by Pastor') : (isSw ? 'Simama Kwenye Pengo (Ombea)' : 'Stand in the Gap')}</span>
                       </button>
                     </div>
                   </div>
@@ -892,10 +968,12 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                 >
                   {isSw ? 'Ghairi' : 'Cancel'}
                 </button>
-                <button type="submit" className="btn-primary">
+                <button type="submit" className="btn-primary" disabled={isPublishingSermon} aria-busy={isPublishingSermon}>
                   <CheckCircle2 size={16} />
                   <span>
-                    {editingSermon 
+                    {isPublishingSermon
+                      ? (isSw ? 'Inatuma wingu…' : 'Publishing…')
+                      : editingSermon
                       ? (isSw ? 'Hifadhi Mabadiliko' : 'Save Changes')
                       : (isSw ? 'Hifadhi & Chapisha Somo' : 'Save & Publish')}
                   </span>
@@ -1040,11 +1118,13 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                   <Edit3 size={14} />
                   <span>{isSw ? 'Hariri Somo Hili' : 'Edit Article'}</span>
                 </button>
-                <button 
+                <button
                   onClick={() => setReadingArticle(null)}
-                  style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '1.2rem', padding: '0.25rem' }}
+                  className="ui-modal-close"
+                  aria-label={isSw ? 'Funga makala' : 'Close article'}
+                  title={isSw ? 'Funga makala' : 'Close article'}
                 >
-                  ✕
+                  <X size={16} />
                 </button>
               </div>
             </div>

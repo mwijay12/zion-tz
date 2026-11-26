@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AlertCircle, Check, Copy, KeyRound, Lock, LogIn, Mail } from 'lucide-react';
+import { AlertCircle, Check, Copy, KeyRound, Lock, LogIn, Mail, ShieldCheck, Church, ScrollText, X } from 'lucide-react';
 import {
   AuthService,
   DEMO_CREDENTIALS,
@@ -274,7 +274,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer'
                 }}
               >
-                {isSw ? '📝 Jaza fomu' : '📝 Fill sign-in form'}
+                <KeyRound size={13} />
+                {isSw ? 'Jaza fomu' : 'Fill sign-in form'}
               </button>
               <button
                 type="button"
@@ -314,23 +315,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 fontSize: '0.75rem', fontWeight: 700
               }}
             >
-              <option value="super_admin">👑 Super Admin</option>
-              <option value="pastor">✝️ Mchungaji / Askofu</option>
-              <option value="secretary">📜 Katibu Mkuu</option>
-              <option value="deacon">🕊️ Mzee / Shemasi</option>
-              <option value="usher">🙌 Mkaribishaji (Usher)</option>
-              <option value="treasurer">💰 Mehani</option>
-              <option value="choir_leader">🎵 Kiongozi wa Kwaya</option>
-              <option value="jumuiya_leader">🏠 Kiongozi wa Jumuiya</option>
-              <option value="children_teacher">🧒 Mwalimu wa Watoto</option>
+              <option value="super_admin">{isSw ? 'Super Admin' : 'Super Admin'}</option>
+              <option value="pastor">{isSw ? 'Mchungaji / Askofu' : 'Pastor / Bishop'}</option>
+              <option value="secretary">{isSw ? 'Katibu Mkuu' : 'General Secretary'}</option>
+              <option value="deacon">{isSw ? 'Mzee / Shemasi' : 'Elder / Deacon'}</option>
+              <option value="usher">{isSw ? 'Mkaribishaji (Usher)' : 'Usher'}</option>
+              <option value="treasurer">{isSw ? 'Mhazini' : 'Treasurer'}</option>
+              <option value="choir_leader">{isSw ? 'Kiongozi wa Kwaya' : 'Choir Director'}</option>
+              <option value="jumuiya_leader">{isSw ? 'Kiongozi wa Jumuiya' : 'Cell Leader'}</option>
+              <option value="children_teacher">{isSw ? 'Mwalimu wa Watoto' : 'Sunday School Teacher'}</option>
             </select>
           </label>
 
           <div style={{ display: 'flex', gap: '0.45rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '0.7rem' }}>
             {([
-              { role: 'super_admin', label: '👑 Super Admin', title: 'Super Admin na Mamlaka Kamili' },
-              { role: 'pastor', label: '✝️ Askofu Mercy', title: 'Mchungaji na Askofu Mercy James' },
-              { role: 'secretary', label: '📜 Katibu Mkuu', title: 'Katibu Mkuu wa Kanisa' },
+              { role: 'super_admin', label: isSw ? 'Super Admin' : 'Super Admin', title: 'Super Admin na Mamlaka Kamili', icon: ShieldCheck },
+              { role: 'pastor', label: isSw ? 'Askofu Mercy' : 'Bishop Mercy', title: 'Mchungaji na Askofu Mercy James', icon: Church },
+              { role: 'secretary', label: isSw ? 'Katibu Mkuu' : 'Secretary', title: 'Katibu Mkuu wa Kanisa', icon: ScrollText },
             ] as const).map(item => (
               <button
                 key={item.role}
@@ -341,12 +342,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   onLoginSuccess(u);
                 }}
                 style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
                   padding: '0.4rem 0.75rem', borderRadius: 8,
                   border: '1px solid var(--border-color)',
                   backgroundColor: 'var(--surface-variant)', color: 'var(--text-main)',
                   fontSize: '0.75rem', fontWeight: 700, cursor: 'pointer'
                 }}
               >
+                <item.icon size={13} />
                 {item.label}
               </button>
             ))}
@@ -354,8 +357,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
           <p style={{ margin: '0.65rem 0 0 0', fontSize: '0.71rem', color: 'var(--text-muted)', lineHeight: 1.5, textAlign: 'center' }}>
             {isSw
-              ? '⚠️ Hizi SI akaunti za Firebase. Data yote ni ya sampuli, haihifadhiwi kwenye wingu, na haiwezi kuandika Firestore. Usizitumie kwa data halisi ya wanachama.'
-              : '⚠️ These are NOT Firebase accounts. All data is sample, nothing is saved to the cloud, and Firestore writes are blocked. Never use with real member data.'}
+              ? 'Hizi SI akaunti za Firebase. Data yote ni ya sampuli, haihifadhiwi kwenye wingu, na haiwezi kuandika Firestore. Usizitumie kwa data halisi ya wanachama.'
+              : 'These are NOT Firebase accounts. All data is sample, nothing is saved to the cloud, and Firestore writes are blocked. Never use with real member data.'}
           </p>
         </div>
         ) : (
@@ -369,17 +372,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         {onClose && (
           <button
             onClick={onClose}
-            style={{
-              position: 'absolute',
-              top: '16px',
-              right: '16px',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              color: 'var(--text-muted)'
-            }}
+            className="ui-modal-close"
+            aria-label={isSw ? 'Funga' : 'Close'}
+            title={isSw ? 'Funga' : 'Close'}
+            style={{ position: 'absolute', top: '14px', right: '14px' }}
           >
-            ✕
+            <X size={16} />
           </button>
         )}
       </div>

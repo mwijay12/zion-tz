@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../core/theme/church_theme_service.dart';
+import '../../../core/constants/core_links.dart';
 import '../../../core/utils/haptics.dart';
 import '../models/copilot_action.dart';
 import 'local_faith_ai_engine.dart';
@@ -12,7 +13,7 @@ class SayuniCopilotService extends ChangeNotifier {
   factory SayuniCopilotService() => _instance;
   SayuniCopilotService._internal();
 
-  static const String _apiEndpoint = 'https://sayuni-portal.vercel.app/api/copilot';
+  static String get _apiEndpoint => CoreLinks.copilotEndpoint;
   static const String _storageKey = 'sayuni_copilot_chat_history_v1';
   static const String _ordersKey = 'sayuni_member_book_orders_v1';
 

@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 .vercel
+
+# PDF vector-test build scratch
+.pdf-test-*

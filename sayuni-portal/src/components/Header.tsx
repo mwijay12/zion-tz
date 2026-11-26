@@ -30,6 +30,14 @@ import {
 import type { Language } from '../types';
 import { AuthService, type PortalUser } from '../services/authService';
 import { searchPortal, type SearchHit } from '../services/searchIndex';
+import { FirebaseChurchService } from '../services/firebaseChurchService';
+import {
+  buildNotifications,
+  filterForRole,
+  loadReadState,
+  saveReadState,
+  type PortalNotification,
+} from '../services/notificationCenter';
 import { CloudHealthPanel } from './CloudHealthPanel';
 
 interface BeforeInstallPromptEvent extends Event {
@@ -49,64 +57,6 @@ interface HeaderProps {
   onOpenLogin: () => void;
 }
 
-interface ChurchNotification {
-  id: string;
-  title: string;
-  description: string;
-  time: string;
-  read: boolean;
-  type: 'finance' | 'admin' | 'jumuiya' | 'choir' | 'pastoral';
-  targetTab?: string;
-}
-
-const INITIAL_NOTIFICATIONS: ChurchNotification[] = [
-  {
-    id: 'notif-1',
-    title: 'Sadaka ya Ujenzi Imepokelewa',
-    description: 'Mchango mpya wa TSh 250,000 umepokelewa kupitia M-Pesa (Namba ya Kumbukumbu #MP-9821).',
-    time: 'Dakika 15 zilizopita',
-    read: false,
-    type: 'finance',
-    targetTab: 'finance'
-  },
-  {
-    id: 'notif-2',
-    title: 'Kikao cha Baraza la Wazee',
-    description: 'Kikao rasmi cha Baraza la Wazee kitafanyika Alhamisi hii saa 10:00 Jioni ukumbini.',
-    time: 'Saa 1 iliyopita',
-    read: false,
-    type: 'admin',
-    targetTab: 'secretary_portal'
-  },
-  {
-    id: 'notif-3',
-    title: 'Ripoti ya Jumuiya ya Chamazi',
-    description: 'Mzee wa Jumuiya ametuma ripoti ya mahudhurio na maombi ya wiki hii (Waumini 42).',
-    time: 'Saa 3 zilizopita',
-    read: false,
-    type: 'jumuiya',
-    targetTab: 'jumuiya'
-  },
-  {
-    id: 'notif-4',
-    title: 'Mazoezi ya Kwaya ya Galilaya',
-    description: 'Mazoezi ya kujiandaa na Ibada Kuu ya Jumapili yatakuwa Ijumaa saa 11:00 Jioni.',
-    time: 'Jana',
-    read: true,
-    type: 'choir',
-    targetTab: 'choir_portal'
-  },
-  {
-    id: 'notif-5',
-    title: 'Nukuu ya Mahubiri ya Askofu',
-    description: 'Askofu Mercy James ameweka mistari na mada ya somo la Jumapili: "Kutembea Katika Imani".',
-    time: 'Jana',
-    read: true,
-    type: 'pastoral',
-    targetTab: 'pastor_portal'
-  }
-];
-
 export const Header: React.FC<HeaderProps> = ({
   activeTab,
   setActiveTab,
@@ -121,7 +71,14 @@ export const Header: React.FC<HeaderProps> = ({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [notifications, setNotifications] = useState<ChurchNotification[]>(INITIAL_NOTIFICATIONS);
+  // Notification centre: derived from Firestore (announcements, events,
+  // sermons), never invented. Empty until a real record exists.
+  const [feed, setFeed] = useState<{
+    announcements: Parameters<typeof buildNotifications>[0]['announcements'];
+    events: Parameters<typeof buildNotifications>[0]['events'];
+    sermons: Parameters<typeof buildNotifications>[0]['sermons'];
+  }>({ announcements: [], events: [], sermons: [] });
+  const [readState, setReadState] = useState(() => loadReadState());
   const [isTopbarHidden, setIsTopbarHidden] = useState(false);
   const [deferredInstallPrompt, setDeferredInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showPwaGuide, setShowPwaGuide] = useState(false);
@@ -133,6 +90,57 @@ export const Header: React.FC<HeaderProps> = ({
   const notifDropdownRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const isSw = language === 'sw';
+
+  // Live subscription: the bell reflects the same Firestore records the
+  // portals write, so a notice published on the secretary's laptop shows up
+  // here without a refresh — and never shows invented activity.
+  useEffect(() => {
+    // No session → no cloud reads are possible, so the subscription is simply
+    // not opened. Clearing the previous session's feed happens on logout (see
+    // the currentUser effect below) rather than synchronously in here, which
+    // would cascade a render on every mount.
+    if (!currentUser) return;
+    const unsubAnnouncements = FirebaseChurchService.subscribeToAnnouncements(
+      (announcements) => setFeed((prev) => ({ ...prev, announcements }))
+    );
+    const unsubEvents = FirebaseChurchService.subscribeToEvents(
+      (events) => setFeed((prev) => ({ ...prev, events }))
+    );
+    const unsubSermons = FirebaseChurchService.subscribeToSermons(
+      (sermons) => setFeed((prev) => ({ ...prev, sermons }))
+    );
+    return () => {
+      unsubAnnouncements();
+      unsubEvents();
+      unsubSermons();
+    };
+  }, [currentUser]);
+
+  // Drop another user's notifications when the session ends or changes.
+  const previousUserId = useRef<string | null>(null);
+  useEffect(() => {
+    const nextId = currentUser?.id ?? null;
+    if (previousUserId.current !== nextId) {
+      previousUserId.current = nextId;
+      setFeed({ announcements: [], events: [], sermons: [] });
+    }
+  }, [currentUser?.id]);
+
+  const notifications: PortalNotification[] = React.useMemo(
+    () =>
+      filterForRole(
+        buildNotifications({
+          announcements: feed.announcements,
+          events: feed.events,
+          sermons: feed.sermons,
+          readAllBefore: readState.readAllBefore,
+          readIds: readState.ids,
+          isSw,
+        }),
+        currentUser?.role
+      ),
+    [feed, readState, isSw, currentUser?.role]
+  );
 
   // Scroll-aware topbar hiding on mobile devices to maximize viewport
   useEffect(() => {
@@ -191,11 +199,20 @@ export const Header: React.FC<HeaderProps> = ({
   }, []);
 
   const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    // Persist a cut-off so the badge survives a reload instead of resetting
+    // to "everything is new" on every page load.
+    const next = { ids: new Set<string>(), readAllBefore: Date.now() };
+    setReadState(next);
+    saveReadState(next);
   };
 
-  const handleNotificationClick = (notif: ChurchNotification) => {
-    setNotifications(prev => prev.map(n => n.id === notif.id ? { ...n, read: true } : n));
+  const handleNotificationClick = (notif: PortalNotification) => {
+    const next = {
+      ids: new Set(readState.ids).add(notif.id),
+      readAllBefore: readState.readAllBefore,
+    };
+    setReadState(next);
+    saveReadState(next);
     if (notif.targetTab && AuthService.canAccessTab(currentUser, notif.targetTab)) {
       setActiveTab(notif.targetTab);
     }
@@ -254,7 +271,7 @@ export const Header: React.FC<HeaderProps> = ({
   const visibleAdminItems = adminOfficeItems.filter((item) => AuthService.canAccessTab(currentUser, item.id));
   const visibleSyncItems = memberAppSyncItems.filter((item) => AuthService.canAccessTab(currentUser, item.id));
 
-  const getNotifIcon = (type: ChurchNotification['type']) => {
+  const getNotifIcon = (type: PortalNotification['type']) => {
     switch(type) {
       case 'finance': return <Wallet size={16} style={{ color: '#059669' }} />;
       case 'admin': return <Megaphone size={16} style={{ color: '#0D52CD' }} />;
@@ -614,6 +631,25 @@ export const Header: React.FC<HeaderProps> = ({
 
                 {/* Notifications List */}
                 <div className="portal-notif-list">
+                  {notifications.length === 0 && (
+                    <div className="portal-notif-empty">
+                      <Bell size={22} style={{ color: 'var(--outline)' }} />
+                      <strong>
+                        {currentUser
+                          ? (isSw ? 'Hakuna arifa mpya' : 'No new notifications')
+                          : (isSw ? 'Ingia ili kuona arifa' : 'Sign in to see notifications')}
+                      </strong>
+                      <span>
+                        {currentUser
+                          ? (isSw
+                              ? 'Arifa hutokea hapa zikitumwa matangazo, matukio au mahubiri kwenye wingu.'
+                              : 'Notices appear here when announcements, events or sermons are published to the cloud.')
+                          : (isSw
+                              ? 'Arifa zinatoka kwenye kumbukumbu halisi za kanisa.'
+                              : 'Notifications come from real church records.')}
+                      </span>
+                    </div>
+                  )}
                   {notifications.map((notif) => (
                     <button
                       key={notif.id}
@@ -649,6 +685,9 @@ export const Header: React.FC<HeaderProps> = ({
                         <div className="portal-notif-meta">
                           <Clock size={12} />
                           <span>{notif.time}</span>
+                          <span className="portal-notif-source">
+                            {isSw ? notif.sourceSw : notif.sourceEn}
+                          </span>
                         </div>
                       </div>
                     </button>
@@ -658,15 +697,17 @@ export const Header: React.FC<HeaderProps> = ({
                 {/* Footer */}
                 <div className="portal-notif-footer">
                   <span>Zion Jerusalem • Kwa Matope</span>
-                  <button 
-                    onClick={() => {
-                      setActiveTab('secretary_portal');
-                      setNotificationsOpen(false);
-                    }}
-                    style={{ color: 'var(--primary)', fontWeight: 600, cursor: 'pointer' }}
-                  >
-                    {isSw ? 'Matangazo Yote →' : 'All Notices →'}
-                  </button>
+                  {AuthService.canAccessTab(currentUser, 'secretary_portal') && (
+                    <button
+                      onClick={() => {
+                        setActiveTab('secretary_portal');
+                        setNotificationsOpen(false);
+                      }}
+                      style={{ color: 'var(--primary)', fontWeight: 600, cursor: 'pointer' }}
+                    >
+                      {isSw ? 'Matangazo Yote →' : 'All Notices →'}
+                    </button>
+                  )}
                 </div>
               </div>
             )}

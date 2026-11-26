@@ -22,6 +22,7 @@ import {
 import type { Language, SermonItem, PastoralPoster, JumuiyaReport } from '../types';
 import { CHURCH_PROFILE, INITIAL_POSTERS } from '../data/mockData';
 import { churchSync, type WarRoomPrayerRequest } from '../services/churchSyncService';
+import { auth, FirebaseChurchService, type PrayerRequestDoc } from '../services/firebaseChurchService';
 import { PrivacyAnalyticsService } from '../services/privacyAnalyticsService';
 import { createId } from '../utils/id';
 import { loadStored, saveStored, STORAGE_KEYS } from '../utils/storage';
@@ -75,7 +76,7 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
     saveStored(STORAGE_KEYS.pastoralPosters, posters);
   }, [posters]);
 
-  // Synchronize with mobile app updates in real-time
+  // Synchronize with mobile app updates in real-time (same-browser bus)
   useEffect(() => {
     const unsubscribe = churchSync.subscribe((msg) => {
       if (msg.type === 'SERMON_ADDED' || msg.type === 'SERMONS_UPDATED') {
@@ -87,6 +88,46 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
     });
     return unsubscribe;
   }, []);
+
+  // Real prayer requests submitted from members' phones.
+  //
+  // The panel used to be fed only by `churchSync.getPrayers()` (localStorage),
+  // so it could never show a request that arrived from another device. These
+  // are the authoritative Firestore records; they are merged with the local
+  // cache so an offline demo still renders, but the cloud rows win on id.
+  const [cloudPrayers, setCloudPrayers] = useState<PrayerRequestDoc[]>([]);
+  const [cloudPrayerError, setCloudPrayerError] = useState(false);
+  useEffect(() => {
+    // No Firebase session (demo mode) means no cloud reads are possible; the
+    // panel then shows only the local cache and says nothing about the cloud.
+    if (!auth.currentUser) return;
+    return FirebaseChurchService.subscribeToPrayerRequests(
+      (items) => {
+        setCloudPrayers(items);
+        setCloudPrayerError(false);
+      },
+      () => setCloudPrayerError(true)
+    );
+  }, []);
+
+  const prayerRows: WarRoomPrayerRequest[] = React.useMemo(() => {
+    const fromCloud: WarRoomPrayerRequest[] = cloudPrayers.map((p) => ({
+      id: p.id,
+      title: p.title || (p.requestText ? p.requestText.slice(0, 60) : 'Ombi la Maombi'),
+      author: p.senderName || 'Muumini',
+      urgency: (p.urgency === 'Critical' || p.urgency === 'High'
+        ? p.urgency
+        : 'Normal') as WarRoomPrayerRequest['urgency'],
+      description: p.requestText || p.content || '',
+      date: p.createdAt?.toDate
+        ? p.createdAt.toDate().toLocaleDateString(language === 'sw' ? 'sw-TZ' : 'en-US')
+        : 'Hivi karibuni',
+      intercessors: 0,
+      pastorInterceded: p.isAnswered === true,
+    }));
+    const seen = new Set(fromCloud.map((p) => p.id));
+    return [...fromCloud, ...warRoomPrayers.filter((p) => !seen.has(p.id))];
+  }, [cloudPrayers, warRoomPrayers, language]);
 
   // Prayer needs from Jumuiya reports
   const prayerNeeds = recentReports.filter(r => r.sickOrWelfareNeeds || r.prayerRequests);
@@ -595,12 +636,19 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                 </span>
               </div>
               <span className="badge badge-gold" style={{ fontSize: '0.72rem' }}>
-                {warRoomPrayers.length} {isSw ? 'Maombi Yapo Hewani' : 'Active Prayers'}
+                {prayerRows.length} {isSw ? 'Maombi Yapo Hewani' : 'Active Prayers'}
               </span>
             </div>
 
+            {cloudPrayerError && (
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', margin: '0 0 0.6rem' }}>
+                {isSw
+                  ? 'Maombi ya wingu hayapatikani kwa sasa — unaona yaliyohifadhiwa kwenye kifaa hiki.'
+                  : 'Cloud prayers are unavailable right now — showing what is cached on this device.'}
+              </p>
+            )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-              {warRoomPrayers.map((prayer) => {
+              {prayerRows.map((prayer) => {
                 const isCritical = prayer.urgency === 'Critical';
                 const isHigh = prayer.urgency === 'High';
                 const pastorInterceded = prayer.pastorInterceded;

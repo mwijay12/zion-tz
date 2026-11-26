@@ -9,6 +9,7 @@ import {
   addDoc,
   query,
   orderBy,
+  limit,
   onSnapshot,
   serverTimestamp,
   type Unsubscribe
@@ -103,6 +104,23 @@ export interface ChurchSermon {
   category: string;
   mediaUrl: string;
   description?: string;
+  createdAt?: any;
+}
+
+/**
+ * A prayer request submitted from the member app (`prayer_requests`).
+ * Field names come from `ChurchSyncService.syncNewPrayerRequest` in the Flutter
+ * app — they must stay in step.
+ */
+export interface PrayerRequestDoc {
+  id: string;
+  title?: string;
+  senderName?: string;
+  requestText?: string;
+  content?: string;
+  urgency?: string;
+  userId?: string;
+  isAnswered?: boolean;
   createdAt?: any;
 }
 
@@ -342,6 +360,31 @@ export class FirebaseChurchService {
       onUpdate(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
     }, (error) => {
       console.error("Error listening to visitors registry:", error);
+    });
+  }
+
+  // 2e. PRAYER REQUESTS — submitted from the member app's War Room
+  //
+  // The app writes `prayer_requests` with `requestText` (see
+  // `ChurchSyncService.syncNewPrayerRequest`). The pastor portal used to read
+  // the War Room ONLY from localStorage, which can never contain a prayer sent
+  // from someone else's phone — so the "Live believer prayer requests" panel
+  // showed invented seed data while real requests sat unseen in Firestore.
+  //
+  // Rules: read is limited to the submitting member and to pastors, so this
+  // subscription fails closed for anyone else.
+  static subscribeToPrayerRequests(
+    onUpdate: (items: PrayerRequestDoc[]) => void,
+    onError?: (error: unknown) => void
+  ): Unsubscribe {
+    const q = query(collection(db, "prayer_requests"), orderBy("createdAt", "desc"), limit(50));
+    return onSnapshot(q, (snapshot) => {
+      onUpdate(snapshot.docs.map(d => ({ id: d.id, ...d.data() } as PrayerRequestDoc)));
+    }, (error) => {
+      // Rules deny this collection to anyone who is not a pastor, so a denial
+      // is a normal outcome, not a crash. Let the caller say so honestly.
+      console.error("Error listening to prayer requests:", error);
+      onError?.(error);
     });
   }
 

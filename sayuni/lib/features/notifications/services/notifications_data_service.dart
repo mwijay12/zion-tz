@@ -157,10 +157,20 @@ class NotificationsDataService extends ChangeNotifier {
   /// Dynamically inserts a new announcement received in real-time from the Web Portal Katibu/Admin
   Future<void> addAnnouncementFromPortal(
       ChurchAnnouncement announcement) async {
+    // Preserve the read flag when this is an EDIT of an announcement the member
+    // already read; only a first-time arrival starts unread.
+    ChurchAnnouncement? previous;
+    for (final a in _announcements) {
+      if (a.id == announcement.id) {
+        previous = a;
+        break;
+      }
+    }
+    announcement.isRead = previous?.isRead ?? false;
+
     // Remove if already present
     _announcements.removeWhere((a) => a.id == announcement.id);
-    // Prepend to top of list as unread
-    announcement.isRead = false;
+    // Prepend to top of list
     _announcements.insert(0, announcement);
     notifyListeners();
 
@@ -176,6 +186,43 @@ class NotificationsDataService extends ChangeNotifier {
       list.removeWhere((item) => item is Map && item['id'] == announcement.id);
       list.insert(0, announcement.toJson());
       await prefs.setString(_syncedNoticesKey, jsonEncode(list));
+    } catch (_) {}
+  }
+
+  /// Removes portal notices that no longer exist on the server.
+  ///
+  /// The app only ever *added* announcements, so when the secretariat deleted
+  /// one (wrong venue, cancelled service, duplicate) every phone kept showing
+  /// it forever. Only ids that were themselves delivered by the portal
+  /// (`_syncedNoticesKey`) are eligible — the built-in seed notices are local
+  /// content and must survive.
+  Future<void> pruneMissingPortalNotices(Set<String> liveIds) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getString(_syncedNoticesKey);
+      if (raw == null || raw.isEmpty) return;
+
+      final decoded = jsonDecode(raw);
+      if (decoded is! List) return;
+
+      final kept = <dynamic>[];
+      final removedIds = <String>{};
+      for (final item in decoded) {
+        if (item is! Map) continue;
+        final id = item['id']?.toString() ?? '';
+        if (id.isEmpty) continue;
+        if (liveIds.contains(id)) {
+          kept.add(item);
+        } else {
+          removedIds.add(id);
+        }
+      }
+
+      if (removedIds.isEmpty) return;
+
+      _announcements.removeWhere((a) => removedIds.contains(a.id));
+      await prefs.setString(_syncedNoticesKey, jsonEncode(kept));
+      notifyListeners();
     } catch (_) {}
   }
 

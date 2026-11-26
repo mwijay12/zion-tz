@@ -26,6 +26,8 @@ import { PrivacyAnalyticsService } from '../services/privacyAnalyticsService';
 import { createId } from '../utils/id';
 import { loadStored, saveStored, STORAGE_KEYS } from '../utils/storage';
 import leadershipImg from '../assets/pastoral_leadership.jpg';
+import { useToast } from './ui/toastStore';
+import { describeFirebaseError } from '../services/firestoreErrors';
 
 interface PastorsPortalProps {
   language: Language;
@@ -37,6 +39,8 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
   recentReports
 }) => {
   const isSw = language === 'sw';
+  const { push: toast } = useToast();
+  const [isPublishingSermon, setIsPublishingSermon] = useState(false);
   const [activeSubTab, setActiveSubTab] = useState<'sermons' | 'posters' | 'prayers'>('sermons');
   
   // Sermons state synced with mobile app
@@ -121,7 +125,7 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
     setShowSermonModal(true);
   };
 
-  const handleCreateSermon = (e: React.FormEvent) => {
+  const handleCreateSermon = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!sermonTitle || !scripture) return;
 
@@ -144,16 +148,39 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
       imageUrl: editingSermon?.imageUrl
     };
 
-    // Save to sync bridge so mobile and portal update immediately
-    churchSync.addSermon(sermonToSave);
-    const updated = churchSync.getSermons();
-    setSermons(updated);
-    if (readingArticle && readingArticle.id === sermonToSave.id) {
-      setReadingArticle(sermonToSave);
+    // Save locally first so the portal and the member app on this device update
+    // immediately — then tell the pastor the truth about the cloud copy.
+    setIsPublishingSermon(true);
+    try {
+      await churchSync.addSermon(sermonToSave);
+      setSermons(churchSync.getSermons());
+      if (readingArticle && readingArticle.id === sermonToSave.id) {
+        setReadingArticle(sermonToSave);
+      }
+      setShowSermonModal(false);
+      setEditingSermon(null);
+      toast({
+        tone: 'success',
+        title: isSw ? 'Mahubiri yamehifadhiwa' : 'Sermon saved',
+        message: isSw
+          ? 'Yamehifadhiwa kwenye kifaa hiki na kwenye Cloud Firestore — yataonekana kwenye simu za waumini.'
+          : 'Saved on this device and in Cloud Firestore — it will appear in the member app.',
+      });
+    } catch (err) {
+      setSermons(churchSync.getSermons());
+      // Keep the form open with the pastor's text: closing it here would lose
+      // a sermon they may have spent an hour writing.
+      toast({
+        tone: 'error',
+        title: isSw ? 'Mahubiri hayajafika wingu' : 'Sermon did not reach the cloud',
+        message: (isSw
+          ? 'Yamehifadhiwa kwenye kifaa hiki PEKEE. '
+          : 'Saved on THIS DEVICE ONLY. ') + describeFirebaseError(err, isSw),
+        durationMs: 14000,
+      });
+    } finally {
+      setIsPublishingSermon(false);
     }
-
-    setShowSermonModal(false);
-    setEditingSermon(null);
   };
 
   const renderArticleMarkdown = (content: string) => {
@@ -893,10 +920,12 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                 >
                   {isSw ? 'Ghairi' : 'Cancel'}
                 </button>
-                <button type="submit" className="btn-primary">
+                <button type="submit" className="btn-primary" disabled={isPublishingSermon} aria-busy={isPublishingSermon}>
                   <CheckCircle2 size={16} />
                   <span>
-                    {editingSermon 
+                    {isPublishingSermon
+                      ? (isSw ? 'Inatuma wingu…' : 'Publishing…')
+                      : editingSermon
                       ? (isSw ? 'Hifadhi Mabadiliko' : 'Save Changes')
                       : (isSw ? 'Hifadhi & Chapisha Somo' : 'Save & Publish')}
                   </span>

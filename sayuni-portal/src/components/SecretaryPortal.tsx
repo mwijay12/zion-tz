@@ -39,6 +39,7 @@ import { createId } from '../utils/id';
 
 import { PrintableOfficialReport } from './PrintableOfficialReport';
 import { useConfirm } from './ui/useConfirm';
+import { describeFirebaseError } from '../services/firestoreErrors';
 
 interface SecretaryPortalProps {
   language: Language;
@@ -167,7 +168,9 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
     setIsEditingFasting(false);
     setFeedback({
       type: 'success',
-      message: isSw ? '✓ Taarifa za mfungo wa kanisa zimehifadhiwa na kusawazishwa!' : '✓ Fasting campaign saved and synced!'
+      message: isSw
+        ? 'Taarifa za mfungo zimehifadhiwa kwenye kifaa hiki. (Usawazishaji wa wingu kwa mfungo bado haujawekwa.)'
+        : 'Fasting campaign saved on this device. (Cloud sync for the campaign is not wired yet.)'
     });
     setTimeout(() => setFeedback(null), 3000);
   };
@@ -271,11 +274,12 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
     try {
       await churchSync.addNotice(newNotice);
       setNotices(churchSync.getNotices());
+      // Only reached when the Firestore write actually resolved.
       setFeedback({
         type: 'success',
         message: isSw
-          ? '✓ Tangazo limechapishwa kwenye Cloud Firestore na litaonekana kwenye simu zote za waumini!'
-          : '✓ Announcement published to Cloud Firestore and synced with member devices!'
+          ? 'Tangazo limechapishwa kwenye Cloud Firestore na litaonekana kwenye simu zote za waumini.'
+          : 'Announcement published to Cloud Firestore and synced with member devices.'
       });
 
       setTimeout(() => {
@@ -294,13 +298,14 @@ export const SecretaryPortal: React.FC<SecretaryPortalProps> = ({
         setVenue('');
         setThemeVerse('');
       }, 1400);
-    } catch (err: any) {
+    } catch (err) {
       setNotices(churchSync.getNotices());
       setFeedback({
         type: 'error',
-        message: isSw
-          ? `Tangazo limehifadhiwa kwenye kifaa hiki, lakini halijasawazishwa na Cloud Firestore: ${err?.message || 'Kagua muunganisho wa internet au sheria za usalama.'}`
-          : `The notice was saved on this device but not synced to Cloud Firestore: ${err?.message || 'Check network connection or Firestore security rules.'}`
+        message: (isSw
+          ? 'Tangazo limehifadhiwa kwenye KIFAA HIKI PEKEE — halijafika kwenye simu za waumini. '
+          : 'The notice is saved on THIS DEVICE ONLY — it did not reach member devices. ') +
+          describeFirebaseError(err, isSw)
       });
     } finally {
       setIsSubmitting(false);

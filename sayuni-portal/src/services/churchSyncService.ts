@@ -208,7 +208,12 @@ class ChurchSyncService {
     return INITIAL_SERMONS;
   }
 
-  public addSermon(sermon: SermonItem): void {
+  /**
+   * Saves a sermon locally and to Firestore.
+   * Resolves with the Firestore document id; rejects when the cloud write is
+   * refused so the UI can tell the pastor the truth.
+   */
+  public async addSermon(sermon: SermonItem): Promise<string | null> {
     const current = this.getSermons();
     const updated = [sermon, ...current.filter(s => s.id !== sermon.id)];
 
@@ -245,8 +250,12 @@ class ChurchSyncService {
       console.warn('Error persisting sermon to localStorage:', e);
     }
 
-    // Push to Firebase Firestore for Cloud Sync
-    void FirebaseChurchService.publishSermon({
+    // Push to Firebase Firestore for Cloud Sync.
+    // NOTE: this used to be fire-and-forget with a console.warn, so a pastor
+    // whose write was rejected by the rules saw the modal close and assumed
+    // the sermon had reached the church. The caller now decides what to show;
+    // the returned promise is the source of truth.
+    return FirebaseChurchService.publishSermon({
       title: sermon.title,
       preacher: sermon.preacher,
       scripture: sermon.scripture || '',
@@ -254,7 +263,7 @@ class ChurchSyncService {
       category: sermon.category || 'Mahubiri',
       mediaUrl: sermon.mediaUrl || '',
       description: sermon.summary
-    }).catch(err => console.warn('Could not post sermon to Firebase Firestore:', err));
+    });
 
     // Broadcast
     this.broadcast('SERMON_ADDED', sermon);

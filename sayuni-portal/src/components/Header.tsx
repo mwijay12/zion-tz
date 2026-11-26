@@ -30,6 +30,7 @@ import {
 import type { Language } from '../types';
 import { AuthService, type PortalUser } from '../services/authService';
 import { searchPortal, type SearchHit } from '../services/searchIndex';
+import { CloudHealthPanel } from './CloudHealthPanel';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -396,26 +397,19 @@ export const Header: React.FC<HeaderProps> = ({
             <span>{isSw ? 'Sakinisha App ya Viongozi (PWA)' : 'Install Admin PWA'}</span>
           </button>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.75rem', color: 'var(--on-surface-variant)' }}>
-              <span
-                style={{
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  backgroundColor: currentUser?.isDemo ? '#d97706' : '#10b981',
-                  display: 'inline-block',
-                  boxShadow: currentUser?.isDemo
-                    ? '0 0 6px rgba(217, 119, 6, 0.6)'
-                    : '0 0 6px rgba(16, 185, 129, 0.6)',
-                }}
-              />
-              <span>
-                {currentUser?.isDemo
-                  ? (isSw ? 'Hakuna wingu (demo)' : 'Offline demo')
-                  : (isSw ? 'Firebase imeunganishwa' : 'Firebase connected')}
-              </span>
-            </span>
+          {/* Connection status is a MEASUREMENT, not a decoration.
+              The old badge claimed "Firebase Sync Active" unconditionally.
+              This button runs a real write probe and reports what actually
+              works for the signed-in account. */}
+          {currentUser && (
+            <CloudHealthPanel
+              language={language}
+              isDemo={currentUser.isDemo}
+              currentUserName={currentUser.name}
+            />
+          )}
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', width: '100%' }}>
             <span style={{ fontWeight: 700, color: 'var(--primary)', fontSize: '0.72rem' }}>Kwa Matope HQ</span>
           </div>
 

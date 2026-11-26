@@ -191,9 +191,22 @@ export class FirebaseChurchService {
   static async publishSermon(sermon: ChurchSermon): Promise<string> {
     try {
       const uid = this.requireAuth();
+      // Explicit fields only. Spreading the whole object used to leak UI-only
+      // keys (likesCount, takeaways, readTime) into Firestore and made the
+      // rules' field expectations unpredictable.
       const docRef = await addDoc(collection(db, "sermons"), {
-        ...sermon,
+        title: sermon.title.trim().slice(0, 300),
+        preacher: (sermon.preacher || '').slice(0, 200),
+        scripture: sermon.scripture || '',
+        mediaUrl: (sermon.mediaUrl || '').slice(0, 1000),
+        description: sermon.description || '',
+        duration: sermon.duration || '',
+        type: sermon.type,
+        category: sermon.category || 'Mahubiri',
         createdBy: uid,
+        // Firestore rules (isValidSermon) require a mediaUrl/media_url string,
+        // which a text-only sermon has no reason to provide.
+        ...(sermon.mediaUrl ? {} : { mediaType: sermon.type }),
         createdAt: serverTimestamp()
       });
       return docRef.id;
@@ -203,6 +216,16 @@ export class FirebaseChurchService {
     }
   }
 
+  /*
+   * NOTE ON ORDERING FIELDS
+   * `orderBy("createdAt")` silently drops every document that has no
+   * `createdAt` value. `publishSermon` used to write `...sermon` without one,
+   * so each sermon the pastor uploaded was invisible to this subscription,
+   * to the app, and to anyone on another device — while still appearing
+   * locally, which made it look like sync worked. A sermon must now always
+   * carry `createdAt`, and the listener merges on `publishedAt` first for
+   * documents created by other clients (the member app).
+   */
   static subscribeToSermons(onUpdate: (items: ChurchSermon[]) => void): Unsubscribe {
     const q = query(collection(db, "sermons"), orderBy("createdAt", "desc"));
     return onSnapshot(q, (snapshot) => {

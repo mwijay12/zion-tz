@@ -102,7 +102,16 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
   };
 
   const handleDeleteSong = async (id: string) => {
-    if (!AuthService.canEditSongs(currentUser)) return;
+    if (!AuthService.canDeleteSongs(currentUser)) {
+      toast({
+        tone: 'warning',
+        title: isSw ? 'Huwezi kufuta wimbo' : 'You cannot delete songs',
+        message: isSw
+          ? 'Kiongozi wa kwaya anaweza kuongeza na kuhariri, lakini kufuta kunahitaji Admin au Super Admin.'
+          : 'A choir leader may add and edit, but deleting requires an Admin or Super Admin.',
+      });
+      return;
+    }
     const songToDelete = songs.find(s => s.id === id);
     const ok = await confirm({
       title: isSw ? 'Futa wimbo huu?' : 'Delete this song?',
@@ -377,8 +386,10 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
                     <span>{isSw ? 'Hariri' : 'Edit'}</span>
                   </button>
 
+                  {AuthService.canDeleteSongs(currentUser) && (
                   <button
-                    onClick={() => handleDeleteSong(song.id)}
+                    onClick={() => void handleDeleteSong(song.id)}
+                    title={isSw ? 'Futa wimbo (Admin pekee)' : 'Delete song (admins only)'}
                     style={{
                       fontSize: '0.75rem',
                       padding: '0.3rem 0.65rem',
@@ -391,14 +402,14 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
                       alignItems: 'center',
                       gap: '0.25rem'
                     }}
-                    title={isSw ? 'Futa Wimbo' : 'Delete Song'}
                   >
                     <Trash2 size={13} />
                     <span>{isSw ? 'Futa' : 'Delete'}</span>
                   </button>
+                  )}
                 </div>
                 )}
-              </div>
+            </div>
             </div>
           ))}
         </div>

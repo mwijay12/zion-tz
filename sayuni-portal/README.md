@@ -23,9 +23,30 @@ Copy `.env.example` to `.env.local` and fill in local values. Never commit `.env
 
 - `VITE_CLOUDINARY_CLOUD_NAME` and `VITE_CLOUDINARY_UPLOAD_PRESET` configure unsigned media uploads.
 - `VITE_GEMINI_TTS_KEYS` is a local TTS prototype only. Browser variables are visible in the shipped bundle; production must use a server-side proxy.
+- `VITE_DEMO_MODE` enables the local demo sign-in on deployed builds (`npm run dev` enables it automatically).
 
 ## Status
 
-The portal builds, but it is a prototype. Authentication is currently a local demo, Firestore writes are not reliably authenticated, and reports and certificates use browser print views. Do not use it with real member data until the P0 security work is complete.
+The portal builds, but it is a prototype. Firestore writes require a real, verified Firebase account with a `role` custom claim; the demo session (`isDemo: true`) can never write to Firestore. Do not use it with real member data until the P0 security work is complete.
 
 See the root [README](../README.md) and [PLAN.md](../PLAN.md).
+
+## UI kit (`src/components/ui/`)
+
+Shared, dependency-free building blocks. Prefer these over new inline overlays so behaviour stays consistent across the fourteen office modules.
+
+| Module | What it does |
+|---|---|
+| `Modal.tsx` | Accessible dialog: `role="dialog"`, focus on open, Escape to close, background scroll lock, mobile bottom-sheet layout. |
+| `useConfirm.tsx` + `ConfirmDialog.tsx` | Promise-based confirmation for destructive actions (`const [confirm, dialog] = useConfirm()`), replacing `window.confirm`. |
+| `Toast.tsx` + `toastStore.ts` | `useToast()` feedback after a write, replacing `alert()` and disappearing banners. |
+| `States.tsx` | `EmptyState`, `SkeletonRows`, `SampleDataBadge` for honest empty/loading/demo states. |
+| `ErrorBoundary.tsx` | Contains a module crash to that module and offers a retry, instead of blanking the portal. |
+
+Design tokens live at the top of `src/index.css`. Any custom property a component reads (`--font-cinzel`, `--primary-700`, `--text-main`, …) must be declared there for both light and dark themes; an undefined property silently drops the whole declaration.
+
+## Conventions worth keeping
+
+- **Data honesty.** Figures shown to leaders must come from a store (`memberStore`, `churchSync`) or carry a `SampleDataBadge`. Never print a literal head-count next to a live register.
+- **Demo sessions are visible.** Anything a demo session cannot really do must say so, in the UI copy, not just in the docs.
+- **Code splitting.** Browser-only heavy libraries (jsPDF, html2canvas) are imported inside the handler that needs them, and office modules are `lazy()`-loaded from `App.tsx`.

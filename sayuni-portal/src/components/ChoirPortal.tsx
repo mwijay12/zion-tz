@@ -18,6 +18,8 @@ import { uploadToCloudinary, CLOUDINARY_CONFIG } from '../services/cloudinarySer
 import { createId } from '../utils/id';
 import { PrivacyAnalyticsService } from '../services/privacyAnalyticsService';
 import choirImg from '../assets/zion_worship_choir.jpg';
+import { useConfirm } from './ui/useConfirm';
+import { useToast } from './ui/toastStore';
 
 interface ChoirPortalProps {
   language: Language;
@@ -25,6 +27,8 @@ interface ChoirPortalProps {
 }
 
 export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser }) => {
+  const [confirm, confirmDialog] = useConfirm();
+  const { push: toast } = useToast();
   const isSw = language === 'sw';
   const [songs, setSongs] = useState<ChoirSong[]>(() => {
     try {
@@ -97,16 +101,25 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
     setShowSongModal(true);
   };
 
-  const handleDeleteSong = (id: string) => {
+  const handleDeleteSong = async (id: string) => {
     if (!AuthService.canEditSongs(currentUser)) return;
     const songToDelete = songs.find(s => s.id === id);
-    const confirmText = isSw 
-      ? `Je, una uhakika unataka kufuta wimbo "${songToDelete?.title}"?`
-      : `Are you sure you want to delete "${songToDelete?.title}"?`;
-    if (!window.confirm(confirmText)) return;
+    const ok = await confirm({
+      title: isSw ? 'Futa wimbo huu?' : 'Delete this song?',
+      message: isSw
+        ? `"${songToDelete?.title}" itaondolewa kwenye orodha ya kwaya. Hatua hii haiwezi kutenduliwa.`
+        : `"${songToDelete?.title}" will be removed from the choir list. This cannot be undone.`,
+      confirmLabel: isSw ? 'Futa wimbo' : 'Delete song',
+    });
+    if (!ok) return;
 
     const updated = songs.filter(s => s.id !== id);
     saveSongs(updated);
+    toast({
+      tone: 'success',
+      title: isSw ? 'Wimbo umefutwa' : 'Song deleted',
+      message: songToDelete?.title,
+    });
   };
 
   const handleSaveSong = (e: React.FormEvent) => {
@@ -527,7 +540,7 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
 
                 {uploadSuccessMessage && (
                   <div style={{ marginTop: '0.5rem', fontSize: '0.78rem', color: '#166534', background: '#dcfce7', padding: '0.4rem 0.75rem', borderRadius: '6px', border: '1px solid #bbf7d0' }}>
-                    ✓ {uploadSuccessMessage}
+                    {uploadSuccessMessage}
                   </div>
                 )}
 
@@ -608,6 +621,7 @@ export const ChoirPortal: React.FC<ChoirPortalProps> = ({ language, currentUser 
           </div>
         </div>
       )}
+      {confirmDialog}
     </div>
   );
 };

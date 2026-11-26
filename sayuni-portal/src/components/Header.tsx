@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import type { Language } from '../types';
 import { AuthService, type PortalUser } from '../services/authService';
+import { searchPortal, type SearchHit } from '../services/searchIndex';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -123,7 +124,11 @@ export const Header: React.FC<HeaderProps> = ({
   const [isTopbarHidden, setIsTopbarHidden] = useState(false);
   const [deferredInstallPrompt, setDeferredInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showPwaGuide, setShowPwaGuide] = useState(false);
-  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchActiveIndex, setSearchActiveIndex] = useState(0);
+  const searchWrapRef = useRef<HTMLDivElement>(null);
+
   const notifDropdownRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const isSw = language === 'sw';
@@ -174,6 +179,9 @@ export const Header: React.FC<HeaderProps> = ({
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setUserMenuOpen(false);
       }
+      if (searchWrapRef.current && !searchWrapRef.current.contains(event.target as Node)) {
+        setSearchOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
@@ -194,6 +202,33 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   const unreadCount = notifications.filter(n => !n.read).length;
+
+  const searchResults: SearchHit[] = currentUser
+    ? searchPortal(searchTerm, currentUser.role)
+    : [];
+
+  const runSearchHit = (hit: SearchHit) => {
+    setActiveTab(hit.tab);
+    setSearchTerm('');
+    setSearchOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const onSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!searchResults.length) return;
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setSearchActiveIndex(i => Math.min(i + 1, searchResults.length - 1));
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setSearchActiveIndex(i => Math.max(i - 1, 0));
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      runSearchHit(searchResults[searchActiveIndex] ?? searchResults[0]);
+    } else if (event.key === 'Escape') {
+      setSearchOpen(false);
+    }
+  };
 
   const adminOfficeItems = [
     { id: 'dashboard', label: isSw ? 'Dashibodi ya Utawala' : 'Admin Dashboard', icon: Church },
@@ -297,6 +332,7 @@ export const Header: React.FC<HeaderProps> = ({
                         setMobileMenuOpen(false);
                       }}
                       className={`portal-nav-item ${isActive ? 'active' : ''}`}
+                      aria-current={isActive ? 'page' : undefined}
                     >
                       <Icon size={18} />
                       <span>{item.label}</span>
@@ -323,6 +359,7 @@ export const Header: React.FC<HeaderProps> = ({
                         setMobileMenuOpen(false);
                       }}
                       className={`portal-nav-item ${isActive ? 'active' : ''}`}
+                      aria-current={isActive ? 'page' : undefined}
                     >
                       <Icon size={18} />
                       <span>{item.label}</span>
@@ -361,8 +398,23 @@ export const Header: React.FC<HeaderProps> = ({
 
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.75rem', color: 'var(--on-surface-variant)' }}>
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10b981', display: 'inline-block', boxShadow: '0 0 6px rgba(16, 185, 129, 0.6)' }} />
-              <span>{isSw ? 'Firebase Sync Active' : 'Firebase Sync Active'}</span>
+              <span
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: currentUser?.isDemo ? '#d97706' : '#10b981',
+                  display: 'inline-block',
+                  boxShadow: currentUser?.isDemo
+                    ? '0 0 6px rgba(217, 119, 6, 0.6)'
+                    : '0 0 6px rgba(16, 185, 129, 0.6)',
+                }}
+              />
+              <span>
+                {currentUser?.isDemo
+                  ? (isSw ? 'Hakuna wingu (demo)' : 'Offline demo')
+                  : (isSw ? 'Firebase imeunganishwa' : 'Firebase connected')}
+              </span>
             </span>
             <span style={{ fontWeight: 700, color: 'var(--primary)', fontSize: '0.72rem' }}>Kwa Matope HQ</span>
           </div>
@@ -408,14 +460,57 @@ export const Header: React.FC<HeaderProps> = ({
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
 
-          {/* Search bar */}
-          <div className="portal-search-wrap">
+          {/* Search: modules, people, jumuiya and published content */}
+          <div className="portal-search-wrap" ref={searchWrapRef} style={{ position: 'relative' }}>
             <Search className="portal-search-icon" size={16} />
-            <input 
-              type="text" 
+            <input
+              type="search"
+              role="combobox"
+              aria-expanded={searchOpen && searchTerm.trim().length >= 2}
+              aria-controls="portal-search-results"
+              aria-autocomplete="list"
               className="portal-search-input"
-              placeholder={isSw ? 'Tafuta waumini, mahubiri, matangazo...' : 'Search members, sermons, notices...'}
+              value={searchTerm}
+              onChange={(event) => {
+                setSearchTerm(event.target.value);
+                setSearchActiveIndex(0);
+                setSearchOpen(true);
+              }}
+              onFocus={() => setSearchOpen(true)}
+              onKeyDown={onSearchKeyDown}
+              placeholder={isSw ? 'Tafuta waumini, jumuiya, fedha, vyeti…' : 'Search members, cells, finance, certificates…'}
             />
+
+            {searchOpen && searchTerm.trim().length >= 2 && (
+              <div
+                id="portal-search-results"
+                role="listbox"
+                className="portal-search-results"
+              >
+                {searchResults.length === 0 ? (
+                  <div className="portal-search-empty">
+                    {isSw
+                      ? `Hakuna kilichopatikana kwa "${searchTerm.trim()}"`
+                      : `Nothing found for "${searchTerm.trim()}"`}
+                  </div>
+                ) : (
+                  searchResults.map((hit, index) => (
+                    <button
+                      key={hit.id}
+                      type="button"
+                      role="option"
+                      aria-selected={index === searchActiveIndex}
+                      onMouseEnter={() => setSearchActiveIndex(index)}
+                      onClick={() => runSearchHit(hit)}
+                      className={`portal-search-hit ${index === searchActiveIndex ? 'is-active' : ''}`}
+                    >
+                      <span className="portal-search-hit-label">{hit.label}</span>
+                      <span className="portal-search-hit-context">{hit.context}</span>
+                    </button>
+                  ))
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -711,17 +806,6 @@ export const Header: React.FC<HeaderProps> = ({
             </button>
           )}
 
-          {currentUser && (
-            <button
-              onClick={onLogout}
-              className="icon-btn"
-              style={{ color: '#dc2626', borderColor: 'rgba(220, 38, 38, 0.25)' }}
-              title={isSw ? 'Toka kwenye mfumo (Log Out)' : 'Log Out'}
-              aria-label="Log Out"
-            >
-              <LogOut size={16} />
-            </button>
-          )}
         </div>
       </header>
 

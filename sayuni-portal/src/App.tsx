@@ -1,22 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { Header } from './components/Header';
 import { MobileNav } from './components/MobileNav';
 import { Dashboard } from './components/Dashboard';
-import { ChurchHealth } from './components/ChurchHealth';
-import { FinanceModule } from './components/FinanceModule';
-import { JumuiyaModule } from './components/JumuiyaModule';
-import { CertificateStudio } from './components/CertificateStudio';
-import { BibleReader } from './components/BibleReader';
-import { DailyDevotional } from './components/DailyDevotional';
-import { MembersModule } from './components/MembersModule';
-import { PastorsPortal } from './components/PastorsPortal';
-import { SecretaryPortal } from './components/SecretaryPortal';
-import { EldersPortal } from './components/EldersPortal';
-import { ChoirPortal } from './components/ChoirPortal';
-import { DepartmentsPortal } from './components/DepartmentsPortal';
-import { DeaconsPortal } from './components/DeaconsPortal';
-import { MediaContentStudio } from './components/MediaContentStudio';
-import { LeadershipAnalyticsView } from './components/LeadershipAnalyticsView';
 
 import type { UserRole, Language, FinancialRecord, FinancialProject, ChurchExpense, JumuiyaReport, JumuiyaGroup } from './types';
 import { AuthService, type PortalUser } from './services/authService';
@@ -25,6 +10,48 @@ import { FirebaseChurchService } from './services/firebaseChurchService';
 import { churchSync } from './services/churchSyncService';
 import { loadStored, saveStored, STORAGE_KEYS } from './utils/storage';
 import { AuthModal } from './components/AuthModal';
+import { ErrorBoundary } from './components/ui/ErrorBoundary';
+/**
+ * Module-level code splitting.
+ *
+ * The portal used to ship one 1.65 MB bundle, so a leader on a slow mobile
+ * connection waited for the Bible reader and the certificate/JSPDF tooling
+ * before seeing the dashboard. Only the dashboard, chrome and auth modal are
+ * eager now; each office loads on first visit and is cached afterwards.
+ */
+const ChurchHealth = lazy(() => import('./components/ChurchHealth').then(m => ({ default: m.ChurchHealth })));
+const FinanceModule = lazy(() => import('./components/FinanceModule').then(m => ({ default: m.FinanceModule })));
+const JumuiyaModule = lazy(() => import('./components/JumuiyaModule').then(m => ({ default: m.JumuiyaModule })));
+const CertificateStudio = lazy(() => import('./components/CertificateStudio').then(m => ({ default: m.CertificateStudio })));
+const BibleReader = lazy(() => import('./components/BibleReader').then(m => ({ default: m.BibleReader })));
+const DailyDevotional = lazy(() => import('./components/DailyDevotional').then(m => ({ default: m.DailyDevotional })));
+const MembersModule = lazy(() => import('./components/MembersModule').then(m => ({ default: m.MembersModule })));
+const PastorsPortal = lazy(() => import('./components/PastorsPortal').then(m => ({ default: m.PastorsPortal })));
+const SecretaryPortal = lazy(() => import('./components/SecretaryPortal').then(m => ({ default: m.SecretaryPortal })));
+const EldersPortal = lazy(() => import('./components/EldersPortal').then(m => ({ default: m.EldersPortal })));
+const ChoirPortal = lazy(() => import('./components/ChoirPortal').then(m => ({ default: m.ChoirPortal })));
+const DepartmentsPortal = lazy(() => import('./components/DepartmentsPortal').then(m => ({ default: m.DepartmentsPortal })));
+const DeaconsPortal = lazy(() => import('./components/DeaconsPortal').then(m => ({ default: m.DeaconsPortal })));
+const MediaContentStudio = lazy(() => import('./components/MediaContentStudio').then(m => ({ default: m.MediaContentStudio })));
+const LeadershipAnalyticsView = lazy(() => import('./components/LeadershipAnalyticsView').then(m => ({ default: m.LeadershipAnalyticsView })));
+
+/** Workspace placeholder shown while an office chunk downloads. */
+const ModuleFallback = ({ isSw }: { isSw: boolean }) => (
+  <div className="church-card" style={{ padding: '1.6rem' }} aria-busy="true" aria-live="polite">
+    <div className="ui-skeleton" style={{ height: '18px', width: '38%', marginBottom: '0.85rem' }} />
+    <div className="ui-skeleton" style={{ height: '11px', width: '64%', marginBottom: '1.4rem' }} />
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.9rem' }}>
+      {[0, 1, 2, 3].map((index) => (
+        <div key={index} className="ui-skeleton" style={{ height: '74px' }} />
+      ))}
+    </div>
+    <div className="ui-skeleton" style={{ height: '120px', marginTop: '1.1rem' }} />
+    <p style={{ marginTop: '0.9rem', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+      {isSw ? 'Inapakia moduli…' : 'Loading module…'}
+    </p>
+  </div>
+);
+
 import { 
   CHURCH_PROFILE, 
   INITIAL_FINANCES, 
@@ -145,6 +172,10 @@ export function App() {
 
   return (
     <div className="portal-root">
+      {/* Keyboard users should not have to tab through 14 nav items first. */}
+      <a href="#portal-main" className="skip-to-content">
+        {isSw ? 'Ruka hadi maudhui' : 'Skip to content'}
+      </a>
       {/* NOTE: the demo notice is rendered INSIDE .portal-main-area, not here.
           .portal-root is a flex row; an in-flow child here becomes a full-height
           flex column that pushes the whole workspace off-screen. */}
@@ -163,7 +194,7 @@ export function App() {
 
       {/* Main Workspace Canvas */}
       <div className="portal-content-wrap">
-        <main className="portal-main-area">
+        <main className="portal-main-area" id="portal-main" tabIndex={-1}>
         {currentUser.isDemo && (
           <div className="portal-demo-banner" role="status">
             <span className="portal-demo-badge">DEMO</span>
@@ -175,7 +206,13 @@ export function App() {
           </div>
         )}
         {canViewActiveTab ? (
-          <>
+          <ErrorBoundary
+            key={activeTab}
+            resetKey={activeTab}
+            language={language}
+            moduleName={activeTab}
+          >
+            <Suspense fallback={<ModuleFallback isSw={isSw} />}>
         {activeTab === 'dashboard' && (
           <Dashboard
             language={language}
@@ -334,7 +371,8 @@ export function App() {
             currentUser={currentUser}
           />
         )}
-          </>
+            </Suspense>
+          </ErrorBoundary>
         ) : (
           <div className="church-card" style={{ padding: '2.5rem', textAlign: 'center', maxWidth: '620px', margin: '2rem auto' }}>
             <h2 style={{ fontFamily: 'var(--font-cinzel)', fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-headline)', marginBottom: '0.6rem' }}>

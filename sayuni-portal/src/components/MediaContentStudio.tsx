@@ -789,13 +789,13 @@ export const MediaContentStudio: React.FC<MediaContentStudioProps> = ({ language
                       backgroundColor: item.status === 'ready' ? 'rgba(16,185,129,0.14)' : item.needsPoster ? 'rgba(234,88,12,0.12)' : 'rgba(100,116,139,0.12)',
                       color: item.status === 'ready' ? '#059669' : item.needsPoster ? '#ea580c' : '#64748b'
                     }}>
-                      {item.status === 'ready' ? (isSw ? '✓ Imetengenezwa' : '✓ Ready')
+                      {item.status === 'ready' ? (isSw ? 'Imetengenezwa' : 'Ready')
                         : item.needsPoster ? (isSw ? 'Inasubiri Poster' : 'Poster Needed')
                         : (isSw ? 'Taarifa tu' : 'Info only')}
                     </span>
                   </div>
                   <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.25rem', lineHeight: 1.45 }}>
-                    {item.kind === 'event' ? (isSw ? '📅 Tukio' : '📅 Event') : (isSw ? '📢 Tangazo' : '📢 Announcement')}
+                    {item.kind === 'event' ? (isSw ? 'Tukio' : 'Event') : (isSw ? 'Tangazo' : 'Announcement')}
                     {item.detail ? ` • ${item.detail}` : ''}{item.author ? ` • ${item.author}` : ''}
                   </div>
                   <button onClick={() => applyToCanvas(item)} style={{

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { 
+  X,
   BookOpen, 
   Video, 
   Music, 
@@ -622,7 +623,7 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                         <span>Kutoka: <strong style={{ color: 'var(--text-headline)' }}>{prayer.author}</strong></span>
                         <span>•</span>
-                        <span>🛡️ {prayer.intercessors} {isSw ? 'Waombezi Wamesimama' : 'Intercessors'}</span>
+                        <span>{prayer.intercessors} {isSw ? 'Waombezi Wamesimama' : 'Intercessors'}</span>
                       </div>
 
                       <button
@@ -631,7 +632,7 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                         style={{ padding: '0.35rem 0.9rem', fontSize: '0.78rem' }}
                       >
                         <CheckCircle2 size={14} style={{ color: pastorInterceded ? '#10b981' : undefined }} />
-                        <span>{pastorInterceded ? (isSw ? '✓ Mchungaji Ameombea' : '✓ Prayed by Pastor') : (isSw ? 'Simama Kwenye Pengo (Ombea)' : 'Stand in the Gap')}</span>
+                        <span>{pastorInterceded ? (isSw ? 'Mchungaji Ameombea' : '✓ Prayed by Pastor') : (isSw ? 'Simama Kwenye Pengo (Ombea)' : 'Stand in the Gap')}</span>
                       </button>
                     </div>
                   </div>
@@ -1040,11 +1041,13 @@ export const PastorsPortal: React.FC<PastorsPortalProps> = ({
                   <Edit3 size={14} />
                   <span>{isSw ? 'Hariri Somo Hili' : 'Edit Article'}</span>
                 </button>
-                <button 
+                <button
                   onClick={() => setReadingArticle(null)}
-                  style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '1.2rem', padding: '0.25rem' }}
+                  className="ui-modal-close"
+                  aria-label={isSw ? 'Funga makala' : 'Close article'}
+                  title={isSw ? 'Funga makala' : 'Close article'}
                 >
-                  ✕
+                  <X size={16} />
                 </button>
               </div>
             </div>

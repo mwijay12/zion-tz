@@ -209,6 +209,17 @@ Android manifest tayari ina `<queries>` kwa `https`, kwa hivyo
 na hayapotei ubora ukiprintiwa. Hakuna `html2canvas`, hakuna `toDataURL()`,
 hakuna `window.print()` ya ukurasa wa wavuti.
 
+### Ufafanuzi wa `html2canvas` kwenye bundle
+
+`dist/` ina faili `html2canvas-*.js` (199 kB). Hii **si** code yetu — ni
+tegemezi la hiari la `jspdf`, linalopakiwa kwa `import()` **lazy** ndani ya
+`doc.html()` pekee, ambayo ni njia ya jspdf ya kupiga picha ya DOM. Sisi
+hatuita `.html()` kamwe: PDF zote zinaundwa kwa `.text()`, `.line()`,
+`.rect()`.
+
+Kipimo `data-contract-test.mjs` sasa kinahakikisha hakuna huduma inayogusa
+`.html()`, kwa hivyo njia ya screenshot haiwezi kuingia kimya kimya baadaye.
+
 ### Ushahidi
 
 `scripts/pdf-vector-test.mjs` inaunganisha **source halisi** ya
@@ -257,18 +268,99 @@ kulibandika kwenye barua pepe — jambo ambalo PDF ya screenshot hairuhusu.
 
 ---
 
+## 5. Mzunguko wa pili: makosa matatu yaliyobaki kwenye arifa
+
+Baada ya kuunganisha app na portal, ukaguzi wa kina wa mantiki ya arifa
+uligundua makosa matatu ambayo yote yalikuwa **kimya** — hakuna error, lakini
+matokeo si sahihi.
+
+### 5.1 Kengele ilikuwa na nakala ya matrix ya roles — na zilitofautiana
+
+`notificationCenter.ts` ilikuwa na `TAB_FOR_ROLE` yake mwenyewe, iliyoandikwa
+kwa mkono "ili ilingane na `AuthService.TAB_ROLES`". Haikulingana:
+
+| Tab | `AuthService.TAB_ROLES` | `TAB_FOR_ROLE` (zamani) |
+|---|---|---|
+| `media_studio` | `'all'` (kila role) | roles 9 pekee |
+
+Kwa hivyo `deacon` au `jumuiya_leader` aliyepewa arifa ya ombi la posta
+aliruhusiwa na lango moja na kuzuiwa na lango lingine — aliona arifa,
+alibonyeza, na hakuna kilichotokea. Sasa `canNavigateTo()` inauliza
+`AuthService.canRoleAccessTab()`: chanzo kimoja cha ukweli, hakuna nakala ya
+pili ya kudrifti.
+
+Pia: matangazo sasa ni `alwaysVisible` — taarifa ya msiba au ibada ni ya umma,
+kwa hivyo mshemasi na mwanakwaya wanaiona hata wasiweze kufungua Ofisi ya
+Katibu. Wakibonyeza, inawekwa kama imesomwa; hakuna urambazaji wa uongo.
+
+### 5.2 "Hivi karibuni" ilikuwa uongo kwa kila rekodi mpya
+
+Tangazo lilipochapishwa, `createdAt` ni `serverTimestamp()`. Kwenye *local
+echo* ya listener, thamani hiyo bado ni `null` kwa muda mfupi. `relativeTime(0)`
+ilirudisha "Hivi karibuni" — kwa hivyo arifa mpya ilionekana kama "Sasa hivi",
+kisha ikaruka hadi "Dakika 3 zilizopita" mara server ilipothibitisha.
+
+Sasa `0` inamaanisha "haijathibitishwa": inaonyesha **"Inathibitishwa"** /
+"Pending". Ni ukweli unaoonekana, sio uzuri wa uongo.
+
+### 5.3 Kila kitu kilichopangwa kwa `createdAt` kinaweza kutoweka
+
+Hii ni muhimu zaidi, na haijarekebishwa kwa makusudi — inahitaji uamuzi wako.
+
+`orderBy("createdAt", "desc")` **haitoi** nyaraka zisizo na sehemu hiyo;
+Firestore inaziondoa kwenye matokeo **bila error yoyote**. Na
+`0 G`/`orderBy` ni pamoja na:
+
+| Msomaji | Amri | Nyaraka zinazotoweka |
+|---|---|---|
+| `subscribeToAnnouncements` | `announcements` + `orderBy createdAt` | matangoza yoyote yaliyoandikwa **kabla ya** `9cd6379` (wakati `publishAnnouncement` ilikuwa haijaongeza `createdAt`) |
+| App `church_sync_service` | `announcements` + `orderBy createdAt` | hiyo hiyo |
+| `subscribeToSermons` / app | `sermons` + `orderBy createdAt` | mahubiri ya zamani yaliyoandikwa kwa `...sermon` |
+
+Ikiwa kanisa lina matangazo ya awali kwenye Firestore, **hayataonekana kwenye
+kengele wala kwenye simu**, hata baada ya rules kuwekwa. Hakuna njia ya
+kujua bila kuangalia data halisi.
+
+**Uamuzi unaohitajika** (mmoja):
+
+1. **Backfill** — endesha script mara moja kuongeza `createdAt` kwa nyaraka
+   zisizo nazo (ukubwa: `scripts/backfill-createdAt.mjs`, inahitaji
+   service account). Safi zaidi.
+2. **Acha `orderBy`** — soma collection yote kisha panga kwa upande wa client,
+   ukitumia `createdAt ?? publishedAt ?? 0`. Nyepesi, lakini inasoma kila
+   rekodi.
+3. **Puuza** — ikiwa hakuna data ya zamani (deployment ni mpya). Hatari:
+   huwezi kujua bila kuangalia.
+
+Ushauri: chagua (1) ikiwa kuna data yoyote ya zamani; (2) ikiwa hujui.
+Sijafanya hili kwa sababu linagusa data ya production, sio code.
+
+### 5.4 Hitilafu iliyogundulika na kutotengenezwa (kwa makusudi)
+
+`NotificationsDataService.markAllAsRead()` inaandika ids za arifa **zote**
+kwenye `_readKey`, ikiwa ni pamoja na arifa za viongozi (`targetAudience:
+'leaders'`). `markAsRead(id)` ni sawa. Kwa sasa hii haina madhara kwa mwanachama
+kwa sababu `filteredAnnouncements` inachuja kabla ya kuonyesha, lakini
+`unreadCount` inategemea orodha iliyochujwa — kwa hivyo mwanachama anaweza
+"kumaliza kusoma" kitu asichokiona. Hii ni **sahihi kwa bahati**, sio kwa
+muundo. Inahitaji uamuzi wa PDPA: kama arifa ya kiongozi ni ya siri, id yake
+haipaswi kuhifadhiwa kwenye kifaa cha mwanachama.
+
+---
+
 ## Muhtasari wa uthibitisho
 
 | Amri | Matokeo |
 |---|---|
 | `npm run test:rules` | 7/7 (role contract portal ⇄ rules) |
-| `npm run test:contract` | 14/14 (field contract portal ⇄ app) |
+| `npm run test:contract` | 16/16 (field contract portal ⇄ app + notification targeting) |
 | `npm run test:pdf` | 16/16 (vector PDF proof) |
 | `npm run lint` | 0 errors, 14 warnings (zilizopo awali) |
 | `tsc -b --noEmit` | safi |
 | `npm run build` | safi |
 | jsdom walk ya moduli 14 | zote `ok`, 0 runtime errors |
 | Bell ya arifa | inafungua, "Hakuna arifa mpya", hakuna maandishi ya kubuni |
+| Mantiki ya arifa (runtime) | 19/19 (roles, muda, filtering, read-state) |
 
 **Haijathibitishwa:** kanuni za Firestore hazijawekwa wingu bado (kama
 ulivyosema, zitasukumwa baadaye). Kwa hivyo uthibitisho wa mwisho wa ruhusa

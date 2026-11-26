@@ -298,6 +298,40 @@ check('portal notifications: no hardcoded seed notification feed', () => {
 });
 
 // ---------------------------------------------------------------------------
+// 9. Notification targeting must agree with the single role matrix.
+// ---------------------------------------------------------------------------
+check('portal notifications: one role matrix, not a copy', () => {
+  const centre = read(path.join(PORTAL, 'services', 'notificationCenter.ts'));
+  const auth = read(path.join(PORTAL, 'services', 'authService.ts'));
+  assert(
+    !/TAB_FOR_ROLE/.test(centre),
+    'notificationCenter must not keep its own copy of the tab→role matrix (it drifted: media_studio was 9 roles vs "all")'
+  );
+  assertIncludes(
+    centre,
+    'AuthService.canRoleAccessTab',
+    'notification targeting must delegate to the real matrix'
+  );
+  // Every tab a notification can deep-link into must be a real route.
+  for (const tab of ['secretary_portal', 'media_studio', 'pastor_portal']) {
+    assertIncludes(auth, `${tab}:`, `notification targets ${tab}, which must exist in TAB_ROLES`);
+  }
+  assert(
+    !/targetTab:\s*'announcements'/.test(centre),
+    "'announcements' is not a portal route — deep-linking there closes the panel without navigating"
+  );
+  return 'targeting derives from TAB_ROLES';
+});
+
+check('portal notifications: nothing claims "just now" without a timestamp', () => {
+  const centre = read(path.join(PORTAL, 'services', 'notificationCenter.ts'));
+  assertIncludes(centre, 'Inathibitishwa', 'a pending serverTimestamp must not be labelled as recent');
+  const bad = /if\s*\(\s*!ms\s*\)\s*return[^;]*Hivi karibuni/.test(centre);
+  assert(!bad, 'relativeTime(0) must not return "Hivi karibuni" — that timestamp means "not yet acknowledged"');
+  return 'pending writes are labelled honestly';
+});
+
+// ---------------------------------------------------------------------------
 // 8. PDF export must be vector text, never a screenshot of the DOM.
 // ---------------------------------------------------------------------------
 check('pdf: exports are vector documents, not screen captures', () => {
@@ -307,6 +341,11 @@ check('pdf: exports are vector documents, not screen captures', () => {
     assert(!/html2canvas/.test(source), `${name} must not rasterise the DOM with html2canvas`);
     assert(!/toDataURL\(\s*\)/.test(source), `${name} must not screenshot a canvas`);
     assert(/doc\.text\(/.test(source), `${name} must draw real text`);
+    // jsPDF ships an optional `doc.html()` path that screenshots the DOM via a
+    // lazily-imported html2canvas chunk. It is present in the bundle (jspdf
+    // depends on it), so the only thing keeping the export vector is that no
+    // service ever calls `.html()`. Assert that directly.
+    assert(!/\.html\s*\(/.test(source), `${name} must never call doc.html() — that is the screenshot path`);
   }
   const pkg = JSON.parse(read(path.join(ROOT, 'sayuni-portal', 'package.json')));
   const deps = { ...pkg.dependencies, ...pkg.devDependencies };

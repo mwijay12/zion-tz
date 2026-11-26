@@ -31,6 +31,7 @@
  */
 
 import type { UserRole } from '../types';
+import { AuthService } from './authService';
 import type { ChurchAnnouncement, ChurchEvent, ChurchSermon } from './firebaseChurchService';
 
 export type NotificationType = 'finance' | 'admin' | 'jumuiya' | 'choir' | 'pastoral';
@@ -48,6 +49,12 @@ export interface PortalNotification {
   type: NotificationType;
   /** Sidebar tab to open when clicked. */
   targetTab?: string;
+  /**
+   * Public information: shown to every role even when the role cannot open
+   * `targetTab`. A deacon should still learn that a funeral notice went out.
+   * Tapping it marks it read without navigating.
+   */
+  alwaysVisible?: boolean;
   /** Localised source label, e.g. "Matangazo" / "Announcements". */
   sourceSw: string;
   sourceEn: string;
@@ -85,9 +92,17 @@ function toMillis(value: unknown): number {
   return 0;
 }
 
-/** "Dakika 12 zilizopita" / "12 minutes ago", or a date once it is old. */
+/**
+ * "Dakika 12 zilizopita" / "12 minutes ago", or a date once it is old.
+ *
+ * `0` means "no timestamp yet": the document was written with
+ * `serverTimestamp()` and the listener's local echo carries `null` until the
+ * server acknowledges it. Saying "Recently" there is a lie with a visible
+ * symptom — the same record showed "Sasa hivi" for a moment and then jumped to
+ * "Dakika 3 zilizopita". Say what is actually true instead.
+ */
 export function relativeTime(ms: number, isSw: boolean, now = Date.now()): string {
-  if (!ms) return isSw ? 'Hivi karibuni' : 'Recently';
+  if (!ms) return isSw ? 'Inathibitishwa' : 'Pending';
   const diff = Math.max(0, now - ms);
   const minutes = Math.floor(diff / 60000);
   if (minutes < 1) return isSw ? 'Sasa hivi' : 'Just now';
@@ -117,21 +132,18 @@ const truncate = (value: string, max = 160): string => {
 };
 
 /**
- * Which sidebar tabs a notification may deep-link into, per role.
- * Kept in step with `AuthService.TAB_ROLES`; if a leader lacks the tab, the
- * notification stays readable but does not navigate.
+ * Which tabs a notification may deep-link into.
+ *
+ * This used to be a second copy of the role matrix, and it drifted — the exact
+ * failure mode this whole module exists to prevent. `media_studio` is
+ * `'all'` in `AuthService.TAB_ROLES` but was a hand-copied nine-role list
+ * here, so a `jumuiya_leader` tapping a poster notification was allowed
+ * through by one gate and stopped by the other. Ask the real matrix instead of
+ * remembering it.
  */
-const TAB_FOR_ROLE: Record<string, UserRole[]> = {
-  announcements: ['secretary', 'pastor', 'admin', 'super_admin'],
-  secretary_portal: ['secretary', 'pastor', 'admin', 'super_admin'],
-  pastor_portal: ['pastor', 'admin', 'super_admin'],
-  media_studio: ['secretary', 'pastor', 'admin', 'super_admin', 'deacon', 'usher', 'treasurer', 'jumuiya_leader', 'choir_leader'],
-};
-
 export function canNavigateTo(role: UserRole, tab: string | undefined): boolean {
   if (!tab) return false;
-  const allowed = TAB_FOR_ROLE[tab];
-  return !!allowed && allowed.includes(role);
+  return AuthService.canRoleAccessTab(role, tab);
 }
 
 /**
@@ -163,7 +175,10 @@ export function buildNotifications(input: NotificationInputs): PortalNotificatio
       timestampMs: ts,
       read: isRead(id, ts),
       type: a.type === 'bereavement' ? 'pastoral' : 'admin',
+      // Announcements are managed in the Secretary Office, not on a page of
+      // their own: `announcements` is not a route this portal has.
       targetTab: 'secretary_portal',
+      alwaysVisible: true,
       sourceSw: 'Tangazo',
       sourceEn: 'Announcement',
     });
@@ -210,6 +225,8 @@ export function buildNotifications(input: NotificationInputs): PortalNotificatio
     });
   }
 
+  // Un-timestamped records sort last but stay visible: `orderBy('createdAt')`
+  // alone would drop them from the listener entirely.
   items.sort((a, b) => b.timestampMs - a.timestampMs);
   return items.slice(0, 30);
 }
@@ -225,10 +242,9 @@ export function filterForRole(
   if (!role) return [];
   return items.filter((item) => {
     if (!item.targetTab) return true;
-    if (item.targetTab === 'media_studio' && role !== 'admin' && role !== 'super_admin') {
-      // Only poster approvers are interrupted about poster requests.
-      return false;
-    }
+    if (item.alwaysVisible) return true;
+    // A notification the role cannot act on is noise: it inflates the unread
+    // badge, and tapping it closes the panel without going anywhere. Hide it.
     return canNavigateTo(role, item.targetTab);
   });
 }
